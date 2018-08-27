@@ -1,0 +1,113 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using DoomLauncher.Interfaces;
+using System.IO;
+
+namespace DoomLauncher
+{
+    public partial class SourcePortEdit : UserControl
+    {
+        private string m_directory, m_exec;
+
+        public SourcePortEdit()
+        {
+            InitializeComponent();
+
+            txtFileOption.Text = "-file"; //default for source port, currently user will not see this but it will be populated in the database
+        }
+
+        public void SetSupportedExtensions(string text)
+        {
+            txtExtensions.Text = text;
+        }
+
+        public void ShowOptions(bool set)
+        {
+            var controls = new Control[] { lblFileOption, txtFileOption };
+            foreach (var ctrl in controls)
+                ctrl.Visible = set;
+
+            if (set)
+                txtFileOption.Text = string.Empty;
+        }
+
+        public void SetDataSource(ISourcePort sourcePort)
+        {
+            m_directory = sourcePort.Directory.GetPossiblyRelativePath();
+            m_exec = sourcePort.Executable;
+
+            if (!string.IsNullOrEmpty(sourcePort.Name)) 
+                txtName.Text = sourcePort.Name;
+            if (sourcePort.Directory != null && sourcePort.Executable != null) 
+                txtExec.Text = sourcePort.Executable;
+            if (!string.IsNullOrEmpty(sourcePort.SupportedExtensions)) 
+                txtExtensions.Text = sourcePort.SupportedExtensions;
+            if (!string.IsNullOrEmpty(sourcePort.FileOption))
+                txtFileOption.Text = sourcePort.FileOption;
+            else
+                txtFileOption.Text = string.Empty;
+        }
+
+        public void UpdateDataSource(ISourcePort sourcePort)
+        {
+            sourcePort.Name = txtName.Text;
+            sourcePort.Directory = new LauncherPath(m_directory);
+            sourcePort.Executable = m_exec;
+            sourcePort.SupportedExtensions = txtExtensions.Text;
+            sourcePort.FileOption = txtFileOption.Text;
+        }
+
+        public string SourcePortName { get { return txtName.Text;  } }
+        public string SourcePortExec { get { return txtExec.Text; } }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                string file = GetRelativeDirectory(dialog.FileName);
+                m_exec = m_directory = string.Empty;
+                m_exec = Path.GetFileName(file);
+                m_directory = file.Replace(m_exec, string.Empty);
+
+                txtExec.Text = m_exec;
+            }
+        }
+
+        private string GetRelativeDirectory(string file)
+        {
+            string current = Directory.GetCurrentDirectory();
+
+            if (file.Contains(current))
+            {
+                string[] filePath = file.Split(Path.DirectorySeparatorChar);
+                string[] currentPath = current.Split(Path.DirectorySeparatorChar);
+
+                string[] relativePath = filePath.Except(currentPath).ToArray();
+
+                StringBuilder sb = new StringBuilder();
+
+                foreach(string str in relativePath)
+                {
+                    sb.Append(str);
+                    sb.Append(Path.DirectorySeparatorChar);
+                }
+
+                if (sb.Length > 1)
+                    sb.Remove(sb.Length - 1, 1);
+
+                return sb.ToString();
+            }
+
+            return file;
+        }
+    }
+}
