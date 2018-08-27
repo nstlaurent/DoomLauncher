@@ -162,7 +162,7 @@ namespace DoomLauncher
         private void PopulateDefaultSettings(IDataSourceAdapter adapter)
         {
             cmbSourcePorts.DataSource = adapter.GetSourcePorts();
-            cmbIwad.DataSource = adapter.GetIWads();
+            cmbIwad.DataSource = Util.GetIWadsDataSource(adapter);
             cmbSkill.DataSource = Util.GetSkills();
 
             cmbSourcePorts.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultSourcePort, typeof(int));

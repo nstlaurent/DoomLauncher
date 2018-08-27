@@ -324,5 +324,17 @@ namespace DoomLauncher
 
             return matchingFile;
         }
+
+        public static List<IIWadData> GetIWadsDataSource(IDataSourceAdapter adapter)
+        {
+            List<IIWadData> iwads = adapter.GetIWads().ToList();
+            iwads.ForEach(x => x.FileName = RemoveExtension(x.FileName));
+            return iwads;
+        }
+
+        public static string RemoveExtension(string fileName)
+        {
+            return fileName.Replace(Path.GetExtension(fileName), string.Empty);
+        }
     }
 }

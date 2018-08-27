@@ -37,14 +37,14 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageConfig = new System.Windows.Forms.TabPage();
             this.tabPageDefault = new System.Windows.Forms.TabPage();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lblLaunchSettings = new System.Windows.Forms.Label();
             this.cmbSkill = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbSourcePorts = new System.Windows.Forms.ComboBox();
             this.cmbIwad = new System.Windows.Forms.ComboBox();
-            this.lblLaunchSettings = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tblOuter.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -140,6 +140,24 @@
             this.tabPageDefault.TabIndex = 1;
             this.tabPageDefault.Text = "Launch Settings";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::DoomLauncher.Properties.Resources.bon2b;
+            this.pictureBox1.Location = new System.Drawing.Point(10, 101);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(21, 18);
+            this.pictureBox1.TabIndex = 16;
+            this.pictureBox1.TabStop = false;
+            // 
+            // lblLaunchSettings
+            // 
+            this.lblLaunchSettings.AutoSize = true;
+            this.lblLaunchSettings.Location = new System.Drawing.Point(37, 101);
+            this.lblLaunchSettings.Name = "lblLaunchSettings";
+            this.lblLaunchSettings.Size = new System.Drawing.Size(28, 13);
+            this.lblLaunchSettings.TabIndex = 15;
+            this.lblLaunchSettings.Text = "Text";
+            // 
             // cmbSkill
             // 
             this.cmbSkill.DisplayMember = "Name";
@@ -188,31 +206,13 @@
             // 
             // cmbIwad
             // 
-            this.cmbIwad.DisplayMember = "Name";
+            this.cmbIwad.DisplayMember = "FileName";
             this.cmbIwad.FormattingEnabled = true;
             this.cmbIwad.Location = new System.Drawing.Point(48, 40);
             this.cmbIwad.Name = "cmbIwad";
             this.cmbIwad.Size = new System.Drawing.Size(197, 21);
             this.cmbIwad.TabIndex = 10;
             this.cmbIwad.ValueMember = "IWadID";
-            // 
-            // lblLaunchSettings
-            // 
-            this.lblLaunchSettings.AutoSize = true;
-            this.lblLaunchSettings.Location = new System.Drawing.Point(37, 101);
-            this.lblLaunchSettings.Name = "lblLaunchSettings";
-            this.lblLaunchSettings.Size = new System.Drawing.Size(28, 13);
-            this.lblLaunchSettings.TabIndex = 15;
-            this.lblLaunchSettings.Text = "Text";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::DoomLauncher.Properties.Resources.bon2b;
-            this.pictureBox1.Location = new System.Drawing.Point(10, 101);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(21, 18);
-            this.pictureBox1.TabIndex = 16;
-            this.pictureBox1.TabStop = false;
             // 
             // SettingsForm
             // 

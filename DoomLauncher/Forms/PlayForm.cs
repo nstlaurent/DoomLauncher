@@ -56,7 +56,7 @@ namespace DoomLauncher
             m_handler = new FileLoadHandler(m_adapter, gameFile);
 
             cmbSourcePorts.DataSource = m_adapter.GetSourcePorts();
-            cmbIwad.DataSource = GetIWadsDataSource();
+            cmbIwad.DataSource = Util.GetIWadsDataSource(m_adapter);
 
             if (gameFile != null)
             {
@@ -78,18 +78,6 @@ namespace DoomLauncher
             {
                 tblFiles.RowStyles[0].Height = 0;
             }
-        }
-
-        private object GetIWadsDataSource()
-        {
-            List<IIWadData> iwads = m_adapter.GetIWads().ToList();
-            iwads.ForEach(x => x.FileName = RemoveExtension(x.FileName));
-            return iwads;
-        }
-
-        private string RemoveExtension(string fileName)
-        {
-            return fileName.Replace(Path.GetExtension(fileName), string.Empty);
         }
 
         public void InitializeComplete()
@@ -136,7 +124,7 @@ namespace DoomLauncher
                 if (value == null)
                     cmbIwad.SelectedIndex = 0;
                 else
-                    cmbIwad.SelectedItem = m_adapter.GetIWads().FirstOrDefault(x => x.IWadID == value.IWadID);
+                    cmbIwad.SelectedItem = Util.GetIWadsDataSource(m_adapter).FirstOrDefault(x => x.IWadID == value.IWadID);
             }
         }
 
@@ -446,7 +434,7 @@ namespace DoomLauncher
             IGameFile iwad = SelectedIWad;
             ISourcePort port = cmbSourcePorts.SelectedValue as ISourcePort;
             if (m_handler.IsIWadFile(gameFile))
-                e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, RemoveExtension(iwad.FileName));
+                e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, Util.RemoveExtension(iwad.FileName));
             if (m_handler.IsSourcePortFile(gameFile))
                 e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, port.Name);
         }
