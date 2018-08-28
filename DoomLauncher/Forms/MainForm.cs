@@ -464,7 +464,10 @@ namespace DoomLauncher
             DirectoryDataSourceAdapter.DeleteGameFile(gameFile);
             DataSourceAdapter.DeleteGameFile(gameFile);
             if (gameFile.GameFileID.HasValue)
-                DataSourceAdapter.DeleteStatsByFile(gameFile.GameFileID.Value);           
+                DataSourceAdapter.DeleteStatsByFile(gameFile.GameFileID.Value);
+
+            var tagMapping = DataSourceAdapter.GetTagMappings(gameFile.GameFileID.Value);
+            tagMapping.ToList().ForEach(x => DataSourceAdapter.DeleteTagMapping(x));
         }
 
         private void DeleteLocalFileAssociations(IGameFile gameFIle)
