@@ -51,6 +51,8 @@ namespace DoomLauncher
                 txtExtensions.Text = sourcePort.SupportedExtensions;
             if (!string.IsNullOrEmpty(sourcePort.FileOption))
                 txtFileOption.Text = sourcePort.FileOption;
+            if (!string.IsNullOrEmpty(sourcePort.ExtraParameters))
+                txtParameters.Text = sourcePort.ExtraParameters;
             else
                 txtFileOption.Text = string.Empty;
         }
@@ -62,6 +64,7 @@ namespace DoomLauncher
             sourcePort.Executable = m_exec;
             sourcePort.SupportedExtensions = txtExtensions.Text;
             sourcePort.FileOption = txtFileOption.Text;
+            sourcePort.ExtraParameters = txtParameters.Text;
         }
 
         public string SourcePortName { get { return txtName.Text;  } }

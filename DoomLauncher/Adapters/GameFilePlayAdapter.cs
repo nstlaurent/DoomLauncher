@@ -116,6 +116,11 @@ namespace DoomLauncher
                 sb.Append(" " + ExtraParameters);
             }
 
+            if (!string.IsNullOrEmpty(sourcePort.ExtraParameters))
+            {
+                sb.Append(" " + sourcePort.ExtraParameters);
+            }
+
             return sb.ToString();
         }
 

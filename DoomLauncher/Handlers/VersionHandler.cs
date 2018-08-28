@@ -35,7 +35,7 @@ namespace DoomLauncher
         {
             AppVersion version = GetVersion();
 
-            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_0)
+            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_3)
             {
                 return true;
             }
@@ -69,12 +69,13 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_4_0, AppVersion.Version_2_4_0);
                 ExecuteUpdate(Pre_2_4_1, AppVersion.Version_2_4_1);
                 ExecuteUpdate(Pre_2_6_0, AppVersion.Version_2_6_0);
+                ExecuteUpdate(Pre_2_6_3, AppVersion.Version_2_6_3);
             }
         }
 
         private AppVersion GetVersion()
         {
-            IConfigurationData config = m_adapter.GetConfiguration().Where(x => x.Name == "Version").FirstOrDefault();
+            IConfigurationData config = m_adapter.GetConfiguration().FirstOrDefault(x => x.Name == "Version");
 
             if (config != null)
                 return (AppVersion)Convert.ToInt32(config.Value);
@@ -84,7 +85,7 @@ namespace DoomLauncher
 
         private void WriteVersion(AppVersion version)
         {
-            IConfigurationData config = m_adapter.GetConfiguration().Where(x => x.Name == "Version").FirstOrDefault();
+            IConfigurationData config = m_adapter.GetConfiguration().FirstOrDefault(x => x.Name == "Version");
 
             if (config != null)
             {
@@ -408,6 +409,14 @@ namespace DoomLauncher
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'SettingsStat' INTEGER;");
                 DataAccess.ExecuteNonQuery("update GameFiles set SettingsStat = 1");
             }
+        }
+
+        private void Pre_2_6_3()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
+
+            if (dt.Select("name = 'ExtraParameters'").Count() == 0)
+                DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'ExtraParameters' TEXT;");
         }
 
         public DataAccess DataAccess { get; set; }

@@ -27,7 +27,8 @@ namespace UnitTest.Tests
                         SettingsFiles = "test" + i.ToString(),
                         SupportedExtensions = "test" + i.ToString(),
                         Directory = new LauncherPath(i.ToString()),
-                        LaunchType = i > 6 ? SourcePortLaunchType.Utility : SourcePortLaunchType.SourcePort
+                        LaunchType = i > 6 ? SourcePortLaunchType.Utility : SourcePortLaunchType.SourcePort,
+                        ExtraParameters = "test" + i.ToString()
                     }
                 );
             }

@@ -16,6 +16,7 @@ namespace DoomLauncher.Interfaces
         string SettingsFiles { get; set; }
         SourcePortLaunchType LaunchType { get; set; }
         string FileOption { get; set; }
+        string ExtraParameters { get; set; }
         string GetFullExecutablePath();
     }
 }

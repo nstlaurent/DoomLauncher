@@ -17,6 +17,7 @@ namespace DoomLauncher.DataSources
         public string Executable { get; set; }
         public SourcePortLaunchType LaunchType { get; set; }
         public string FileOption { get; set; }
+        public string ExtraParameters { get; set; }
 
         public string GetFullExecutablePath()
         {

@@ -80,6 +80,26 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void TestParametersSourcePortExtraParams()
+        {
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+
+            CreateDirectoriesAndFiles();
+
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+
+            var port = GetTestPort(".wad,.deh");
+            port.ExtraParameters = "-extra";
+
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false);
+            string check = string.Format("-file \"{0}\"  -deh \"{1}\"  -extra",
+                Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.wad"),
+                Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.deh"));
+            Assert.AreEqual(check.Trim(), launch.Trim());
+        }
+
+        [TestMethod]
         public void TestAdditionalFiles()
         {
             LauncherPath gameFilePath = new LauncherPath("GameFiles");

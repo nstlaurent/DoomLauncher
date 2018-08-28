@@ -364,9 +364,14 @@ namespace DoomLauncher
                 if (m_currentPlayForm.SpecificFiles != null && m_currentPlayForm.SpecificFiles.Length > 0)
                     individualFiles = Environment.NewLine + string.Format("Selected Files: {0}", string.Join(", ", m_currentPlayForm.SpecificFiles));
 
+                string sourcePortParams = string.Empty;
+                if (!string.IsNullOrEmpty(sourcePort.ExtraParameters))
+                    sourcePortParams = string.Concat(Environment.NewLine, Environment.NewLine, "Paramters from source port: ", sourcePort.ExtraParameters);
+
                 form.DisplayText = string.Concat(launchParameters, Environment.NewLine, Environment.NewLine, 
                     string.Format("Supported Extensions: {0}", sourcePort.SupportedExtensions),
                     individualFiles,
+                    sourcePortParams,
                     Environment.NewLine, Environment.NewLine,
                     "*** If files appear to be missing check the 'Select Individual Files' option and supported extensions options in the Source Port form of the selected source port.");
             }

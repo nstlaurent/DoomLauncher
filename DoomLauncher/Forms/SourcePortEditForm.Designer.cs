@@ -35,10 +35,10 @@
             this.button1 = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.sourcePortEdit1 = new DoomLauncher.SourcePortEdit();
             this.grpAdditionalFiles = new System.Windows.Forms.GroupBox();
             this.lblInfo = new System.Windows.Forms.Label();
             this.pbInfo = new System.Windows.Forms.PictureBox();
-            this.sourcePortEdit1 = new DoomLauncher.SourcePortEdit();
             this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.tblMain.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -58,10 +58,10 @@
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 3;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 130F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
-            this.tblMain.Size = new System.Drawing.Size(356, 367);
+            this.tblMain.Size = new System.Drawing.Size(356, 383);
             this.tblMain.TabIndex = 2;
             // 
             // flowLayoutPanel1
@@ -70,10 +70,10 @@
             this.flowLayoutPanel1.Controls.Add(this.btnSave);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 330);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 353);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(356, 200);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(356, 197);
             this.flowLayoutPanel1.TabIndex = 1;
             // 
             // button1
@@ -100,19 +100,28 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.sourcePortEdit1);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(3, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(350, 124);
+            this.groupBox2.Size = new System.Drawing.Size(350, 144);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Properties";
+            // 
+            // sourcePortEdit1
+            // 
+            this.sourcePortEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sourcePortEdit1.Location = new System.Drawing.Point(3, 16);
+            this.sourcePortEdit1.Name = "sourcePortEdit1";
+            this.sourcePortEdit1.Size = new System.Drawing.Size(344, 125);
+            this.sourcePortEdit1.TabIndex = 0;
             // 
             // grpAdditionalFiles
             // 
             this.grpAdditionalFiles.Controls.Add(this.lblInfo);
             this.grpAdditionalFiles.Controls.Add(this.pbInfo);
             this.grpAdditionalFiles.Controls.Add(this.ctrlFiles);
-            this.grpAdditionalFiles.Location = new System.Drawing.Point(3, 133);
+            this.grpAdditionalFiles.Location = new System.Drawing.Point(3, 153);
             this.grpAdditionalFiles.Name = "grpAdditionalFiles";
             this.grpAdditionalFiles.Size = new System.Drawing.Size(350, 194);
             this.grpAdditionalFiles.TabIndex = 3;
@@ -136,13 +145,6 @@
             this.pbInfo.TabIndex = 22;
             this.pbInfo.TabStop = false;
             // 
-            // sourcePortEdit1
-            // 
-            this.sourcePortEdit1.Location = new System.Drawing.Point(6, 13);
-            this.sourcePortEdit1.Name = "sourcePortEdit1";
-            this.sourcePortEdit1.Size = new System.Drawing.Size(338, 105);
-            this.sourcePortEdit1.TabIndex = 0;
-            // 
             // ctrlFiles
             // 
             this.ctrlFiles.Location = new System.Drawing.Point(9, 51);
@@ -156,7 +158,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button1;
-            this.ClientSize = new System.Drawing.Size(356, 367);
+            this.ClientSize = new System.Drawing.Size(356, 383);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SourcePortEditForm";

@@ -40,6 +40,8 @@
             this.txtExtensions = new System.Windows.Forms.TextBox();
             this.lblFileOption = new System.Windows.Forms.Label();
             this.txtFileOption = new System.Windows.Forms.TextBox();
+            this.lblParameters = new System.Windows.Forms.Label();
+            this.txtParameters = new System.Windows.Forms.TextBox();
             this.tblMain.SuspendLayout();
             this.tblExec.SuspendLayout();
             this.SuspendLayout();
@@ -55,17 +57,21 @@
             this.tblMain.Controls.Add(this.label3, 0, 1);
             this.tblMain.Controls.Add(this.label2, 0, 2);
             this.tblMain.Controls.Add(this.txtExtensions, 1, 2);
-            this.tblMain.Controls.Add(this.lblFileOption, 0, 3);
-            this.tblMain.Controls.Add(this.txtFileOption, 1, 3);
+            this.tblMain.Controls.Add(this.txtFileOption, 1, 4);
+            this.tblMain.Controls.Add(this.lblFileOption, 0, 4);
+            this.tblMain.Controls.Add(this.lblParameters, 0, 3);
+            this.tblMain.Controls.Add(this.txtParameters, 1, 3);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 5;
+            this.tblMain.RowCount = 6;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblMain.Size = new System.Drawing.Size(310, 471);
             this.tblMain.TabIndex = 0;
             // 
@@ -154,7 +160,7 @@
             // 
             this.lblFileOption.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblFileOption.AutoSize = true;
-            this.lblFileOption.Location = new System.Drawing.Point(3, 77);
+            this.lblFileOption.Location = new System.Drawing.Point(3, 101);
             this.lblFileOption.Name = "lblFileOption";
             this.lblFileOption.Size = new System.Drawing.Size(57, 13);
             this.lblFileOption.TabIndex = 3;
@@ -163,10 +169,28 @@
             // txtFileOption
             // 
             this.txtFileOption.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtFileOption.Location = new System.Drawing.Point(123, 75);
+            this.txtFileOption.Location = new System.Drawing.Point(123, 99);
             this.txtFileOption.Name = "txtFileOption";
             this.txtFileOption.Size = new System.Drawing.Size(184, 20);
             this.txtFileOption.TabIndex = 7;
+            // 
+            // lblParameters
+            // 
+            this.lblParameters.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblParameters.AutoSize = true;
+            this.lblParameters.Location = new System.Drawing.Point(3, 77);
+            this.lblParameters.Name = "lblParameters";
+            this.lblParameters.Size = new System.Drawing.Size(60, 13);
+            this.lblParameters.TabIndex = 8;
+            this.lblParameters.Text = "Parameters";
+            // 
+            // txtParameters
+            // 
+            this.txtParameters.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtParameters.Location = new System.Drawing.Point(123, 75);
+            this.txtParameters.Name = "txtParameters";
+            this.txtParameters.Size = new System.Drawing.Size(184, 20);
+            this.txtParameters.TabIndex = 9;
             // 
             // SourcePortEdit
             // 
@@ -196,5 +220,7 @@
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Label lblFileOption;
         private System.Windows.Forms.TextBox txtFileOption;
+        private System.Windows.Forms.Label lblParameters;
+        private System.Windows.Forms.TextBox txtParameters;
     }
 }
