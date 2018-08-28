@@ -287,6 +287,8 @@ namespace DoomLauncher
             sourcePort.SupportedExtensions = (string)CheckDBNull(dr["SupportedExtensions"], string.Empty);
             sourcePort.LaunchType = (SourcePortLaunchType)Convert.ToInt32(dr["LaunchType"]);
             sourcePort.FileOption = (string)CheckDBNull(dr["FileOption"], string.Empty);
+            sourcePort.ExtraParameters = (string)CheckDBNull(dr["ExtraParameters"], string.Empty);
+
             return sourcePort;
         }
 
@@ -310,8 +312,8 @@ namespace DoomLauncher
 
         public void InsertSourcePort(ISourcePort sourcePort)
         {
-            string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption) 
-                values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption)";
+            string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption,ExtraParameters) 
+                values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption,@ExtraParameters)";
 
             DataAccess.ExecuteNonQuery(insert, GetSourcePortParams(sourcePort));
         }
@@ -320,7 +322,7 @@ namespace DoomLauncher
         {
             string query = @"update SourcePorts set 
             Name = @Name, Executable = @Executable, SupportedExtensions = @SupportedExtensions,
-            Directory = @Directory, SettingsFiles = @SettingsFiles, LaunchType = @LaunchType, FileOption = @FileOption
+            Directory = @Directory, SettingsFiles = @SettingsFiles, LaunchType = @LaunchType, FileOption = @FileOption, ExtraParameters = @ExtraParameters
             where SourcePortID = @sourcePortID";
 
             DataAccess.ExecuteNonQuery(query, GetSourcePortParams(sourcePort));
@@ -338,6 +340,7 @@ namespace DoomLauncher
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SourcePortID", sourcePort.SourcePortID));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("LaunchType", sourcePort.LaunchType));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("FileOption", sourcePort.FileOption == null ? string.Empty : sourcePort.FileOption));
+            parameters.Add(DataAccess.DbAdapter.CreateParameter("ExtraParameters", sourcePort.ExtraParameters == null ? string.Empty : sourcePort.ExtraParameters));
 
             return parameters;
         }
