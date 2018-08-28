@@ -57,6 +57,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void TestZdoomJson()
         {
+            //this is the pre 3.5 json version that did not include items
             string save1 = "zdoomsave_v2.zds";
             DeleteSaveFile(save1);
 
@@ -94,6 +95,61 @@ namespace UnitTest.Tests
             Assert.AreEqual(6, m_args[1].Statistics.TotalSecrets);
 
             Assert.AreEqual(132.65715f, m_args[1].Statistics.LevelTime);
+
+            //Give the reader the existing statistics, and let it re-read the save. It should not fire the events to prevent duplicates
+            DeleteSaveFile(save1);
+            statsReader = new ZDoomStatsReader(new GameFile() { GameFileID = 1 }, Directory.GetCurrentDirectory(), m_args.Select(x => x.Statistics).ToArray());
+            m_args.Clear();
+            statsReader.NewStastics += StatsReader_NewStastics;
+            statsReader.Start();
+
+            WaitForEvents();
+
+            File.Copy(Path.Combine("Resources", save1), save1);
+            Assert.AreEqual(0, m_args.Count);
+        }
+
+        [TestMethod]
+        public void TestZdoomJson_3_5()
+        {
+            //This is to test the 3.5 save format that includes items
+            string save1 = "zdoomsave_v3.zds";
+            DeleteSaveFile(save1);
+
+            ZDoomStatsReader statsReader = CreateStatsReader();
+            statsReader.NewStastics += StatsReader_NewStastics;
+            statsReader.Start();
+
+            File.Copy(Path.Combine("Resources", save1), save1);
+
+            WaitForEvents();
+            statsReader.Stop();
+
+            Assert.AreEqual(2, m_args.Count);
+
+            Assert.AreEqual("e1m1", m_args[0].Statistics.MapName.ToLower());
+            Assert.AreEqual(5, m_args[0].Statistics.KillCount);
+            Assert.AreEqual(6, m_args[0].Statistics.TotalKills);
+
+            Assert.AreEqual(15, m_args[0].Statistics.ItemCount);
+            Assert.AreEqual(37, m_args[0].Statistics.TotalItems);
+
+            Assert.AreEqual(1, m_args[0].Statistics.SecretCount);
+            Assert.AreEqual(3, m_args[0].Statistics.TotalSecrets);
+
+            Assert.AreEqual(40.2f, m_args[0].Statistics.LevelTime);
+
+            Assert.AreEqual("e1m2", m_args[1].Statistics.MapName.ToLower());
+            Assert.AreEqual(21, m_args[1].Statistics.KillCount);
+            Assert.AreEqual(41, m_args[1].Statistics.TotalKills);
+
+            Assert.AreEqual(8, m_args[1].Statistics.ItemCount);
+            Assert.AreEqual(42, m_args[1].Statistics.TotalItems);
+
+            Assert.AreEqual(2, m_args[1].Statistics.SecretCount);
+            Assert.AreEqual(6, m_args[1].Statistics.TotalSecrets);
+
+            Assert.AreEqual(83.37143f, m_args[1].Statistics.LevelTime);
 
             //Give the reader the existing statistics, and let it re-read the save. It should not fire the events to prevent duplicates
             DeleteSaveFile(save1);

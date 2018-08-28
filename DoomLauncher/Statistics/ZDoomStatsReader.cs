@@ -23,7 +23,7 @@ namespace DoomLauncher
             public UInt32 levelcount;
         }
 
-        struct LevelStats
+        struct LevelStats //item stats excluded for binary (old save format) compatibility
         {
             public UInt32 totalkills;
             public UInt32 killcount;
@@ -199,15 +199,16 @@ namespace DoomLauncher
                         uint totalkills = Convert.ToUInt32(level.GetValue("totalkills"));
                         uint kills = Convert.ToUInt32(level.GetValue("killcount"));
 
-                        uint totalsecrets = Convert.ToUInt32(level.GetValue("totalsecrets"));
-                        uint secrets = Convert.ToUInt32(level.GetValue("secretcount"));
-
+                        //item stats are only included in json (new save format), so they're converted to UInt32 here
                         uint totalitems = Convert.ToUInt32(level.GetValue("totalitems"));
                         uint items = Convert.ToUInt32(level.GetValue("itemcount"));
 
+                        uint totalsecrets = Convert.ToUInt32(level.GetValue("totalsecrets"));
+                        uint secrets = Convert.ToUInt32(level.GetValue("secretcount"));
+
                         uint time = Convert.ToUInt32(level.GetValue("leveltime"));
                         string name = level.GetValue("levelname").ToString();
-                        stats.Add(CreateStatsDataSource(totalkills, kills, totalsecrets, secrets, time, name));
+                        stats.Add(CreateJsonStatsDataSource(totalkills, kills, totalitems, items, totalsecrets, secrets, time, name));
                     }
                 }
             }
@@ -260,7 +261,7 @@ namespace DoomLauncher
                 ms.Read(levelNameBytes, 0, levelNameBytes.Length);
 
                 string levelName = Encoding.ASCII.GetString(levelNameBytes).ToLower();
-                StatsData statsData = CreateStatsDataSource(stats.totalkills, stats.killcount, stats.totalsecrets, stats.secretcount, stats.leveltime, levelName);
+                StatsData statsData = CreateBinaryStatsDataSource(stats.totalkills, stats.killcount, stats.totalsecrets, stats.secretcount, stats.leveltime, levelName);
                 HandleStatsData(statsData);
             }
         }
@@ -276,7 +277,7 @@ namespace DoomLauncher
             }
         }
 
-        private static int s_endianCheck = 0x0000FFFF;//if bytes are set on the other side, then it must be stored backwards
+        private static int s_endianCheck = 0x0000FFFF; //if bytes are set on the other side, then it must be stored backwards
 
         private LevelCount CheckLevelCount(LevelCount count)
         {
@@ -301,7 +302,26 @@ namespace DoomLauncher
             return stats;
         }
 
-        private static StatsData CreateStatsDataSource(UInt32 totalkills, UInt32 killcount, UInt32 totalsecrets, UInt32 secretcount, UInt32 leveltime, string name)
+        //separate json and binary to avoid stat overflow with how binary (old save format) is read
+        private static StatsData CreateJsonStatsDataSource(UInt32 totalkills, UInt32 killcount, UInt32 totalitems, UInt32 itemcount, UInt32 totalsecrets, UInt32 secretcount,
+            UInt32 leveltime, string name)
+        {
+            float calctime = Convert.ToSingle(leveltime) / 35.0f;
+            StatsData stats = new StatsData();
+            stats.RecordTime = DateTime.Now;
+            stats.TotalKills = (int)totalkills;
+            stats.KillCount = (int)killcount;
+            stats.TotalItems = (int)totalitems;
+            stats.ItemCount = (int)itemcount;
+            stats.TotalSecrets = (int)totalsecrets;
+            stats.SecretCount = (int)secretcount;
+            stats.LevelTime = calctime;
+            stats.MapName = name;
+
+            return stats;
+        }
+
+        private static StatsData CreateBinaryStatsDataSource(UInt32 totalkills, UInt32 killcount, UInt32 totalsecrets, UInt32 secretcount, UInt32 leveltime, string name)
         {
             float calctime = Convert.ToSingle(leveltime) / 35.0f;
             StatsData stats = new StatsData();
