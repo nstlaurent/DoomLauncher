@@ -75,7 +75,6 @@ namespace DoomLauncher
 
             if (!Directory.Exists(basePath))
             {
-                Directory.CreateDirectory(Path.Combine(basePath, "GamesFiles"));
                 Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
                 Directory.CreateDirectory(Path.Combine(basePath, "GameWads"));
                 Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
