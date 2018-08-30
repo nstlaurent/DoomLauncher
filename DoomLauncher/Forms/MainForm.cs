@@ -1576,7 +1576,7 @@ namespace DoomLauncher
                 if (launchData.Success)
                 {
                     UtilityHandler handler = new UtilityHandler(this, AppConfiguration, utility);
-                    if (!handler.RuntUtility(launchData.GameFile))
+                    if (!handler.RunUtility(launchData.GameFile))
                         MessageBox.Show(this, "The utility was an invalid application or not found.", "Invalid Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
