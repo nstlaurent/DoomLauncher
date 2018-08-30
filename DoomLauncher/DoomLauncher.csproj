@@ -699,7 +699,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)DoomLauncherRelease\bin\$(ConfigurationName)\DoomLauncherRelease.exe
+    <PostBuildEvent>if $(ConfigurationName) == Release $(SolutionDir)DoomLauncherRelease\bin\$(ConfigurationName)\DoomLauncherRelease.exe
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
