@@ -171,14 +171,35 @@ namespace DoomLauncher
                     case "TNT":
                         gameFile.Title = "Final Doom: TNT: Evilution";
                         break;
+                    case "FREEDOOM1":
+                        gameFile.Title = "Freedoom: Phase 1";
+                        break;
+                    case "FREEDOOM2":
+                        gameFile.Title = "Freedoom: Phase 2";
+                        break;
+                    case "CHEX":
+                        gameFile.Title = "Chex Quest";
+                        break;
+                    case "CHEX3":
+                        gameFile.Title = "Chex Quest 3";
+                        break;
+                    case "HACX":
+                        gameFile.Title = "Hacx: Twitch 'n Kill";
+                        break;
+                    case "HERETIC1":
+                        gameFile.Title = "Heretic Shareware";
+                        break;
                     case "HERETIC":
-                        gameFile.Title = "Shadow of the Serpent Riders";
+                        gameFile.Title = "Heretic: Shadow of the Serpent Riders";
                         break;
                     case "HEXEN":
                         gameFile.Title = "Hexen: Beyond Heretic";
                         break;
-                    case "STRIFE":
-                        gameFile.Title = "Strife";
+                    case "STRIFE0":
+                        gameFile.Title = "Strife Demo";
+                        break;
+                    case "STRIFE1":
+                        gameFile.Title = "Strife: Quest for the Sigil";
                         break;
                     default:
                         gameFile.Title = gameFile.FileName.Replace(fi.Extension, string.Empty);
