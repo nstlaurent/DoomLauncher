@@ -160,15 +160,13 @@ namespace DoomLauncher
                 string[] extensions = sourcePort.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 launchFiles.AddRange(GetFilesFromGameFileSettings(gameFile, gameFileDirectory, tempDirectory, checkSpecific, extensions));
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
-                string str = ex.Message;
                 LastError = string.Format("The game file was not found: {0}", gameFile.FileName);
                 return false;
             }
-            catch (InvalidDataException ex)
+            catch (InvalidDataException)
             {
-                string str = ex.Message;
                 LastError = string.Format("The game file does not appear to be a valid zip file: {0}", gameFile.FileName);
                 return false;
             }
@@ -192,7 +190,7 @@ namespace DoomLauncher
                     {
                         using (ZipArchive za = ZipFile.OpenRead(pathFile.ExtractedFile))
                         {
-                            var entry = za.Entries.Where(x => x.FullName == pathFile.InternalFilePath).FirstOrDefault();
+                            var entry = za.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
                             if (entry != null)
                                 files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
                         }
@@ -342,7 +340,7 @@ namespace DoomLauncher
                 sb.Append(' ');
             }
 
-            if (numbers.Count() > 0)
+            if (numbers.Any())
                 sb.Remove(sb.Length - 1, 1);
 
             return string.Format(" -warp {0}", sb.ToString());
@@ -350,10 +348,7 @@ namespace DoomLauncher
 
         void proc_Exited(object sender, EventArgs e)
         {
-            if (ProcessExited != null)
-            {
-                ProcessExited(this, new EventArgs());
-            }
+            ProcessExited?.Invoke(this, new EventArgs());
         }
 
         private IEnumerable<string> SortParameters(IEnumerable<string> parameters, string[] extensionOrder)
