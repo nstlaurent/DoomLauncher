@@ -75,7 +75,7 @@ namespace DoomLauncher
             else txtTitle.Text = string.Empty;
             if (!string.IsNullOrEmpty(gameFile.Author)) txtAuthor.Text = gameFile.Author;
             else txtAuthor.Text = string.Empty;
-            if (!string.IsNullOrEmpty(gameFile.Description)) txtDescription.Text = gameFile.Description;
+            if (!string.IsNullOrEmpty(gameFile.Description)) txtDescription.Text = Util.CleanDescription(gameFile.Description);
             else txtDescription.Text = string.Empty;
             if (!string.IsNullOrEmpty(gameFile.Comments)) txtComments.Text = gameFile.Comments;
             else txtComments.Text = string.Empty;
@@ -86,15 +86,7 @@ namespace DoomLauncher
 
             dtRelease.Checked = gameFile.ReleaseDate.HasValue;
 
-            StringBuilder sb = new StringBuilder();
-
-            if (tags.Count() > 0)
-            {
-                Array.ForEach(tags.ToArray(), x => sb.Append(x.Name + ", "));
-                sb.Remove(sb.Length - 2, 2);
-            }
-
-            lblTags.Text = sb.ToString();
+            lblTags.Text = string.Join(", ", tags.Select(x => x.Name).ToArray());
         }
 
         public List<GameFileFieldType> UpdateDataSource(IGameFile gameFile)

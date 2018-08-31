@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using WadReader;
 
@@ -335,6 +337,23 @@ namespace DoomLauncher
         public static string RemoveExtension(string fileName)
         {
             return fileName.Replace(Path.GetExtension(fileName), string.Empty);
+        }
+
+        public static string CleanDescription(string description)
+        {
+            string[] items = description.Split(new char[] { '\n' });
+            StringBuilder sb = new StringBuilder();
+
+            foreach (string item in items)
+            {
+                string text = Regex.Replace(item, @"\s+", " ");
+                if (text.StartsWith(" "))
+                    text = text.Substring(1);
+                sb.Append(text);
+                sb.Append(Environment.NewLine);
+            }
+
+            return sb.ToString();
         }
     }
 }

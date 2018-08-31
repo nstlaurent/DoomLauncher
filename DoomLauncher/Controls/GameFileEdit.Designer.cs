@@ -39,8 +39,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.txtTitle = new System.Windows.Forms.TextBox();
-            this.txtDescription = new System.Windows.Forms.TextBox();
-            this.txtComments = new System.Windows.Forms.TextBox();
             this.dtRelease = new System.Windows.Forms.DateTimePicker();
             this.label7 = new System.Windows.Forms.Label();
             this.chkTitle = new System.Windows.Forms.CheckBox();
@@ -49,7 +47,9 @@
             this.chkRating = new System.Windows.Forms.CheckBox();
             this.chkDescription = new System.Windows.Forms.CheckBox();
             this.chkComments = new System.Windows.Forms.CheckBox();
+            this.txtDescription = new System.Windows.Forms.RichTextBox();
             this.ctrlStarRating = new DoomLauncher.RatingControl();
+            this.txtComments = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,8 +68,6 @@
             this.tableLayoutPanel1.Controls.Add(this.label5, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.label6, 0, 6);
             this.tableLayoutPanel1.Controls.Add(this.txtTitle, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.txtDescription, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.txtComments, 2, 6);
             this.tableLayoutPanel1.Controls.Add(this.dtRelease, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.ctrlStarRating, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.label7, 0, 4);
@@ -79,6 +77,8 @@
             this.tableLayoutPanel1.Controls.Add(this.chkRating, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.chkDescription, 1, 5);
             this.tableLayoutPanel1.Controls.Add(this.chkComments, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.txtDescription, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.txtComments, 2, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -179,24 +179,6 @@
             this.txtTitle.Name = "txtTitle";
             this.txtTitle.Size = new System.Drawing.Size(203, 20);
             this.txtTitle.TabIndex = 6;
-            // 
-            // txtDescription
-            // 
-            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDescription.Location = new System.Drawing.Point(143, 135);
-            this.txtDescription.Multiline = true;
-            this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(203, 154);
-            this.txtDescription.TabIndex = 9;
-            // 
-            // txtComments
-            // 
-            this.txtComments.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtComments.Location = new System.Drawing.Point(143, 295);
-            this.txtComments.Multiline = true;
-            this.txtComments.Name = "txtComments";
-            this.txtComments.Size = new System.Drawing.Size(203, 154);
-            this.txtComments.TabIndex = 10;
             // 
             // dtRelease
             // 
@@ -301,6 +283,16 @@
             this.chkComments.Text = "chkComments";
             this.chkComments.UseVisualStyleBackColor = true;
             // 
+            // txtDescription
+            // 
+            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDescription.Location = new System.Drawing.Point(143, 135);
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtDescription.Size = new System.Drawing.Size(203, 154);
+            this.txtDescription.TabIndex = 20;
+            this.txtDescription.Text = "";
+            // 
             // ctrlStarRating
             // 
             this.ctrlStarRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -309,6 +301,16 @@
             this.ctrlStarRating.SelectedRating = 0;
             this.ctrlStarRating.Size = new System.Drawing.Size(105, 20);
             this.ctrlStarRating.TabIndex = 11;
+            // 
+            // txtComments
+            // 
+            this.txtComments.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtComments.Location = new System.Drawing.Point(143, 295);
+            this.txtComments.Name = "txtComments";
+            this.txtComments.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtComments.Size = new System.Drawing.Size(203, 154);
+            this.txtComments.TabIndex = 21;
+            this.txtComments.Text = "";
             // 
             // GameFileEdit
             // 
@@ -334,8 +336,6 @@
         private System.Windows.Forms.TextBox txtAuthor;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtTitle;
-        private System.Windows.Forms.TextBox txtDescription;
-        private System.Windows.Forms.TextBox txtComments;
         private System.Windows.Forms.DateTimePicker dtRelease;
         private RatingControl ctrlStarRating;
         private System.Windows.Forms.Label lblTags;
@@ -346,5 +346,7 @@
         private System.Windows.Forms.CheckBox chkRating;
         private System.Windows.Forms.CheckBox chkDescription;
         private System.Windows.Forms.CheckBox chkComments;
+        private System.Windows.Forms.RichTextBox txtDescription;
+        private System.Windows.Forms.RichTextBox txtComments;
     }
 }
