@@ -24,46 +24,27 @@ namespace DoomLauncher
             ShowCommentsSection(false);
         }
 
-        public string Title
+        public void SetTitle(string text)
         {
-            get { return lblTitle.Text; }
-            set
-            { 
-                lblTitle.Text = value;
-                tblMain.RowStyles[0].Height = lblTitle.Height + 6;
-                if (tblMain.RowStyles[0].Height < m_labelHeight)
-                    tblMain.RowStyles[0].Height = m_labelHeight;
-            }
+            lblTitle.Text = text;
+            tblMain.RowStyles[0].Height = lblTitle.Height + 6;
+            if (tblMain.RowStyles[0].Height < m_labelHeight)
+                tblMain.RowStyles[0].Height = m_labelHeight;
         }
 
-        public string Description
+        public void SetDescription(string text)
         {
-            get { return txtDescription.Text; }
-            set
-            {
-                txtDescription.Clear();
-                txtDescription.Visible = false;
+            txtDescription.Clear();
+            txtDescription.Visible = false;
 
-                string[] items = value.Split(new char[] { '\n' });
-                StringBuilder sb = new StringBuilder();
+            txtDescription.Text = Util.CleanDescription(text);
 
-                foreach (string item in items)
-                {
-                    sb.Append(Regex.Replace(item, @"\s+", " "));
-                    sb.Append(Environment.NewLine);
-                }
-
-                txtDescription.Text = sb.ToString();
-
-                txtDescription.Visible = true;
-            }
+            txtDescription.Visible = true;
         }
 
         public void SetPreviewImage(string source, bool isUrl)
         {
             pbImage.CancelAsync();
-            //if (pbImage.Image != null)
-            //    pbImage.Image = null;
 
             if (isUrl)
                 pbImage.LoadAsync(source);
@@ -159,45 +140,6 @@ namespace DoomLauncher
             }
         }
 
-        private bool m_setting = false;
-
-        private void txtDescription_TextChanged(object sender, EventArgs e)
-        {
-            SetTextBoxScrollBars();
-        }
-
-        private void txtComments_TextChanged(object sender, EventArgs e)
-        {
-            SetTextBoxScrollBars();
-        }
-
-        private void SetTextBoxScrollBars()
-        {
-            SetTextBoxScroll(txtDescription);
-            SetTextBoxScroll(txtComments);
-        }
-
-        private void SetTextBoxScroll(TextBox tb)
-        {
-            if (m_setting) return;
-            m_setting = true;
-            Size tS = TextRenderer.MeasureText(tb.Text, tb.Font);
-            bool vsb = tb.ClientSize.Height < tS.Height + Convert.ToInt32(tb.Font.Size);
-            bool hsb = tb.ClientSize.Width < tS.Width;
-
-            if (hsb)
-                tb.ScrollBars = ScrollBars.Horizontal;
-            if (vsb)
-                tb.ScrollBars = ScrollBars.Vertical;
-
-            if (hsb && vsb)
-                tb.ScrollBars = ScrollBars.Both;
-            else if (!hsb && !vsb)
-                tb.ScrollBars = ScrollBars.None;
-
-            m_setting = false;
-        }
-
         private double m_aspectWidth = 16, m_aspectHeight = 9;
 
         private void GameFileSummary_ClientSizeChanged(object sender, EventArgs e)
@@ -208,8 +150,6 @@ namespace DoomLauncher
 
             if (pbImage.Image != null)
                 ShowImageSection(true);
-
-            SetTextBoxScrollBars();
         }
     }
 }

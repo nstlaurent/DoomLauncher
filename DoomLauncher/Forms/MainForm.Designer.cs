@@ -677,7 +677,6 @@
             // 
             // ctrlSummary
             // 
-            this.ctrlSummary.Description = resources.GetString("ctrlSummary.Description");
             this.ctrlSummary.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ctrlSummary.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ctrlSummary.Location = new System.Drawing.Point(0, 0);
@@ -687,7 +686,6 @@
             this.ctrlSummary.Size = new System.Drawing.Size(312, 689);
             this.ctrlSummary.TabIndex = 4;
             this.ctrlSummary.TagText = "Tags:";
-            this.ctrlSummary.Title = "";
             // 
             // mnuIdGames
             // 

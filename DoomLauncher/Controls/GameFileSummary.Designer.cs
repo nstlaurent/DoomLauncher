@@ -32,11 +32,11 @@
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
             this.lblTimePlayed = new System.Windows.Forms.Label();
             this.lblTitle = new DoomLauncher.GrowLabel();
-            this.txtDescription = new System.Windows.Forms.TextBox();
             this.pbImage = new System.Windows.Forms.PictureBox();
             this.lblTags = new DoomLauncher.GrowLabel();
             this.ctrlStats = new DoomLauncher.StatsControl();
-            this.txtComments = new System.Windows.Forms.TextBox();
+            this.txtDescription = new System.Windows.Forms.RichTextBox();
+            this.txtComments = new System.Windows.Forms.RichTextBox();
             this.tblMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
             this.SuspendLayout();
@@ -48,10 +48,10 @@
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.Controls.Add(this.lblTimePlayed, 0, 2);
             this.tblMain.Controls.Add(this.lblTitle, 0, 0);
-            this.tblMain.Controls.Add(this.txtDescription, 0, 5);
             this.tblMain.Controls.Add(this.pbImage, 0, 1);
             this.tblMain.Controls.Add(this.lblTags, 0, 4);
             this.tblMain.Controls.Add(this.ctrlStats, 0, 3);
+            this.tblMain.Controls.Add(this.txtDescription, 0, 5);
             this.tblMain.Controls.Add(this.txtComments, 0, 6);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
@@ -90,18 +90,6 @@
             this.lblTitle.Text = "Title";
             this.lblTitle.UseMnemonic = false;
             // 
-            // txtDescription
-            // 
-            this.txtDescription.BackColor = System.Drawing.SystemColors.Window;
-            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDescription.Location = new System.Drawing.Point(4, 407);
-            this.txtDescription.Multiline = true;
-            this.txtDescription.Name = "txtDescription";
-            this.txtDescription.ReadOnly = true;
-            this.txtDescription.Size = new System.Drawing.Size(196, 192);
-            this.txtDescription.TabIndex = 1;
-            this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
-            // 
             // pbImage
             // 
             this.pbImage.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -131,15 +119,25 @@
             this.ctrlStats.Size = new System.Drawing.Size(202, 78);
             this.ctrlStats.TabIndex = 8;
             // 
+            // txtDescription
+            // 
+            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDescription.Location = new System.Drawing.Point(4, 407);
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtDescription.Size = new System.Drawing.Size(196, 192);
+            this.txtDescription.TabIndex = 9;
+            this.txtDescription.Text = "";
+            // 
             // txtComments
             // 
             this.txtComments.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtComments.Location = new System.Drawing.Point(4, 606);
-            this.txtComments.Multiline = true;
             this.txtComments.Name = "txtComments";
+            this.txtComments.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.txtComments.Size = new System.Drawing.Size(196, 44);
-            this.txtComments.TabIndex = 9;
-            this.txtComments.TextChanged += new System.EventHandler(this.txtComments_TextChanged);
+            this.txtComments.TabIndex = 10;
+            this.txtComments.Text = "";
             // 
             // GameFileSummary
             // 
@@ -159,12 +157,12 @@
         #endregion
 
         private DoomLauncher.TableLayoutPanelDB tblMain;
-        private System.Windows.Forms.TextBox txtDescription;
         private System.Windows.Forms.PictureBox pbImage;
         private GrowLabel lblTitle;
         private GrowLabel lblTags;
         private System.Windows.Forms.Label lblTimePlayed;
         private StatsControl ctrlStats;
-        private System.Windows.Forms.TextBox txtComments;
+        private System.Windows.Forms.RichTextBox txtDescription;
+        private System.Windows.Forms.RichTextBox txtComments;
     }
 }

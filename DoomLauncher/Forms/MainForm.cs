@@ -574,8 +574,8 @@ namespace DoomLauncher
 
         private void SetSummary(IGameFile item)
         {
-            ctrlSummary.Title = item.Title;
-            ctrlSummary.Description = item.Description;
+            ctrlSummary.SetTitle(item.Title);
+            ctrlSummary.SetDescription(item.Description);
             ctrlSummary.ClearPreviewImage();
             ctrlSummary.TagText = BuildTagText(item);
             ctrlSummary.SetTimePlayed(item.MinutesPlayed);
@@ -586,8 +586,8 @@ namespace DoomLauncher
 
         private void ClearSummary()
         {
-            ctrlSummary.Title = string.Empty;
-            ctrlSummary.Description = string.Empty;
+            ctrlSummary.SetTitle(string.Empty);
+            ctrlSummary.SetDescription(string.Empty);
             ctrlSummary.ClearPreviewImage();
             ctrlSummary.TagText = string.Empty;
             ctrlSummary.SetTimePlayed(0);
