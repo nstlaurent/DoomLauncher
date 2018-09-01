@@ -1,0 +1,51 @@
+# Doom Launcher
+Doom Launcher is a _Doom_ frontend that serves as a database for
+all your _Doom_ engine games, custom WADs, PK3s, and source ports!
+Startup Doom Launcher to configurate your favorite source ports,
+add in the IWADs you own, and start having all your files in
+one place. For convenience, you can download files from
+https://www.doomworld.com/idgames/[/idgames] in the launcher,
+similar to https://www.quaddicted.com/tools/quake_injector[Quake Injector].
+
+Doom Launcher is packed with features, including:
+
+* Direct download and metadata update from /idgames (through API).
+* Add mods by drag and drop (ZIP including WAD/PK3/DEH/TXT).
+* Automatic scraping of title, author, release date and description
+from the included textfile.
+* Importing screenshots directly from the sourceport into the database.
+* Maintaining demos and savegames (DSG and ZDS supported).
+* Scans files for map lump names (e.g. E4M3, MAP20, STR20).
+* Add any sourceports to the database.
+* Selecting specific files within a ZIP file.
+* Tagging mods with custom unlimited colored tags.
+* Shows play-statistics (killed monsters, collected items, play time).
+Supported source ports includes ZDoom, PrBoom+, and CNDoom (Competition
+Doom).
+*Automatic daily database backups (SQLite database files).
+
+Many more features are included and are documented in the Help file.
+Please read that if you have concerns on some features or find out
+something you may not be aware of.
+
+Doom Launcher is written by Hobomaster22 in C# and requires .NET 4.5.
+If you want to report bugs or suggest features, submit issues to
+the GitHub repository. To contribute to Doom Launcher, fork a
+copy of the repository and submit your changes via a pull request.
+
+# Building Doom Launcher
+To build Doom Launcher, download a copy of the repository and open up
+the Solution file on Visual Studio (preferably using Visual Studio
+14 toolsets). From there you can make your changes and test them
+before contributing to the repository or tweaking the launcher
+with your own personal preferences.
+
+Doom Launcher currently supports Windows 7 or above, so Windows XP
+won't work. Mac and Linux are unsupported.
+
+# Doom Launcher Links
+GitHub Repository: https://github.com/hobomaster22/DoomLauncher
+
+Doomworld Thread: https://www.doomworld.com/vb/doom-general/69346-doom-launcher-doom-frontend-database/
+
+Realm667: https://realm667.com/index.php/en/kunena/doom-launcher 
