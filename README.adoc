@@ -1,9 +1,8 @@
 = Doom Launcher
 
 Doom Launcher is a _Doom_ frontend that serves as a database for
-all your _Doom_ engine games, custom WADs, PK3s, and source ports!
-Startup Doom Launcher to configurate your favorite source ports,
-add in the IWADs your own, and start having all your files in
+all your _Doom_ engine games, custom WADs, PK3s, and source ports.
+Startup Doom Launcher to start having all your files in
 one place. For convenience, you can download files from
 https://www.doomworld.com/idgames/[/idgames] in the launcher,
 similar to https://www.quaddicted.com/tools/quake_injector[Quake Injector].
