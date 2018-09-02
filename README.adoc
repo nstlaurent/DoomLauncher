@@ -44,6 +44,14 @@ with your own personal preferences.
 Doom Launcher currently supports Windows 7 or above, so Windows XP
 won't work. Mac and Linux are unsupported.
 
+== Development Tools
+
+SQLite Browser. Great tool for viewing and editing the DoomLauncher.sqlite database: 
+https://sqlitebrowser.org/
+
+SonarLint. A great code analysis extension for Visual Studio. Highly recommended and used for most of Doom Launcher's development:
+https://www.sonarlint.org/visualstudio/
+
 == Doom Launcher Links
 GitHub Repository: https://github.com/hobomaster22/DoomLauncher
 
