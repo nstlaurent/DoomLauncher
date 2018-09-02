@@ -86,10 +86,10 @@ namespace DoomLauncher
             if (gameIwad != null && gameIwad.Equals(GameFile))
                 cmbIwad.Enabled = false;
 
-            ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());
+            ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());           
+            AddExtraAdditionalFiles();
 
             m_init = false;
-            AddExtraAdditionalFiles();
         }
 
         private bool IsIwad(IGameFile gameFile)
@@ -365,13 +365,15 @@ namespace DoomLauncher
 
         private void AddExtraAdditionalFiles()
         {
+            m_handler.CalculateAdditionalFiles(SelectedIWad, cmbSourcePorts.SelectedItem as ISourcePort);
+
             if (InitAddFilesCheck())
-            {
-                m_handler.CalculateAdditionalFiles(SelectedIWad, cmbSourcePorts.SelectedItem as ISourcePort);
+            {              
                 ResetSpecificFilesSelections(m_handler.GetCurrentAdditionalNewFiles().ToArray());
                 ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());
-                ctrlFiles.Refresh(); //the port or iwad in () may have changed so invalidate to force update
             }
+
+            ctrlFiles.Refresh(); //the port or iwad in () may have changed so invalidate to force update
         }
 
         private bool InitAddFilesCheck()
