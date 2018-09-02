@@ -102,7 +102,13 @@ namespace DoomLauncher
                 if (dtRelease.Checked) gameFile.ReleaseDate = new DateTime(dtRelease.Value.Year, dtRelease.Value.Month, dtRelease.Value.Day);
                 else gameFile.ReleaseDate = null;
             }
-            if (AssertSet(chkRating, fields, GameFileFieldType.Rating)) gameFile.Rating = ctrlStarRating.SelectedRating;
+            if (AssertSet(chkRating, fields, GameFileFieldType.Rating))
+            {
+                if (ctrlStarRating.SelectedRating == 0)
+                    gameFile.Rating = null;
+                else
+                    gameFile.Rating = ctrlStarRating.SelectedRating;
+            }
 
             return fields;
         }
