@@ -140,7 +140,7 @@ namespace DoomLauncher
                 txt.Text = "Unexpected Error";
                 txt.HeaderText = "An unexpected error occurred. Please submit the error report by clicking the link below. The report has been copied to your clipboard." + Environment.NewLine;
                 txt.DisplayText = ex.ToString();
-                txt.SetLink("Click here to submit", GetDoomworldThread());
+                txt.SetLink("Click here to submit", GitHubRepository);
                 Clipboard.SetText(txt.DisplayText);
 
                 if (form == null)
@@ -155,15 +155,11 @@ namespace DoomLauncher
             }
         }
 
-        public static string GetDoomworldThread()
-        {
-            return "http://www.doomworld.com/vb/doom-general/69346-doom-launcher-doom-frontend-database/";
-        }
+        public static string GitHubRepository => "https://github.com/hobomaster22/DoomLauncher";
 
-        public static string GetRealm667Thread()
-        {
-            return "http://realm667.com/index.php/en/kunena/doom-launcher";
-        }
+        public static string DoomworldThread => "http://www.doomworld.com/vb/doom-general/69346-doom-launcher-doom-frontend-database/";
+
+        public static string Realm667Thread => "http://realm667.com/index.php/en/kunena/doom-launcher";
 
         public static void SetDefaultSearchFields(SearchControl ctrlSearch)
         {

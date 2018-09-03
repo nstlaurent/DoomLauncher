@@ -30,15 +30,16 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutBox));
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.lnkRepository = new System.Windows.Forms.LinkLabel();
             this.logoPictureBox = new System.Windows.Forms.PictureBox();
             this.labelProductName = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.lblAuthor = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lnkThread = new System.Windows.Forms.LinkLabel();
             this.lnkThread2 = new System.Windows.Forms.LinkLabel();
-            this.lblAuthor = new System.Windows.Forms.Label();
             this.tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
@@ -49,13 +50,14 @@
             this.tableLayoutPanel.ColumnCount = 2;
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33F));
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67F));
+            this.tableLayoutPanel.Controls.Add(this.lnkRepository, 1, 4);
             this.tableLayoutPanel.Controls.Add(this.logoPictureBox, 0, 0);
             this.tableLayoutPanel.Controls.Add(this.labelProductName, 1, 0);
             this.tableLayoutPanel.Controls.Add(this.labelVersion, 1, 1);
             this.tableLayoutPanel.Controls.Add(this.okButton, 1, 6);
             this.tableLayoutPanel.Controls.Add(this.label1, 1, 3);
-            this.tableLayoutPanel.Controls.Add(this.flowLayoutPanel1, 1, 4);
             this.tableLayoutPanel.Controls.Add(this.lblAuthor, 1, 2);
+            this.tableLayoutPanel.Controls.Add(this.flowLayoutPanel1, 1, 5);
             this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -64,11 +66,26 @@
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 66F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel.Size = new System.Drawing.Size(417, 265);
             this.tableLayoutPanel.TabIndex = 0;
+            // 
+            // lnkRepository
+            // 
+            this.lnkRepository.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lnkRepository.AutoSize = true;
+            this.lnkRepository.Location = new System.Drawing.Point(140, 134);
+            this.lnkRepository.Name = "lnkRepository";
+            this.lnkRepository.Size = new System.Drawing.Size(93, 13);
+            this.lnkRepository.TabIndex = 28;
+            this.lnkRepository.TabStop = true;
+            this.lnkRepository.Text = "GitHub Repository";
+            this.lnkRepository.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lnkRepository.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkRepository_LinkClicked);
             // 
             // logoPictureBox
             // 
@@ -125,43 +142,9 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(274, 32);
             this.label1.TabIndex = 26;
-            this.label1.Text = "Please check out the thread to post questions, comments, bugs, and feature reques" +
-    "ts!\r\n";
+            this.label1.Text = "Please check out these links to post questions, comments, bugs, and feature reque" +
+    "sts!\r\n";
             this.label1.UseMnemonic = false;
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Controls.Add(this.lnkThread);
-            this.flowLayoutPanel1.Controls.Add(this.lnkThread2);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(137, 132);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(280, 28);
-            this.flowLayoutPanel1.TabIndex = 27;
-            // 
-            // lnkThread
-            // 
-            this.lnkThread.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lnkThread.AutoSize = true;
-            this.lnkThread.Location = new System.Drawing.Point(3, 0);
-            this.lnkThread.Name = "lnkThread";
-            this.lnkThread.Size = new System.Drawing.Size(97, 13);
-            this.lnkThread.TabIndex = 26;
-            this.lnkThread.TabStop = true;
-            this.lnkThread.Text = "Doomworld Thread";
-            this.lnkThread.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkThread_LinkClicked);
-            // 
-            // lnkThread2
-            // 
-            this.lnkThread2.AutoSize = true;
-            this.lnkThread2.Location = new System.Drawing.Point(106, 0);
-            this.lnkThread2.Name = "lnkThread2";
-            this.lnkThread2.Size = new System.Drawing.Size(90, 13);
-            this.lnkThread2.TabIndex = 27;
-            this.lnkThread2.TabStop = true;
-            this.lnkThread2.Text = "Realm 667 Forum";
-            this.lnkThread2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkThread2_LinkClicked);
             // 
             // lblAuthor
             // 
@@ -174,6 +157,42 @@
             this.lblAuthor.TabIndex = 28;
             this.lblAuthor.Text = "Author: hobomaster22";
             this.lblAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.lnkThread);
+            this.flowLayoutPanel1.Controls.Add(this.lnkThread2);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(137, 157);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(209, 22);
+            this.flowLayoutPanel1.TabIndex = 29;
+            // 
+            // lnkThread
+            // 
+            this.lnkThread.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lnkThread.AutoSize = true;
+            this.lnkThread.Location = new System.Drawing.Point(3, 0);
+            this.lnkThread.Name = "lnkThread";
+            this.lnkThread.Size = new System.Drawing.Size(97, 13);
+            this.lnkThread.TabIndex = 27;
+            this.lnkThread.TabStop = true;
+            this.lnkThread.Text = "Doomworld Thread";
+            this.lnkThread.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lnkThread.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkThread_LinkClicked);
+            // 
+            // lnkThread2
+            // 
+            this.lnkThread2.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lnkThread2.AutoSize = true;
+            this.lnkThread2.Location = new System.Drawing.Point(106, 0);
+            this.lnkThread2.Name = "lnkThread2";
+            this.lnkThread2.Size = new System.Drawing.Size(90, 13);
+            this.lnkThread2.TabIndex = 26;
+            this.lnkThread2.TabStop = true;
+            this.lnkThread2.Text = "Realm 667 Forum";
+            this.lnkThread2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lnkThread2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkThread2_LinkClicked);
             // 
             // AboutBox
             // 
@@ -209,9 +228,10 @@
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblAuthor;
+        private System.Windows.Forms.LinkLabel lnkRepository;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.LinkLabel lnkThread;
         private System.Windows.Forms.LinkLabel lnkThread2;
-        private System.Windows.Forms.Label lblAuthor;
     }
 }

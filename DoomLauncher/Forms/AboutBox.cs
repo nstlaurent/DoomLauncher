@@ -100,14 +100,19 @@ namespace DoomLauncher
         }
         #endregion
 
+        private void lnkRepository_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(Util.GitHubRepository);
+        }
+
         private void lnkThread_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(Util.GetDoomworldThread());
+            Process.Start(Util.DoomworldThread);
         }
 
         private void lnkThread2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(Util.GetRealm667Thread());
+            Process.Start(Util.Realm667Thread);
         }
     }
 }
