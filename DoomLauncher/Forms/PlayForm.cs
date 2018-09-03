@@ -140,6 +140,17 @@ namespace DoomLauncher
             return ctrlFiles.GetFiles().Cast<IGameFile>().ToList();
         }
 
+        public List<IGameFile> GetIWadAdditionalFiles()
+        {
+            return m_handler.GetIWadFiles();
+        }
+
+
+        public List<IGameFile> GetSourcePortAdditionalFiles()
+        {
+            return m_handler.GetSourcePortFiles();
+        }
+
         public string SelectedMap
         {
             get
@@ -365,10 +376,10 @@ namespace DoomLauncher
 
         private void AddExtraAdditionalFiles()
         {
-            m_handler.CalculateAdditionalFiles(SelectedIWad, cmbSourcePorts.SelectedItem as ISourcePort);
-
             if (InitAddFilesCheck())
-            {              
+            {
+                m_handler.CalculateAdditionalFiles(m_lastIwad, m_lastSourcePort);
+                m_handler.CalculateAdditionalFiles(SelectedIWad, cmbSourcePorts.SelectedItem as ISourcePort);
                 ResetSpecificFilesSelections(m_handler.GetCurrentAdditionalNewFiles().ToArray());
                 ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());
             }

@@ -165,9 +165,6 @@ namespace DoomLauncher
             {
                 gameFile.SourcePortID = gameFile.IWadID = null;
 
-                StringBuilder sbAdditionalFiles = new StringBuilder();
-                StringBuilder sbSpecificFiles = new StringBuilder();
-
                 if (form.SelectedSourcePort != null) gameFile.SourcePortID = form.SelectedSourcePort.SourcePortID;
                 if (form.SelectedIWad != null) gameFile.IWadID = form.SelectedIWad.IWadID;
 
@@ -181,18 +178,14 @@ namespace DoomLauncher
 
                 if (form.ShouldSaveAdditionalFiles())
                 {
-                    form.GetAdditionalFiles().ForEach(x => sbAdditionalFiles.Append(x.FileName + ";"));
-                    gameFile.SettingsFiles = sbAdditionalFiles.ToString();
+                    gameFile.SettingsFiles = string.Join(";", form.GetAdditionalFiles().Select(x => x.FileName).ToArray());
+                    gameFile.SettingsFilesIWAD = string.Join(";", form.GetIWadAdditionalFiles().Select(x => x.FileName).ToArray());
+                    gameFile.SettingsFilesSourcePort = string.Join(";", form.GetSourcePortAdditionalFiles().Select(x => x.FileName).ToArray());
 
                     if (form.SpecificFiles != null)
-                    {
-                        Array.ForEach(form.SpecificFiles, x => sbSpecificFiles.Append(x + ";"));
-                        gameFile.SettingsSpecificFiles = sbSpecificFiles.ToString();
-                    }
+                        gameFile.SettingsSpecificFiles = string.Join(";", form.SpecificFiles);
                     else
-                    {
                         gameFile.SettingsSpecificFiles = string.Empty; //this setting can be turned off
-                    }
                 }
 
                 DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap, 

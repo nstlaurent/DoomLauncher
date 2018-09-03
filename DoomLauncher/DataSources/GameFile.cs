@@ -36,6 +36,8 @@ namespace DoomLauncher.DataSources
         public string SettingsSkill { get; set; }
         public string SettingsExtraParams { get; set; }
         public string SettingsFiles { get; set; }
+        public string SettingsFilesSourcePort { get; set; }
+        public string SettingsFilesIWAD { get; set; }
         public string SettingsSpecificFiles { get; set; }
         public bool SettingsStat { get; set; }
 

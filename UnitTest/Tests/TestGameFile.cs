@@ -52,6 +52,8 @@ namespace UnitTest.Tests
             gameFile.SourcePortID = count;
             gameFile.SettingsExtraParams = filename;
             gameFile.SettingsFiles = filename;
+            gameFile.SettingsFilesIWAD = filename;
+            gameFile.SettingsFilesSourcePort = filename;
             gameFile.SettingsMap = filename;
             gameFile.SettingsSkill = filename;
             gameFile.SettingsSpecificFiles = filename;

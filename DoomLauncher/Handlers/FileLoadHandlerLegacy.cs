@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DoomLauncher.Handlers
 {
-    public class FileLoadHandler
+    public class FileLoadHandlerLegacy
     {
         private enum AddFilesType
         {
@@ -28,26 +28,11 @@ namespace DoomLauncher.Handlers
         private IGameFile m_selectedIWad;
         private ISourcePort m_selectedSourcePort;
 
-        public FileLoadHandler(IDataSourceAdapter adapter, IGameFile gameFile)
+        public FileLoadHandlerLegacy(IDataSourceAdapter adapter, IGameFile gameFile)
         {
             m_adapter = adapter;
             m_gameFile = gameFile;
             SetAdditionalFiles(Util.GetAdditionalFiles(m_adapter, gameFile));
-            m_iwadAdditionalFiles = GetIWadFilesFromGameFile(gameFile);
-            m_sourcePortAdditionalFiles = Util.GetSourcePortAdditionalFiles(m_adapter, gameFile);
-        }
-
-        private List<IGameFile> GetIWadFilesFromGameFile(IGameFile gameFile)
-        {
-            List<IGameFile> exclude = new List<IGameFile>();
-            if (gameFile.IWadID.HasValue)
-            {
-                var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == gameFile.IWadID.Value);
-                if (gameFileIwad != null)
-                    exclude = Util.GetSourcePortAdditionalFiles(m_adapter, gameFileIwad);
-            }
-
-            return Util.GetIWadAdditionalFiles(m_adapter, gameFile).Except(exclude).ToList();
         }
 
         public bool IsIWadFile(IGameFile gameFile)
@@ -140,10 +125,10 @@ namespace DoomLauncher.Handlers
 
         private List<IGameFile> GetAdditionalFiles(IGameFile gameIwad, ISourcePort sourcePort)
         {
-            var iwadExclude = Util.GetSourcePortAdditionalFiles(m_adapter, gameIwad);
-            return GetAdditionalFiles(AddFilesType.IWAD, gameIwad, sourcePort).Except(iwadExclude)
+            IEnumerable<IGameFile> exclude = new IGameFile[] { m_gameFile };
+            return GetAdditionalFiles(AddFilesType.IWAD, gameIwad, sourcePort)
                 .Union(GetAdditionalFiles(AddFilesType.SourcePort, gameIwad, sourcePort))
-                .Except(new IGameFile[] { m_gameFile }).ToList();
+                .Except(exclude).ToList();
         }
 
         private List<IGameFile> GetAdditionalFiles(AddFilesType type, IGameFile gameIwad, ISourcePort sourcePort)

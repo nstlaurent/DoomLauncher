@@ -239,6 +239,16 @@ namespace DoomLauncher
             return new List<IGameFile>();
         }
 
+        public static List<IGameFile> GetIWadAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)
+        {
+            return GetAdditionalFiles(adapter, gameFile, gameFile.SettingsFilesIWAD);
+        }
+
+        public static List<IGameFile> GetSourcePortAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)
+        {
+            return GetAdditionalFiles(adapter, gameFile, gameFile.SettingsFilesSourcePort);
+        }
+
         public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, ISourcePort sourcePort)
         {
             return GetAdditionalFiles(adapter, null, sourcePort.SettingsFiles);
@@ -354,6 +364,17 @@ namespace DoomLauncher
             }
 
             return sb.ToString();
+        }
+
+        public static string GetDatabaseFileName()
+        {
+            return "DoomLauncher.sqlite";
+        }
+
+        public static IDataSourceAdapter CreateAdapter()
+        {
+            string dataSource = Path.Combine(Directory.GetCurrentDirectory(), GetDatabaseFileName());
+            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), string.Format(@"Data Source={0}", dataSource));
         }
     }
 }

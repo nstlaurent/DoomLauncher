@@ -196,6 +196,7 @@ namespace DoomLauncher
                     Thumbnail = @Thumbnail, Comments = @Comments, Rating = @Rating,
                     IWadID = @IWadID, LastPlayed = @LastPlayed, Downloaded = @Downloaded, 
                     SettingsMap = @SettingsMap, SettingsSkill = @SettingsSkill, SettingsExtraParams = @SettingsExtraParams, SettingsFiles = @SettingsFiles,
+                    SettingsFilesSourcePort = @SettingsFilesSourcePort, SettingsFilesIWAD = @SettingsFilesIWAD,
                     SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, FileName = @FileName, MapCount = @MapCount, 
                     MinutesPlayed = @MinutesPlayed
                     where GameFileID = @gameFileID");
@@ -221,6 +222,8 @@ namespace DoomLauncher
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsSkill", gameFile.SettingsSkill == null ? (object)DBNull.Value : gameFile.SettingsSkill));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsExtraParams", gameFile.SettingsExtraParams == null ? (object)DBNull.Value : gameFile.SettingsExtraParams));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsFiles", gameFile.SettingsFiles == null ? (object)DBNull.Value : gameFile.SettingsFiles));
+            parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsFilesSourcePort", gameFile.SettingsFilesSourcePort == null ? (object)DBNull.Value : gameFile.SettingsFilesSourcePort));
+            parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsFilesIWAD", gameFile.SettingsFilesIWAD == null ? (object)DBNull.Value : gameFile.SettingsFilesIWAD));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsSpecificFiles", gameFile.SettingsSpecificFiles == null ? (object)DBNull.Value : gameFile.SettingsSpecificFiles));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsStat", gameFile.SettingsStat));
 

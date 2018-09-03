@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.DataSources;
+using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace DoomLauncher
         {
             AppVersion version = GetVersion();
 
-            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_3)
+            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_3_1)
             {
                 return true;
             }
@@ -70,6 +71,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_4_1, AppVersion.Version_2_4_1);
                 ExecuteUpdate(Pre_2_6_0, AppVersion.Version_2_6_0);
                 ExecuteUpdate(Pre_2_6_3, AppVersion.Version_2_6_3);
+                ExecuteUpdate(Pre_2_6_3_1, AppVersion.Version_2_6_3_1);
             }
         }
 
@@ -417,6 +419,39 @@ namespace DoomLauncher
 
             if (dt.Select("name = 'ExtraParameters'").Count() == 0)
                 DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'ExtraParameters' TEXT;");
+        }
+
+        private void Pre_2_6_3_1()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
+
+            if (!dt.Select("name = 'SettingsFilesSourcePort'").Any())
+                DataAccess.ExecuteNonQuery("alter table GameFiles add column 'SettingsFilesSourcePort' TEXT;");
+            if (!dt.Select("name = 'SettingsFilesIWAD'").Any())
+                DataAccess.ExecuteNonQuery("alter table GameFiles add column 'SettingsFilesIWAD' TEXT;");
+
+            var adapter = Util.CreateAdapter();
+            var gameFiles = adapter.GetGameFiles();
+            var ports = adapter.GetSourcePorts().ToDictionary(x => x.SourcePortID, x => x);
+            var iwads = adapter.GetIWads();
+            var gameFileIwads = adapter.GetGameFileIWads().ToDictionary(x => iwads.First(y => y.GameFileID == x.GameFileID.Value).IWadID, x => x);
+
+            foreach (var gameFile in gameFiles)
+            {
+                FileLoadHandlerLegacy filehandler = new FileLoadHandlerLegacy(adapter, gameFile);
+                filehandler.CalculateAdditionalFiles(GetDictionaryData<IGameFile>(gameFile.IWadID, gameFileIwads), 
+                    GetDictionaryData<ISourcePort>(gameFile.SourcePortID, ports));
+                gameFile.SettingsFilesIWAD = string.Join(";", filehandler.GetIWadFiles().Select(x => x.FileName).ToArray());
+                gameFile.SettingsFilesSourcePort = string.Join(";", filehandler.GetSourcePortFiles().Select(x => x.FileName).ToArray());
+                adapter.UpdateGameFile(gameFile);
+            }
+        }
+
+        private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)
+        {
+            if (id.HasValue && values.ContainsKey(id.Value))
+                return values[id.Value];
+            return default(T);
         }
 
         public DataAccess DataAccess { get; set; }

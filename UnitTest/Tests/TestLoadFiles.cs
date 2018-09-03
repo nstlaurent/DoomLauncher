@@ -215,6 +215,40 @@ namespace UnitTest.Tests
             Assert.AreEqual("MOD2.WAD", gameFiles[4].FileName);
         }
 
+        [TestMethod]
+        public void TestIWadExclude()
+        {
+            //if the iwad has a file attached to it because of a source port, that file should not be included when the iwad is selected
+            //e.g. GZDoom has noendgame.wad User launched DOOM2.WAD with GZDoom. This adds noendgame to the additional files of DOOM2.WAD.
+            //if the user selects DOOM2.WAD with another file (and not GZDoom as the port), noendgame.wad should not be added
+
+            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
+            var mainFile = adapter.GetGameFile("COOLGAMEFILE.WAD");
+            FileLoadHandler handler = new FileLoadHandler(adapter, mainFile);
+            Assert.AreEqual(3, handler.GetCurrentAdditionalFiles().Count);
+
+            var iwad = adapter.GetGameFileIWads().First(x => x.FileName == "DOOM2.WAD");
+            var sourceport = adapter.GetSourcePorts().First(x => x.Name == "zdoom.exe");
+
+            iwad.SettingsFiles = "MOD4.WAD";
+            adapter.UpdateGameFile(iwad);
+
+            handler.CalculateAdditionalFiles(iwad, sourceport);
+            var gameFiles = handler.GetCurrentAdditionalFiles();
+            Assert.AreEqual(5, gameFiles.Count);
+            Assert.IsNotNull(gameFiles.FirstOrDefault(x => x.FileName == "MOD4.WAD"));
+
+            //now set up the file so it should be excluded
+            iwad.SettingsFilesSourcePort = "MOD4.WAD";
+            adapter.UpdateGameFile(iwad);
+
+            handler = new FileLoadHandler(adapter, mainFile);
+            handler.CalculateAdditionalFiles(iwad, sourceport);
+            gameFiles = handler.GetCurrentAdditionalFiles();
+            Assert.AreEqual(4, gameFiles.Count);
+            Assert.IsNull(gameFiles.FirstOrDefault(x => x.FileName == "MOD4.WAD"));
+        }
+
         private void CreateDatabase()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
