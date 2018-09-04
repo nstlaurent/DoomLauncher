@@ -62,7 +62,6 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_0_9_2, AppVersion.Unknown);
                 ExecuteUpdate(Pre_1_0_0, AppVersion.Version_1_0_0);
                 ExecuteUpdate(Pre_1_1_0, AppVersion.Version_1_1_0);
-                ExecuteUpdate(Pre_1_2_0, AppVersion.Version_1_2_0);
                 ExecuteUpdate(Pre_2_1_0, AppVersion.Version_2_1_0);
                 ExecuteUpdate(Pre_2_2_0, AppVersion.Version_2_2_0);
                 ExecuteUpdate(Pre_2_2_1, AppVersion.Version_2_2_1);
@@ -108,7 +107,7 @@ namespace DoomLauncher
         {
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
 
-            if (dt.Select("name = 'SettingsMap'").Count() == 0)
+            if (!dt.Select("name = 'SettingsMap'").Any())
             {
                 string query = @"alter table GameFiles add column 'SettingsMap' TEXT;
                 alter table GameFiles add column 'SettingsSkill' TEXT;
@@ -166,14 +165,14 @@ namespace DoomLauncher
 
                 DataAccess.ExecuteNonQuery(query);
 
-                DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\" + ConfigurationManager.AppSettings["GameFileDirectory"]  + "SaveGames\\");
+                DirectoryInfo di = new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(),  ConfigurationManager.AppSettings["GameFileDirectory"], "SaveGames"));
                 if (!di.Exists)
                     di.Create();
             }
 
             dt = DataAccess.ExecuteSelect("pragma table_info(Files);").Tables[0];
             
-            if (dt.Select("name = 'OriginalFileName'").Count() == 0)
+            if (!dt.Select("name = 'OriginalFileName'").Any())
             {
                 string query = @"alter table Files add column 'OriginalFileName' TEXT;
                 alter table Files add column 'OriginalFilePath' TEXT;";
@@ -203,7 +202,7 @@ namespace DoomLauncher
 
             dt = DataAccess.ExecuteSelect("pragma table_info(Tags);").Tables[0];
 
-            if (dt.Select("name = 'Color'").Count() == 0)
+            if (!dt.Select("name = 'Color'").Any())
             {
                 DataAccess.ExecuteNonQuery("alter table Tags add column 'HasColor' int;");
                 DataAccess.ExecuteNonQuery("alter table Tags add column 'Color' int;");
@@ -211,13 +210,9 @@ namespace DoomLauncher
 
             dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
             //GameFile map count update
-            if (dt.Select("name = 'MapCount'").Count() == 0)
+            if (!dt.Select("name = 'MapCount'").Any())
             {
-#if DEBUG
-#else
-            FileInfo fi = new FileInfo("DoomLauncher.sqlite");
-            fi.CopyTo(string.Format("DoomLauncher_{0}.sqlite.bak", Guid.NewGuid().ToString()));
-#endif
+                CreateDatabaseBackup();
 
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'MapCount' int;");
 
@@ -247,31 +242,28 @@ namespace DoomLauncher
                 }
             }
 
-            if (dt.Select("name = 'SettingsSpecificFiles'").Count() == 0)
+            if (!dt.Select("name = 'SettingsSpecificFiles'").Any())
             {
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'SettingsSpecificFiles' TEXT;");
             }
 
-            dt = DataAccess.ExecuteSelect("select * from Configuration where Name = 'Version'").Tables[0];
-
             WriteVersion(AppVersion.Version_1_1_0);
 
-            if (UpdateComplete != null)
-            {
-                UpdateComplete(this, new EventArgs());
-            }
+            UpdateComplete?.Invoke(this, new EventArgs());
         }
 
-        private void Pre_1_2_0()
+        [Conditional("RELEASE")]
+        private static void CreateDatabaseBackup()
         {
-
+            FileInfo fi = new FileInfo(DbDataSourceAdapter.GetDatabaseFileName());
+            fi.CopyTo(string.Format("{0}_{1}.sqlite.bak", DbDataSourceAdapter.GetDatabaseFileName(), Guid.NewGuid().ToString()));
         }
 
         private void Pre_2_1_0()
         {
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(Files);").Tables[0];
 
-            if (dt.Select("name = 'FileOrder'").Count() == 0)
+            if (!dt.Select("name = 'FileOrder'").Any())
             {
                 DataAccess.ExecuteNonQuery("alter table Files add column 'FileOrder' int;");
                 DataAccess.ExecuteNonQuery("update Files set FileOrder = 2");
@@ -279,7 +271,7 @@ namespace DoomLauncher
 
             dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
 
-            if (dt.Select("name = 'MinutesPlayed'").Count() == 0)
+            if (!dt.Select("name = 'MinutesPlayed'").Any())
             {
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'MinutesPlayed' int;");
                 DataAccess.ExecuteNonQuery("update GameFiles set MinutesPlayed = 0");
@@ -346,7 +338,7 @@ namespace DoomLauncher
         {
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(IWads);").Tables[0];
 
-            if (dt.Select("name = 'GameFileID'").Count() == 0)
+            if (!dt.Select("name = 'GameFileID'").Any())
             {
                 DataAccess.ExecuteNonQuery("alter table IWads add column 'GameFileID' int;");
 
@@ -355,7 +347,7 @@ namespace DoomLauncher
 
                 foreach(IIWadData iwad in iwads)
                 {
-                    IGameFile find = gameFiles.Where(x => x.FileName.ToLower() == iwad.FileName.ToLower().Replace(".wad", ".zip")).FirstOrDefault();
+                    IGameFile find = gameFiles.FirstOrDefault(x => x.FileName.ToLower() == iwad.FileName.ToLower().Replace(".wad", ".zip"));
                     if (find != null)
                     {
                         iwad.GameFileID = find.GameFileID;
@@ -366,7 +358,7 @@ namespace DoomLauncher
 
             dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
 
-            if (dt.Select("name = 'SettingsFiles'").Count() == 0)
+            if (!dt.Select("name = 'SettingsFiles'").Any())
             {
                 DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'SettingsFiles' TEXT;");
             }
@@ -396,9 +388,9 @@ namespace DoomLauncher
         {
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
 
-            if (dt.Select("name = 'LaunchType'").Count() == 0)
+            if (!dt.Select("name = 'LaunchType'").Any())
                 DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'LaunchType' TEXT;");
-            if (dt.Select("name = 'FileOption'").Count() == 0)
+            if (!dt.Select("name = 'FileOption'").Any())
                 DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'FileOption' TEXT;");
 
             DataAccess.ExecuteNonQuery(string.Format("update SourcePorts set LaunchType = {0}", (int)SourcePortLaunchType.SourcePort));
@@ -406,7 +398,7 @@ namespace DoomLauncher
 
             dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
 
-            if (dt.Select("name = 'SettingsStat'").Count() == 0)
+            if (!dt.Select("name = 'SettingsStat'").Any())
             {
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'SettingsStat' INTEGER;");
                 DataAccess.ExecuteNonQuery("update GameFiles set SettingsStat = 1");
@@ -417,12 +409,14 @@ namespace DoomLauncher
         {
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
 
-            if (dt.Select("name = 'ExtraParameters'").Count() == 0)
+            if (!dt.Select("name = 'ExtraParameters'").Any())
                 DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'ExtraParameters' TEXT;");
         }
 
         private void Pre_2_6_3_1()
         {
+            CreateDatabaseBackup();
+
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
 
             if (!dt.Select("name = 'SettingsFilesSourcePort'").Any())
@@ -430,7 +424,7 @@ namespace DoomLauncher
             if (!dt.Select("name = 'SettingsFilesIWAD'").Any())
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'SettingsFilesIWAD' TEXT;");
 
-            var adapter = Util.CreateAdapter();
+            var adapter = DbDataSourceAdapter.CreateAdapter();
             var gameFiles = adapter.GetGameFiles();
             var ports = adapter.GetSourcePorts().ToDictionary(x => x.SourcePortID, x => x);
             var iwads = adapter.GetIWads();

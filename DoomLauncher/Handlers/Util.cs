@@ -365,16 +365,5 @@ namespace DoomLauncher
 
             return sb.ToString();
         }
-
-        public static string GetDatabaseFileName()
-        {
-            return "DoomLauncher.sqlite";
-        }
-
-        public static IDataSourceAdapter CreateAdapter()
-        {
-            string dataSource = Path.Combine(Directory.GetCurrentDirectory(), GetDatabaseFileName());
-            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), string.Format(@"Data Source={0}", dataSource));
-        }
     }
 }

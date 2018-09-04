@@ -24,6 +24,22 @@ namespace DoomLauncher
             DataAccess = new DataAccess(dbAdapter, connectionString);
         }
 
+        public static string GetDatabaseFileName()
+        {
+            return "DoomLauncher.sqlite";
+        }
+
+        public static IDataSourceAdapter CreateAdapter()
+        {
+            string dataSource = Path.Combine(Directory.GetCurrentDirectory(), GetDatabaseFileName());
+            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), CreateConnectionString(dataSource));
+        }
+
+        public static string CreateConnectionString(string dataSource)
+        {
+            return string.Format(@"Data Source={0}", dataSource);
+        }
+
         public int GetGameFilesCount()
         {
             DataTable dt = DataAccess.ExecuteSelect("select count(*) from GameFiles").Tables[0];
@@ -375,7 +391,7 @@ namespace DoomLauncher
 
         public void UpdateIWad(IIWadData iwad)
         {
-            string update = string.Format("update IWads set FileName = @FileName, Name = @Name, GameFileID = @GameFileID where IWadID = @IWadID");
+            string update = "update IWads set FileName = @FileName, Name = @Name, GameFileID = @GameFileID where IWadID = @IWadID";
             List<DbParameter> parameters = new List<DbParameter>();
 
             parameters.Add(DataAccess.DbAdapter.CreateParameter("IWadID", iwad.IWadID));
@@ -511,7 +527,7 @@ namespace DoomLauncher
 
         public IEnumerable<ITagMapping> GetTagMappings()
         {
-            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from TagMapping")).Tables[0];
+            DataTable dt = DataAccess.ExecuteSelect("select * from TagMapping").Tables[0];
             return Util.TableToStructure(dt, typeof(TagMapping)).Cast<TagMapping>().ToList();
         }
 
@@ -546,7 +562,7 @@ namespace DoomLauncher
 
         public IEnumerable<IStatsData> GetStats()
         {
-            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from Stats")).Tables[0];
+            DataTable dt = DataAccess.ExecuteSelect("select * from Stats").Tables[0];
             return Util.TableToStructure(dt, typeof(StatsData)).Cast<StatsData>().ToList();
         }
 
