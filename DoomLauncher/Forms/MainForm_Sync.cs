@@ -87,9 +87,9 @@ namespace DoomLauncher
             foreach (InvalidFile file in invalidFiles)
             {
                 sb.Append(file.FileName);
-                sb.Append(":\t\t");
+                sb.Append(": ");
                 sb.Append(file.Reason);
-                sb.Append('\n');
+                sb.Append(Environment.NewLine);
             }
 
             ShowTextBoxForm("Processing Errors",
