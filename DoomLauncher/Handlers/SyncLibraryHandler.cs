@@ -78,10 +78,15 @@ namespace DoomLauncher
                         file.Map = string.Empty;
                         m_invalidFiles.Add(new InvalidFile(fileName, "File is in use"));
                     }
-                    catch (Exception)
+                    catch (InvalidDataException)
                     {
                         file.Map = string.Empty;
                         m_invalidFiles.Add(new InvalidFile(fileName, "Zip archive contained an improper pk3"));
+                    }
+                    catch (Exception ex)
+                    {
+                        file.Map = string.Empty;
+                        m_invalidFiles.Add(new InvalidFile(fileName, CreateExceptionMsg(ex)));
                     }
 
                     if (existing == null)
@@ -107,6 +112,11 @@ namespace DoomLauncher
 
                 SyncFileCurrent++;
             }
+        }
+
+        private static string CreateExceptionMsg(Exception ex)
+        {
+            return string.Concat("Unexpected exception - ", ex.Message, ex.StackTrace);
         }
 
         private IEnumerable<ZipArchiveEntry> GetEntriesByExtension(ZipArchive za, string ext)
