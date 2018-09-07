@@ -415,8 +415,6 @@ namespace DoomLauncher
 
         private void Pre_2_6_3_1()
         {
-            CreateDatabaseBackup();
-
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
 
             if (!dt.Select("name = 'SettingsFilesSourcePort'").Any())
@@ -432,12 +430,23 @@ namespace DoomLauncher
 
             foreach (var gameFile in gameFiles)
             {
-                FileLoadHandlerLegacy filehandler = new FileLoadHandlerLegacy(adapter, gameFile);
-                filehandler.CalculateAdditionalFiles(GetDictionaryData<IGameFile>(gameFile.IWadID, gameFileIwads), 
-                    GetDictionaryData<ISourcePort>(gameFile.SourcePortID, ports));
-                gameFile.SettingsFilesIWAD = string.Join(";", filehandler.GetIWadFiles().Select(x => x.FileName).ToArray());
-                gameFile.SettingsFilesSourcePort = string.Join(";", filehandler.GetSourcePortFiles().Select(x => x.FileName).ToArray());
-                adapter.UpdateGameFile(gameFile);
+                if (!string.IsNullOrEmpty(gameFile.SettingsFiles))
+                {
+                    var files = Util.GetAdditionalFiles(adapter, gameFile).Select(x => x.FileName);
+                    FileLoadHandlerLegacy filehandler = new FileLoadHandlerLegacy(adapter, gameFile);
+                    filehandler.CalculateAdditionalFiles(GetDictionaryData<IGameFile>(gameFile.IWadID, gameFileIwads),
+                        GetDictionaryData<ISourcePort>(gameFile.SourcePortID, ports));
+
+                    var sourcePortFiles = filehandler.GetSourcePortFiles().Select(x => x.FileName).Where(x => files.Contains(x));
+                    var iwadFiles = filehandler.GetIWadFiles().Select(x => x.FileName).Where(x => files.Contains(x)).Except(sourcePortFiles);
+
+                    if (sourcePortFiles.Any())
+                        gameFile.SettingsFilesSourcePort = string.Join(";", sourcePortFiles.ToArray());
+                    if (iwadFiles.Any())
+                        gameFile.SettingsFilesIWAD = string.Join(";", iwadFiles.ToArray());     
+                           
+                    adapter.UpdateGameFile(gameFile);
+                }
             }
         }
 
