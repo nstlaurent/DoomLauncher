@@ -82,9 +82,16 @@ namespace DoomLauncher
 
         private void KillRunningApps()
         {
-            Process currentProc = Process.GetCurrentProcess();
-            foreach (Process proc in Process.GetProcessesByName("DoomLauncher").Where(x => x.Id != currentProc.Id))
-                proc.Kill();
+            try
+            {
+                Process currentProc = Process.GetCurrentProcess();
+                foreach (Process proc in Process.GetProcessesByName("DoomLauncher").Where(x => x.Id != currentProc.Id))
+                    proc.Kill();
+            }
+            catch
+            {
+                MessageBox.Show(this, "Doom Launcher is already running and could not be stopped. It is not recommended to have more than instance running!", "Already Running", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private GameFileViewControl GetCurrentViewControl()
