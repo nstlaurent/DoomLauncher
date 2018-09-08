@@ -24,6 +24,22 @@ namespace DoomLauncher
             DataAccess = new DataAccess(dbAdapter, connectionString);
         }
 
+        public static string GetDatabaseFileName()
+        {
+            return "DoomLauncher.sqlite";
+        }
+
+        public static IDataSourceAdapter CreateAdapter()
+        {
+            string dataSource = Path.Combine(Directory.GetCurrentDirectory(), GetDatabaseFileName());
+            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), CreateConnectionString(dataSource));
+        }
+
+        public static string CreateConnectionString(string dataSource)
+        {
+            return string.Format(@"Data Source={0}", dataSource);
+        }
+
         public int GetGameFilesCount()
         {
             DataTable dt = DataAccess.ExecuteSelect("select count(*) from GameFiles").Tables[0];
@@ -196,6 +212,7 @@ namespace DoomLauncher
                     Thumbnail = @Thumbnail, Comments = @Comments, Rating = @Rating,
                     IWadID = @IWadID, LastPlayed = @LastPlayed, Downloaded = @Downloaded, 
                     SettingsMap = @SettingsMap, SettingsSkill = @SettingsSkill, SettingsExtraParams = @SettingsExtraParams, SettingsFiles = @SettingsFiles,
+                    SettingsFilesSourcePort = @SettingsFilesSourcePort, SettingsFilesIWAD = @SettingsFilesIWAD,
                     SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, FileName = @FileName, MapCount = @MapCount, 
                     MinutesPlayed = @MinutesPlayed
                     where GameFileID = @gameFileID");
@@ -221,6 +238,8 @@ namespace DoomLauncher
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsSkill", gameFile.SettingsSkill == null ? (object)DBNull.Value : gameFile.SettingsSkill));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsExtraParams", gameFile.SettingsExtraParams == null ? (object)DBNull.Value : gameFile.SettingsExtraParams));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsFiles", gameFile.SettingsFiles == null ? (object)DBNull.Value : gameFile.SettingsFiles));
+            parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsFilesSourcePort", gameFile.SettingsFilesSourcePort == null ? (object)DBNull.Value : gameFile.SettingsFilesSourcePort));
+            parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsFilesIWAD", gameFile.SettingsFilesIWAD == null ? (object)DBNull.Value : gameFile.SettingsFilesIWAD));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsSpecificFiles", gameFile.SettingsSpecificFiles == null ? (object)DBNull.Value : gameFile.SettingsSpecificFiles));
             parameters.Add(DataAccess.DbAdapter.CreateParameter("SettingsStat", gameFile.SettingsStat));
 
@@ -372,7 +391,7 @@ namespace DoomLauncher
 
         public void UpdateIWad(IIWadData iwad)
         {
-            string update = string.Format("update IWads set FileName = @FileName, Name = @Name, GameFileID = @GameFileID where IWadID = @IWadID");
+            string update = "update IWads set FileName = @FileName, Name = @Name, GameFileID = @GameFileID where IWadID = @IWadID";
             List<DbParameter> parameters = new List<DbParameter>();
 
             parameters.Add(DataAccess.DbAdapter.CreateParameter("IWadID", iwad.IWadID));
@@ -508,7 +527,7 @@ namespace DoomLauncher
 
         public IEnumerable<ITagMapping> GetTagMappings()
         {
-            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from TagMapping")).Tables[0];
+            DataTable dt = DataAccess.ExecuteSelect("select * from TagMapping").Tables[0];
             return Util.TableToStructure(dt, typeof(TagMapping)).Cast<TagMapping>().ToList();
         }
 
@@ -543,7 +562,7 @@ namespace DoomLauncher
 
         public IEnumerable<IStatsData> GetStats()
         {
-            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from Stats")).Tables[0];
+            DataTable dt = DataAccess.ExecuteSelect("select * from Stats").Tables[0];
             return Util.TableToStructure(dt, typeof(StatsData)).Cast<StatsData>().ToList();
         }
 

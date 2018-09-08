@@ -86,10 +86,10 @@ namespace DoomLauncher
             if (gameIwad != null && gameIwad.Equals(GameFile))
                 cmbIwad.Enabled = false;
 
-            ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());
+            ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());           
+            AddExtraAdditionalFiles();
 
             m_init = false;
-            AddExtraAdditionalFiles();
         }
 
         private bool IsIwad(IGameFile gameFile)
@@ -138,6 +138,16 @@ namespace DoomLauncher
         {
             //return all the files in order, the user can determine the order of any file, whether it was added by source port or iwad selection
             return ctrlFiles.GetFiles().Cast<IGameFile>().ToList();
+        }
+
+        public List<IGameFile> GetIWadAdditionalFiles()
+        {
+            return GetAdditionalFiles().Intersect(m_handler.GetIWadFiles()).ToList();
+        }
+
+        public List<IGameFile> GetSourcePortAdditionalFiles()
+        {
+            return GetAdditionalFiles().Intersect(m_handler.GetSourcePortFiles()).ToList();
         }
 
         public string SelectedMap
@@ -367,11 +377,13 @@ namespace DoomLauncher
         {
             if (InitAddFilesCheck())
             {
+                m_handler.CalculateAdditionalFiles(m_lastIwad, m_lastSourcePort);
                 m_handler.CalculateAdditionalFiles(SelectedIWad, cmbSourcePorts.SelectedItem as ISourcePort);
                 ResetSpecificFilesSelections(m_handler.GetCurrentAdditionalNewFiles().ToArray());
                 ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());
-                ctrlFiles.Refresh(); //the port or iwad in () may have changed so invalidate to force update
             }
+
+            ctrlFiles.Refresh(); //the port or iwad in () may have changed so invalidate to force update
         }
 
         private bool InitAddFilesCheck()

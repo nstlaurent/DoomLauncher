@@ -27,6 +27,8 @@ namespace DoomLauncher.Interfaces
         string SettingsSkill { get; set; }
         string SettingsExtraParams { get; set; }
         string SettingsFiles { get; set; }
+        string SettingsFilesSourcePort { get; set; }
+        string SettingsFilesIWAD { get; set; }
         string SettingsSpecificFiles { get; set; }
         bool SettingsStat { get; set; }
 

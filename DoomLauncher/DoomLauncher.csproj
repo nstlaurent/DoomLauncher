@@ -118,6 +118,7 @@
       <DependentUpon>CumulativeStats.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\FileLoadHandler.cs" />
+    <Compile Include="Handlers\FileLoadHandlerLegacy.cs" />
     <Compile Include="Interfaces\ICustomParam.cs" />
     <Compile Include="Interfaces\IStatsDataSourceAdapter.cs" />
     <Compile Include="Controls\StatisticsView.cs">

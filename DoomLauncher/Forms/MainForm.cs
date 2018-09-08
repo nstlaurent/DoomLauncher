@@ -61,8 +61,8 @@ namespace DoomLauncher
 
             if (VerifyDatabase())
             {
-                string dataSource = Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.sqlite");
-                DataSourceAdapter = new DbDataSourceAdapter(new SqliteDatabaseAdapter(), string.Format(@"Data Source={0}", dataSource));
+                string dataSource = Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
+                DataSourceAdapter = DbDataSourceAdapter.CreateAdapter();
                 AppConfiguration = new AppConfiguration(DataSourceAdapter);
 
                 BackupDatabase(dataSource);

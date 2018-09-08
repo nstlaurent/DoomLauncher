@@ -29,6 +29,8 @@ namespace DoomLauncher
         MapCount,
         MinutesPlayed,
         MD5,
-        SettingsStat
+        SettingsStat,
+        SettingsFilesIWAD,
+        SettingsFilesSourcePort
     }
 }
