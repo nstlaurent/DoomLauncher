@@ -16,8 +16,8 @@ namespace DoomLauncher.Handlers
             IWAD
         }
 
-        private List<IGameFile> m_iwadAdditionalFiles = new List<IGameFile>();
-        private List<IGameFile> m_sourcePortAdditionalFiles = new List<IGameFile>();
+        private List<IGameFile> m_iwadAdditionalFiles;
+        private List<IGameFile> m_sourcePortAdditionalFiles;
         private List<IGameFile> m_saveAdditionalFiles = new List<IGameFile>();
 
         private List<IGameFile> m_currentFiles = new List<IGameFile>();
@@ -39,15 +39,14 @@ namespace DoomLauncher.Handlers
 
         private List<IGameFile> GetIWadFilesFromGameFile(IGameFile gameFile)
         {
-            List<IGameFile> exclude = new List<IGameFile>();
             if (gameFile.IWadID.HasValue)
             {
                 var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == gameFile.IWadID.Value);
                 if (gameFileIwad != null)
-                    exclude = Util.GetSourcePortAdditionalFiles(m_adapter, gameFileIwad);
+                    return GetAdditionalFiles(AddFilesType.IWAD, gameFileIwad, null);
             }
 
-            return Util.GetIWadAdditionalFiles(m_adapter, gameFile).Except(exclude).ToList();
+            return Util.GetIWadAdditionalFiles(m_adapter, gameFile);
         }
 
         public bool IsIWadFile(IGameFile gameFile)
@@ -135,6 +134,9 @@ namespace DoomLauncher.Handlers
                 if (!iwad.Equals(m_gameFile))
                     m_iwadAdditionalFiles = GetAdditionalFiles(AddFilesType.IWAD, iwad, sourcePort);
                 m_sourcePortAdditionalFiles = GetAdditionalFiles(AddFilesType.SourcePort, iwad, sourcePort);
+
+                m_iwadAdditionalFiles.Remove(m_gameFile);
+                m_sourcePortAdditionalFiles.Remove(m_gameFile);
             }
         }
 
@@ -152,7 +154,11 @@ namespace DoomLauncher.Handlers
             {
                 case AddFilesType.IWAD:
                     if (gameIwad != null)
-                        return Util.GetAdditionalFiles(m_adapter, gameIwad);
+                    {
+                        var ret = Util.GetAdditionalFiles(m_adapter, gameIwad).Except(Util.GetSourcePortAdditionalFiles(m_adapter, gameIwad)).ToList();
+                        ret.Remove(gameIwad);
+                        return ret;
+                    }
                     break;
                 case AddFilesType.SourcePort:
                     if (sourcePort != null)

@@ -5,6 +5,7 @@ using DoomLauncher.DataSources;
 using DoomLauncher;
 using System.Linq;
 using DoomLauncher.Handlers;
+using System.Collections.Generic;
 
 namespace UnitTest.Tests
 {
@@ -247,6 +248,65 @@ namespace UnitTest.Tests
             gameFiles = handler.GetCurrentAdditionalFiles();
             Assert.AreEqual(4, gameFiles.Count);
             Assert.IsNull(gameFiles.FirstOrDefault(x => x.FileName == "MOD4.WAD"));
+        }
+
+        [TestMethod]
+        public void TestUserSet()
+        {
+            //base test
+            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
+            var mainFile = adapter.GetGameFile("COOLGAMEFILE.WAD");
+            FileLoadHandler handler = new FileLoadHandler(adapter, mainFile);
+            Assert.AreEqual(3, handler.GetCurrentAdditionalFiles().Count);
+
+            var iwad = adapter.GetGameFileIWads().First(x => x.FileName == "PLUTONIA.WAD");
+            var sourceport = adapter.GetSourcePorts().First(x => x.Name == "zdoom.exe");
+
+            handler.CalculateAdditionalFiles(iwad, sourceport);
+            var gameFiles = handler.GetCurrentAdditionalFiles();
+
+            Assert.AreEqual(5, gameFiles.Count);
+            Assert.AreEqual("COOLGAMEFILE.WAD", gameFiles[0].FileName);
+            Assert.AreEqual("SUPERCOOLMOD.WAD", gameFiles[1].FileName);
+            Assert.AreEqual("MOD2.WAD", gameFiles[2].FileName);
+            Assert.AreEqual("IWADMOD1.WAD", gameFiles[3].FileName);
+            Assert.AreEqual("PORTMOD1.WAD", gameFiles[4].FileName);
+
+            //**user removes iwad add file
+            var addFiles = handler.GetCurrentAdditionalFiles();
+            addFiles.RemoveAll(x => x.FileName == "IWADMOD1.WAD");
+            SetAddFiles(mainFile, handler, addFiles);
+
+            handler = new FileLoadHandler(adapter, mainFile);
+            //do not call calculate, this will reset user set files
+            gameFiles = handler.GetCurrentAdditionalFiles();
+
+            Assert.AreEqual(4, gameFiles.Count);
+            Assert.AreEqual("COOLGAMEFILE.WAD", gameFiles[0].FileName);
+            Assert.AreEqual("SUPERCOOLMOD.WAD", gameFiles[1].FileName);
+            Assert.AreEqual("MOD2.WAD", gameFiles[2].FileName);
+            Assert.AreEqual("PORTMOD1.WAD", gameFiles[3].FileName);
+
+            //**user removes source port add file
+            addFiles = handler.GetCurrentAdditionalFiles();
+            addFiles.RemoveAll(x => x.FileName == "PORTMOD1.WAD");
+            SetAddFiles(mainFile, handler, addFiles);
+
+            handler = new FileLoadHandler(adapter, mainFile);
+            //do not call calculate, this will reset user set files
+            gameFiles = handler.GetCurrentAdditionalFiles();
+
+            Assert.AreEqual(3, gameFiles.Count);
+            Assert.AreEqual("COOLGAMEFILE.WAD", gameFiles[0].FileName);
+            Assert.AreEqual("SUPERCOOLMOD.WAD", gameFiles[1].FileName);
+            Assert.AreEqual("MOD2.WAD", gameFiles[2].FileName);
+        }
+
+        private static void SetAddFiles(IGameFile mainFile, FileLoadHandler handler, List<IGameFile> addFiles)
+        {
+            mainFile.SettingsFiles = string.Join(";", addFiles.Select(x => x.FileName));
+            mainFile.SettingsFilesIWAD = string.Join(";", addFiles.Intersect(handler.GetIWadFiles()).Select(x => x.FileName));
+            mainFile.SettingsFilesSourcePort = string.Join(";", addFiles.Intersect(handler.GetSourcePortFiles()).Select(x => x.FileName));
         }
 
         private void CreateDatabase()

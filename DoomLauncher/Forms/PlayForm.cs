@@ -142,13 +142,12 @@ namespace DoomLauncher
 
         public List<IGameFile> GetIWadAdditionalFiles()
         {
-            return m_handler.GetIWadFiles();
+            return GetAdditionalFiles().Intersect(m_handler.GetIWadFiles()).ToList();
         }
-
 
         public List<IGameFile> GetSourcePortAdditionalFiles()
         {
-            return m_handler.GetSourcePortFiles();
+            return GetAdditionalFiles().Intersect(m_handler.GetSourcePortFiles()).ToList();
         }
 
         public string SelectedMap

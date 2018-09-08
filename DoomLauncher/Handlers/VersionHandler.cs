@@ -440,10 +440,8 @@ namespace DoomLauncher
                     var sourcePortFiles = filehandler.GetSourcePortFiles().Select(x => x.FileName).Where(x => files.Contains(x));
                     var iwadFiles = filehandler.GetIWadFiles().Select(x => x.FileName).Where(x => files.Contains(x)).Except(sourcePortFiles);
 
-                    if (sourcePortFiles.Any())
-                        gameFile.SettingsFilesSourcePort = string.Join(";", sourcePortFiles.ToArray());
-                    if (iwadFiles.Any())
-                        gameFile.SettingsFilesIWAD = string.Join(";", iwadFiles.ToArray());     
+                    gameFile.SettingsFilesSourcePort = string.Join(";", sourcePortFiles.ToArray());
+                    gameFile.SettingsFilesIWAD = string.Join(";", iwadFiles.ToArray());     
                            
                     adapter.UpdateGameFile(gameFile);
                 }
