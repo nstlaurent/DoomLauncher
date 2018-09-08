@@ -12,7 +12,10 @@ namespace DoomLauncher
         public LaunchData(IGameFile gameFile, IEnumerable<IGameFile> additionalGameFiles)
         {
             GameFile = gameFile;
-            AdditionalGameFiles = additionalGameFiles.ToList();
+            if (additionalGameFiles == null)
+                AdditionalGameFiles = new List<IGameFile>();
+            else
+                AdditionalGameFiles = additionalGameFiles.ToList();
             Success = true;
         }
 
