@@ -95,10 +95,12 @@ namespace DoomLauncher
             }
             else
             {
-                ConfigurationData newConfig = new ConfigurationData();
-                newConfig.Name = "Version";
-                newConfig.UserCanModify = false;
-                newConfig.Value = Convert.ToInt32(version).ToString();
+                ConfigurationData newConfig = new ConfigurationData
+                {
+                    Name = "Version",
+                    UserCanModify = false,
+                    Value = Convert.ToInt32(version).ToString()
+                };
                 m_adapter.InsertConfiguration(newConfig);
             }
         }
@@ -216,8 +218,10 @@ namespace DoomLauncher
 
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'MapCount' int;");
 
-                GameFileGetOptions options = new GameFileGetOptions();
-                options.SelectFields = new GameFileFieldType[] { GameFileFieldType.GameFileID, GameFileFieldType.Map };
+                GameFileGetOptions options = new GameFileGetOptions
+                {
+                    SelectFields = new GameFileFieldType[] { GameFileFieldType.GameFileID, GameFileFieldType.Map }
+                };
                 IEnumerable<IGameFile> gameFiles = m_adapter.GetGameFiles(options);
 
                 GameFileFieldType[] updateFields = new GameFileFieldType[] { GameFileFieldType.MapCount };
@@ -313,9 +317,11 @@ namespace DoomLauncher
                 if (sourcePort.SupportedExtensions.Contains(".pk3"))
                     sourcePort.SupportedExtensions = sourcePort.SupportedExtensions.Replace(".pk3", ".pk3,.pk7");
 
-                List<DbParameter> parameters = new List<DbParameter>();
-                parameters.Add(DataAccess.DbAdapter.CreateParameter("ext", sourcePort.SupportedExtensions));
-                parameters.Add(DataAccess.DbAdapter.CreateParameter("SourcePortID", sourcePort.SourcePortID));
+                List<DbParameter> parameters = new List<DbParameter>
+                {
+                    DataAccess.DbAdapter.CreateParameter("ext", sourcePort.SupportedExtensions),
+                    DataAccess.DbAdapter.CreateParameter("SourcePortID", sourcePort.SourcePortID)
+                };
                 DataAccess.ExecuteNonQuery("update SourcePorts set SupportedExtensions = @ext where SourcePortID = @SourcePortID", parameters);
             }
         }

@@ -30,9 +30,7 @@ namespace DoomLauncher
             var cancelled = DownloadView.GetCancelledDownloads();
             foreach (object obj in cancelled)
             {
-                IGameFileDownloadable dlItem = obj as IGameFileDownloadable;
-
-                if (dlItem != null)
+                if (obj is IGameFileDownloadable dlItem)
                 {
                     dlItem.Cancel();
                     m_currentDownloads.Remove(dlItem);

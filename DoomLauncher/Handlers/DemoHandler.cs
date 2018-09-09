@@ -25,12 +25,14 @@ namespace DoomLauncher
             {
                 fi.CopyTo(Path.Combine(DemoDirectory.GetFullPath(), fi.Name));
 
-                FileData file = new FileData();
-                file.FileName = fi.Name;
-                file.GameFileID = gameFile.GameFileID.Value;
-                file.SourcePortID = sourcePort.SourcePortID;
-                file.FileTypeID = FileType.Demo;
-                file.Description = descriptionText;
+                FileData file = new FileData
+                {
+                    FileName = fi.Name,
+                    GameFileID = gameFile.GameFileID.Value,
+                    SourcePortID = sourcePort.SourcePortID,
+                    FileTypeID = FileType.Demo,
+                    Description = descriptionText
+                };
 
                 DataAdapter.InsertFile(file);
             }

@@ -30,13 +30,15 @@ namespace DoomLauncher
                         string fileName = Guid.NewGuid().ToString() + fi.Extension;
                         fi.CopyTo(Path.Combine(SaveGameDirectory.GetFullPath(), fileName));
 
-                        FileData fileData = new FileData();
-                        fileData.Description = fi.Name;
-                        fileData.OriginalFileName = fi.Name;
-                        fileData.FileName = fileName;
-                        fileData.GameFileID = gameFile.GameFileID.Value;
-                        fileData.SourcePortID = sourcePort.SourcePortID;
-                        fileData.FileTypeID = FileType.SaveGame;
+                        FileData fileData = new FileData
+                        {
+                            Description = fi.Name,
+                            OriginalFileName = fi.Name,
+                            FileName = fileName,
+                            GameFileID = gameFile.GameFileID.Value,
+                            SourcePortID = sourcePort.SourcePortID,
+                            FileTypeID = FileType.SaveGame
+                        };
 
                         DataSourceAdapter.InsertFile(fileData);
                         ret.Add(fileData);

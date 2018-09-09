@@ -61,7 +61,7 @@ namespace DoomLauncher
             ReadStatistics();
         }
 
-        private static ParseItem[] s_regexItems = new ParseItem[]
+        private static readonly ParseItem[] s_regexItems = new ParseItem[]
         {
             new ParseItem(@"\w+", string.Empty, "MapName"),
             new ParseItem(@"\d+:\d+.\d+", string.Empty, "LevelTime"),
@@ -98,8 +98,7 @@ namespace DoomLauncher
                         {
                             m_statistics.Add(stats);
 
-                            if (NewStastics != null)
-                                NewStastics(this, new NewStatisticsEventArgs(stats));
+                            NewStastics?.Invoke(this, new NewStatisticsEventArgs(stats));
                         }
                     }
                 }

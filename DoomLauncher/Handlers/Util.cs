@@ -136,10 +136,12 @@ namespace DoomLauncher
             }
             else
             {
-                TextBoxForm txt = new TextBoxForm();
-                txt.Text = "Unexpected Error";
-                txt.HeaderText = "An unexpected error occurred. Please submit the error report by clicking the link below. The report has been copied to your clipboard." + Environment.NewLine;
-                txt.DisplayText = ex.ToString();
+                TextBoxForm txt = new TextBoxForm
+                {
+                    Text = "Unexpected Error",
+                    HeaderText = "An unexpected error occurred. Please submit the error report by clicking the link below. The report has been copied to your clipboard." + Environment.NewLine,
+                    DisplayText = ex.ToString()
+                };
                 txt.SetLink("Click here to submit", GitHubRepository);
                 Clipboard.SetText(txt.DisplayText);
 
@@ -197,9 +199,11 @@ namespace DoomLauncher
         public static List<ISourcePort> GetSourcePortsData(IDataSourceAdapter adapter)
         {
             List<ISourcePort> sourcePorts = adapter.GetSourcePorts().ToList();
-            SourcePort noPort = new SourcePort();
-            noPort.Name = "N/A";
-            noPort.SourcePortID = -1;
+            SourcePort noPort = new SourcePort
+            {
+                Name = "N/A",
+                SourcePortID = -1
+            };
             sourcePorts.Insert(0, noPort);
             return sourcePorts;
         }

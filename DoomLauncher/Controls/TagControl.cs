@@ -118,7 +118,7 @@ namespace DoomLauncher
                     TagEditForm form = new TagEditForm();
                     form.TagEditControl.SetDataSource(tag);
                     form.StartPosition = FormStartPosition.CenterParent;
-
+					
                     if (form.ShowDialog(this) == DialogResult.OK)
                     {
                         form.TagEditControl.GetDataSource(tag);
