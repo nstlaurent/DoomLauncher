@@ -25,7 +25,7 @@ namespace DoomLauncher
 
                 var items = from file in files
                             join sp in sourcePorts on file.SourcePortID equals sp.SourcePortID
-                            select new { Description = file.Description, DateCreated = file.DateCreated, SourcePortName = sp.Name, FileData = file };
+                            select new { file.Description, file.DateCreated, SourcePortName = sp.Name, FileData = file };
 
                 dgvMain.DataSource = items.ToList();
                 dgvMain.ContextMenuStrip = m_menu;
@@ -122,12 +122,14 @@ namespace DoomLauncher
 
         private static FileData CreateNewFileDataSource(FileDetailsEditForm detailsForm, FileInfo fi, FileType type, IGameFile gameFile)
         {
-            FileData fileData = new FileData();
-            fileData.FileName = string.Concat(Guid.NewGuid(), fi.Extension);
-            fileData.FileTypeID = type;
-            fileData.GameFileID = gameFile.GameFileID.Value;
-            fileData.Description = detailsForm.Description;
-            fileData.SourcePortID = detailsForm.SourcePort.SourcePortID;
+            FileData fileData = new FileData
+            {
+                FileName = string.Concat(Guid.NewGuid(), fi.Extension),
+                FileTypeID = type,
+                GameFileID = gameFile.GameFileID.Value,
+                Description = detailsForm.Description,
+                SourcePortID = detailsForm.SourcePort.SourcePortID
+            };
             return fileData;
         }
 

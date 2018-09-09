@@ -94,8 +94,7 @@ namespace DoomLauncher
         private void btnAddFile_Click(object sender, EventArgs e)
         {
             AdditionalFilesEventArgs args = new AdditionalFilesEventArgs(null);
-            if (NewItemNeeded != null)
-                NewItemNeeded(this, args);
+            NewItemNeeded?.Invoke(this, args);
 
             if (args.NewItems != null)
             {
@@ -110,15 +109,13 @@ namespace DoomLauncher
             if (item != null)
             {
                 AdditionalFilesEventArgs cancelEvent = new AdditionalFilesEventArgs(item);
-                if (ItemRemoving != null)
-                    ItemRemoving(this, cancelEvent);
+                ItemRemoving?.Invoke(this, cancelEvent);
 
                 if (!cancelEvent.Cancel)
                 {
                     m_files.Remove(item);
                     Rebind();
-                    if (ItemRemoved != null)
-                        ItemRemoved(this, new AdditionalFilesEventArgs(item));
+                    ItemRemoved?.Invoke(this, new AdditionalFilesEventArgs(item));
                 }
             }
         }

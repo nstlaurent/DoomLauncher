@@ -74,10 +74,12 @@ namespace DoomLauncher
             {            
                 foreach (var item in columnFields)
                 {
-                    DataGridViewColumn col = new DataGridViewTextBoxColumn();
-                    col.HeaderText = item.Title;
-                    col.Name = item.DataKey;
-                    col.DataPropertyName = item.DataKey;
+                    DataGridViewColumn col = new DataGridViewTextBoxColumn
+                    {
+                        HeaderText = item.Title,
+                        Name = item.DataKey,
+                        DataPropertyName = item.DataKey
+                    };
                     dgvMain.Columns.Add(col);
                     m_orderLookup.Add(item.DataKey.ToLower(), col);
                 }
@@ -256,9 +258,7 @@ namespace DoomLauncher
                 else
                     sortOrder = "DESC";
 
-                BindingListView<GameFile> source = m_datasource as BindingListView<GameFile>;
-
-                if (source != null)
+                if (m_datasource is BindingListView<GameFile> source)
                 {
                     source.ApplySort(string.Concat(dgvcSet.Name, " ", sortOrder));
                     dgvMain.Invalidate();
@@ -311,10 +311,7 @@ namespace DoomLauncher
                 dgvMain.Rows[e.RowIndex].Selected = true;
                 dgvMain.Rows[e.RowIndex].Cells[0].Selected = true;
 
-                if (SelectionChange != null)
-                {
-                    SelectionChange(this, new EventArgs());
-                }
+                SelectionChange?.Invoke(this, new EventArgs());
                 m_setting = false;
             }
         }
@@ -361,18 +358,12 @@ namespace DoomLauncher
 
         private void dgvMain_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (RowContentDoubleClicked != null)
-            {
-                RowContentDoubleClicked(this, new EventArgs());
-            }
+            RowContentDoubleClicked?.Invoke(this, new EventArgs());
         }
 
         private void dgvMain_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (RowDoubleClicked != null)
-            {
-                RowDoubleClicked(this, new EventArgs());
-            }
+            RowDoubleClicked?.Invoke(this, new EventArgs());
         }
 
         public void SetColumnWidth(string key, int width)
@@ -455,14 +446,12 @@ namespace DoomLauncher
 
         private void dgvMain_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (GridKeyPress != null)
-                GridKeyPress(this, e);
+            GridKeyPress?.Invoke(this, e);
         }
 
         private void dgvMain_KeyDown(object sender, KeyEventArgs e)
         {
-            if (GridKeyDown != null)
-                GridKeyDown(this, e);
+            GridKeyDown?.Invoke(this, e);
         }
     }
 }

@@ -27,22 +27,28 @@ namespace DoomLauncher
             dgvTags.AutoGenerateColumns = false;
             dgvTags.DefaultCellStyle.SelectionBackColor = Color.Gray;
 
-            DataGridViewColumn col = new DataGridViewTextBoxColumn();
-            col.HeaderText = "Name";
-            col.Name = "Name";
-            col.DataPropertyName = "Name";
+            DataGridViewColumn col = new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Name = "Name",
+                DataPropertyName = "Name"
+            };
             dgvTags.Columns.Add(col);
 
-            col = new DataGridViewTextBoxColumn();
-            col.HeaderText = "Display Tab";
-            col.Name = "HasTab";
-            col.DataPropertyName = "HasTab";
+            col = new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Display Tab",
+                Name = "HasTab",
+                DataPropertyName = "HasTab"
+            };
             dgvTags.Columns.Add(col);
 
-            col = new DataGridViewTextBoxColumn();
-            col.HeaderText = "Display Color";
-            col.Name = "HasColor";
-            col.DataPropertyName = "HasColor";
+            col = new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Display Color",
+                Name = "HasColor",
+                DataPropertyName = "HasColor"
+            };
             dgvTags.Columns.Add(col);
 
             col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -71,8 +77,10 @@ namespace DoomLauncher
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            TagEditForm form = new TagEditForm();
-            form.StartPosition = FormStartPosition.CenterParent;
+            TagEditForm form = new TagEditForm
+            {
+                StartPosition = FormStartPosition.CenterParent
+            };
 
             if (form.ShowDialog(this) == DialogResult.OK)
             {
@@ -105,14 +113,12 @@ namespace DoomLauncher
         {
             if (dgvTags.SelectedRows.Count > 0)
             {
-                ITagData tag = dgvTags.SelectedRows[0].DataBoundItem as ITagData;
-
-                if (tag != null)
+                if (dgvTags.SelectedRows[0].DataBoundItem is ITagData tag)
                 {
                     TagEditForm form = new TagEditForm();
                     form.TagEditControl.SetDataSource(tag);
                     form.StartPosition = FormStartPosition.CenterParent;
-                    
+
                     if (form.ShowDialog(this) == DialogResult.OK)
                     {
                         form.TagEditControl.GetDataSource(tag);
@@ -148,9 +154,7 @@ namespace DoomLauncher
             if (dgvTags.SelectedRows.Count > 0 && MessageBox.Show(this, "Are you sure you want to delete this tag?", 
                 "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
-                ITagData tag = dgvTags.SelectedRows[0].DataBoundItem as ITagData;
-
-                if (tag != null)
+                if (dgvTags.SelectedRows[0].DataBoundItem is ITagData tag)
                 {
                     m_adapter.DeleteTag(tag);
                     m_adapter.DeleteTagMapping(tag.TagID);

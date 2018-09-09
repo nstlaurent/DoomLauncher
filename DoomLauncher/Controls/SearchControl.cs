@@ -27,14 +27,12 @@ namespace DoomLauncher
 
         private void TxtSearch_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (SearchTextKeyPreviewDown != null)
-                SearchTextKeyPreviewDown(this, e);
+            SearchTextKeyPreviewDown?.Invoke(this, e);
         }
 
         void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            if (SearchTextChanged != null)
-                SearchTextChanged(this, e);
+            SearchTextChanged?.Invoke(this, e);
         }
 
         public void SetSearchFilter(string item, bool check)
