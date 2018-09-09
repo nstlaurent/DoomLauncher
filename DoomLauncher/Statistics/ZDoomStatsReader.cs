@@ -35,7 +35,7 @@ namespace DoomLauncher
         private readonly string m_dir;
         private NewFileDetector m_detector;
         private Timer m_checkTimer;
-        private readonly List<IStatsData> m_statistics;
+        private readonly List<IStatsData> m_statistics = new List<IStatsData>();
         private readonly List<string> m_errors = new List<string>();
 
         public ZDoomStatsReader(IGameFile gameFile, string directory, IEnumerable<IStatsData> existingStats)
@@ -186,7 +186,9 @@ namespace DoomLauncher
             List<StatsData> stats = new List<StatsData>();
             JObject obj = JsonConvert.DeserializeObject(stream.ReadToEnd()) as JObject;
 
-            if (obj.GetValue("statistics") is JObject statsource)
+            var statsource = obj.GetValue("statistics") as JObject;
+
+            if (statsource != null)
             {
                 var levels = statsource.GetValue("levels");
 
@@ -275,7 +277,7 @@ namespace DoomLauncher
             }
         }
 
-        private static readonly int s_endianCheck = 0x0000FFFF; //if bytes are set on the other side, then it must be stored backwards
+        private static int s_endianCheck = 0x0000FFFF; //if bytes are set on the other side, then it must be stored backwards
 
         private LevelCount CheckLevelCount(LevelCount count)
         {
@@ -305,18 +307,16 @@ namespace DoomLauncher
             UInt32 leveltime, string name)
         {
             float calctime = Convert.ToSingle(leveltime) / 35.0f;
-            StatsData stats = new StatsData
-            {
-                RecordTime = DateTime.Now,
-                TotalKills = (int)totalkills,
-                KillCount = (int)killcount,
-                TotalItems = (int)totalitems,
-                ItemCount = (int)itemcount,
-                TotalSecrets = (int)totalsecrets,
-                SecretCount = (int)secretcount,
-                LevelTime = calctime,
-                MapName = name
-            };
+            StatsData stats = new StatsData();
+            stats.RecordTime = DateTime.Now;
+            stats.TotalKills = (int)totalkills;
+            stats.KillCount = (int)killcount;
+            stats.TotalItems = (int)totalitems;
+            stats.ItemCount = (int)itemcount;
+            stats.TotalSecrets = (int)totalsecrets;
+            stats.SecretCount = (int)secretcount;
+            stats.LevelTime = calctime;
+            stats.MapName = name;
 
             return stats;
         }
@@ -324,16 +324,14 @@ namespace DoomLauncher
         private static StatsData CreateBinaryStatsDataSource(UInt32 totalkills, UInt32 killcount, UInt32 totalsecrets, UInt32 secretcount, UInt32 leveltime, string name)
         {
             float calctime = Convert.ToSingle(leveltime) / 35.0f;
-            StatsData stats = new StatsData
-            {
-                RecordTime = DateTime.Now,
-                TotalKills = (int)totalkills,
-                KillCount = (int)killcount,
-                TotalSecrets = (int)totalsecrets,
-                SecretCount = (int)secretcount,
-                LevelTime = calctime,
-                MapName = name
-            };
+            StatsData stats = new StatsData();
+            stats.RecordTime = DateTime.Now;
+            stats.TotalKills = (int)totalkills;
+            stats.KillCount = (int)killcount;
+            stats.TotalSecrets = (int)totalsecrets;
+            stats.SecretCount = (int)secretcount;
+            stats.LevelTime = calctime;
+            stats.MapName = name;
 
             return stats;
         }

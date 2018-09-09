@@ -93,7 +93,7 @@ namespace DoomLauncher
             }
         }
 
-        private static readonly ParseItem[] s_regexItems = new ParseItem[]
+        private static ParseItem[] s_regexItems = new ParseItem[]
         {
             new ParseItem(@"^\S+-", "-", "MapName"),
             new ParseItem(@"-\S+:\S+\(", "-(", "LevelTime"),

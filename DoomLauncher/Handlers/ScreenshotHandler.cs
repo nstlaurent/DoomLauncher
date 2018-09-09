@@ -29,13 +29,11 @@ namespace DoomLauncher
                         FileInfo fi = new FileInfo(file);
                         string fileName = Guid.NewGuid().ToString() + fi.Extension;
                         fi.CopyTo(Path.Combine(ScreenshotDirectory.GetFullPath(), fileName));
-                        FileData fileData = new FileData
-                        {
-                            FileName = fileName,
-                            GameFileID = gameFile.GameFileID.Value,
-                            SourcePortID = sourcePort.SourcePortID,
-                            FileTypeID = FileType.Screenshot
-                        };
+                        FileData fileData = new FileData();
+                        fileData.FileName = fileName;
+                        fileData.GameFileID = gameFile.GameFileID.Value;
+                        fileData.SourcePortID = sourcePort.SourcePortID;
+                        fileData.FileTypeID = FileType.Screenshot;
 
                         DataSourceAdapter.InsertFile(fileData);
                         ret.Add(fileData);

@@ -29,9 +29,10 @@ namespace DoomLauncher
 
         private TabPage CreateTabPage(ITabView tab)
         {
+            Control ctrl = tab as Control;
             TabPage page = new TabPage(tab.Title);
 
-            if (tab is Control ctrl)
+            if (ctrl != null)
             {
                 page.Controls.Add(ctrl);
                 ctrl.Dock = DockStyle.Fill;
