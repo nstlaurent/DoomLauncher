@@ -126,12 +126,10 @@ namespace DoomLauncher
             {
                 foreach (Tuple<string, string> item in columnFields)
                 {
-                    DataGridViewColumn col = new DataGridViewTextBoxColumn
-                    {
-                        HeaderText = item.Item2,
-                        Name = item.Item1,
-                        DataPropertyName = item.Item1
-                    };
+                    DataGridViewColumn col = new DataGridViewTextBoxColumn();
+                    col.HeaderText = item.Item2;
+                    col.Name = item.Item1;
+                    col.DataPropertyName = item.Item1;
                     dgvMain.Columns.Add(col);
                 }
 

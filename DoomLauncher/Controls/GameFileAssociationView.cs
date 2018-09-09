@@ -37,7 +37,8 @@ namespace DoomLauncher
 
         private void CtrlScreenshotView_RequestScreenshots(object sender, RequestScreenshotsEventArgs e)
         {
-            RequestScreenshots?.Invoke(this, e);
+            if (RequestScreenshots != null)
+                RequestScreenshots(this, e);
         }
 
         public void SetScreenshots(List<IFileData> screenshots)
@@ -204,7 +205,8 @@ namespace DoomLauncher
             {
                 SetData(m_gameFile);
 
-                FileOrderChanged?.Invoke(this, new EventArgs());
+                if (FileOrderChanged != null)
+                    FileOrderChanged(this, new EventArgs());
             }
         }
 
@@ -224,7 +226,8 @@ namespace DoomLauncher
             {
                 SetData(m_gameFile);
 
-                FileOrderChanged?.Invoke(this, new EventArgs());
+                if (FileOrderChanged != null)
+                    FileOrderChanged(this, new EventArgs());
             }
         }
 

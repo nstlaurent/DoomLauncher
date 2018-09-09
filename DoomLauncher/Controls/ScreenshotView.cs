@@ -68,7 +68,8 @@ namespace DoomLauncher
 
             if (gameFile != null && gameFile.GameFileID.HasValue)
             {
-                RequestScreenshots?.Invoke(this, new RequestScreenshotsEventArgs(gameFile));
+                if (RequestScreenshots != null)
+                    RequestScreenshots(this, new RequestScreenshotsEventArgs(gameFile));
             }
         }
 
@@ -159,7 +160,9 @@ namespace DoomLauncher
 
         private void HandleClick(object sender)
         {
-            if (sender is PictureBox pb && m_lookup.ContainsKey(pb))
+            PictureBox pb = sender as PictureBox;
+
+            if (pb != null && m_lookup.ContainsKey(pb))
             {
                 foreach (PictureBox pbSet in m_lookup.Keys)
                 {

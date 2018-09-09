@@ -67,12 +67,10 @@ namespace DoomLauncher
 
         private DownloadViewItem CreateDownloadViewItem(string text)
         {
-            DownloadViewItem item = new DownloadViewItem
-            {
-                Dock = DockStyle.Fill,
-                Key = text,
-                DisplayText = text
-            };
+            DownloadViewItem item = new DownloadViewItem();
+            item.Dock = DockStyle.Fill;
+            item.Key = text;
+            item.DisplayText = text;
             item.Cancelled += item_Cancelled;
 
             item.ContextMenuStrip = menuOptions;
@@ -87,7 +85,9 @@ namespace DoomLauncher
 
         void item_Cancelled(object sender, EventArgs e)
         {
-            if (sender is DownloadViewItem item)
+            DownloadViewItem item = sender as DownloadViewItem;
+
+            if (item != null)
             {
                 HandleItemCancel(item);
             }
@@ -193,7 +193,9 @@ namespace DoomLauncher
 
         private void removeFromHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (menuOptions.SourceControl is DownloadViewItem item)
+            DownloadViewItem item = menuOptions.SourceControl as DownloadViewItem;
+
+            if (item != null)
             {
                 RemoveDownloadRow(item);
                 object key = GetKey(item);
