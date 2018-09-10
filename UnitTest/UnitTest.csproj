@@ -78,6 +78,7 @@
     <Compile Include="Tests\TestCldDemoParser.cs" />
     <Compile Include="Tests\TestLauncherPath.cs" />
     <Compile Include="Tests\TestWadReader.cs" />
+    <Compile Include="Tests\TestDirectoryAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DoomLauncher\DoomLauncher.csproj">
