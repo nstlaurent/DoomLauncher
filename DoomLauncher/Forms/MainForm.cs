@@ -951,7 +951,7 @@ namespace DoomLauncher
             form.SourcePortLaunched += form_SourcePortLaunched;
 
             if (initSetup)
-                form.DisplayInitSetupButton(true);
+                form.DisplayInitSetupButton();
 
             form.ShowDialog(this);
         }

@@ -39,26 +39,19 @@ namespace DoomLauncher
             dgvSourcePorts.Columns[dgvSourcePorts.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
-        public void DisplayInitSetupButton(bool set)
+        public void DisplayInitSetupButton()
         {
             IsInitSetup = true;
 
-            if (set)
-            {
-                btnLaunch.ForeColor = Color.DarkGreen;
-                btnLaunch.Text = "Next >>";
-            }
-            else
-            {
-                btnLaunch.ForeColor = Color.Black;
-                btnLaunch.Text = "Play";
-            }
+            btnNext.ForeColor = Color.DarkGreen;
+            btnNext.Text = "Next >>";
+            btnNext.Visible = true;
         }
 
         private bool IsInitSetup { get; set; }
         public void ShowPlayButton(bool set)
         {
-            btnLaunch.Visible = set;
+            btnNext.Visible = set;
         }
 
         private void ResetData()
