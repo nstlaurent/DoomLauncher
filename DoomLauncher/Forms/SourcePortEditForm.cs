@@ -82,11 +82,12 @@ namespace DoomLauncher
         private void btnSave_Click(object sender, EventArgs e)
         {
             string err = null;
+            string type = GetTypeString();
 
             if (string.IsNullOrEmpty(sourcePortEdit1.SourcePortName))
-                err = "Please enter a name for the source port.";
+                err = string.Format("Please enter a name for the {0}.", type);
             if (string.IsNullOrEmpty(sourcePortEdit1.SourcePortExec))
-                err = "Please select an executable for the source port.";
+                err = string.Format("Please select an executable for the {0}.", type);
 
             if (!string.IsNullOrEmpty(err))
             {
@@ -97,6 +98,14 @@ namespace DoomLauncher
             {
                 DialogResult = DialogResult.OK;
             }
+        }
+
+        private string GetTypeString()
+        {
+            if (m_type == SourcePortLaunchType.SourcePort)
+                return "source port";
+            else
+                return "utility";
         }
     }
 }
