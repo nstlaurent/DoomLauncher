@@ -143,18 +143,22 @@ namespace DoomLauncher
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (SelectedItem != null && MessageBox.Show(this, "Deleting this source port will orphan demo files and save games associated with it. Are you sure you want to continue?", "Confirm",
+            if (SelectedItem != null && MessageBox.Show(this, GetDeleteConfirm(), "Confirm",
                     MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
-            { 
+            {
                 try
                 {
-                    m_adapter.UpdateGameFiles(GameFileFieldType.SourcePortID, GameFileFieldType.SourcePortID, SelectedItem.SourcePortID, null);
-                    m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1);
+                    if (m_launchType == SourcePortLaunchType.SourcePort)
+                    {
+                        m_adapter.UpdateGameFiles(GameFileFieldType.SourcePortID, GameFileFieldType.SourcePortID, SelectedItem.SourcePortID, null);
+                        m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1);
+                    }
+
                     m_adapter.DeleteSourcePort(SelectedItem);
                 }
-                catch(IOException)
+                catch (IOException)
                 {
-                    MessageBox.Show(this, "This source port appears to be in use and cannot be deleted.", "Error",
+                    MessageBox.Show(this, "This file appears to be in use and cannot be deleted.", "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception ex)
@@ -162,8 +166,16 @@ namespace DoomLauncher
                     Util.DisplayUnexpectedException(this, ex);
                 }
 
-                SetDataSource(m_adapter.GetSourcePorts());
+                ResetData();
             }
+        }
+
+        private string GetDeleteConfirm()
+        {
+            if (m_launchType == SourcePortLaunchType.SourcePort)
+                return "Deleting this source port will orphan demo files and save games associated with it. Are you sure you want to continue?";
+            else
+                return "Are you sure you want to delete this utility?";
         }
 
         private void btnLaunch_Click(object sender, EventArgs e)
