@@ -1011,8 +1011,8 @@ namespace DoomLauncher
                 }
                 catch (DirectoryNotFoundException ex)
                 {
-                    MessageBox.Show(this, string.Format("The directory {0} was not found. DoomLauncher will not operate correctly with invalid paths. Make sure the directory you are setting contains all folders required (GameWads, Screenshots, SaveGames, Demos, Temp)", 
-                        ex.Message), 
+                    MessageBox.Show(this, string.Format("The directory {0} was not found. DoomLauncher will not operate correctly with invalid paths. " +
+                        "Make sure the directory you are setting contains all folders required (Demos, SaveGames, Screenshots, Temp)", ex.Message), 
                         "Invalid Directory",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
