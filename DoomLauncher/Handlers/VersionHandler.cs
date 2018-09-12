@@ -36,7 +36,7 @@ namespace DoomLauncher
         {
             AppVersion version = GetVersion();
 
-            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_3_1)
+            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_3_2)
             {
                 return true;
             }
@@ -71,6 +71,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_6_0, AppVersion.Version_2_6_0);
                 ExecuteUpdate(Pre_2_6_3, AppVersion.Version_2_6_3);
                 ExecuteUpdate(Pre_2_6_3_1, AppVersion.Version_2_6_3_1);
+                ExecuteUpdate(Pre_2_6_3_2, AppVersion.Version_2_6_3_2);
             }
         }
 
@@ -446,6 +447,11 @@ namespace DoomLauncher
                     adapter.UpdateGameFile(gameFile);
                 }
             }
+        }
+
+        private void Pre_2_6_3_2()
+        {
+            DataAccess.ExecuteNonQuery("update SourcePorts set FileOption = '-file' where LaunchType = 0");
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)
