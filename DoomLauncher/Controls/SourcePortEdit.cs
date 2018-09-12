@@ -43,6 +43,9 @@ namespace DoomLauncher
             m_directory = sourcePort.Directory.GetPossiblyRelativePath();
             m_exec = sourcePort.Executable;
 
+            txtName.Text = txtExec.Text = txtExtensions.Text = txtFileOption.Text
+                = txtParameters.Text = string.Empty;
+
             if (!string.IsNullOrEmpty(sourcePort.Name)) 
                 txtName.Text = sourcePort.Name;
             if (sourcePort.Directory != null && sourcePort.Executable != null) 
@@ -53,8 +56,6 @@ namespace DoomLauncher
                 txtFileOption.Text = sourcePort.FileOption;
             if (!string.IsNullOrEmpty(sourcePort.ExtraParameters))
                 txtParameters.Text = sourcePort.ExtraParameters;
-            else
-                txtFileOption.Text = string.Empty;
         }
 
         public void UpdateDataSource(ISourcePort sourcePort)
