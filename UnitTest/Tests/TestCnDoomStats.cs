@@ -11,7 +11,7 @@ namespace UnitTest.Tests
     public class TestCnDoomStats
     {
         private readonly List<NewStatisticsEventArgs> m_args = new List<NewStatisticsEventArgs>();
-
+        [Ignore]
         [TestMethod]
         public void TestCnDoomStatFile()
         {
