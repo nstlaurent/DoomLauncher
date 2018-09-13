@@ -102,6 +102,7 @@
             // 
             // clbFiles
             // 
+            this.clbFiles.CheckOnClick = true;
             this.clbFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.clbFiles.FormattingEnabled = true;
             this.clbFiles.Location = new System.Drawing.Point(3, 83);
