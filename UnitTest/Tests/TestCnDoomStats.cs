@@ -17,14 +17,14 @@ namespace UnitTest.Tests
         {
             string file = @"                       Competition Doom 2.0.3.2
 Z_Init: Init zone memory allocation daemon. 
-zone memory: 04D23020, 2000000 allocated for zone
+zone memory: 029C0020, 2000000 allocated for zone
 V_Init: allocate screens.
 M_LoadDefaults: Load system defaults.
 saving config in default.cfg
 W_Init: Init WADfiles.
  adding C:\DoomLauncher\GameFiles\Temp\DOOM.WAD
 ===========================================================================
-                            DOOM Shareware
+                           The Ultimate DOOM
 ===========================================================================
  Competition Doom is free software, covered by the GNU General Public
  License.  There is NO warranty; not even for MERCHANTABILITY or FITNESS
@@ -32,32 +32,34 @@ W_Init: Init WADfiles.
  copies under certain conditions. See the source for more information.
 ===========================================================================
 I_Init: Setting up machine state.
-OPL_Init: Using driver 'SDL'.
 NET_Init: Init network subsystem.
 M_Init: Init miscellaneous info.
-R_Init: Init DOOM refresh daemon - ...................
+R_Init: Init DOOM refresh daemon - ..........................
 P_Init: Init Playloop state.
 S_Init: Setting up sound.
 D_CheckNetGame: Checking network game status.
 startskill 2  deathmatch: 0  startmap: 1  startepisode: 1
 player 1 of 1 (1 nodes)
-Emulating the behavior of the 'Doom 1.9' executable.
+Emulating the behavior of the 'Ultimate Doom' executable.
 HU_Init: Setting up heads up display.
 ST_Init: Init status bar.
+I_InitGraphics: Windowboxed (1280x960 within 1920x1080)
+I_InitStretchTables: Generating lookup tables....
+I_InitGraphics: Windowboxed (1280x960 within 1920x1080)
 
 ### E1M1 ######################################
 #                                             #
-#   Time:  00:37.11       Kills:     5/6      #
-#  Items:     6/37      Secrets:     1/3      #
+#   Time:  00:22.57       Kills:     3/6      #
+#  Items:     8/37      Secrets:     1/3      #
 #                                             #
-################### Total time: 00:00:37.11 ###
+################### Total time: 00:00:22.57 ###
 
 ### E1M2 ######################################
 #                                             #
-#   Time:  00:59.89       Kills:    13/41     #
-#  Items:     1/42      Secrets:     0/6      #
+#   Time:  00:45.20       Kills:     4/41     #
+#  Items:     6/42      Secrets:     3/6      #
 #                                             #
-################### Total time: 00:01:37.00 ###
+################### Total time: 00:01:07.77 ###
 ";
 
             CNDoomStatsReader statsReader = new CNDoomStatsReader(new GameFile() { GameFileID = 1 }, "stdout.txt");
@@ -68,28 +70,28 @@ ST_Init: Init status bar.
             Assert.AreEqual(2, m_args.Count);
 
             Assert.AreEqual("e1m1", m_args[0].Statistics.MapName.ToLower());
-            Assert.AreEqual(5, m_args[0].Statistics.KillCount);
+            Assert.AreEqual(3, m_args[0].Statistics.KillCount);
             Assert.AreEqual(6, m_args[0].Statistics.TotalKills);
 
-            Assert.AreEqual(6, m_args[0].Statistics.ItemCount);
+            Assert.AreEqual(8, m_args[0].Statistics.ItemCount);
             Assert.AreEqual(37, m_args[0].Statistics.TotalItems);
 
             Assert.AreEqual(1, m_args[0].Statistics.SecretCount);
             Assert.AreEqual(3, m_args[0].Statistics.TotalSecrets);
 
-            Assert.AreEqual(37.11f, m_args[0].Statistics.LevelTime);
+            Assert.AreEqual(22.57f, m_args[0].Statistics.LevelTime);
 
             Assert.AreEqual("e1m2", m_args[1].Statistics.MapName.ToLower());
-            Assert.AreEqual(13, m_args[1].Statistics.KillCount);
+            Assert.AreEqual(4, m_args[1].Statistics.KillCount);
             Assert.AreEqual(41, m_args[1].Statistics.TotalKills);
 
-            Assert.AreEqual(1, m_args[1].Statistics.ItemCount);
+            Assert.AreEqual(6, m_args[1].Statistics.ItemCount);
             Assert.AreEqual(42, m_args[1].Statistics.TotalItems);
 
-            Assert.AreEqual(0, m_args[1].Statistics.SecretCount);
+            Assert.AreEqual(3, m_args[1].Statistics.SecretCount);
             Assert.AreEqual(6, m_args[1].Statistics.TotalSecrets);
 
-            Assert.AreEqual(59.89f, m_args[1].Statistics.LevelTime);
+            Assert.AreEqual(45.20f, m_args[1].Statistics.LevelTime);
         }
 
         private void StatsReader_NewStastics(object sender, NewStatisticsEventArgs e)

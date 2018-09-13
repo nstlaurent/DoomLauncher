@@ -33,7 +33,7 @@ namespace DoomLauncherRelease
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Concat("Relase failure: ", ex.Message, Environment.NewLine, ex.StackTrace));
+                Console.WriteLine(string.Concat("Release failure: ", ex.Message, Environment.NewLine, ex.StackTrace));
                 return -1;
             }
         }
