@@ -41,7 +41,7 @@
             this.btnNew = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
-            this.btnLaunch = new System.Windows.Forms.Button();
+            this.btnNext = new System.Windows.Forms.Button();
             this.tblMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSourcePorts)).BeginInit();
             this.tableLayoutPanelDB1.SuspendLayout();
@@ -110,7 +110,7 @@
             this.tableLayoutPanelDB1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanelDB1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanelDB1.Controls.Add(this.flpButtons, 0, 0);
-            this.tableLayoutPanelDB1.Controls.Add(this.btnLaunch, 1, 0);
+            this.tableLayoutPanelDB1.Controls.Add(this.btnNext, 1, 0);
             this.tableLayoutPanelDB1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelDB1.Location = new System.Drawing.Point(0, 410);
             this.tableLayoutPanelDB1.Margin = new System.Windows.Forms.Padding(0);
@@ -163,17 +163,18 @@
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // btnLaunch
+            // btnNext
             // 
-            this.btnLaunch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLaunch.Location = new System.Drawing.Point(543, 3);
-            this.btnLaunch.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
-            this.btnLaunch.Name = "btnLaunch";
-            this.btnLaunch.Size = new System.Drawing.Size(75, 23);
-            this.btnLaunch.TabIndex = 3;
-            this.btnLaunch.Text = "Play";
-            this.btnLaunch.UseVisualStyleBackColor = true;
-            this.btnLaunch.Click += new System.EventHandler(this.btnLaunch_Click);
+            this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNext.Location = new System.Drawing.Point(543, 3);
+            this.btnNext.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(75, 23);
+            this.btnNext.TabIndex = 3;
+            this.btnNext.Text = "Next";
+            this.btnNext.UseVisualStyleBackColor = true;
+            this.btnNext.Visible = false;
+            this.btnNext.Click += new System.EventHandler(this.btnLaunch_Click);
             // 
             // SourcePortViewForm
             // 
@@ -205,6 +206,6 @@
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
-        private System.Windows.Forms.Button btnLaunch;
+        private System.Windows.Forms.Button btnNext;
     }
 }

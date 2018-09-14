@@ -13,6 +13,12 @@ namespace DoomLauncher
 {
     public class DirectoryDataSourceAdapter : IGameFileDataSourceAdapter, IIWadDataSourceAdapter
     {
+        public DirectoryDataSourceAdapter(LauncherPath gameFileDirectory)
+            : this(gameFileDirectory, new string[] { })
+        {
+
+        }
+
         public DirectoryDataSourceAdapter(LauncherPath gameFileDirectory, string[] dateParseFormats)
         {
             GameFileDirectory = gameFileDirectory;
@@ -27,7 +33,7 @@ namespace DoomLauncher
 
         public IEnumerable<string> GetGameFileNames()
         {
-            return Directory.GetFiles(GameFileDirectory.GetFullPath());
+            return Directory.GetFiles(GameFileDirectory.GetFullPath()).Select(x => Path.GetFileName(x));
         }
 
         public IGameFile GetGameFile(string fileName)
@@ -47,7 +53,10 @@ namespace DoomLauncher
 
         public IEnumerable<IGameFile> GetGameFiles(IGameFileGetOptions options)
         {
-            int limit = options.Limit.HasValue ? options.Limit.Value : -1;
+            int limit = -1;
+
+            if (options != null && options.Limit.HasValue)
+                limit =  options.Limit.Value;
 
             List<IGameFile> ret = new List<IGameFile>();
             DirectoryInfo dir = new DirectoryInfo(GameFileDirectory.GetFullPath());
@@ -162,6 +171,10 @@ namespace DoomLauncher
             catch(InvalidDataException)
             {
                 gameFile = null;
+            }
+            finally
+            {
+                za.Dispose();
             }
 
             return gameFile;
