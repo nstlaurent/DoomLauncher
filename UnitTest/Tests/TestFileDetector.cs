@@ -95,7 +95,10 @@ namespace UnitTest.Tests
 
             m_detector.StartDetection();
 
+            //Modified only has resolution of seconds so we have to wait a sec until updating
+            System.Threading.Thread.Sleep(1000);
             UpdateTestFile("test4.zds");
+
             Assert.AreEqual(0, m_detector.GetNewFiles().Length);
             Assert.AreEqual(1, m_detector.GetModifiedFiles().Length);
             Assert.IsTrue(ContainsFile(m_detector.GetModifiedFiles(), "test4.zds"));
