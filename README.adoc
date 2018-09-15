@@ -1,11 +1,12 @@
 = Doom Launcher
 
+https://ci.appveyor.com/project/hobomaster22/doomlauncher[image:https://ci.appveyor.com/api/projects/status/oxi7y7uwf9enqncm?svg=true[Build status]]
+
 Doom Launcher is a _Doom_ frontend that serves as a database for
-all your _Doom_ engine games, custom WADs, PK3s, and source ports.
-Startup Doom Launcher to start having all your files in
-one place. For convenience, you can download files from
-https://www.doomworld.com/idgames/[/idgames] in the launcher,
-similar to https://www.quaddicted.com/tools/quake_injector[Quake Injector].
+all your _Doom_ engine games, custom WADs, PK3s, and source ports. 
+Start having all your files in one place. For convenience, you can
+download files from https://www.doomworld.com/idgames/[/idgames] in the
+launcher, similar to https://www.quaddicted.com/tools/quake_injector[Quake Injector].
 
 Doom Launcher is packed with features, including:
 
@@ -16,8 +17,14 @@ from the included textfile.
 * Importing screenshots directly from the sourceport into the database.
 * Maintaining demos and savegames (DSG and ZDS supported).
 * Scans files for map lump names (e.g. E4M3, MAP20, STR20).
-* Add any sourceports to the database.
+* Add any source ports to the database.
+* Launch source ports with parameters specifically
+configured for them.
+* Add and preview launch parameters for selected
+file(s).
 * Selecting specific files within a ZIP file.
+* Automatically load ZIP files when selecting an IWAD
+or source port you have configured the file with.
 * Tagging mods with custom unlimited colored tags.
 * Shows play-statistics (killed monsters, collected items, play time).
 Supported source ports includes ZDoom, PrBoom+, and CNDoom (Competition
@@ -30,19 +37,19 @@ you have any concerns on some features or find out something you may not
 be aware of.
 
 Doom Launcher is written by Hobomaster22 in C# and requires .NET 4.5.
-If you want to report bugs or suggest features, submit issues to
-the GitHub repository. To contribute to Doom Launcher, fork a
-copy of the repository and submit your changes via a pull request.
+If you want to a report bug or suggest a feature, submit an issue to
+the GitHub repository.
 
 == Building Doom Launcher
 To build Doom Launcher, download a copy of the repository and open up
-the Solution file on Visual Studio (preferably using Visual Studio
-14 toolsets). From there you can make your changes and test them
-before contributing to the repository or tweaking the launcher
-with your own personal preferences.
+the Solution file on Visual Studio. Currently Visual Studio 14 toolsets
+can be used. From there you can make your changes and test them
+before submitting your changes or tweaking the launcher with your
+own personal preferences.
 
-Doom Launcher currently supports Windows 7 or above, so Windows XP
-won't work. Mac and Linux are unsupported.
+Doom Launcher currently supports Windows 7 or above. Older Windows
+operating systems will not run Doom Launcher. Mac and Linux are
+unsupported.
 
 == Development Tools
 

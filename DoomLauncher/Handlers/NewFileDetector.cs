@@ -42,6 +42,9 @@ namespace DoomLauncher
             return new string[] { };
         }
 
+        /// <summary>
+        /// Only has a resolution of 1 second, if file is created and modified in the same second it will not be flagged as modified
+        /// </summary>
         public string[] GetModifiedFiles()
         {
             if (BaseFiles != null && Directory != null)

@@ -26,7 +26,8 @@ namespace UnitTest.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            Directory.Delete(s_testFileDir, true);
+            if (Directory.Exists(s_testFileDir))
+                Directory.Delete(s_testFileDir, true);
         }
 
         private static void CreateTestFile(string filename)
@@ -72,41 +73,43 @@ namespace UnitTest.Tests
         [TestMethod]
         public void TestNewWithExisting()
         {
-            CreateTestFile("test1.zds");
-            CreateTestFile("test1.dsg");
+            CreateTestFile("test2.zds");
+            CreateTestFile("test2.dsg");
 
             m_detector.StartDetection();
 
             Assert.AreEqual(0, m_detector.GetNewFiles().Length);
             Assert.AreEqual(0, m_detector.GetModifiedFiles().Length);
 
-            CreateTestFile("test2.zds");
+            CreateTestFile("test3.zds");
 
             Assert.AreEqual(1, m_detector.GetNewFiles().Length);
-            Assert.IsTrue(ContainsFile(m_detector.GetNewFiles(), "test2.zds"));
+            Assert.IsTrue(ContainsFile(m_detector.GetNewFiles(), "test3.zds"));
         }
 
-        [Ignore]
         [TestMethod]
         public void TestModified()
         {
-            CreateTestFile("test1.zds");
-            CreateTestFile("test1.dsg");
+            CreateTestFile("test4.zds");
+            CreateTestFile("test4.dsg");
 
             m_detector.StartDetection();
 
-            UpdateTestFile("test1.zds");
+            //Modified only has resolution of seconds so we have to wait a sec until updating
+            System.Threading.Thread.Sleep(1000);
+            UpdateTestFile("test4.zds");
+
             Assert.AreEqual(0, m_detector.GetNewFiles().Length);
             Assert.AreEqual(1, m_detector.GetModifiedFiles().Length);
-            Assert.IsTrue(ContainsFile(m_detector.GetModifiedFiles(), "test1.zds"));
+            Assert.IsTrue(ContainsFile(m_detector.GetModifiedFiles(), "test4.zds"));
 
-            CreateTestFile("test2.zds");
-            UpdateTestFile("test1.dsg");
+            CreateTestFile("test5.zds");
+            UpdateTestFile("test4.dsg");
 
             Assert.AreEqual(1, m_detector.GetNewFiles().Length);
             Assert.AreEqual(2, m_detector.GetModifiedFiles().Length);
-            Assert.IsTrue(ContainsFile(m_detector.GetModifiedFiles(), "test1.dsg"));
-            Assert.IsTrue(ContainsFile(m_detector.GetNewFiles(), "test2.zds"));
+            Assert.IsTrue(ContainsFile(m_detector.GetModifiedFiles(), "test4.dsg"));
+            Assert.IsTrue(ContainsFile(m_detector.GetNewFiles(), "test5.zds"));
         }
     }
 }
