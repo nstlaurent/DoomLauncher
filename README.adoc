@@ -1,6 +1,6 @@
 = Doom Launcher
 
-https://ci.appveyor.com/project/hobomaster22/doomlauncher[image:https://ci.appveyor.com/api/projects/status/github/hobomaster22/doomlauncher?branch=development?svg=true[Build status]]
+https://ci.appveyor.com/project/hobomaster22/doomlauncher[image:https://ci.appveyor.com/api/projects/status/github/hobomaster22/doomlauncher&branch=development?svg=true[Build status]]
 
 Doom Launcher is a _Doom_ frontend that serves as a database for
 all your _Doom_ engine games, custom WADs, PK3s, and source ports. 
