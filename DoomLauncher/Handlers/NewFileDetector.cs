@@ -53,7 +53,8 @@ namespace DoomLauncher
                                   select new { OriginalFile = file, CurrentFile = currentFile };
 
                 return (from file in joinedFiles 
-                        where file.OriginalFile.LastWriteTime != file.CurrentFile.LastWriteTime 
+                        where file.OriginalFile.LastWriteTime != file.CurrentFile.LastWriteTime ||
+                        file.OriginalFile.Length != file.CurrentFile.Length
                         select file.CurrentFile.FullName).ToArray();
             }
 
