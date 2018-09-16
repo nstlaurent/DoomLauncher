@@ -2,10 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
@@ -56,11 +53,6 @@ namespace DoomLauncher
             get { return m_errors.ToArray(); }
         }
 
-        public void Test()
-        {
-            ReadStatistics();
-        }
-
         private static ParseItem[] s_regexItems = new ParseItem[]
         {
             new ParseItem(@"\w+", string.Empty, "MapName"),
@@ -79,8 +71,8 @@ namespace DoomLauncher
             {
                 string statRegex = @"#+\w+#+Time:\d+:\d+.\d+Kills:\d+/\d+#+Items:\d+/\d+Secrets:\d+/\d+";
                 string text = File.ReadAllText(StatFile);
-                text = text.Replace(" ", string.Empty).Replace(Environment.NewLine, string.Empty);
-                MatchCollection matches = Regex.Matches(text, string.Format(statRegex), RegexOptions.Singleline);
+                text = text.Replace(" ", string.Empty).Replace("\r\n", string.Empty).Replace("\n", string.Empty);
+                MatchCollection matches = Regex.Matches(text, statRegex, RegexOptions.Singleline);
 
                 foreach (Match match in matches)
                 {
@@ -103,15 +95,8 @@ namespace DoomLauncher
                         }
                     }
                 }
-
-                //if (matches.Count == 0)
-                //    m_errors.Add(string.Format("The file {0} did not contain any statistics information.", StatFile));
             }
-            catch(FileNotFoundException)
-            {
-                //m_errors.Add(string.Format("The file {0} was not found and could not be parsed.", ex.FileName));
-            }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 m_errors.Add(string.Format("Unexpected exception: {0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
             }
@@ -124,7 +109,7 @@ namespace DoomLauncher
             foreach (ParseItem item in s_regexItems)
             {
                 Match match = Regex.Match(line, item.RegexInput);
-                
+
                 if (match.Success)
                 {
                     line = ReplaceFirst(line, match.Value);
