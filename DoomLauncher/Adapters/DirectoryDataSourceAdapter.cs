@@ -14,15 +14,8 @@ namespace DoomLauncher
     public class DirectoryDataSourceAdapter : IGameFileDataSourceAdapter, IIWadDataSourceAdapter
     {
         public DirectoryDataSourceAdapter(LauncherPath gameFileDirectory)
-            : this(gameFileDirectory, new string[] { })
-        {
-
-        }
-
-        public DirectoryDataSourceAdapter(LauncherPath gameFileDirectory, string[] dateParseFormats)
         {
             GameFileDirectory = gameFileDirectory;
-            DateParseFormats = dateParseFormats.ToArray();
         }
 
         public int GetGameFilesCount()
@@ -41,7 +34,7 @@ namespace DoomLauncher
             FileInfo fi = new FileInfo(Path.Combine(GameFileDirectory.GetFullPath(), fileName));
 
             if (fi.Exists)
-                return FromZipFile(fi);
+                return CreateGameFile(fi);
 
             return null;
         }
@@ -65,7 +58,7 @@ namespace DoomLauncher
             foreach (FileInfo fi in dir.GetFiles())
             {
                 counter++;
-                ret.Add(FromZipFile(fi));
+                ret.Add(CreateGameFile(fi));
 
                 if (limit > -1 && counter == limit)
                     break;
@@ -122,62 +115,12 @@ namespace DoomLauncher
             throw new NotSupportedException();
         }
 
-        private IGameFile FromZipFile(FileInfo fi)
+        private IGameFile CreateGameFile(FileInfo fi)
         {
-            IGameFile gameFile = new GameFile();
-            gameFile.FileName = fi.Name;
-            ZipArchive za = null;
-
-            try
+            return new GameFile()
             {
-                za = ZipFile.OpenRead(fi.FullName);
-            }
-            catch //probably corrupt, delete?
-            {
-                return null;
-            }
-
-            bool bParsedTxt = false;
-
-            try
-            {
-                foreach (ZipArchiveEntry zae in za.Entries)
-                {
-                    FileInfo zipFile = new FileInfo(zae.FullName);
-
-                    if (zipFile.Extension.Equals(".txt", StringComparison.OrdinalIgnoreCase))
-                    {
-                        byte[] buffer = new byte[zae.Length];
-                        zae.Open().Read(buffer, 0, Convert.ToInt32(zae.Length));
-
-                        IdGamesTextFileParser parser = new IdGamesTextFileParser(DateParseFormats);
-                        parser.Parse(UnicodeEncoding.UTF7.GetString(buffer));
-
-                        gameFile.Title = parser.Title;
-                        gameFile.Author = parser.Author;
-                        gameFile.ReleaseDate = parser.ReleaseDate;
-                        gameFile.Description = parser.Description;
-
-                        if (string.IsNullOrEmpty(gameFile.Title))
-                            gameFile.Title = fi.Name;
-
-                        bParsedTxt = !string.IsNullOrEmpty(gameFile.Title) || !string.IsNullOrEmpty(gameFile.Author) || !string.IsNullOrEmpty(gameFile.Description);
-                    }
-
-                    if (bParsedTxt)
-                        break;
-                }
-            }
-            catch(InvalidDataException)
-            {
-                gameFile = null;
-            }
-            finally
-            {
-                za.Dispose();
-            }
-
-            return gameFile;
+                FileName = fi.Name
+            };
         }
 
         public void InsertGameFile(IGameFile gameFile)

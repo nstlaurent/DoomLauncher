@@ -79,6 +79,7 @@
     <Compile Include="Tests\TestLauncherPath.cs" />
     <Compile Include="Tests\TestWadReader.cs" />
     <Compile Include="Tests\TestDirectoryAdapter.cs" />
+    <Compile Include="Tests\TestSyncLibraryHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DoomLauncher\DoomLauncher.csproj">
@@ -91,6 +92,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\joymaps1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\pyrrhic.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\uroburos.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

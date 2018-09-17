@@ -374,7 +374,7 @@ namespace DoomLauncher
             if (AppConfiguration.CleanTemp)
                 CleanTempDirectory();
 
-            DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory, AppConfiguration.DateParseFormats);
+            DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory);
             SetupTabs();
             RebuildTagToolStrip();
             RebuildUtilityToolStrip();
