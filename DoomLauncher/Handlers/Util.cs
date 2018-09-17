@@ -101,7 +101,7 @@ namespace DoomLauncher
                     var mapLumps = WadFileReader.GetMapMarkerLumps(wadReader.ReadLumps()).OrderBy(x => x.Name).ToArray();
                     fs.Close();
 
-                    Array.ForEach(mapLumps, x => sb.Append(x.Name + ", "));
+                    sb.Append(string.Join(", ", mapLumps.Select(x => x.Name)));
                 }
                 else
                 {
