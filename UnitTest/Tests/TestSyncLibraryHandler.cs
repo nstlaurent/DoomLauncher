@@ -1,0 +1,190 @@
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using DoomLauncher;
+using System.IO;
+using System.Linq;
+
+namespace UnitTest.Tests
+{
+    [TestClass]
+    public class TestSyncLibraryHandler
+    {
+        private static string s_filedir = "TestSyncDir";
+        private static string s_tempdir = "TestSyncDirTemp";
+
+        [TestInitialize]
+        public void Init()
+        {
+            Cleanup();
+            Directory.CreateDirectory(s_filedir);
+            Directory.CreateDirectory(s_tempdir);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            var adapter = TestUtil.CreateAdapter();
+            var gameFiles = adapter.GetGameFiles();
+            gameFiles.ToList().ForEach(x => adapter.DeleteGameFile(x));
+
+            if (Directory.Exists(s_filedir))
+                Directory.Delete(s_filedir, true);
+            if (Directory.Exists(s_tempdir))
+                Directory.Delete(s_tempdir, true);
+        }
+
+        [TestMethod]
+        public void TestSyncSingleFile()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+            Assert.AreEqual(0, handler.DbDataSource.GetGameFilesCount());
+
+            string file = "uroburos.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { "uroburos.zip" });
+
+            Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
+            var gameFile = handler.DbDataSource.GetGameFiles().First();
+
+            Assert.AreEqual(gameFile.FileName, file);
+            Assert.AreEqual(gameFile.Map, "MAP01");
+            Assert.IsFalse(string.IsNullOrEmpty(gameFile.Title));
+            Assert.IsFalse(string.IsNullOrEmpty(gameFile.Author));
+            Assert.IsFalse(string.IsNullOrEmpty(gameFile.Description));
+            Assert.IsNotNull(gameFile.ReleaseDate);
+            Assert.IsNotNull(gameFile.Downloaded);
+        }
+
+        [TestMethod]
+        public void TestSyncMultiFile()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+            Assert.AreEqual(0, handler.DbDataSource.GetGameFilesCount());
+
+            string[] files = new string[] { "uroburos.zip", "pyrrhic.zip" };
+            Array.ForEach(files, x => File.Copy(Path.Combine("Resources", x), Path.Combine(s_filedir, x)));
+
+            handler.Execute(files);
+
+            Assert.AreEqual(2, handler.DbDataSource.GetGameFilesCount());
+
+            var gameFiles = handler.DbDataSource.GetGameFiles();
+            var gameFile = gameFiles.Where(x => x.FileName == files[0]).First();
+
+            Assert.AreEqual(gameFile.FileName, "uroburos.zip");
+            Assert.AreEqual(gameFile.Map, "MAP01");
+            Assert.IsFalse(string.IsNullOrEmpty(gameFile.Title));
+            Assert.IsFalse(string.IsNullOrEmpty(gameFile.Author));
+            Assert.IsFalse(string.IsNullOrEmpty(gameFile.Description));
+            Assert.IsNotNull(gameFile.ReleaseDate);
+            Assert.IsNotNull(gameFile.Downloaded);
+
+            gameFile = gameFiles.Where(x => x.FileName == files[1]).First();
+            Assert.AreEqual(gameFile.FileName, "pyrrhic.zip");
+            Assert.AreEqual(gameFile.Map, "MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15");
+            Assert.IsFalse(string.IsNullOrEmpty(gameFile.Title));
+            Assert.IsFalse(string.IsNullOrEmpty(gameFile.Author));
+            Assert.IsFalse(string.IsNullOrEmpty(gameFile.Description));
+            Assert.IsNotNull(gameFile.ReleaseDate);
+            Assert.IsNotNull(gameFile.Downloaded);
+        }
+
+        [TestMethod]
+        public void TestMapInfo()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+            Assert.AreEqual(0, handler.DbDataSource.GetGameFilesCount());
+
+            string file = "joymaps1.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
+            var gameFile = handler.DbDataSource.GetGameFiles().First();
+
+            Assert.AreEqual(gameFile.Map, "MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15");
+        }
+
+        [TestMethod]
+        public void TestSyncUpdate()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+            Assert.AreEqual(0, handler.DbDataSource.GetGameFilesCount());
+
+            string file = "joymaps1.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
+            var gameFile = handler.DbDataSource.GetGameFiles().First();
+
+            Assert.AreEqual(gameFile.Map, "MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15");
+            Assert.AreEqual(gameFile.Title, "The Joy of Mapping #1");
+            Assert.AreEqual(gameFile.Author, "Jimmy & Various");
+            Assert.IsTrue(gameFile.Description.StartsWith("This was a livestreamed communal mapping session"));
+            Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("8/1/2016"));
+
+            File.Copy(Path.Combine("Resources", "uroburos.zip"), Path.Combine(s_filedir, file), true);
+            handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
+            gameFile = handler.DbDataSource.GetGameFiles().First();
+
+            Assert.AreEqual(gameFile.FileName, file);
+            Assert.AreEqual(gameFile.Map, "MAP01");
+            Assert.AreEqual(gameFile.Title, "Uroburos");
+            Assert.AreEqual(gameFile.Author, "hobomaster22");
+            Assert.IsTrue(gameFile.Description.StartsWith("A 1on1 map"));
+            Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("3/5/2005"));
+        }
+
+        [TestMethod]
+        public void TestInUse()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+            Assert.AreEqual(0, handler.DbDataSource.GetGameFilesCount());
+
+            string file = "uroburos.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+
+            using (var reader = File.OpenWrite(Path.Combine(s_filedir, file))) //lock file
+            {
+                handler.Execute(new string[] { file });
+            }
+
+            Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
+            Assert.AreEqual(1, handler.InvalidFiles.Length);
+            Assert.AreEqual(file, handler.InvalidFiles[0].FileName);
+        }
+
+        [TestMethod]
+        public void TestCorruptZip()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+            Assert.AreEqual(0, handler.DbDataSource.GetGameFilesCount());
+
+            string file = "bad.zip";
+            File.WriteAllText(Path.Combine(s_filedir, file), "bad data");
+
+            handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
+            Assert.AreEqual(1, handler.InvalidFiles.Length);
+            Assert.AreEqual(file, handler.InvalidFiles[0].FileName);
+        }
+
+        //todo test exception paths (Invalid Files)
+        //todo test mapinfo
+
+        private static SyncLibraryHandler CreateSyncLibraryHandler()
+        {
+            return new SyncLibraryHandler(TestUtil.CreateAdapter(), CreateDirectoryAdapater(), new LauncherPath(s_filedir), 
+                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" });
+        }
+
+        private static DirectoryDataSourceAdapter CreateDirectoryAdapater()
+        {
+            return new DirectoryDataSourceAdapter(new LauncherPath("TestSyncDir"));
+        }
+    }
+}
