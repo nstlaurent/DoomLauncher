@@ -104,7 +104,7 @@ namespace DoomLauncher
             try
             {
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter,
-                    AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory);
+                    AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats);
                 handler.SyncFileChange += syncHandler_SyncFileChange;
                 handler.GameFileDataNeeded += syncHandler_GameFileDataNeeded;
 
