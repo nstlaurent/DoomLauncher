@@ -107,6 +107,23 @@ namespace UnitTest.Tests
             Assert.AreEqual(0, mapLumps.Count);
         }
 
+        [TestMethod]
+        public void TestUdmf()
+        {
+            List<FileLump> lumps = CreateLumps(new string[] { "MAP01", "TEXTMAP", "ZNODES", "ENDMAP"  });
+            List<FileLump> mapLumps = WadFileReader.GetMapMarkerLumps(lumps);
+
+            Assert.AreEqual(1, mapLumps.Count);
+            Assert.AreEqual("MAP01", mapLumps.First().Name);
+
+            lumps.AddRange(CreateLumps(new string[] { "WHOCARES", "MAP02", "TEXTMAP", "ZNODES", "REJECT", "DIALOGUE", "ENDMAP", "JUNK" }));
+            mapLumps = WadFileReader.GetMapMarkerLumps(lumps);
+
+            Assert.AreEqual(2, mapLumps.Count);
+            Assert.AreEqual("MAP01", mapLumps[0].Name);
+            Assert.AreEqual("MAP02", mapLumps[1].Name);
+        }
+
         private List<FileLump> CreateMapSetLumps(string mapName)
         {
             return CreateLumps(new string[] { mapName, "THINGS", "LINEDEFS", "SIDEDEFS", "VERTEXES", "SEGS", "SECTORS", "GL_NODES", "GL_ANY" });
