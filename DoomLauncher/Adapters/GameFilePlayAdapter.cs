@@ -257,7 +257,7 @@ namespace DoomLauncher
 
                     if (checkSpecific && SpecificFiles != null && SpecificFiles.Length > 0)
                     {
-                        useFile = SpecificFiles.Contains(zae.Name);
+                        useFile = SpecificFiles.Contains(zae.FullName);
                     }
 
                     if (useFile)
