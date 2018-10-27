@@ -44,6 +44,7 @@ namespace DoomLauncher
         private SplashScreen m_splash;
 
         private string m_launchFile;
+        private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
 
         public MainForm(string launchFile)
         {
@@ -178,11 +179,25 @@ namespace DoomLauncher
                 if (tabView != null && tabView.IsSearchAllowed)
                 {
                     if (string.IsNullOrEmpty(ctrlSearch.SearchText.Trim()))
+                    {
                         tabView.SetGameFiles();
+                        UpdateSavedTabSearch(tabView, null);
+                    }
                     else
-                        tabView.SetGameFiles(Util.SearchFieldsFromSearchCtrl(ctrlSearch));
+                    {
+                        var searchFields = Util.SearchFieldsFromSearchCtrl(ctrlSearch);
+                        UpdateSavedTabSearch(tabView, searchFields);
+                        tabView.SetGameFiles(searchFields);
+                    }
                 }
             }
+        }
+
+        private void UpdateSavedTabSearch(ITabView tabView, GameFileSearchField[] searchFields)
+        {
+            if (!m_savedTabSearches.ContainsKey(tabView))
+                m_savedTabSearches.Add(tabView, null);
+            m_savedTabSearches[tabView] = searchFields;
         }
 
         private void CleanTempDirectory()
@@ -1137,7 +1152,10 @@ namespace DoomLauncher
             {
                 if (tab.IsLocal)
                 {
-                    tab.SetGameFiles();
+                    if (m_savedTabSearches.ContainsKey(tab))
+                        tab.SetGameFiles(m_savedTabSearches[tab]);
+                    else
+                        tab.SetGameFiles();
                 }
             }
         }
