@@ -46,8 +46,8 @@ namespace UnitTest.Tests
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
 
-            Assert.AreEqual(gameFile.FileName, file);
-            Assert.AreEqual(gameFile.Map, "MAP01");
+            Assert.AreEqual(file, gameFile.FileName);
+            Assert.AreEqual("MAP01", gameFile.Map);
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Title));
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Author));
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Description));
@@ -80,8 +80,8 @@ namespace UnitTest.Tests
             Assert.IsNotNull(gameFile.Downloaded);
 
             gameFile = gameFiles.Where(x => x.FileName == files[1]).First();
-            Assert.AreEqual(gameFile.FileName, "pyrrhic.zip");
-            Assert.AreEqual(gameFile.Map, "MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15");
+            Assert.AreEqual("pyrrhic.zip", gameFile.FileName);
+            Assert.AreEqual("MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15", gameFile.Map);
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Title));
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Author));
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Description));
@@ -102,7 +102,24 @@ namespace UnitTest.Tests
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
 
-            Assert.AreEqual(gameFile.Map, "MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15");
+            Assert.AreEqual("MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15", gameFile.Map);
+        }
+
+        [TestMethod]
+        public void TestMapsMultiFile()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+            Assert.AreEqual(0, handler.DbDataSource.GetGameFilesCount());
+
+            string file = "pyrrhicmaps.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
+            var gameFile = handler.DbDataSource.GetGameFiles().First();
+
+            //each map (MAP01, MAP02, and MAP03) is it's own wad, make sure they are all found
+            Assert.AreEqual("MAP01, MAP02, MAP03", gameFile.Map);
         }
 
         [TestMethod]
@@ -118,9 +135,9 @@ namespace UnitTest.Tests
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
 
-            Assert.AreEqual(gameFile.Map, "MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15");
-            Assert.AreEqual(gameFile.Title, "The Joy of Mapping #1");
-            Assert.AreEqual(gameFile.Author, "Jimmy & Various");
+            Assert.AreEqual("MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15", gameFile.Map);
+            Assert.AreEqual("The Joy of Mapping #1", gameFile.Title);
+            Assert.AreEqual("Jimmy & Various", gameFile.Author);
             Assert.IsTrue(gameFile.Description.StartsWith("This was a livestreamed communal mapping session"));
             Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("8/1/2016"));
 
@@ -131,9 +148,9 @@ namespace UnitTest.Tests
             gameFile = handler.DbDataSource.GetGameFiles().First();
 
             Assert.AreEqual(gameFile.FileName, file);
-            Assert.AreEqual(gameFile.Map, "MAP01");
-            Assert.AreEqual(gameFile.Title, "Uroburos");
-            Assert.AreEqual(gameFile.Author, "hobomaster22");
+            Assert.AreEqual("MAP01", gameFile.Map);
+            Assert.AreEqual("Uroburos", gameFile.Title);
+            Assert.AreEqual("hobomaster22", gameFile.Author);
             Assert.IsTrue(gameFile.Description.StartsWith("A 1on1 map"));
             Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("3/5/2005"));
         }

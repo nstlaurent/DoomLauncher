@@ -200,17 +200,19 @@ namespace DoomLauncher
 
         private string MapStringFromGameFile(ZipArchive za)
         {
-            StringBuilder sb = new StringBuilder();
+            List<string> maps = new List<string>();
 
             IEnumerable<ZipArchiveEntry> wadEntries = GetEntriesByExtension(za, ".wad");
 
             foreach (ZipArchiveEntry zae in wadEntries)
             {
                 string extractFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), zae);
-                sb.Append(Util.GetMapStringFromWad(extractFile));
+                string mapString = Util.GetMapStringFromWad(extractFile);
+                if (!string.IsNullOrEmpty(mapString))
+                    maps.Add(mapString);
             }
 
-            return sb.ToString();
+            return string.Join(", ", maps.ToArray());
         }
 
         public IGameFileDataSourceAdapter DbDataSource { get; set; }
