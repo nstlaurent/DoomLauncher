@@ -1990,6 +1990,49 @@ namespace DoomLauncher
             }
         }
 
+        private void createZipToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HandleCreateZip();
+        }
+
+        private async void HandleCreateZip()
+        {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            if (folderDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                SaveFileDialog fileDialog = new SaveFileDialog();
+                fileDialog.Filter = "Zip|*.zip";
+
+                if (fileDialog.ShowDialog(this) == DialogResult.OK && !string.IsNullOrEmpty(fileDialog.FileName))
+                {
+                    ProgressBarForm progressBar = CreateProgressBar("Creating zip...", ProgressBarStyle.Marquee);
+                    ProgressBarStart(progressBar);
+                    bool success = false;
+                    await Task.Run(() => success = CreateZipFromDirectory(folderDialog.SelectedPath, fileDialog.FileName));
+                    ProgressBarEnd(progressBar);
+
+                    if (!success)
+                        MessageBox.Show(this, "Failed to create zip file. File may be in use.", "Zip Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private static bool CreateZipFromDirectory(string folderPath, string zipFileName)
+        {
+            try
+            {
+                if (File.Exists(zipFileName))
+                    File.Delete(zipFileName);
+                ZipFile.CreateFromDirectory(folderPath, zipFileName);
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private AppConfiguration AppConfiguration { get; set; }
         private IDataSourceAdapter DataSourceAdapter { get; set; }
         private IGameFileDataSourceAdapter DirectoryDataSourceAdapter { get; set; }
