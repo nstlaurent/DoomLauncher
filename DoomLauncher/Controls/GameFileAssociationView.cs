@@ -37,8 +37,7 @@ namespace DoomLauncher
 
         private void CtrlScreenshotView_RequestScreenshots(object sender, RequestScreenshotsEventArgs e)
         {
-            if (RequestScreenshots != null)
-                RequestScreenshots(this, e);
+            RequestScreenshots?.Invoke(this, e);
         }
 
         public void SetScreenshots(List<IFileData> screenshots)
@@ -69,6 +68,8 @@ namespace DoomLauncher
 
             ctrlViewStats.DataSourceAdapter = DataSourceAdapter;
             ctrlViewStats.SetContextMenu(BuildContextMenuStrip(ctrlViewStats));
+
+            SetButtonsEnabled(CurrentView);
         }
 
         private IFileAssociationView[] GetViews()
@@ -204,9 +205,7 @@ namespace DoomLauncher
                 CurrentView.SetFileOrderFirst())
             {
                 SetData(m_gameFile);
-
-                if (FileOrderChanged != null)
-                    FileOrderChanged(this, new EventArgs());
+                FileOrderChanged?.Invoke(this, new EventArgs());
             }
         }
 
@@ -225,9 +224,7 @@ namespace DoomLauncher
             if (success)
             {
                 SetData(m_gameFile);
-
-                if (FileOrderChanged != null)
-                    FileOrderChanged(this, new EventArgs());
+                FileOrderChanged?.Invoke(this, new EventArgs());
             }
         }
 
