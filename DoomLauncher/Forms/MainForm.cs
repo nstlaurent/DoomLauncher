@@ -20,8 +20,6 @@ namespace DoomLauncher
 {
     public partial class MainForm : Form
     {
-        private delegate void GameFileDataSourceUpdate(IEnumerable<GameFileSearchField> searchFields);
-
         private static readonly string s_recentKey = "Recent";
         private static readonly string s_localKey = "Local";
         private static readonly string s_iwadKey = "IWads";
@@ -465,12 +463,13 @@ namespace DoomLauncher
                         if (messageBox != null && messageBox.Checked && messageBox.DialogResult == DialogResult.Cancel)
                             break;
                     }
+                }
 
-                    if (update)
-                    {
-                        UpdateLocal();
-                        HandleSelectionChange(GetCurrentViewControl());
-                    }
+                if (update)
+                {
+                    GetCurrentViewControl().SelectedItem = null;
+                    UpdateLocal();
+                    HandleSelectionChange(GetCurrentViewControl());
                 }
             }
         }
@@ -887,7 +886,6 @@ namespace DoomLauncher
                 fi.Delete();
 
                 await SyncLocalDatabase(new string[] { fi.Name });
-                UpdateLocal();
             }
             catch (IOException)
             {
@@ -1910,7 +1908,8 @@ namespace DoomLauncher
             else
             {
                 this.Enabled = true;
-                form.Close();
+                if (form != null)
+                    form.Close();
             }
         }
 
