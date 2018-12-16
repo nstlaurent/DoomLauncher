@@ -15,12 +15,16 @@ namespace DoomLauncher
 
         private async Task SyncLocalDatabase(string[] fileNames)
         {
-            m_progressBarSync = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
-            ProgressBarStart(m_progressBarSync);
+            if (m_progressBarSync == null)
+            {
+                m_progressBarSync = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
+                ProgressBarStart(m_progressBarSync);
+            }
 
             SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames));
 
             ProgressBarEnd(m_progressBarSync);
+            m_progressBarSync = null;
             SyncLocalDatabaseComplete(handler);
         }
 
