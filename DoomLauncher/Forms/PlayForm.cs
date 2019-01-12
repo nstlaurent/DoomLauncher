@@ -300,7 +300,7 @@ namespace DoomLauncher
 
                         try
                         {
-                            ResetSpecificFilesSelections(new IGameFile[] { selectedFiles.First() });
+                            ResetSpecificFilesSelections(selectedFiles);
                         }
                         catch (FileNotFoundException ex)
                         {
