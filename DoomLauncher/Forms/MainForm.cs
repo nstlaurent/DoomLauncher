@@ -789,6 +789,7 @@ namespace DoomLauncher
                     IEnumerable<ITagData> tags = GetTagsFromFile(gameFile);
 
                     GameFileEditForm form = new GameFileEditForm();
+                    form.SetCopyFromFileAllowed(DataSourceAdapter, m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(s_localKey)));
                     form.StartPosition = FormStartPosition.CenterParent;
                     form.EditControl.SetShowCheckBoxes(false);
                     form.EditControl.SetDataSource(gameFile, tags);
@@ -805,6 +806,8 @@ namespace DoomLauncher
                         foreach (IGameFile updateGameFile in gameFiles)
                         {
                             form.EditControl.UpdateDataSource(updateGameFile);
+                            if (form.TagsChanged)
+                                UpdateGameFileTags(updateGameFile, form.EditControl.TagData);
                             tabView.Adapter.UpdateGameFile(updateGameFile, Util.DefaultGameFileUpdateFields);
                             UpdateDataSourceViews(updateGameFile);
                         }
@@ -813,6 +816,28 @@ namespace DoomLauncher
                             HandleSelectionChange(ctrl);
                     }
                 }
+            }
+        }
+
+        private void UpdateGameFileTags(IGameFile gameFile, ITagData[] tags)
+        {
+            var tagMapping = DataSourceAdapter.GetTagMappings(gameFile.GameFileID.Value);
+            var existingTagIDs = tagMapping.Select(x => x.TagID).ToArray();
+            var newTagIDs = tags.Select(x => x.TagID).ToArray();
+
+            var deletedTags = existingTagIDs.Except(newTagIDs);
+            var newTags = newTagIDs.Except(existingTagIDs);
+            
+            foreach(var deletedTag in deletedTags)
+            {
+                TagMapping tagMap = new TagMapping() { FileID = gameFile.GameFileID.Value, TagID = deletedTag };
+                DataSourceAdapter.DeleteTagMapping(tagMap);
+            }
+
+            foreach(var newTag in newTags)
+            {
+                TagMapping tagMap = new TagMapping() { FileID = gameFile.GameFileID.Value, TagID = newTag };
+                DataSourceAdapter.InsertTagMapping(tagMap);
             }
         }
 
