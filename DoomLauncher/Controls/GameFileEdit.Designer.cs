@@ -40,6 +40,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.txtTitle = new System.Windows.Forms.TextBox();
             this.dtRelease = new System.Windows.Forms.DateTimePicker();
+            this.ctrlStarRating = new DoomLauncher.RatingControl();
             this.label7 = new System.Windows.Forms.Label();
             this.chkTitle = new System.Windows.Forms.CheckBox();
             this.chkAuthor = new System.Windows.Forms.CheckBox();
@@ -47,9 +48,9 @@
             this.chkRating = new System.Windows.Forms.CheckBox();
             this.chkDescription = new System.Windows.Forms.CheckBox();
             this.chkComments = new System.Windows.Forms.CheckBox();
-            this.txtDescription = new System.Windows.Forms.RichTextBox();
-            this.ctrlStarRating = new DoomLauncher.RatingControl();
-            this.txtComments = new System.Windows.Forms.RichTextBox();
+            this.txtDescription = new DoomLauncher.Controls.CRichTextBox();
+            this.txtComments = new DoomLauncher.Controls.CRichTextBox();
+            this.chkTags = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -79,6 +80,7 @@
             this.tableLayoutPanel1.Controls.Add(this.chkComments, 1, 6);
             this.tableLayoutPanel1.Controls.Add(this.txtDescription, 2, 5);
             this.tableLayoutPanel1.Controls.Add(this.txtComments, 2, 6);
+            this.tableLayoutPanel1.Controls.Add(this.chkTags, 1, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -189,6 +191,15 @@
             this.dtRelease.Size = new System.Drawing.Size(200, 20);
             this.dtRelease.TabIndex = 8;
             // 
+            // ctrlStarRating
+            // 
+            this.ctrlStarRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ctrlStarRating.Location = new System.Drawing.Point(143, 80);
+            this.ctrlStarRating.Name = "ctrlStarRating";
+            this.ctrlStarRating.SelectedRating = 0;
+            this.ctrlStarRating.Size = new System.Drawing.Size(105, 20);
+            this.ctrlStarRating.TabIndex = 11;
+            // 
             // label7
             // 
             this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -293,15 +304,6 @@
             this.txtDescription.TabIndex = 20;
             this.txtDescription.Text = "";
             // 
-            // ctrlStarRating
-            // 
-            this.ctrlStarRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStarRating.Location = new System.Drawing.Point(143, 80);
-            this.ctrlStarRating.Name = "ctrlStarRating";
-            this.ctrlStarRating.SelectedRating = 0;
-            this.ctrlStarRating.Size = new System.Drawing.Size(105, 20);
-            this.ctrlStarRating.TabIndex = 11;
-            // 
             // txtComments
             // 
             this.txtComments.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -311,6 +313,17 @@
             this.txtComments.Size = new System.Drawing.Size(203, 154);
             this.txtComments.TabIndex = 21;
             this.txtComments.Text = "";
+            // 
+            // chkTags
+            // 
+            this.chkTags.AutoSize = true;
+            this.chkTags.Checked = true;
+            this.chkTags.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTags.Location = new System.Drawing.Point(123, 111);
+            this.chkTags.Name = "chkTags";
+            this.chkTags.Size = new System.Drawing.Size(14, 14);
+            this.chkTags.TabIndex = 22;
+            this.chkTags.UseVisualStyleBackColor = true;
             // 
             // GameFileEdit
             // 
@@ -346,7 +359,8 @@
         private System.Windows.Forms.CheckBox chkRating;
         private System.Windows.Forms.CheckBox chkDescription;
         private System.Windows.Forms.CheckBox chkComments;
-        private System.Windows.Forms.RichTextBox txtDescription;
-        private System.Windows.Forms.RichTextBox txtComments;
+        private Controls.CRichTextBox txtDescription;
+        private Controls.CRichTextBox txtComments;
+        private System.Windows.Forms.CheckBox chkTags;
     }
 }

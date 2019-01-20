@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DoomLauncher.Interfaces;
+using System.Diagnostics;
 
 namespace DoomLauncher
 {
@@ -18,13 +19,21 @@ namespace DoomLauncher
         public GameFileEdit()
         {
             InitializeComponent();
+            chkTags.Visible = false;
+
+            txtComments.WarnLinkClick = false;
         }
 
         public void SetShowCheckBoxes(bool set)
         {
             chkAuthor.Visible = chkDescription.Visible = chkRating.Visible =
                 chkReleaseDate.Visible = chkTitle.Visible = chkComments.Visible = set;
-            m_showCheckBoxes = true;
+            m_showCheckBoxes = set;
+        }
+
+        public void SetShowTagCheckBox(bool set)
+        {
+            chkTags.Visible = set;
         }
 
         public void SetCheckBoxesChecked(bool set)
@@ -69,8 +78,20 @@ namespace DoomLauncher
             set { chkComments.Checked = value; }
         }
 
+        public bool TagsChecked
+        {
+            get { return chkTags.Checked; }
+            set { chkTags.Checked = value; }
+        }
+
+        public IGameFile DataSource { get; private set; }
+        public ITagData[] TagData { get; private set; }
+
         public void SetDataSource(IGameFile gameFile, IEnumerable<ITagData> tags)
         {
+            DataSource = gameFile;
+            TagData = tags.ToArray();
+
             if (!string.IsNullOrEmpty(gameFile.Title)) txtTitle.Text = gameFile.Title;
             else txtTitle.Text = string.Empty;
             if (!string.IsNullOrEmpty(gameFile.Author)) txtAuthor.Text = gameFile.Author;
