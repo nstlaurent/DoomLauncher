@@ -83,6 +83,12 @@
   <ItemGroup>
     <Compile Include="Adapters\WadArchiveDataAdapter.cs" />
     <Compile Include="Controls\ColumnField.cs" />
+    <Compile Include="Controls\CRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CRichTextBox.Designer.cs">
+      <DependentUpon>CRichTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Welcome.cs">
       <SubType>Form</SubType>
     </Compile>
