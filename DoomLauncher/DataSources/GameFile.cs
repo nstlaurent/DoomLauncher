@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DoomLauncher.DataSources
 {
-    public class GameFile : IGameFile
+    public class GameFile : IGameFile, ICloneable
     {
         public GameFile()
         {
@@ -44,12 +44,21 @@ namespace DoomLauncher.DataSources
         public int MinutesPlayed { get; set; }
         public virtual int FileSizeBytes { get; set; }
 
+        public object Clone()
+        {
+            GameFile gameFile = new GameFile();
+            var properties = gameFile.GetType().GetProperties();
+            foreach (var prop in properties)
+                prop.SetValue(gameFile, prop.GetValue(this));
+            return gameFile;
+        }
+
         public override bool Equals(object obj)
         {
-            if (obj is IGameFile)
-            {
+            IGameFile check = obj as IGameFile;
+
+            if (check != null)
                 return ((IGameFile)obj).FileName == FileName;
-            }
 
             return false;
         }
