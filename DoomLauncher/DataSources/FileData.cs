@@ -12,7 +12,7 @@ namespace DoomLauncher
         public FileData()
         {
             FileOrder = int.MaxValue;
-            DateCreated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            DateCreated = DateTime.Now;
         }
 
         public int? FileID { get; set; }
