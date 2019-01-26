@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DoomLauncher.TextFileParsers;
 
-namespace UnitTest
+namespace UnitTest.Tests
 {
     [TestClass]
     public class TestIdGamesFileParser
