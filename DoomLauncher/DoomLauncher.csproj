@@ -144,6 +144,9 @@
       <DependentUpon>SimpleFileSelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\LaunchData.cs" />
+    <Compile Include="SaveGame\DsgSaveGameReader.cs" />
+    <Compile Include="SaveGame\ISaveGameReader.cs" />
+    <Compile Include="SaveGame\ZDoomSaveGameReader.cs" />
     <Compile Include="Statistics\BoomStatsReader.cs" />
     <Compile Include="Config\AppVersion.cs" />
     <Compile Include="Config\ColumnConfig.cs" />
