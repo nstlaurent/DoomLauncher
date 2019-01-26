@@ -31,7 +31,8 @@ namespace DoomLauncher.SaveGame
                     }
                     while (offs < data.Length && read != -1 && data[offs++] != 0);
                     
-                    return Encoding.UTF8.GetString(data);
+                    if (offs > 0)
+                        return Encoding.UTF8.GetString(data.Take(offs-1).ToArray());
                 }
             }
             catch
