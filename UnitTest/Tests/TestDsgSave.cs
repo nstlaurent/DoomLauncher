@@ -12,8 +12,7 @@ namespace UnitTest.Tests
         public void TestPrBoomSave()
         {
             string save1 = "prboomsave1.dsg";
-            DeleteSaveFile(save1);
-            File.Copy(Path.Combine("Resources", save1), save1);
+            TestUtil.CopyResourceFile(save1);
 
             DsgSaveGameReader reader = new DsgSaveGameReader(save1);
 
@@ -24,18 +23,11 @@ namespace UnitTest.Tests
         public void TestChocolateDoomSave()
         {
             string save1 = "chocosave1.dsg";
-            DeleteSaveFile(save1);
-            File.Copy(Path.Combine("Resources", save1), save1);
+            TestUtil.CopyResourceFile(save1);
 
             DsgSaveGameReader reader = new DsgSaveGameReader(save1);
 
             Assert.AreEqual("CHOCOTESTTESTTESTTESTTE", reader.GetName());
-        }
-
-        private static void DeleteSaveFile(string save1)
-        {
-            if (File.Exists(save1))
-                File.Delete(save1);
         }
     }
 }

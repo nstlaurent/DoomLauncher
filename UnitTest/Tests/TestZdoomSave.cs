@@ -13,8 +13,7 @@ namespace UnitTest.Tests
         public void TestZdoomSaveBinary()
         {
             string save1 = "zdoomsave_v1.zds";
-            DeleteSaveFile(save1);
-            File.Copy(Path.Combine("Resources", save1), save1);
+            TestUtil.CopyResourceFile(save1);
 
             ZDoomSaveGameReader reader = new ZDoomSaveGameReader(save1);
 
@@ -25,8 +24,7 @@ namespace UnitTest.Tests
         public void TestZdoomSaveJson()
         {
             string save1 = "zdoomsave_v2.zds";
-            DeleteSaveFile(save1);
-            File.Copy(Path.Combine("Resources", save1), save1);
+            TestUtil.CopyResourceFile(save1);
 
             ZDoomSaveGameReader reader = new ZDoomSaveGameReader(save1);
 
@@ -37,18 +35,11 @@ namespace UnitTest.Tests
         public void TestZdoomSaveJson_3_5()
         {
             string save1 = "zdoomsave_v3.zds";
-            DeleteSaveFile(save1);
-            File.Copy(Path.Combine("Resources", save1), save1);
+            TestUtil.CopyResourceFile(save1);
 
             ZDoomSaveGameReader reader = new ZDoomSaveGameReader(save1);
 
             Assert.AreEqual("Autosave Aug 28 06:25", reader.GetName());
-        }
-
-        private static void DeleteSaveFile(string save1)
-        {
-            if (File.Exists(save1))
-                File.Delete(save1);
         }
     }
 }
