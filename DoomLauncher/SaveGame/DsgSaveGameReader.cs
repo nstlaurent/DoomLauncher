@@ -22,17 +22,17 @@ namespace DoomLauncher.SaveGame
             {
                 using (var stream = File.OpenRead(m_file))
                 {
-                    byte[] data = new byte[32];
-                    int offs = 0, read = 0;
+                    byte[] data = new byte[24];
+                    int read = stream.Read(data, 0, data.Length);
 
-                    do
+                    if (read != -1)
                     {
-                        read = stream.Read(data, offs, 1);
+                        int index = data.ToList().IndexOf(0);
+                        if (index == -1)
+                            index = data.Length;
+                        if (index > 0)
+                            return Encoding.UTF8.GetString(data.Take(index).ToArray());
                     }
-                    while (offs < data.Length && read != -1 && data[offs++] != 0);
-                    
-                    if (offs > 0)
-                        return Encoding.UTF8.GetString(data.Take(offs-1).ToArray());
                 }
             }
             catch
