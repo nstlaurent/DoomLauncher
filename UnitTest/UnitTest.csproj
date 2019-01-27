@@ -80,6 +80,8 @@
     <Compile Include="Tests\TestWadReader.cs" />
     <Compile Include="Tests\TestDirectoryAdapter.cs" />
     <Compile Include="Tests\TestSyncLibraryHandler.cs" />
+    <Compile Include="Tests\TestZdoomSave.cs" />
+    <Compile Include="Tests\TestDsgSave.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DoomLauncher\DoomLauncher.csproj">
@@ -92,7 +94,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\chocosave1.dsg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\joymaps1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\prboomsave1.dsg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\pyrrhic.zip">
