@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -55,14 +56,14 @@ namespace DoomLauncher
 
             m_handler = new FileLoadHandler(m_adapter, gameFile);
 
-            cmbSourcePorts.DataSource = m_adapter.GetSourcePorts();
-            cmbIwad.DataSource = Util.GetIWadsDataSource(m_adapter);
+            SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePort), "Name");
+            SetAutoCompleteCustomSource(cmbIwad, Util.GetIWadsDataSource(m_adapter), typeof(IIWadData), "FileName");
 
             if (gameFile != null)
             {
                 Text = "Launch - " + (string.IsNullOrEmpty(gameFile.Title) ? gameFile.FileName : gameFile.Title);
                 if (!string.IsNullOrEmpty(gameFile.Map))
-                    cmbMap.DataSource = gameFile.Map.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+                    SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
                 chkSaveStats.Checked = gameFile.SettingsStat;
             }
 
@@ -78,6 +79,45 @@ namespace DoomLauncher
             {
                 tblFiles.RowStyles[0].Height = 0;
             }
+        }
+
+        private static string[] MapSplit(IGameFile gameFile)
+        {
+            return gameFile.Map.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private static void SetAutoCompleteCustomSource(ComboBox cmb, IEnumerable<object> datasource, Type dataType, string property)
+        {
+            AutoCompleteStringCollection collection = new AutoCompleteStringCollection();
+
+            if (dataType != null)
+            {
+                PropertyInfo pi = dataType.GetProperty(property);
+                collection.AddRange(datasource.Select(x => (string)pi.GetValue(x)).ToArray());
+            }
+            else
+            {
+                collection.AddRange(datasource.Cast<string>().ToArray());
+            }
+
+            cmb.DataSource = datasource;
+            cmb.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            cmb.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmb.AutoCompleteCustomSource = collection;
+            cmb.DropDown += Cmb_DropDown;
+        }
+
+        private static void Cmb_DropDown(object sender, EventArgs e)
+        {
+            ((ComboBox)sender).PreviewKeyDown += Cmb_PreviewKeyDown;
+        }
+
+        private static void Cmb_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            ComboBox cmb = (ComboBox)sender;
+            cmb.PreviewKeyDown -= Cmb_PreviewKeyDown;
+            if (cmb.DroppedDown)
+                cmb.Focus();
         }
 
         public void InitializeComplete()
@@ -261,7 +301,7 @@ namespace DoomLauncher
                 IEnumerable<IFileData> demoFiles = m_adapter.GetFiles(GameFile, FileType.Demo)
                     .Where(x => x.SourcePortID == sourcePort.SourcePortID);
 
-                cmbDemo.DataSource = demoFiles.ToList();
+                SetAutoCompleteCustomSource(cmbDemo, demoFiles.ToList(), typeof(IFileData), "Description");
             }
         }
 
@@ -367,7 +407,7 @@ namespace DoomLauncher
             {
                 var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID == SelectedIWad.GameFileID);
                 if (gameFileIwad != null)
-                    cmbMap.DataSource = gameFileIwad.Map.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+                    SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFileIwad), null, null);
             }
 
             m_lastIwad = SelectedIWad;
@@ -420,16 +460,28 @@ namespace DoomLauncher
             form.ShowDialog(this);
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        public bool SettingsValid(out string error)
         {
-            string err = null;
+            error = null;
 
             if (chkRecord.Checked && string.IsNullOrEmpty(txtDescription.Text))
-            {
-                err = "Please enter a description for the demo to record.";
-            }
+                error = "Please enter a description for the demo to record.";
+            else if (SelectedSourcePort == null)
+                error = "A source port must be selected";
+            else if (chkMap.Checked && SelectedMap == null)
+                error = "A map must be selected.";
+            else if (chkMap.Checked && SelectedSkill == null)
+                error = "A skill must be selected";
+            else if (chkDemo.Checked && SelectedDemo == null)
+                error = "A demo must be selected";
 
-            if (err == null)
+            return error == null;
+        }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            string err;
+            if (SettingsValid(out err))
             {
                 this.DialogResult = DialogResult.OK;
             }
@@ -445,9 +497,9 @@ namespace DoomLauncher
             IGameFile gameFile = e.Item as IGameFile;
             IGameFile iwad = SelectedIWad;
             ISourcePort port = cmbSourcePorts.SelectedValue as ISourcePort;
-            if (m_handler.IsIWadFile(gameFile))
+            if (iwad != null && m_handler.IsIWadFile(gameFile))
                 e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, Util.RemoveExtension(iwad.FileName));
-            if (m_handler.IsSourcePortFile(gameFile))
+            if (port != null && m_handler.IsSourcePortFile(gameFile))
                 e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, port.Name);
         }
 

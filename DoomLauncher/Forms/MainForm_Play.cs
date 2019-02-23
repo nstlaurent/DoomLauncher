@@ -239,7 +239,11 @@ namespace DoomLauncher
         {
             GameFilePlayAdapter playAdapter = CreatePlayAdapter(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
             playAdapter.ExtractFiles = false;
-            ShowLaunchParameters(playAdapter, m_currentPlayForm.GameFile, m_currentPlayForm.SelectedSourcePort);
+            string err;
+            if (m_currentPlayForm.SettingsValid(out err))
+                ShowLaunchParameters(playAdapter, m_currentPlayForm.GameFile, m_currentPlayForm.SelectedSourcePort);
+            else
+                MessageBox.Show(this, err, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         void m_currentPlayForm_SaveSettings(object sender, EventArgs e)
