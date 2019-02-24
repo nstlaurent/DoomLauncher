@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Diagnostics;
 
 namespace DoomLauncher
 {
@@ -22,6 +23,8 @@ namespace DoomLauncher
             m_labelHeight = tblMain.RowStyles[0].Height;
             m_imageHeight = tblMain.RowStyles[1].Height;
             ShowCommentsSection(false);
+
+            txtComments.WarnLinkClick = false;
         }
 
         public void SetTitle(string text)

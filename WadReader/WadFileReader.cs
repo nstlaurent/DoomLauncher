@@ -46,20 +46,20 @@ namespace WadReader
             {
                 if (IsMapData(mapLumps, lumps[i]) && i > 0)
                 {
+                    bool isUdmf = false;
                     mapMarkerIndex = i - 1;
 
-                    while (i < lumps.Count - 1 && IsMapData(mapLumps, lumps[i]))
+                    while (i < lumps.Count && IsMapData(mapLumps, lumps[i]))
                     {
+                        if (lumps[i].Name == "ENDMAP")
+                            isUdmf = true;
                         if (important.Contains(lumps[i].Name))
                             mapLumpCount++;
                         i++;
                     }
 
-                    if (mapLumpCount > 4)
+                    if (isUdmf || mapLumpCount > 4)
                         ret.Add(lumps[mapMarkerIndex]);
-
-                    if (i == lumps.Count - 1)
-                        break;
 
                     mapLumpCount = 0;
                     i--;

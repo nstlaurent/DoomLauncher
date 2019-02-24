@@ -19,6 +19,13 @@ namespace UnitTest.Tests
             CreateDirectoriesAndFiles();
         }
 
+        [TestCleanup]
+        public void Cleanup()
+        {
+            if (Directory.Exists("Temp"))
+                Directory.Delete("Temp", true);
+        }
+
         [TestMethod]
         public void TestWarp()
         {
@@ -59,9 +66,6 @@ namespace UnitTest.Tests
         public void TestParameters()
         {
             GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-
-            CreateDirectoriesAndFiles();
-
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
 
@@ -72,6 +76,9 @@ namespace UnitTest.Tests
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.deh"));
             Assert.AreEqual(check.Trim(), launch.Trim());
 
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.wad")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.deh")));
+
             //.wad only
             launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad"), false);
             check = string.Format("-file \"{0}\"",
@@ -80,12 +87,22 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void TestExtractFalse()
+        {
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            adapter.ExtractFiles = false;
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+
+            Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.wad")));
+            Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.deh")));
+        }
+
+        [TestMethod]
         public void TestParametersSourcePortExtraParams()
         {
             GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-
-            CreateDirectoriesAndFiles();
-
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
 
@@ -97,6 +114,61 @@ namespace UnitTest.Tests
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.wad"),
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.deh"));
             Assert.AreEqual(check.Trim(), launch.Trim());
+
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.wad")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.deh")));
+        }
+
+        [TestMethod]
+        public void TestSkill()
+        {
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            adapter.ExtractFiles = false;
+            adapter.Skill = "3";
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+            //only add skill with map
+            Assert.IsFalse(launch.Contains("-skill 3"));
+
+            adapter.Map = "MAP01";
+            launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+            Assert.IsTrue(launch.Contains("-skill 3"));
+            Assert.IsTrue(launch.Contains("-warp 1"));
+        }
+
+        [TestMethod]
+        public void TestRecord()
+        {
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            adapter.ExtractFiles = false;
+            adapter.Record = true;
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+
+            Assert.IsNotNull(adapter.RecordedFileName);
+            Assert.IsTrue(launch.Contains(string.Concat("-record \"", adapter.RecordedFileName, "\"")));
+        }
+
+        [TestMethod]
+        public void TestPlayDemo()
+        {
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            string demofile = Path.Combine(tempPath.GetFullPath(), "testplay.lmp");
+            adapter.ExtractFiles = false;
+            adapter.PlayDemo = true;
+            adapter.PlayDemoFile = demofile;
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+            //the file doesn't exist
+            Assert.IsNull(launch);
+            Assert.IsNotNull(adapter.LastError);
+
+            File.WriteAllText(demofile, "test");
+            launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+            Assert.IsTrue(launch.Contains(string.Concat("-playdemo \"", demofile, "\"")));
         }
 
         [TestMethod]
@@ -114,6 +186,15 @@ namespace UnitTest.Tests
             string check = string.Format("-file \"{0}\\Temp\\test2.wad\" \"{0}\\Temp\\test3.wad\" \"{0}\\Temp\\test4.wad\" \"{0}\\Temp\\test1.wad\"  -deh \"{0}\\Temp\\test2.deh\" \"{0}\\Temp\\test3.deh\" \"{0}\\Temp\\test4.deh\" \"{0}\\Temp\\test1.deh\" ",
                 Directory.GetCurrentDirectory());
             Assert.AreEqual(check.Trim(), launch.Trim());
+
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test2.wad")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test3.wad")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test4.wad")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.wad")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test2.deh")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test3.deh")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test4.deh")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.deh")));
         }
 
         [TestMethod]
@@ -123,7 +204,7 @@ namespace UnitTest.Tests
             LauncherPath tempPath = new LauncherPath("Temp");
 
             GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, new DoomLauncher.DataSources.GameFile() { FileName = "bad.zip" }, GetTestPort(".wad,.deh"), false);
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, new GameFile() { FileName = "bad.zip" }, GetTestPort(".wad,.deh"), false);
             Assert.IsNull(launch);
             Assert.IsNotNull(adapter.LastError);
             Assert.IsTrue(adapter.LastError.Contains("bad.zip"));
@@ -136,7 +217,7 @@ namespace UnitTest.Tests
             LauncherPath tempPath = new LauncherPath("Temp");
 
             GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            adapter.AdditionalFiles = new IGameFile[] { new DoomLauncher.DataSources.GameFile() { FileName = "badadd.zip" } };
+            adapter.AdditionalFiles = new IGameFile[] { new GameFile() { FileName = "badadd.zip" } };
 
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
             Assert.IsNull(launch);
@@ -196,6 +277,34 @@ namespace UnitTest.Tests
             Assert.IsTrue(parameters.Contains("test3.wad"));
             Assert.IsFalse(parameters.Contains("test4.wad"));
             Assert.IsFalse(parameters.Contains(".deh"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.wad")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test2.wad")));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test3.wad")));
+            Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test4.wad")));
+            Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.deh")));
+            Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test2.deh")));
+            Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test3.deh")));
+            Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test4.deh")));
+        }
+
+        [TestMethod]
+        public void TestIndividualPathedFiles()
+        {
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            //testpathed.zip
+            string file = Path.Combine("data", "test.wad");
+
+            IGameFile gameFile = new GameFile() { FileName = "testpathed.zip" };
+            adapter.SpecificFiles = new string[] { file };
+
+            string parameters = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, GetTestPort(".wad,.deh"), false);
+            Assert.IsNull(adapter.LastError);
+            Assert.IsTrue(parameters.Contains("test.wad"));
+            Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test.wad")));
         }
 
         private void CreateDirectoriesAndFiles()
@@ -209,11 +318,27 @@ namespace UnitTest.Tests
 
             Directory.CreateDirectory("GameFiles");
             CreateTestFiles();
+            CreateTestPathedFile();
 
             Directory.CreateDirectory("Temp");
 
             Directory.CreateDirectory("SourcePorts");
-            System.IO.File.WriteAllBytes(@"SourcePorts\zdoom.exe", new byte[] { });
+            File.WriteAllBytes(@"SourcePorts\zdoom.exe", new byte[] { });
+        }
+
+        private static void CreateTestPathedFile()
+        {
+            string filename = string.Format(@"GameFiles\testpathed.zip");
+            if (File.Exists(filename))
+                File.Delete(filename);
+
+            using (ZipArchive za = ZipFile.Open(filename, ZipArchiveMode.Create))
+            {
+                string writeFile = Path.Combine(@"GameFiles\", "test.wad");
+                File.WriteAllBytes(writeFile, new byte[] { });
+
+                za.CreateEntryFromFile(writeFile, Path.Combine("data", "test.wad"));
+            }
         }
 
         private static void CreateTestFiles()
@@ -223,15 +348,15 @@ namespace UnitTest.Tests
                 string[] files = new string[] { string.Format("test{0}.wad", i), string.Format("test{0}.deh", i), string.Format("test{0}.txt", i) };
 
                 string filename = string.Format(@"GameFiles\test{0}.zip", i);
-                if (System.IO.File.Exists(filename))
-                    System.IO.File.Delete(filename);
+                if (File.Exists(filename))
+                    File.Delete(filename);
 
                 using (ZipArchive za = ZipFile.Open(filename, ZipArchiveMode.Create))
                 {
                     foreach (string file in files)
                     {
                         string writeFile = Path.Combine(@"GameFiles\", file);
-                        System.IO.File.WriteAllBytes(writeFile, new byte[] { });
+                        File.WriteAllBytes(writeFile, new byte[] { });
 
                         za.CreateEntryFromFile(writeFile, file);
                     }

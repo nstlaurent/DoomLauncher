@@ -17,12 +17,12 @@ namespace UnitTest.Tests
         public void TestZdoomBinary()
         {
             string save1 = "zdoomsave_v1.zds";
-            DeleteSaveFile(save1);
+            TestUtil.DeleteResourceFile(save1);
             ZDoomStatsReader statsReader = CreateStatsReader();
             statsReader.NewStastics += StatsReader_NewStastics;
             statsReader.Start();
 
-            File.Copy(Path.Combine("Resources", save1), save1);
+            TestUtil.CopyResourceFile(save1);
 
             WaitForEvents();
             statsReader.Stop();
@@ -59,13 +59,13 @@ namespace UnitTest.Tests
         {
             //this is the pre 3.5 json version that did not include items
             string save1 = "zdoomsave_v2.zds";
-            DeleteSaveFile(save1);
+            TestUtil.DeleteResourceFile(save1);
 
             ZDoomStatsReader statsReader = CreateStatsReader();
             statsReader.NewStastics += StatsReader_NewStastics;
             statsReader.Start();
 
-            File.Copy(Path.Combine("Resources", save1), save1);
+            TestUtil.CopyResourceFile(save1);
 
             WaitForEvents();
             statsReader.Stop();
@@ -97,7 +97,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(132.65715f, m_args[1].Statistics.LevelTime);
 
             //Give the reader the existing statistics, and let it re-read the save. It should not fire the events to prevent duplicates
-            DeleteSaveFile(save1);
+            TestUtil.DeleteResourceFile(save1);
             statsReader = new ZDoomStatsReader(new GameFile() { GameFileID = 1 }, Directory.GetCurrentDirectory(), m_args.Select(x => x.Statistics).ToArray());
             m_args.Clear();
             statsReader.NewStastics += StatsReader_NewStastics;
@@ -114,13 +114,13 @@ namespace UnitTest.Tests
         {
             //This is to test the 3.5 save format that includes items
             string save1 = "zdoomsave_v3.zds";
-            DeleteSaveFile(save1);
+            TestUtil.DeleteResourceFile(save1);
 
             ZDoomStatsReader statsReader = CreateStatsReader();
             statsReader.NewStastics += StatsReader_NewStastics;
             statsReader.Start();
 
-            File.Copy(Path.Combine("Resources", save1), save1);
+            TestUtil.CopyResourceFile(save1);
 
             WaitForEvents();
             statsReader.Stop();
@@ -152,7 +152,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(83.37143f, m_args[1].Statistics.LevelTime);
 
             //Give the reader the existing statistics, and let it re-read the save. It should not fire the events to prevent duplicates
-            DeleteSaveFile(save1);
+            TestUtil.DeleteResourceFile(save1);
             statsReader = new ZDoomStatsReader(new GameFile() { GameFileID = 1 }, Directory.GetCurrentDirectory(), m_args.Select(x => x.Statistics).ToArray());
             m_args.Clear();
             statsReader.NewStastics += StatsReader_NewStastics;
@@ -175,12 +175,6 @@ namespace UnitTest.Tests
         private static ZDoomStatsReader CreateStatsReader()
         {
             return new ZDoomStatsReader(new GameFile() { GameFileID = 1 }, Directory.GetCurrentDirectory(), new IStatsData[] { });
-        }
-
-        private static void DeleteSaveFile(string save1)
-        {
-            if (File.Exists(save1))
-                File.Delete(save1);
         }
 
         private void StatsReader_NewStastics(object sender, NewStatisticsEventArgs e)

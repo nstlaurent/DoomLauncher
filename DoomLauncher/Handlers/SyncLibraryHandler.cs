@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using DoomLauncher.TextFileParsers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +11,7 @@ using WadReader;
 
 namespace DoomLauncher
 {
-    class SyncLibraryHandler
+    public class SyncLibraryHandler
     {
         public event EventHandler SyncFileChange;
         public event EventHandler GameFileDataNeeded;
@@ -18,36 +19,25 @@ namespace DoomLauncher
         private readonly List<InvalidFile> m_invalidFiles = new List<InvalidFile>();
 
         public SyncLibraryHandler(IGameFileDataSourceAdapter dbDataSource, IGameFileDataSourceAdapter syncDataSource,
-            LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+            LauncherPath gameFileDirectory, LauncherPath tempDirectory, string[] dateParseFormats)
         {
             DbDataSource = dbDataSource;
             SyncDataSource = syncDataSource;
             GameFileDirectory = gameFileDirectory;
             TempDirectory = tempDirectory;
+            DateParseFormats = dateParseFormats;
 
             SyncFileCurrent = SyncFileCount = 0;
         }
 
-        public void Execute(string[] syncFiles)
+        public void Execute(string[] zipFiles)
         {
             m_invalidFiles.Clear();
-            IEnumerable<string> diff = null;
 
-            if (syncFiles == null)
-            {
-                IEnumerable<string> dsFiles = SyncDataSource.GetGameFileNames();
-                IEnumerable<string> dbFiles = DbDataSource.GetGameFileNames();
-                diff = dsFiles.Except(dbFiles);
-            }
-            else
-            {
-                diff = syncFiles;
-            }
-
-            SyncFileCount = diff.Count();
+            SyncFileCount = zipFiles.Length;
             SyncFileCurrent = 0;
 
-            foreach (string fileName in diff)
+            foreach (string fileName in zipFiles)
             {
                 if (SyncFileChange != null)
                 {
@@ -69,9 +59,11 @@ namespace DoomLauncher
 
                     try
                     {
-                        file.Map = GetMaps(Path.Combine(GameFileDirectory.GetFullPath(), file.FileName));
-                        if (!string.IsNullOrEmpty(file.Map))
-                            file.MapCount = file.Map.Count(x => x == ',') + 1;
+                        using (ZipArchive za = ZipFile.OpenRead(Path.Combine(GameFileDirectory.GetFullPath(), file.FileName)))
+                        {
+                            FillTextFileInfo(file, za);
+                            FillMapInfo(file, za);
+                        }
                     }
                     catch(IOException)
                     {
@@ -81,7 +73,7 @@ namespace DoomLauncher
                     catch (InvalidDataException)
                     {
                         file.Map = string.Empty;
-                        m_invalidFiles.Add(new InvalidFile(fileName, "Zip archive contained an improper pk3"));
+                        m_invalidFiles.Add(new InvalidFile(fileName, "Zip archive invalid or contained an improper pk3"));
                     }
                     catch (Exception ex)
                     {
@@ -114,6 +106,43 @@ namespace DoomLauncher
             }
         }
 
+        private void FillMapInfo(IGameFile file, ZipArchive za)
+        {
+            file.Map = GetMaps(za);
+            if (!string.IsNullOrEmpty(file.Map))
+                file.MapCount = file.Map.Count(x => x == ',') + 1;
+        }
+
+        private void FillTextFileInfo(IGameFile gameFile, ZipArchive za)
+        {
+            bool bParsedTxt = false;
+
+            foreach (ZipArchiveEntry zae in za.Entries)
+            {
+                if (Path.GetExtension(zae.FullName).Equals(".txt", StringComparison.OrdinalIgnoreCase))
+                {
+                    byte[] buffer = new byte[zae.Length];
+                    zae.Open().Read(buffer, 0, Convert.ToInt32(zae.Length));
+
+                    IdGamesTextFileParser parser = new IdGamesTextFileParser(DateParseFormats);
+                    parser.Parse(UnicodeEncoding.UTF7.GetString(buffer));
+
+                    gameFile.Title = parser.Title;
+                    gameFile.Author = parser.Author;
+                    gameFile.ReleaseDate = parser.ReleaseDate;
+                    gameFile.Description = parser.Description;
+
+                    if (string.IsNullOrEmpty(gameFile.Title))
+                        gameFile.Title = gameFile.FileName;
+
+                    bParsedTxt = !string.IsNullOrEmpty(gameFile.Title) || !string.IsNullOrEmpty(gameFile.Author) || !string.IsNullOrEmpty(gameFile.Description);
+                }
+
+                if (bParsedTxt)
+                    break;
+            }
+        }
+
         private static string CreateExceptionMsg(Exception ex)
         {
             return string.Concat("Unexpected exception - ", ex.Message, ex.StackTrace);
@@ -121,75 +150,69 @@ namespace DoomLauncher
 
         private IEnumerable<ZipArchiveEntry> GetEntriesByExtension(ZipArchive za, string ext)
         {
-            return za.Entries.Where(x => x.Name.Contains('.') && new FileInfo(x.Name).Extension.Equals(ext, StringComparison.OrdinalIgnoreCase));
+            return za.Entries.Where(x => x.Name.Contains('.') && Path.GetExtension(x.Name).Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
-        private string GetMaps(string filename)
+        private string GetMaps(ZipArchive za)
         {
-            using (ZipArchive za = ZipFile.OpenRead(filename))
+            IEnumerable<ZipArchiveEntry> txtEntries = GetEntriesByExtension(za, ".txt").Where(x => x.Name.Equals("mapinfo.txt", StringComparison.InvariantCultureIgnoreCase));
+            if (txtEntries.Any())
+                return MapStringFromMapInfo(txtEntries.First());
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(MapStringFromGameFile(za));
+
+            IEnumerable<ZipArchiveEntry> pk3Entries = Util.GetEntriesByExtension(za, Util.GetPkExtenstions());
+
+            foreach (ZipArchiveEntry zae in pk3Entries)
             {
-                IEnumerable<ZipArchiveEntry> txtEntries = GetEntriesByExtension(za, ".txt").Where(x => x.Name.Equals("mapinfo.txt", StringComparison.InvariantCultureIgnoreCase));
-                if (txtEntries.Any())
-                    return MapStringFromMapInfo(txtEntries.First());
-
-                StringBuilder sb = new StringBuilder();
-                sb.Append(MapStringFromGameFile(za));
-
-                IEnumerable<ZipArchiveEntry> pk3Entries = Util.GetEntriesByExtension(za, Util.GetPkExtenstions());
-
-                foreach (ZipArchiveEntry zae in pk3Entries)
+                string extractedFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), zae);
+                using (var extractedZip = ZipFile.OpenRead(extractedFile))
                 {
-                    string extractedFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), zae);
-                    sb.Append(GetMaps(extractedFile));
+                    sb.Append(GetMaps(extractedZip));
                 }
-
-                return sb.ToString();
             }
+
+            return sb.ToString();
         }
 
         private string MapStringFromMapInfo(ZipArchiveEntry zae)
         {
             string extractedFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), zae);
-            StringBuilder sb = new StringBuilder();
 
             if (File.Exists(extractedFile))
             {
-                Regex mapRegex = new Regex(@"\s*map\s+\w+");
-                string text = File.ReadAllText(extractedFile);
-                MatchCollection matches = mapRegex.Matches(text);
-
-                foreach(Match match in matches)
-                {
-                    sb.Append(match.Value.Trim().Substring(3).Trim());
-                    sb.Append(", ");
-                }
-
-                FileInfo deleteFile = new FileInfo(extractedFile);
-                deleteFile.Delete();
+                string mapinfo = File.ReadAllText(extractedFile);
+                File.Delete(extractedFile);
+                return GetMapStringFromMapInfo(mapinfo);
             }
 
-            if (sb.Length > 2)
-                sb.Remove(sb.Length - 2, 2);
+            return string.Empty;
+        }
 
-            return sb.ToString();
+        private static string GetMapStringFromMapInfo(string mapinfo)
+        {
+            Regex mapRegex = new Regex(@"\s*map\s+\w+");
+            MatchCollection matches = mapRegex.Matches(mapinfo);
+
+            return string.Join(", ", matches.Cast<Match>().Select(x => x.Value.Trim().Substring(3).Trim()));
         }
 
         private string MapStringFromGameFile(ZipArchive za)
         {
-            StringBuilder sb = new StringBuilder();
+            List<string> maps = new List<string>();
 
             IEnumerable<ZipArchiveEntry> wadEntries = GetEntriesByExtension(za, ".wad");
 
             foreach (ZipArchiveEntry zae in wadEntries)
             {
                 string extractFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), zae);
-                sb.Append(Util.GetMapStringFromWad(extractFile));
+                string mapString = Util.GetMapStringFromWad(extractFile);
+                if (!string.IsNullOrEmpty(mapString))
+                    maps.Add(mapString);
             }
 
-            if (sb.Length > 2)
-                sb.Remove(sb.Length - 2, 2);
-
-            return sb.ToString();
+            return string.Join(", ", maps.ToArray());
         }
 
         public IGameFileDataSourceAdapter DbDataSource { get; set; }
@@ -206,5 +229,11 @@ namespace DoomLauncher
         public int SyncFileCurrent { get; private set; }
         public int SyncFileCount { get; private set; }
         public string CurrentSyncFileName { get; private set; }
+
+        public string[] DateParseFormats
+        {
+            get;
+            set;
+        }
     }
 }

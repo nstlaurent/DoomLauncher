@@ -13,11 +13,14 @@ using DoomLauncher.DataSources;
 using System.IO;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace DoomLauncher
 {
     public partial class GenericFileView : BasicFileView
     {
+        private static string s_dateColumn = "DateCreated";
+
         public GenericFileView()
         {
             InitializeComponent();
@@ -30,7 +33,7 @@ namespace DoomLauncher
             SetColumnFields(new Tuple<string, string>[]
             {
                 new Tuple<string, string>("Description", "Description"),
-                new Tuple<string, string>("DateCreated", "Created"),
+                new Tuple<string, string>(s_dateColumn, "Created"),
                 new Tuple<string, string>("SourcePortName", "SourcePort")
             });
         }
@@ -47,7 +50,7 @@ namespace DoomLauncher
 
         private void SetColumnFields(IEnumerable<Tuple<string, string>> columnFields)
         {
-            if (columnFields.Count() > 0)
+            if (columnFields.Any())
             {
                 foreach (Tuple<string, string> item in columnFields)
                 {
@@ -58,6 +61,8 @@ namespace DoomLauncher
                     dgvMain.Columns.Add(col);
                 }
 
+                dgvMain.Columns[s_dateColumn].DefaultCellStyle.Format = string.Format("{0} {1}", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, 
+                    CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
                 dgvMain.Columns[dgvMain.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
         }

@@ -1,0 +1,10 @@
+version: '{build}'
+configuration: Release
+platform: Any CPU
+build:
+  project: DoomLauncher.sln
+  verbosity: minimal
+
+artifacts:
+  path: ReleaseBuild/DoomLauncher*.zip
+  name: BuiltZip

@@ -20,8 +20,6 @@ namespace DoomLauncher
 {
     public partial class MainForm : Form
     {
-        private delegate void GameFileDataSourceUpdate(IEnumerable<GameFileSearchField> searchFields);
-
         private static readonly string s_recentKey = "Recent";
         private static readonly string s_localKey = "Local";
         private static readonly string s_iwadKey = "IWads";
@@ -44,6 +42,7 @@ namespace DoomLauncher
         private SplashScreen m_splash;
 
         private string m_launchFile;
+        private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
 
         public MainForm(string launchFile)
         {
@@ -178,11 +177,25 @@ namespace DoomLauncher
                 if (tabView != null && tabView.IsSearchAllowed)
                 {
                     if (string.IsNullOrEmpty(ctrlSearch.SearchText.Trim()))
+                    {
                         tabView.SetGameFiles();
+                        UpdateSavedTabSearch(tabView, null);
+                    }
                     else
-                        tabView.SetGameFiles(Util.SearchFieldsFromSearchCtrl(ctrlSearch));
+                    {
+                        var searchFields = Util.SearchFieldsFromSearchCtrl(ctrlSearch);
+                        UpdateSavedTabSearch(tabView, searchFields);
+                        tabView.SetGameFiles(searchFields);
+                    }
                 }
             }
+        }
+
+        private void UpdateSavedTabSearch(ITabView tabView, GameFileSearchField[] searchFields)
+        {
+            if (!m_savedTabSearches.ContainsKey(tabView))
+                m_savedTabSearches.Add(tabView, null);
+            m_savedTabSearches[tabView] = searchFields;
         }
 
         private void CleanTempDirectory()
@@ -450,12 +463,13 @@ namespace DoomLauncher
                         if (messageBox != null && messageBox.Checked && messageBox.DialogResult == DialogResult.Cancel)
                             break;
                     }
+                }
 
-                    if (update)
-                    {
-                        UpdateLocal();
-                        HandleSelectionChange(GetCurrentViewControl());
-                    }
+                if (update)
+                {
+                    GetCurrentViewControl().SelectedItem = null;
+                    UpdateLocal();
+                    HandleSelectionChange(GetCurrentViewControl());
                 }
             }
         }
@@ -775,6 +789,7 @@ namespace DoomLauncher
                     IEnumerable<ITagData> tags = GetTagsFromFile(gameFile);
 
                     GameFileEditForm form = new GameFileEditForm();
+                    form.SetCopyFromFileAllowed(DataSourceAdapter, m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(s_localKey)));
                     form.StartPosition = FormStartPosition.CenterParent;
                     form.EditControl.SetShowCheckBoxes(false);
                     form.EditControl.SetDataSource(gameFile, tags);
@@ -791,6 +806,8 @@ namespace DoomLauncher
                         foreach (IGameFile updateGameFile in gameFiles)
                         {
                             form.EditControl.UpdateDataSource(updateGameFile);
+                            if (form.TagsChanged)
+                                UpdateGameFileTags(updateGameFile, form.EditControl.TagData);
                             tabView.Adapter.UpdateGameFile(updateGameFile, Util.DefaultGameFileUpdateFields);
                             UpdateDataSourceViews(updateGameFile);
                         }
@@ -799,6 +816,28 @@ namespace DoomLauncher
                             HandleSelectionChange(ctrl);
                     }
                 }
+            }
+        }
+
+        private void UpdateGameFileTags(IGameFile gameFile, ITagData[] tags)
+        {
+            var tagMapping = DataSourceAdapter.GetTagMappings(gameFile.GameFileID.Value);
+            var existingTagIDs = tagMapping.Select(x => x.TagID).ToArray();
+            var newTagIDs = tags.Select(x => x.TagID).ToArray();
+
+            var deletedTags = existingTagIDs.Except(newTagIDs);
+            var newTags = newTagIDs.Except(existingTagIDs);
+            
+            foreach(var deletedTag in deletedTags)
+            {
+                TagMapping tagMap = new TagMapping() { FileID = gameFile.GameFileID.Value, TagID = deletedTag };
+                DataSourceAdapter.DeleteTagMapping(tagMap);
+            }
+
+            foreach(var newTag in newTags)
+            {
+                TagMapping tagMap = new TagMapping() { FileID = gameFile.GameFileID.Value, TagID = newTag };
+                DataSourceAdapter.InsertTagMapping(tagMap);
             }
         }
 
@@ -872,7 +911,6 @@ namespace DoomLauncher
                 fi.Delete();
 
                 await SyncLocalDatabase(new string[] { fi.Name });
-                UpdateLocal();
             }
             catch (IOException)
             {
@@ -1011,8 +1049,8 @@ namespace DoomLauncher
                 }
                 catch (DirectoryNotFoundException ex)
                 {
-                    MessageBox.Show(this, string.Format("The directory {0} was not found. DoomLauncher will not operate correctly with invalid paths. Make sure the directory you are setting contains all folders required (GameWads, Screenshots, SaveGames, Demos, Temp)", 
-                        ex.Message), 
+                    MessageBox.Show(this, string.Format("The directory {0} was not found. DoomLauncher will not operate correctly with invalid paths. " +
+                        "Make sure the directory you are setting contains all folders required (Demos, SaveGames, Screenshots, Temp)", ex.Message), 
                         "Invalid Directory",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -1137,7 +1175,10 @@ namespace DoomLauncher
             {
                 if (tab.IsLocal)
                 {
-                    tab.SetGameFiles();
+                    if (m_savedTabSearches.ContainsKey(tab))
+                        tab.SetGameFiles(m_savedTabSearches[tab]);
+                    else
+                        tab.SetGameFiles();
                 }
             }
         }
@@ -1892,7 +1933,8 @@ namespace DoomLauncher
             else
             {
                 this.Enabled = true;
-                form.Close();
+                if (form != null)
+                    form.Close();
             }
         }
 
@@ -1970,6 +2012,49 @@ namespace DoomLauncher
             {
                 MessageBox.Show(this, "The help document is missing and could not be opened.", "Help Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void createZipToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HandleCreateZip();
+        }
+
+        private async void HandleCreateZip()
+        {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            if (folderDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                SaveFileDialog fileDialog = new SaveFileDialog();
+                fileDialog.Filter = "Zip|*.zip";
+
+                if (fileDialog.ShowDialog(this) == DialogResult.OK && !string.IsNullOrEmpty(fileDialog.FileName))
+                {
+                    ProgressBarForm progressBar = CreateProgressBar("Creating zip...", ProgressBarStyle.Marquee);
+                    ProgressBarStart(progressBar);
+                    bool success = false;
+                    await Task.Run(() => success = CreateZipFromDirectory(folderDialog.SelectedPath, fileDialog.FileName));
+                    ProgressBarEnd(progressBar);
+
+                    if (!success)
+                        MessageBox.Show(this, "Failed to create zip file. File may be in use.", "Zip Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private static bool CreateZipFromDirectory(string folderPath, string zipFileName)
+        {
+            try
+            {
+                if (File.Exists(zipFileName))
+                    File.Delete(zipFileName);
+                ZipFile.CreateFromDirectory(folderPath, zipFileName);
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private AppConfiguration AppConfiguration { get; set; }

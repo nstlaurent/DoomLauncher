@@ -33,7 +33,7 @@ namespace DoomLauncherRelease
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Concat("Relase failure: ", ex.Message, Environment.NewLine, ex.StackTrace));
+                Console.WriteLine(string.Concat("Release failure: ", ex.Message, Environment.NewLine, ex.StackTrace));
                 return -1;
             }
         }
@@ -45,7 +45,7 @@ namespace DoomLauncherRelease
             if (!Directory.Exists(basePath))
             {
                 Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
-                Directory.CreateDirectory(Path.Combine(basePath, "GameWads"));
+                //Directory.CreateDirectory(Path.Combine(basePath, "GameWads"));
                 Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
                 Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
                 Directory.CreateDirectory(Path.Combine(basePath, "Temp"));

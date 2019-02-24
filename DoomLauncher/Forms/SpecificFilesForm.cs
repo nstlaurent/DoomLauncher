@@ -135,7 +135,7 @@ namespace DoomLauncher
                                 {
                                     if (m_ct.IsCancellationRequested)
                                         break;
-                                    HandleAddItem(file, zae.FullName, zae.Name, m_specificFiles.Contains(zae.Name));
+                                    HandleAddItem(file, zae.FullName, zae.Name, m_specificFiles.Contains(zae.FullName));
                                 }
                             }
                         }

@@ -35,8 +35,8 @@
             this.pbImage = new System.Windows.Forms.PictureBox();
             this.lblTags = new DoomLauncher.GrowLabel();
             this.ctrlStats = new DoomLauncher.StatsControl();
-            this.txtDescription = new System.Windows.Forms.RichTextBox();
-            this.txtComments = new System.Windows.Forms.RichTextBox();
+            this.txtDescription = new Controls.CRichTextBox();
+            this.txtComments = new Controls.CRichTextBox();
             this.tblMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
             this.SuspendLayout();
@@ -162,7 +162,7 @@
         private GrowLabel lblTags;
         private System.Windows.Forms.Label lblTimePlayed;
         private StatsControl ctrlStats;
-        private System.Windows.Forms.RichTextBox txtDescription;
-        private System.Windows.Forms.RichTextBox txtComments;
+        private Controls.CRichTextBox txtDescription;
+        private Controls.CRichTextBox txtComments;
     }
 }

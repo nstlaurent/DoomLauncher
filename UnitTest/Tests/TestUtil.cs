@@ -38,5 +38,17 @@ namespace UnitTest.Tests
 
             return true;
         }
+
+        public static void CopyResourceFile(string filename)
+        {
+            DeleteResourceFile(filename);
+            File.Copy(Path.Combine("Resources", filename), filename);
+        }
+
+        public static void DeleteResourceFile(string filename)
+        {
+            if (File.Exists(filename))
+                File.Delete(filename);
+        }
     }
 }

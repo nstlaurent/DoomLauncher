@@ -20,6 +20,13 @@ namespace DoomLauncher
             InitializeComponent();
             cmbTab.SelectedIndex = 0;
             cmbColor.SelectedIndex = 1;
+
+            this.Load += TagEdit_Load;
+        }
+
+        private void TagEdit_Load(object sender, EventArgs e)
+        {
+            txtName.Select();
         }
 
         public void SetDataSource(ITagData tag)

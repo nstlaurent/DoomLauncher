@@ -101,7 +101,7 @@ namespace DoomLauncher
                     var mapLumps = WadFileReader.GetMapMarkerLumps(wadReader.ReadLumps()).OrderBy(x => x.Name).ToArray();
                     fs.Close();
 
-                    Array.ForEach(mapLumps, x => sb.Append(x.Name + ", "));
+                    sb.Append(string.Join(", ", mapLumps.Select(x => x.Name)));
                 }
                 else
                 {
@@ -364,6 +364,25 @@ namespace DoomLauncher
             }
 
             return sb.ToString();
+        }
+
+        //returns the first position after the magicID is found, else returns -1
+        public static long ReadAfter(MemoryStream ms, byte[] magicID)
+        {
+            long position = ms.Position;
+            byte[] check = new byte[magicID.Length];
+
+            while (ms.Position + magicID.Length < ms.Length)
+            {
+                ms.Read(check, 0, check.Length);
+
+                if (magicID.SequenceEqual(check))
+                    return ms.Position;
+
+                ms.Position = ++position;
+            }
+
+            return -1;
         }
     }
 }

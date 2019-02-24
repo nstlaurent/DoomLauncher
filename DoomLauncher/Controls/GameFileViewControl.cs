@@ -27,6 +27,7 @@ namespace DoomLauncher
         private Label m_label = new Label();
         private BindingListView<GameFile> m_datasource;
         private Dictionary<int, PropertyInfo> m_properties = new Dictionary<int, PropertyInfo>();
+        private bool m_binding = false;
 
         public GameFileViewControl()
         {
@@ -116,6 +117,7 @@ namespace DoomLauncher
 
         private void SetDataSource(object datasource)
         {
+            m_binding = true;
             m_datasource = (BindingListView<GameFile>)datasource;
 
             if (m_datasource == null)
@@ -137,6 +139,8 @@ namespace DoomLauncher
                 m_label.Visible = false;
                 BorderStyle = BorderStyle.None;
             }
+
+            m_binding = false;
         }
 
         public object SelectedItem
@@ -256,13 +260,8 @@ namespace DoomLauncher
                 else
                     sortOrder = "DESC";
 
-                BindingListView<GameFile> source = m_datasource as BindingListView<GameFile>;
-
-                if (source != null)
-                {
-                    source.ApplySort(string.Concat(dgvcSet.Name, " ", sortOrder));
-                    dgvMain.Invalidate();
-                }
+                m_datasource.ApplySort(string.Concat(dgvcSet.Name, " ", sortOrder));
+                dgvMain.Invalidate();
             }
         }
 
@@ -426,7 +425,7 @@ namespace DoomLauncher
 
         private void dgvMain_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
-            if (CustomRowColorPaint && CustomRowPaint != null)
+            if (CustomRowColorPaint && CustomRowPaint != null && !m_binding)
             {
                 CustomRowPaintDataBoundItem = this.ItemForRow(e.RowIndex);
 
@@ -455,14 +454,12 @@ namespace DoomLauncher
 
         private void dgvMain_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (GridKeyPress != null)
-                GridKeyPress(this, e);
+            GridKeyPress?.Invoke(this, e);
         }
 
         private void dgvMain_KeyDown(object sender, KeyEventArgs e)
         {
-            if (GridKeyDown != null)
-                GridKeyDown(this, e);
+            GridKeyDown?.Invoke(this, e);
         }
     }
 }

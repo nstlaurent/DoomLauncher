@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
-    class InvalidFile
+    public class InvalidFile
     {
         public InvalidFile(string filename, string reason)
         {
