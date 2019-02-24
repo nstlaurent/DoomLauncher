@@ -516,6 +516,7 @@ namespace DoomLauncher
             if (demoFiles.Count > 0)
             {
                 PopulateDemos();
+                SelectedSourcePort = m_adapter.GetSourcePort(demoFiles.First().SourcePortID);
                 cmbDemo.SelectedValue = demoFiles.First().FileID;
                 chkDemo.Checked = true; //will trigger HandleDemoChange
             }
@@ -547,15 +548,18 @@ namespace DoomLauncher
 
                     if (unavailable.Count > 0)
                     {
-                        TextBoxForm form = new TextBoxForm(true, MessageBoxButtons.OK);
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        form.Text = "Not Found";
-                        form.HeaderText = "The following required files were not found:";
-                        form.DisplayText = string.Join(Environment.NewLine, unavailable.ToArray());
+                        TextBoxForm form = new TextBoxForm(true, MessageBoxButtons.OK)
+                        {
+                            StartPosition = FormStartPosition.CenterParent,
+                            Text = "Not Found",
+                            HeaderText = "The following required files were not found:",
+                            DisplayText = string.Join(Environment.NewLine, unavailable.ToArray())
+                        };
                         form.ShowDialog(this);
                     }
 
                     m_demoChangedAdditionalFiles = true;
+                    ResetSpecificFilesSelections(ctrlFiles.GetFiles().Cast<IGameFile>().ToArray()); //don't use the handler in this case, we are overriding it
                 }
             }
             else
