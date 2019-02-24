@@ -67,6 +67,10 @@ namespace DoomLauncher
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
+                    else
+                    {
+                        HandleSelectionChange(GetCurrentViewControl(), true);
+                    }
                 }
             }
             else if (!string.IsNullOrEmpty(launchData.ErrorTitle))
