@@ -570,7 +570,7 @@ namespace DoomLauncher
                     if (imgFile != null && !string.IsNullOrEmpty(imgFile.FileName))
                         SetPreviewImage(imgFile);
 
-                    ctrlSummary.SetStatistics(stats);
+                    ctrlSummary.SetStatistics(item, stats);
                 }
                 else
                 {
@@ -1892,10 +1892,14 @@ namespace DoomLauncher
             if (GetCurrentViewControl() != null)
             {
                 List<IStatsData> stats = new List<IStatsData>();
+                List<IGameFile> gameFiles = new List<IGameFile>();
                 foreach (ObjectView<GameFile> item in (BindingListView<GameFile>)GetCurrentViewControl().DataSource)
                 {
                     if (item.Object.GameFileID.HasValue)
+                    {
                         stats.AddRange(DataSourceAdapter.GetStats(item.Object.GameFileID.Value));
+                        gameFiles.Add(item.Object);
+                    }
                 }
 
                 ITabView tabView = m_tabHandler.TabViewForControl(GetCurrentViewControl());
@@ -1903,7 +1907,7 @@ namespace DoomLauncher
 
                 CumulativeStats form = new CumulativeStats();
                 form.Text = string.Format("Cumulative Stats - {0}", tabText);
-                form.SetStatistics(stats);
+                form.SetStatistics(gameFiles, stats);
                 form.StartPosition = FormStartPosition.CenterParent;
                 form.ShowDialog(this);
             }
