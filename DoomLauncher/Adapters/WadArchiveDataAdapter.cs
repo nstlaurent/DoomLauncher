@@ -78,6 +78,11 @@ namespace DoomLauncher
             throw new NotImplementedException();
         }
 
+        public IEnumerable<IGameFile> GetUntaggedGameFiles()
+        {
+            throw new NotSupportedException();
+        }
+
         public IEnumerable<IGameFile> GetGameFiles(IGameFileGetOptions options)
         {
             if (options.SearchField.SearchFieldType == GameFileFieldType.MD5)

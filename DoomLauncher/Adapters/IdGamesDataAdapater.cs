@@ -39,6 +39,11 @@ namespace DoomLauncher
             return GetGameFiles(null);
         }
 
+        public IEnumerable<IGameFile> GetUntaggedGameFiles()
+        {
+            throw new NotSupportedException();
+        }
+
         public IEnumerable<IGameFile> GetGameFiles(IGameFileGetOptions options)
         {
             if (options == null)

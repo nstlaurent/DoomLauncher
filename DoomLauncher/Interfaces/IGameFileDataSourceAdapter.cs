@@ -12,6 +12,7 @@ namespace DoomLauncher.Interfaces
         IEnumerable<IGameFile> GetGameFiles();
         IEnumerable<IGameFile> GetGameFiles(IGameFileGetOptions options);
         IEnumerable<IGameFile> GetGameFileIWads();
+        IEnumerable<IGameFile> GetUntaggedGameFiles();
         IEnumerable<string> GetGameFileNames();
         IGameFile GetGameFile(string fileName);
         void InsertGameFile(IGameFile gameFile);

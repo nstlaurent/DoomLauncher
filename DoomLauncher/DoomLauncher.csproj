@@ -488,6 +488,9 @@
     <Compile Include="Handlers\VersionHandler.cs" />
     <Compile Include="TextFileParsers\ZdlParser.cs" />
     <Compile Include="Handlers\UtilityHandler.cs" />
+    <Compile Include="TabViews\UntaggedTabView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <EmbeddedResource Include="Controls\FilesCtrl.resx">
       <DependentUpon>FilesCtrl.cs</DependentUpon>
     </EmbeddedResource>
