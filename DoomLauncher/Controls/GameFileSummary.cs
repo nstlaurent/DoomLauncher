@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Diagnostics;
+using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
 {
@@ -127,19 +128,22 @@ namespace DoomLauncher
             lblTimePlayed.Text = Util.GetTimePlayedString(minutes);
         }
 
-        public void SetStatistics(IEnumerable<IStatsData> stats)
+        public void SetStatistics(IGameFile gameFile, IEnumerable<IStatsData> stats)
         {
-            if (stats.Count() > 0)
+            if (stats.Any())
             {
                 ctrlStats.Visible = true;
-                tblMain.RowStyles[3].Height = 92;
+                tblMain.RowStyles[4].Height = 120;
 
-                ctrlStats.SetStatistics(stats);
+                ctrlStats.SetStatistics(gameFile, stats);
+
+                lblLastMap.Text = string.Concat("Last Map: ", stats.OrderByDescending(x => x.RecordTime).First().MapName);
             }
             else
             {
                 ctrlStats.Visible = false;
-                tblMain.RowStyles[3].Height = 0;
+                tblMain.RowStyles[4].Height = 0;
+                lblLastMap.Text = string.Empty;
             }
         }
 

@@ -41,7 +41,7 @@
             // 
             this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(265, 179);
+            this.btnOK.Location = new System.Drawing.Point(265, 183);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 9;
@@ -64,7 +64,7 @@
             this.tblMain.RowCount = 4;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 96F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 104F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.Size = new System.Drawing.Size(344, 211);
             this.tblMain.TabIndex = 2;
@@ -85,7 +85,7 @@
             this.ctrlStats.Location = new System.Drawing.Point(4, 78);
             this.ctrlStats.Margin = new System.Windows.Forms.Padding(3, 3, 0, 0);
             this.ctrlStats.Name = "ctrlStats";
-            this.ctrlStats.Size = new System.Drawing.Size(339, 93);
+            this.ctrlStats.Size = new System.Drawing.Size(339, 101);
             this.ctrlStats.TabIndex = 8;
             // 
             // label1

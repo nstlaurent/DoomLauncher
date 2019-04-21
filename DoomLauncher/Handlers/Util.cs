@@ -211,20 +211,23 @@ namespace DoomLauncher
 
         public static string GetTimePlayedString(int minutes)
         {
-            string ret = "Time Played: ";
-            if (minutes < 60)
-            {
-                ret += string.Format("{0} minute{1}", minutes,
-                    minutes == 1 ? string.Empty : "s");
-            }
-            else
-            {
-                double hours = Math.Round(minutes / 60.0, 2);
-                ret += string.Format("{0} hour{1}", hours.ToString("N", CultureInfo.InvariantCulture),
-                    hours == 1 ? string.Empty : "s");
-            }
+            List<string> items = new List<string>();
 
-            return ret;
+            TimeSpan ts = new TimeSpan(0, minutes, 0);
+
+            if (ts.Days > 0)
+                items.Add(TimeString(ts.Days, "Day"));
+            if (ts.Hours > 0)
+                items.Add(TimeString(ts.Hours, "Hour"));
+
+            items.Add(TimeString(ts.Minutes, "Minute"));
+
+            return string.Concat("Time Played: ", string.Join(", ", items.ToArray()));
+        }
+
+        private static string TimeString(int time, string type)
+        {
+            return string.Concat(time.ToString(), " ",  type, time == 1 ? string.Empty : "s");
         }
 
         public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)

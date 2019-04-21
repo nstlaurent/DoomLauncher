@@ -35,8 +35,9 @@
             this.pbImage = new System.Windows.Forms.PictureBox();
             this.lblTags = new DoomLauncher.GrowLabel();
             this.ctrlStats = new DoomLauncher.StatsControl();
-            this.txtDescription = new Controls.CRichTextBox();
-            this.txtComments = new Controls.CRichTextBox();
+            this.txtDescription = new DoomLauncher.Controls.CRichTextBox();
+            this.txtComments = new DoomLauncher.Controls.CRichTextBox();
+            this.lblLastMap = new System.Windows.Forms.Label();
             this.tblMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
             this.SuspendLayout();
@@ -49,17 +50,19 @@
             this.tblMain.Controls.Add(this.lblTimePlayed, 0, 2);
             this.tblMain.Controls.Add(this.lblTitle, 0, 0);
             this.tblMain.Controls.Add(this.pbImage, 0, 1);
-            this.tblMain.Controls.Add(this.lblTags, 0, 4);
-            this.tblMain.Controls.Add(this.ctrlStats, 0, 3);
-            this.tblMain.Controls.Add(this.txtDescription, 0, 5);
-            this.tblMain.Controls.Add(this.txtComments, 0, 6);
+            this.tblMain.Controls.Add(this.lblTags, 0, 5);
+            this.tblMain.Controls.Add(this.ctrlStats, 0, 4);
+            this.tblMain.Controls.Add(this.txtDescription, 0, 6);
+            this.tblMain.Controls.Add(this.txtComments, 0, 7);
+            this.tblMain.Controls.Add(this.lblLastMap, 0, 3);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Margin = new System.Windows.Forms.Padding(0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 7;
+            this.tblMain.RowCount = 8;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 78F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
@@ -104,7 +107,7 @@
             // 
             this.lblTags.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTags.AutoSize = true;
-            this.lblTags.Location = new System.Drawing.Point(4, 376);
+            this.lblTags.Location = new System.Drawing.Point(4, 417);
             this.lblTags.Name = "lblTags";
             this.lblTags.Size = new System.Drawing.Size(34, 13);
             this.lblTags.TabIndex = 5;
@@ -113,7 +116,7 @@
             // ctrlStats
             // 
             this.ctrlStats.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlStats.Location = new System.Drawing.Point(1, 284);
+            this.ctrlStats.Location = new System.Drawing.Point(1, 325);
             this.ctrlStats.Margin = new System.Windows.Forms.Padding(0);
             this.ctrlStats.Name = "ctrlStats";
             this.ctrlStats.Size = new System.Drawing.Size(202, 78);
@@ -122,22 +125,34 @@
             // txtDescription
             // 
             this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDescription.Location = new System.Drawing.Point(4, 407);
+            this.txtDescription.Location = new System.Drawing.Point(4, 448);
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtDescription.Size = new System.Drawing.Size(196, 192);
+            this.txtDescription.Size = new System.Drawing.Size(196, 159);
             this.txtDescription.TabIndex = 9;
             this.txtDescription.Text = "";
+            this.txtDescription.WarnLinkClick = true;
             // 
             // txtComments
             // 
             this.txtComments.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtComments.Location = new System.Drawing.Point(4, 606);
+            this.txtComments.Location = new System.Drawing.Point(4, 614);
             this.txtComments.Name = "txtComments";
             this.txtComments.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtComments.Size = new System.Drawing.Size(196, 44);
+            this.txtComments.Size = new System.Drawing.Size(196, 36);
             this.txtComments.TabIndex = 10;
             this.txtComments.Text = "";
+            this.txtComments.WarnLinkClick = true;
+            // 
+            // lblLastMap
+            // 
+            this.lblLastMap.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblLastMap.AutoSize = true;
+            this.lblLastMap.Location = new System.Drawing.Point(4, 297);
+            this.lblLastMap.Name = "lblLastMap";
+            this.lblLastMap.Size = new System.Drawing.Size(54, 13);
+            this.lblLastMap.TabIndex = 11;
+            this.lblLastMap.Text = "Last Map:";
             // 
             // GameFileSummary
             // 
@@ -164,5 +179,6 @@
         private StatsControl ctrlStats;
         private Controls.CRichTextBox txtDescription;
         private Controls.CRichTextBox txtComments;
+        private System.Windows.Forms.Label lblLastMap;
     }
 }
