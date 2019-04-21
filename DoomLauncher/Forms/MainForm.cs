@@ -24,8 +24,9 @@ namespace DoomLauncher
         private static readonly string s_localKey = "Local";
         private static readonly string s_iwadKey = "IWads";
         private static readonly string s_idGamesKey = "Id Games";
+        private static readonly string s_untaggedKey = "Untagged";
 
-        public static string[] GetBaseTabs() { return new string[] { s_recentKey, s_localKey, s_iwadKey, s_idGamesKey }; }
+        public static string[] GetBaseTabs() { return new string[] { s_recentKey, s_localKey, s_iwadKey, s_idGamesKey, s_untaggedKey }; }
 
         private string m_workingDirectory;
         private bool m_playInProgress = false, m_idGamesLoaded;
@@ -839,6 +840,9 @@ namespace DoomLauncher
                 TagMapping tagMap = new TagMapping() { FileID = gameFile.GameFileID.Value, TagID = newTag };
                 DataSourceAdapter.InsertTagMapping(tagMap);
             }
+
+
+            UpdateTagTabData(newTags.Union(deletedTags));
         }
 
         private static bool CheckEdit(ITabView tabView, IGameFile[] gameFiles)
@@ -1664,7 +1668,7 @@ namespace DoomLauncher
                     }
 
                     TagMapLookup.Refresh();
-                    UpdateTagTabData(tag);
+                    UpdateTagTabData(tag.TagID);
                     HandleTabSelectionChange();
 
                     if (sbError.Length > 0)
@@ -1702,7 +1706,7 @@ namespace DoomLauncher
                     }
 
                     TagMapLookup.Refresh();
-                    UpdateTagTabData(tag);
+                    UpdateTagTabData(tag.TagID);
                     HandleSelectionChange(GetCurrentViewControl(), true);
                 }
             }
@@ -1760,12 +1764,25 @@ namespace DoomLauncher
             }
         }
 
-        private void UpdateTagTabData(ITagData tag)
+        private void UpdateTagTabData(int tagID)
         {
-            ITabView tab = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(tag.TagID) && x is TagTabView);
+            UpdateTagTabData(new int[] { tagID });
+        }
 
-            if (tab != null)
-                tab.SetGameFiles();
+        private void UpdateTagTabData(IEnumerable<int> tagIDs)
+        {
+            foreach (var tagID in tagIDs)
+            {
+                ITabView tab = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(tagID) && x is TagTabView);
+
+                if (tab != null)
+                    tab.SetGameFiles();
+            }
+
+            ITabView untaggedView = m_tabHandler.TabViews.FirstOrDefault(x => x is UntaggedTabView);
+
+            if (untaggedView != null)
+                untaggedView.SetGameFiles();
         }
 
         private void showToolStripMenuItem_Click(object sender, EventArgs e)

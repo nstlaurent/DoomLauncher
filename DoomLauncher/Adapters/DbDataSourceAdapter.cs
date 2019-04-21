@@ -52,6 +52,12 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(GameFile)).Cast<IGameFile>();
         }
 
+        public IEnumerable<IGameFile> GetUntaggedGameFiles()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("select GameFiles.* from GameFiles left join TagMapping on GameFiles.GameFileID = TagMapping.FileID where FileID is null").Tables[0];
+            return Util.TableToStructure(dt, typeof(GameFile)).Cast<IGameFile>();
+        }
+
         public IEnumerable<IGameFile> GetGameFiles(ITagData tag)
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select GameFiles.* from GameFiles join TagMapping on TagMapping.FileID = GameFiles.GameFileID where TagID = {0}", 

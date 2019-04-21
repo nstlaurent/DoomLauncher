@@ -1,0 +1,37 @@
+﻿using DoomLauncher.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DoomLauncher
+{
+    class UntaggedTabView : LocalTabViewCtrl
+    {
+        public UntaggedTabView(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup)
+            : base(key, title, adapter, selectFields, lookup)
+        {
+
+        }
+
+        public override void SetGameFiles()
+        {
+            SetDataSource(Adapter.GetUntaggedGameFiles());
+        }
+
+        public override void SetGameFiles(IEnumerable<GameFileSearchField> searchFields)
+        {
+            IEnumerable<IGameFile> items = new IGameFile[0];
+            var untaggedFiles = Adapter.GetUntaggedGameFiles();
+
+            foreach (GameFileSearchField sf in searchFields)
+            {
+                var search = Adapter.GetGameFiles(new GameFileGetOptions(m_selectFields, sf));
+                items = items.Union(untaggedFiles.Intersect(search));
+            }
+
+            SetDataSource(items);
+        }
+    }
+}

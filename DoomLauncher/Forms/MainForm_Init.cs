@@ -164,52 +164,34 @@ namespace DoomLauncher
             return Path.Combine(fi.DirectoryName, "Backup", fi.Name.Replace(fi.Extension, end));
         }
 
+        private void SetupTabBase(ITabView tabView, ColumnField[] columnTextFields, ColumnConfig[] colConfig, ContextMenuStrip menu, bool dragDrop)
+        {
+            tabView.SetColumnConfig(columnTextFields, colConfig);
+            tabView.GameFileViewControl.SetContextMenuStrip(menu);
+            tabView.GameFileViewControl.AllowDrop = dragDrop;
+            SetGameFileViewEvents(tabView.GameFileViewControl, dragDrop);
+        }
+
         private void SetupTabs()
         {
             List<ITabView> tabViews = new List<ITabView>();
             ColumnConfig[] colConfig = GetColumnConfig();
-
             TagMapLookup = new TagMapLookup(DataSourceAdapter);
 
-            ColumnField[] columnTextFields = DefaultColumnTextFields;
+            tabViews.Add(CreateTabViewRecent(colConfig));
+            tabViews.Add(CreateTabViewLocal(colConfig));
+            tabViews.Add(CreateTabViewUntagged(colConfig));
+            tabViews.Add(CreateTabViewIwad(colConfig));
+            tabViews.Add(CreateTabViewIdGames(colConfig));
+            tabViews.AddRange(CreateTagTabs(DefaultColumnTextFields, colConfig));
 
-            OptionsTabViewCtrl tabViewRecent = new OptionsTabViewCtrl(s_recentKey, s_recentKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
-            tabViewRecent.SetColumnConfig(columnTextFields, colConfig);
-            tabViewRecent.GameFileViewControl.SetContextMenuStrip(mnuLocal);
-            tabViewRecent.GameFileViewControl.AllowDrop = true;
-            tabViewRecent.Options = new GameFileGetOptions();
-            tabViewRecent.Options.Limit = 10;
-            tabViewRecent.Options.OrderBy = OrderType.Desc;
-            tabViewRecent.Options.OrderField = GameFileFieldType.Downloaded;
- 
-            SetGameFileViewEvents(tabViewRecent.GameFileViewControl, true);
+            m_tabHandler = new TabHandler(tabControl);
+            m_tabHandler.SetTabs(tabViews);
+        }
 
-            tabViews.Add(tabViewRecent);
-
-            LocalTabViewCtrl tabViewLocal = new LocalTabViewCtrl(s_localKey, s_localKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
-            tabViewLocal.SetColumnConfig(columnTextFields, colConfig);
-            tabViewLocal.GameFileViewControl.SetContextMenuStrip(mnuLocal);
-            tabViewLocal.GameFileViewControl.AllowDrop = true;
-            SetGameFileViewEvents(tabViewLocal.GameFileViewControl, true);
-
-            tabViews.Add(tabViewLocal);
-
-            columnTextFields = new ColumnField[]
-            {
-                new ColumnField("FileName", "File"),
-                new ColumnField("Title", "Title"),
-                new ColumnField("LastPlayed", "Last Played")
-            };
-
-            IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(s_iwadKey, s_iwadKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
-            tabViewIwads.SetColumnConfig(columnTextFields, colConfig);
-            tabViewIwads.GameFileViewControl.SetContextMenuStrip(mnuLocal);
-            tabViewIwads.GameFileViewControl.AllowDrop = true;
-            SetGameFileViewEvents(tabViewIwads.GameFileViewControl, true);
-
-            tabViews.Add(tabViewIwads);
-
-            columnTextFields = new ColumnField[]
+        private IdGamesTabViewCtrl CreateTabViewIdGames(ColumnConfig[] colConfig)
+        {
+            ColumnField[] columnTextFields = new ColumnField[]
             {
                 new ColumnField("Title", "Title"),
                 new ColumnField("Author", "Author"),
@@ -219,16 +201,47 @@ namespace DoomLauncher
 
             IdGamesDataSourceAdapter = new IdGamesDataAdapater(AppConfiguration.IdGamesUrl, AppConfiguration.ApiPage, AppConfiguration.MirrorUrl);
             IdGamesTabViewCtrl tabViewIdGames = new IdGamesTabViewCtrl(s_idGamesKey, s_idGamesKey, IdGamesDataSourceAdapter, DefaultGameFileSelectFields);
-            tabViewIdGames.SetColumnConfig(columnTextFields, colConfig);
-            tabViewIdGames.GameFileViewControl.SetContextMenuStrip(mnuIdGames);
-            SetGameFileViewEvents(tabViewIdGames.GameFileViewControl, false);
+            SetupTabBase(tabViewIdGames, columnTextFields, colConfig, mnuIdGames, false);
+            return tabViewIdGames;
+        }
 
-            tabViews.Add(tabViewIdGames);
+        private IWadTabViewCtrl CreateTabViewIwad(ColumnConfig[] colConfig)
+        {
+            ColumnField[] columnTextFields = new ColumnField[]
+            {
+                new ColumnField("FileName", "File"),
+                new ColumnField("Title", "Title"),
+                new ColumnField("LastPlayed", "Last Played")
+            };
 
-            tabViews.AddRange(CreateTagTabs(DefaultColumnTextFields, colConfig));
+            IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(s_iwadKey, s_iwadKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
+            SetupTabBase(tabViewIwads, columnTextFields, colConfig, mnuLocal, true);
+            return tabViewIwads;
+        }
 
-            m_tabHandler = new TabHandler(tabControl);
-            m_tabHandler.SetTabs(tabViews);
+        private LocalTabViewCtrl CreateTabViewUntagged(ColumnConfig[] colConfig)
+        {
+            LocalTabViewCtrl tabViewUntagged = new UntaggedTabView(s_untaggedKey, s_untaggedKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
+            SetupTabBase(tabViewUntagged, DefaultColumnTextFields, colConfig, mnuLocal, true);
+            return tabViewUntagged;
+        }
+
+        private LocalTabViewCtrl CreateTabViewLocal(ColumnConfig[] colConfig)
+        {
+            LocalTabViewCtrl tabViewLocal = new LocalTabViewCtrl(s_localKey, s_localKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
+            SetupTabBase(tabViewLocal, DefaultColumnTextFields, colConfig, mnuLocal, true);
+            return tabViewLocal;
+        }
+
+        private OptionsTabViewCtrl CreateTabViewRecent(ColumnConfig[] colConfig)
+        {
+            OptionsTabViewCtrl tabViewRecent = new OptionsTabViewCtrl(s_recentKey, s_recentKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
+            SetupTabBase(tabViewRecent, DefaultColumnTextFields, colConfig, mnuLocal, true);
+            tabViewRecent.Options = new GameFileGetOptions();
+            tabViewRecent.Options.Limit = 10;
+            tabViewRecent.Options.OrderBy = OrderType.Desc;
+            tabViewRecent.Options.OrderField = GameFileFieldType.Downloaded;
+            return tabViewRecent;
         }
 
         private List<ITabView> CreateTagTabs(ColumnField[] columnTextFields, ColumnConfig[] colConfig)
@@ -253,13 +266,10 @@ namespace DoomLauncher
             }
 
             TagTabView tabView = new TagTabView(tag.TagID, name, DataSourceAdapter, DefaultGameFileSelectFields, tag);
-            tabView.SetColumnConfig(columnTextFields, colConfig);
+            SetupTabBase(tabView, columnTextFields, colConfig, mnuLocal, true);
             tabView.GameFileViewControl.SetColumnFormat("ReleaseDate", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
             tabView.GameFileViewControl.SetColumnFormat("Downloaded", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
             tabView.GameFileViewControl.SetColumnFormat("LastPlayed", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
-            tabView.GameFileViewControl.SetContextMenuStrip(mnuLocal);
-            tabView.GameFileViewControl.AllowDrop = true;
-            SetGameFileViewEvents(tabView.GameFileViewControl, true);
 
             return tabView;
         }
