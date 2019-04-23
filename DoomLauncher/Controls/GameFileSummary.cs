@@ -21,8 +21,8 @@ namespace DoomLauncher
         public GameFileSummary()
         {
             InitializeComponent();
-            m_labelHeight = tblMain.RowStyles[0].Height;
-            m_imageHeight = tblMain.RowStyles[1].Height;
+            m_labelHeight = GetRowStyle(lblTitle).Height;
+            m_imageHeight = GetRowStyle(pbImage).Height;
             ShowCommentsSection(false);
 
             txtComments.WarnLinkClick = false;
@@ -31,9 +31,9 @@ namespace DoomLauncher
         public void SetTitle(string text)
         {
             lblTitle.Text = text;
-            tblMain.RowStyles[0].Height = lblTitle.Height + 6;
-            if (tblMain.RowStyles[0].Height < m_labelHeight)
-                tblMain.RowStyles[0].Height = m_labelHeight;
+            GetRowStyle(lblTitle).Height = lblTitle.Height + 6;
+            if (GetRowStyle(lblTitle).Height < m_labelHeight)
+                GetRowStyle(lblTitle).Height = m_labelHeight;
         }
 
         public void SetDescription(string text)
@@ -98,20 +98,25 @@ namespace DoomLauncher
             }
         }
 
+        private RowStyle GetRowStyle(Control ctrl)
+        {
+            return tblMain.RowStyles[tblMain.GetRow(ctrl)];
+        }
+
         private void ShowImageSection(bool bShow)
         {
             if (bShow)
-                tblMain.RowStyles[1].Height = m_imageHeight;
+                GetRowStyle(pbImage).Height = m_imageHeight;
             else
-                tblMain.RowStyles[1].Height = 0;
+                GetRowStyle(pbImage).Height = 0;
         }
 
         private void ShowCommentsSection(bool bShow)
         {
             if (bShow)
-                tblMain.RowStyles[6].Height = 20;
+                GetRowStyle(txtComments).Height = 20;
             else
-                tblMain.RowStyles[6].Height = 0;
+                GetRowStyle(txtComments).Height = 0;
         }
 
         public string TagText
@@ -133,7 +138,7 @@ namespace DoomLauncher
             if (stats.Any())
             {
                 ctrlStats.Visible = true;
-                tblMain.RowStyles[4].Height = 120;
+                GetRowStyle(ctrlStats).Height = 120;
 
                 ctrlStats.SetStatistics(gameFile, stats);
 
@@ -142,7 +147,7 @@ namespace DoomLauncher
             else
             {
                 ctrlStats.Visible = false;
-                tblMain.RowStyles[4].Height = 0;
+                GetRowStyle(ctrlStats).Height = 0;
                 lblLastMap.Text = string.Empty;
             }
         }
