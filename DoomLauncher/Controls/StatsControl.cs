@@ -17,10 +17,17 @@ namespace DoomLauncher
         public StatsControl()
         {
             InitializeComponent();
-            pbMaps.Image = DoomLauncher.Properties.Resources.map;
-            pbItems.Image = DoomLauncher.Properties.Resources.bon2b;
-            pbKills.Image = DoomLauncher.Properties.Resources.kill;
-            pbSecrets.Image = DoomLauncher.Properties.Resources.secret;
+            SetImage(pbMaps, DoomLauncher.Properties.Resources.map, 0.7f);
+            SetImage(pbKills, DoomLauncher.Properties.Resources.kill, 0.7f);
+            SetImage(pbItems, DoomLauncher.Properties.Resources.bon2b, 0.8f);
+            SetImage(pbSecrets, DoomLauncher.Properties.Resources.secret, 0.8f);
+        }
+
+        private void SetImage(PictureBox pb, Bitmap bmp, float scale)
+        {
+            pb.Width = Convert.ToInt32(bmp.Width * scale);
+            pb.Height = Convert.ToInt32(bmp.Height * scale);
+            pb.Image = bmp;
         }
 
         public void SetStatistics(IGameFile gameFile, IEnumerable<IStatsData> stats)
@@ -58,7 +65,7 @@ namespace DoomLauncher
                 }
             }
 
-            ctrlStatsMaps.SetStats(maps, totalMaps, string.Format("{0}/{1}", maps, totalMaps));
+            ctrlStatsMaps.SetStats(maps, totalMaps, string.Format("{0} / {1}", maps, totalMaps));
             ctrlStatsKills.SetStats(statTotal.KillCount, statTotal.TotalKills, statTotal.FormattedKills);
             ctrlStatsSecrets.SetStats(statTotal.SecretCount, statTotal.TotalSecrets, statTotal.FormattedSecrets);
             ctrlStatsItems.SetStats(statTotal.ItemCount, statTotal.TotalItems, statTotal.FormattedItems);
