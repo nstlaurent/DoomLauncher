@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using DoomLauncher.SaveGame;
+using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +18,7 @@ namespace DoomLauncher
             SaveGameDirectory = savegameDirectory;
         }
 
-        public IEnumerable<IFileData> HandleNewSaveGames(ISourcePort sourcePort, IGameFile gameFile, string[] files)
+        public IEnumerable<IFileData> HandleNewSaveGames(ISourcePortData sourcePort, IGameFile gameFile, string[] files)
         {
             List<IFileData> ret = new List<IFileData>();
 
@@ -33,7 +34,7 @@ namespace DoomLauncher
 
                         FileData fileData = new FileData
                         {
-                            Description = GetSaveGameName(fi),
+                            Description = GetSaveGameName(sourcePort, fi),
                             OriginalFileName = fi.Name,
                             FileName = fileName,
                             GameFileID = gameFile.GameFileID.Value,
@@ -54,9 +55,9 @@ namespace DoomLauncher
             return ret;
         }
 
-        private static string GetSaveGameName(FileInfo fi)
+        private static string GetSaveGameName(ISourcePortData sourcePort, FileInfo fi)
         {
-            ISaveGameReader reader = CreateSaveGameReader(fi);
+            ISaveGameReader reader = CreateSaveGameReader(sourcePort, fi);
 
             if (reader != null)
                 return reader.GetName();
@@ -64,22 +65,12 @@ namespace DoomLauncher
             return fi.Name;
         }
 
-        private static ISaveGameReader CreateSaveGameReader(FileInfo fi)
+        private static ISaveGameReader CreateSaveGameReader(ISourcePortData sourcePort, FileInfo fi)
         {
-            if (fi.Extension.Equals(".zds", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return new ZDoomSaveGameReader(fi.FullName);
-            }
-            else if (fi.Extension.Equals(".dsg", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return new DsgSaveGameReader(fi.FullName);
-
-            }
-
-            return null;
+            return SourcePortUtil.CreateSourcePort(sourcePort).CreateSaveGameReader(fi);
         }
 
-        public void HandleUpdateSaveGames(ISourcePort sourcePort, IGameFile gameFile, IFileData[] files)
+        public void HandleUpdateSaveGames(ISourcePortData sourcePort, IGameFile gameFile, IFileData[] files)
         {
             foreach(IFileData file in files)
             {
@@ -97,7 +88,7 @@ namespace DoomLauncher
                     }
 
                     //check to see if the save name changed
-                    string saveName = GetSaveGameName(fi);
+                    string saveName = GetSaveGameName(sourcePort, fi);
                     if (saveName != file.Description)
                     {
                         file.Description = saveName;
@@ -107,7 +98,7 @@ namespace DoomLauncher
             }
         }
 
-        public void CopySaveGamesToSourcePort(ISourcePort sourcePort, IFileData[] files)
+        public void CopySaveGamesToSourcePort(ISourcePortData sourcePort, IFileData[] files)
         {
             files = files.Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
 

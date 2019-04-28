@@ -150,6 +150,14 @@
     <Compile Include="Controls\StatBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="SourcePort\BoomSourcePort.cs" />
+    <Compile Include="SourcePort\CNDoomSourcePort.cs" />
+    <Compile Include="SourcePort\DoomsdaySourcePort.cs" />
+    <Compile Include="SourcePort\GenericSourcePort.cs" />
+    <Compile Include="SourcePort\ISourcePort.cs" />
+    <Compile Include="SourcePort\SourcePortUtil.cs" />
+    <Compile Include="SourcePort\SpData.cs" />
+    <Compile Include="SourcePort\ZDoomSourcePort.cs" />
     <Compile Include="Statistics\BoomStatsReader.cs" />
     <Compile Include="Config\AppVersion.cs" />
     <Compile Include="Config\ColumnConfig.cs" />
@@ -275,7 +283,7 @@
     <Compile Include="DataSources\ConfigurationData.cs" />
     <Compile Include="DataSources\IdGamesGameFile.cs" />
     <Compile Include="DataSources\FileData.cs" />
-    <Compile Include="DataSources\SourcePort.cs" />
+    <Compile Include="DataSources\SourcePortData.cs" />
     <Compile Include="Adapters\GameFilePlayAdapter.cs" />
     <Compile Include="Adapters\IdGamesDataAdapater.cs" />
     <Compile Include="Controls\GameFileEdit.cs">
@@ -424,7 +432,7 @@
     <Compile Include="Interfaces\IGameFileDataSourceAdapter.cs" />
     <Compile Include="Interfaces\IGameFile.cs" />
     <Compile Include="Interfaces\IIWadData.cs" />
-    <Compile Include="Interfaces\ISourcePort.cs" />
+    <Compile Include="Interfaces\ISourcePortData.cs" />
     <Compile Include="Interfaces\ITextFileParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

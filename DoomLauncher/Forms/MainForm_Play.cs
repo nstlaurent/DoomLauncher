@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,7 +33,7 @@ namespace DoomLauncher
             HandlePlay(gameFiles, null);
         }
 
-        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePort sourcePort)
+        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort)
         {
             LaunchData launchData = GetLaunchFiles(gameFiles);
 
@@ -269,7 +270,7 @@ namespace DoomLauncher
             int iwad = (int)AppConfiguration.GetTypedConfigValue(ConfigType.DefaultIWad, typeof(int));
             string skill = (string)AppConfiguration.GetTypedConfigValue(ConfigType.DefaultSkill, typeof(string));
 
-            ISourcePort sourcePort = DataSourceAdapter.GetSourcePorts().FirstOrDefault(x => x.SourcePortID == port);
+            ISourcePortData sourcePort = DataSourceAdapter.GetSourcePorts().FirstOrDefault(x => x.SourcePortID == port);
             if (sourcePort != null) 
                 m_currentPlayForm.SelectedSourcePort = sourcePort;
 
@@ -289,7 +290,7 @@ namespace DoomLauncher
         private DateTime m_dtStartPlay;
         private IGameFile m_currentPlayFile;
 
-        private bool StartPlay(IGameFile gameFile, ISourcePort sourcePort)
+        private bool StartPlay(IGameFile gameFile, ISourcePortData sourcePort)
         {
             GameFilePlayAdapter playAdapter = CreatePlayAdapter(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
             m_saveGames = new IFileData[] { };
@@ -327,7 +328,7 @@ namespace DoomLauncher
             return true;
         }
 
-        private void CopySaveGames(IGameFile gameFile, ISourcePort sourcePort)
+        private void CopySaveGames(IGameFile gameFile, ISourcePortData sourcePort)
         {
             if (gameFile != null) //BUG: what if it's iwad?
             {
@@ -340,14 +341,14 @@ namespace DoomLauncher
             }
         }
 
-        private void HandleCopySaveGames(IGameFile gameFile, ISourcePort sourcePort)
+        private void HandleCopySaveGames(IGameFile gameFile, ISourcePortData sourcePort)
         {
             m_saveGames = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).ToArray();
             SaveGameHandler saveGameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
             saveGameHandler.CopySaveGamesToSourcePort(sourcePort, m_saveGames);
         }
 
-        private void ShowLaunchParameters(GameFilePlayAdapter playAdapter, IGameFile gameFile, ISourcePort sourcePort)
+        private void ShowLaunchParameters(GameFilePlayAdapter playAdapter, IGameFile gameFile, ISourcePortData sourcePort)
         {
             TextBoxForm form = new TextBoxForm();
             form.Text = "Launch Parameters";
@@ -385,7 +386,7 @@ namespace DoomLauncher
             form.ShowDialog(this);
         }
 
-        private void SetupStatsReader(ISourcePort sourcePort, GameFilePlayAdapter playAdapter, IGameFile gameFile)
+        private void SetupStatsReader(ISourcePortData sourcePort, GameFilePlayAdapter playAdapter, IGameFile gameFile)
         {
             m_statsReader = CreateStatisticsReader(sourcePort, gameFile);
 
@@ -398,7 +399,7 @@ namespace DoomLauncher
             }
         }
 
-        private void CreateFileDetectors(ISourcePort sourcePort)
+        private void CreateFileDetectors(ISourcePortData sourcePort)
         {
             m_screenshotDetectors = CreateDefaultScreenshotDetectors();
             m_screenshotDetectors.Add(CreateScreenshotDetector(sourcePort.Directory.GetFullPath()));
@@ -425,23 +426,13 @@ namespace DoomLauncher
             return playAdapter;
         }
 
-        private IStatisticsReader CreateStatisticsReader(ISourcePort sourcePort, IGameFile gameFile)
+        private IStatisticsReader CreateStatisticsReader(ISourcePortData sourcePort, IGameFile gameFile)
         {
-            IStatisticsReader statsReader = null;
+            List<IStatsData> existingStats = new List<IStatsData>();
+            if (gameFile != null && gameFile.GameFileID.HasValue)
+                existingStats = DataSourceAdapter.GetStats(gameFile.GameFileID.Value).ToList();
 
-            if (BoomStatsReader.Supported(sourcePort))
-                statsReader = BoomStatsReader.CreateDefault(gameFile, sourcePort.Directory.GetFullPath());
-            else if (CNDoomStatsReader.Supported(sourcePort))
-                statsReader = CNDoomStatsReader.CreateDefault(gameFile, sourcePort.Directory.GetFullPath());
-            else if (ZDoomStatsReader.Supported(sourcePort))
-            {
-                List<IStatsData> existingStats = new List<IStatsData>();
-                if (gameFile != null && gameFile.GameFileID.HasValue)
-                    existingStats = DataSourceAdapter.GetStats(gameFile.GameFileID.Value).ToList();
-                statsReader = ZDoomStatsReader.CreateDefault(gameFile, sourcePort.Directory.GetFullPath(), existingStats);
-            }
-
-            return statsReader;
+            return SourcePortUtil.CreateSourcePort(sourcePort).CreateStatisticsReader(gameFile, existingStats);
         }
 
         void m_statsReader_NewStastics(object sender, NewStatisticsEventArgs e)

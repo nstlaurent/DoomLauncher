@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,7 +24,7 @@ namespace DoomLauncher
         }
 
         public bool Launch(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
-            IGameFile gameFile, ISourcePort sourcePort, bool isGameFileIwad)
+            IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad)
         {
             if (!Directory.Exists(sourcePort.Directory.GetFullPath()))
             {
@@ -62,8 +63,9 @@ namespace DoomLauncher
         }
 
         public string GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
-            IGameFile gameFile, ISourcePort sourcePort, bool isGameFileIwad)
+            IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad)
         {
+            ISourcePort sourcePort = SourcePortUtil.CreateSourcePort(sourcePortData);
             StringBuilder sb = new StringBuilder();
 
             List<IGameFile> loadFiles = AdditionalFiles.ToList();
@@ -75,7 +77,7 @@ namespace DoomLauncher
             if (IWad != null)
             {
                 if (!AssertFile(gameFileDirectory.GetFullPath(), gameFile.FileName, "game file")) return null;
-                if (!HandleGameFileIWad(IWad, sb, gameFileDirectory, tempDirectory)) return null;
+                if (!HandleGameFileIWad(IWad, sourcePort, sb, gameFileDirectory, tempDirectory)) return null;
             }
 
             List<string> launchFiles = new List<string>();
@@ -83,32 +85,32 @@ namespace DoomLauncher
             foreach (IGameFile loadFile in loadFiles)
             {
                 if (!AssertFile(gameFileDirectory.GetFullPath(), loadFile.FileName, "game file")) return null;
-                if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePort, true)) return null;
+                if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePortData, true)) return null;
             }
 
-            string[] extensions = sourcePort.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] extensions = sourcePortData.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             launchFiles = SortParameters(launchFiles, extensions).ToList();
 
             BuildLaunchString(sb, sourcePort, launchFiles);
 
             if (Map != null)
             {
-                sb.Append(BuildWarpParamter(Map));
+                sb.Append(sourcePort.WarpParameter(new SpData(Map)));
 
                 if (Skill != null)
-                    sb.Append(string.Format(" -skill {0}", Skill));
+                    sb.Append(sourcePort.SkillParameter(new SpData(Skill)));
             }
 
             if (Record)
             {
                 RecordedFileName = Path.Combine(tempDirectory.GetFullPath(), Guid.NewGuid().ToString());
-                sb.Append(string.Format(" -record \"{0}\"", RecordedFileName));
+                sb.Append(sourcePort.RecordParameter(new SpData(RecordedFileName)));
             }
 
             if (PlayDemo && PlayDemoFile != null)
             {
                 if (!AssertFile(PlayDemoFile, "", "demo file")) return null;
-                sb.Append(string.Format(" -playdemo \"{0}\"", PlayDemoFile));
+                sb.Append(sourcePort.PlayDemoParameter(new SpData(PlayDemoFile)));
             }
 
             if (ExtraParameters != null)
@@ -116,15 +118,15 @@ namespace DoomLauncher
                 sb.Append(" " + ExtraParameters);
             }
 
-            if (!string.IsNullOrEmpty(sourcePort.ExtraParameters))
+            if (!string.IsNullOrEmpty(sourcePortData.ExtraParameters))
             {
-                sb.Append(" " + sourcePort.ExtraParameters);
+                sb.Append(" " + sourcePortData.ExtraParameters);
             }
 
             return sb.ToString();
         }
 
-        private bool HandleGameFileIWad(IGameFile gameFile, StringBuilder sb, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        private bool HandleGameFileIWad(IGameFile gameFile, ISourcePort sourcePort, StringBuilder sb, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
             try
             {
@@ -135,7 +137,7 @@ namespace DoomLauncher
                     if (ExtractFiles)
                         zae.ExtractToFile(extractFile, true);
 
-                    sb.Append(string.Format(" -iwad \"{0}\" ", extractFile));
+                    sb.Append(sourcePort.IwadParameter(new SpData(extractFile, gameFile, AdditionalFiles)));
                 }
             }
             catch (FileNotFoundException)
@@ -143,7 +145,12 @@ namespace DoomLauncher
                 LastError = string.Format("File not found: {0}", gameFile.FileName);
                 return false;
             }
-            catch
+            catch (IOException)
+            {
+                LastError = string.Format("File in use: {0}", gameFile.FileName);
+                return false;
+            }
+            catch (Exception)
             {
                 LastError = string.Format("There was an issue with the IWad: {0}. Corrupted file?", gameFile.FileName);
                 return false;
@@ -153,7 +160,7 @@ namespace DoomLauncher
         }
 
         private bool HandleGameFile(IGameFile gameFile, List<string> launchFiles, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
-            ISourcePort sourcePort, bool checkSpecific)
+            ISourcePortData sourcePort, bool checkSpecific)
         {
             try
             {
@@ -220,8 +227,9 @@ namespace DoomLauncher
 
             if (files.Count > 0)
             {
-                if (!string.IsNullOrEmpty(sourcePort.FileOption))
-                    sb.Append(string.Concat(" ", sourcePort.FileOption, " ")); //" -file "
+                sb.Append(sourcePort.FileParameter(new SpData()));
+                //if (!string.IsNullOrEmpty(sourcePort.FileOption))
+                //    sb.Append(string.Concat(" ", sourcePort.FileOption, " ")); //" -file "
 
                 foreach (string str in files)
                 {
@@ -296,55 +304,12 @@ namespace DoomLauncher
         public string ExtraParameters { get; set; }
         public string[] SpecificFiles { get; set; }
 
-        public ISourcePort SourcePort { get; private set; }
+        public ISourcePortData SourcePort { get; private set; }
         public IGameFile GameFile { get; private set; }
         public string RecordedFileName { get; private set; }
         public string PlayDemoFile { get; set; }
 
         public bool ExtractFiles { get; set; }
-
-        public static string BuildWarpParamter(string map)
-        {
-            if (Regex.IsMatch(map, @"^E\dM\d$") || Regex.IsMatch(map, @"^MAP\d\d$"))
-                return BuildWarpLegacy(map);
-
-            return string.Format(" +map {0}", map);
-        }
-
-        private static string BuildWarpLegacy(string map)
-        {
-            List<string> numbers = new List<string>();
-            string num = string.Empty;
-
-            for (int i = 0; i < map.Length; i++)
-            {
-                if (char.IsDigit(map[i]))
-                {
-                    num += map[i];
-                }
-                else
-                {
-                    if (num != string.Empty) numbers.Add(num);
-                    num = string.Empty;
-                }
-            }
-
-            if (num != string.Empty)
-                numbers.Add(num);
-
-            StringBuilder sb = new StringBuilder();
-
-            foreach (string number in numbers)
-            {
-                sb.Append(Convert.ToInt32(number));
-                sb.Append(' ');
-            }
-
-            if (numbers.Any())
-                sb.Remove(sb.Length - 1, 1);
-
-            return string.Format(" -warp {0}", sb.ToString());
-        }
 
         void proc_Exited(object sender, EventArgs e)
         {
