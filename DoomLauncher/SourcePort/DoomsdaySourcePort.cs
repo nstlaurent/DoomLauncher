@@ -42,9 +42,9 @@ namespace DoomLauncher.SourcePort
         {
             string filename = Path.GetFileNameWithoutExtension(data.Value);
 
-            if (filename.Equals("DOOM", StringComparison.InvariantCultureIgnoreCase))
-                return "doom1-share";
             if (filename.Equals("DOOM1", StringComparison.InvariantCultureIgnoreCase))
+                return "doom1-share";
+            if (filename.Equals("DOOM", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (data.GameFile.Map.Contains("E4M1"))
                     return "doom1-ultimate";
