@@ -16,7 +16,7 @@ namespace DoomLauncher
             DemoDirectory = demoDirectory;
         }
 
-        public IEnumerable<IFileData> HandleNewDemo(ISourcePort sourcePort, IGameFile gameFile, string demoFile, string descriptionText)
+        public IEnumerable<IFileData> HandleNewDemo(ISourcePortData sourcePort, IGameFile gameFile, string demoFile, string descriptionText)
         {
             List<IFileData> ret = new List<IFileData>();
             FileInfo fi = new FileInfo(demoFile);

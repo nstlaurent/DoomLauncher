@@ -38,9 +38,9 @@ namespace DoomLauncher
             }
         }
 
-        public ISourcePort SourcePort
+        public ISourcePortData SourcePort
         {
-            get { return cmbSourcePort.SelectedItem as ISourcePort; }
+            get { return cmbSourcePort.SelectedItem as ISourcePortData; }
             set { cmbSourcePort.SelectedValue = value.SourcePortID; }
         }
 

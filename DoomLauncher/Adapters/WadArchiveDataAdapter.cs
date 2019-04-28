@@ -135,33 +135,33 @@ namespace DoomLauncher
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ISourcePort> GetSourcePorts()
+        public IEnumerable<ISourcePortData> GetSourcePorts()
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ISourcePort> GetUtilities()
+        public IEnumerable<ISourcePortData> GetUtilities()
         {
             throw new NotImplementedException();
         }
 
 
-        public ISourcePort GetSourcePort(int sourcePortID)
+        public ISourcePortData GetSourcePort(int sourcePortID)
         {
             throw new NotImplementedException();
         }
 
-        public void InsertSourcePort(ISourcePort sourcePort)
+        public void InsertSourcePort(ISourcePortData sourcePort)
         {
             throw new NotImplementedException();
         }
 
-        public void UpdateSourcePort(ISourcePort sourcePort)
+        public void UpdateSourcePort(ISourcePortData sourcePort)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteSourcePort(ISourcePort sourcePort)
+        public void DeleteSourcePort(ISourcePortData sourcePort)
         {
             throw new NotImplementedException();
         }

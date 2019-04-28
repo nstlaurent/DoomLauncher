@@ -56,7 +56,7 @@ namespace DoomLauncher
 
         private void ResetData()
         {
-            IEnumerable<ISourcePort> data;
+            IEnumerable<ISourcePortData> data;
             if (m_launchType == SourcePortLaunchType.Utility)
             {
                 Text = "Utilities";
@@ -71,14 +71,14 @@ namespace DoomLauncher
             SetDataSource(data);
         }
 
-        private void SetDataSource(IEnumerable<ISourcePort> sourcePorts)
+        private void SetDataSource(IEnumerable<ISourcePortData> sourcePorts)
         {
             dgvSourcePorts.DataSource =
                 (from item in sourcePorts
                  select new { item.SourcePortID, item.Name, item.Executable, Directory = item.Directory.GetPossiblyRelativePath(), SourcePort = item }).ToList();
         }
 
-        private ISourcePort SelectedItem
+        private ISourcePortData SelectedItem
         {
             get
             {
@@ -88,7 +88,7 @@ namespace DoomLauncher
                 object item = dgvSourcePorts.SelectedRows[0].DataBoundItem;
                 PropertyInfo pi = item.GetType().GetProperty("SourcePort");
 
-                return pi.GetValue(item) as ISourcePort;
+                return pi.GetValue(item) as ISourcePortData;
             }
         }
 
@@ -107,7 +107,7 @@ namespace DoomLauncher
             if (SelectedItem != null)
             {
                 SourcePortEditForm editForm = new SourcePortEditForm(m_adapter, m_tabViews, m_launchType);
-                ISourcePort sourcePort = SelectedItem;
+                ISourcePortData sourcePort = SelectedItem;
                 editForm.SetDataSource(sourcePort);
                 editForm.StartPosition = FormStartPosition.CenterParent;
 
@@ -133,7 +133,7 @@ namespace DoomLauncher
 
             if (editForm.ShowDialog(this) == DialogResult.OK)
             {
-                SourcePort sourcePort = new SourcePort();
+                SourcePortData sourcePort = new SourcePortData();
                 editForm.UpdateDataSource(sourcePort);
                 sourcePort.LaunchType = m_launchType;
                 m_adapter.InsertSourcePort(sourcePort);
@@ -193,7 +193,7 @@ namespace DoomLauncher
             }
         }
 
-        public ISourcePort GetSelectedSourcePort()
+        public ISourcePortData GetSelectedSourcePort()
         {
              return SelectedItem;
         }

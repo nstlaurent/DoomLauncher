@@ -68,7 +68,7 @@ namespace DoomLauncher
 
         private List<StatsBind> GetStatsBind(IEnumerable<IStatsData> stats)
         {
-            List<ISourcePort> sourcePorts = Util.GetSourcePortsData(DataSourceAdapter);
+            List<ISourcePortData> sourcePorts = Util.GetSourcePortsData(DataSourceAdapter);
 
             IEnumerable<StatsBind> statsBind = from stat in stats
                                                join sp in sourcePorts on stat.SourcePortID equals sp.SourcePortID

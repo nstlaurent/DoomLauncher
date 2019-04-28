@@ -44,8 +44,8 @@ namespace DoomLauncher
 
             cmbEngine.ValueMember = "SourcePortID";
             cmbEngine.DisplayMember = "Name";
-            List<ISourcePort> sourcePorts = adapter.GetSourcePorts().ToList();
-            SourcePort noPort = new SourcePort();
+            List<ISourcePortData> sourcePorts = adapter.GetSourcePorts().ToList();
+            SourcePortData noPort = new SourcePortData();
             noPort.SourcePortID = 0;
             noPort.Name = "N/A";
             sourcePorts.Insert(0, noPort);
@@ -163,7 +163,7 @@ modified or included content in this file to allow further distribution.";
                 cmbDeathmatch.SelectedItem.ToString(), txtOtherGameStyles.Text, GetIncluded(chkDifficulty), GetBase(cmbBase), txtBuildTime.Text, txtEditorsUsed.Text, txtKnownBugs.Text,
                 txtMayNotRun.Text, txtTestedWith.Text, cmbPermission.SelectedIndex == 0 ? "MAY" : "may NOT",
                 cmbPermission.SelectedIndex == 0 ? may : maynot, txtWebSites.Text, txtFtpSites.Text, 
-                ((ISourcePort)cmbEngine.SelectedItem).Name, cmbPrimaryPurpose.SelectedItem.ToString());
+                ((ISourcePortData)cmbEngine.SelectedItem).Name, cmbPrimaryPurpose.SelectedItem.ToString());
         }
 
         private string GetGameName()

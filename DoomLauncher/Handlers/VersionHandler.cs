@@ -307,9 +307,9 @@ namespace DoomLauncher
 
         private void Pre_2_2_1()
         {
-            IEnumerable<ISourcePort> sourcePorts = m_adapter.GetSourcePorts();
+            IEnumerable<ISourcePortData> sourcePorts = m_adapter.GetSourcePorts();
 
-            foreach (ISourcePort sourcePort in sourcePorts)
+            foreach (ISourcePortData sourcePort in sourcePorts)
             {
                 if (sourcePort.SupportedExtensions.Contains(".pk3"))
                     sourcePort.SupportedExtensions = sourcePort.SupportedExtensions.Replace(".pk3", ".pk3,.pk7");
@@ -436,7 +436,7 @@ namespace DoomLauncher
                     var files = Util.GetAdditionalFiles(adapter, gameFile).Select(x => x.FileName);
                     FileLoadHandlerLegacy filehandler = new FileLoadHandlerLegacy(adapter, gameFile);
                     filehandler.CalculateAdditionalFiles(GetDictionaryData<IGameFile>(gameFile.IWadID, gameFileIwads),
-                        GetDictionaryData<ISourcePort>(gameFile.SourcePortID, ports));
+                        GetDictionaryData<ISourcePortData>(gameFile.SourcePortID, ports));
 
                     var sourcePortFiles = filehandler.GetSourcePortFiles().Select(x => x.FileName).Where(x => files.Contains(x));
                     var iwadFiles = filehandler.GetIWadFiles().Select(x => x.FileName).Where(x => files.Contains(x)).Except(sourcePortFiles);

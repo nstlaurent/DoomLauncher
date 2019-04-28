@@ -12,13 +12,13 @@ namespace UnitTest.Tests
     [TestClass]
     public class TestSourcePort
     { 
-        private List<ISourcePort> CreateTestSourcePorts()
+        private List<ISourcePortData> CreateTestSourcePorts()
         {
-            List<ISourcePort> sourcePorts = new List<ISourcePort>();
+            List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
             for (int i = 0; i < 10; i++)
             {
                 sourcePorts.Add(
-                    new DoomLauncher.DataSources.SourcePort()
+                    new DoomLauncher.DataSources.SourcePortData()
                     {
                         SourcePortID = i + 1,
                         Name = "test" + i.ToString(),
@@ -54,7 +54,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(7, sourcePorts.Count());
             Assert.AreEqual(3, utilites.Count());
 
-            List<ISourcePort> allSourcePorts = new List<ISourcePort>();
+            List<ISourcePortData> allSourcePorts = new List<ISourcePortData>();
             allSourcePorts.AddRange(sourcePorts);
             allSourcePorts.AddRange(utilites);
 
@@ -87,7 +87,7 @@ namespace UnitTest.Tests
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
 
-            List<ISourcePort> allSourcePorts = new List<ISourcePort>();
+            List<ISourcePortData> allSourcePorts = new List<ISourcePortData>();
             allSourcePorts.AddRange(adapter.GetSourcePorts());
             allSourcePorts.AddRange(adapter.GetUtilities());
 
@@ -113,7 +113,7 @@ namespace UnitTest.Tests
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
 
-            List<ISourcePort> allSourcePorts = new List<ISourcePort>();
+            List<ISourcePortData> allSourcePorts = new List<ISourcePortData>();
             allSourcePorts.AddRange(adapter.GetSourcePorts());
             allSourcePorts.AddRange(adapter.GetUtilities());
 

@@ -350,7 +350,7 @@ namespace UnitTest.Tests
 
         private static void CreateSourcePort(IDataSourceAdapter adapter, string name, string addfiles)
         {
-            SourcePort sourcePort = new SourcePort
+            SourcePortData sourcePort = new SourcePortData
             {
                 Executable = name,
                 Name = name,

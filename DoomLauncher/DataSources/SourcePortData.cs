@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DoomLauncher.DataSources
 {
-    public class SourcePort : ISourcePort
+    public class SourcePortData : ISourcePortData
     {
         public int SourcePortID { get; set; }
         public string Name { get; set; }
@@ -32,7 +32,7 @@ namespace DoomLauncher.DataSources
 
         public override bool Equals(object obj)
         {
-            ISourcePort sourcePort = obj as ISourcePort;
+            ISourcePortData sourcePort = obj as ISourcePortData;
 
             if (sourcePort != null)
             {
@@ -47,7 +47,7 @@ namespace DoomLauncher.DataSources
             return SourcePortID;
         }
 
-        public static string[] GetSupportedExtensions(ISourcePort sourcePort)
+        public static string[] GetSupportedExtensions(ISourcePortData sourcePort)
         {
             string[] supportedExtensions = new string[] { };
 

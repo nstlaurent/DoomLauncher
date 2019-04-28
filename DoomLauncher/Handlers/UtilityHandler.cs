@@ -5,16 +5,17 @@ using System.Text;
 using System.Windows.Forms;
 using System.Linq;
 using System.IO.Compression;
+using DoomLauncher.SourcePort;
 
 namespace DoomLauncher
 {
     class UtilityHandler
     {
         private readonly IWin32Window m_parent;
-        private readonly ISourcePort m_utility;
+        private readonly ISourcePortData m_utility;
         private readonly AppConfiguration m_config;
 
-        public UtilityHandler(IWin32Window parent, AppConfiguration config, ISourcePort utility)
+        public UtilityHandler(IWin32Window parent, AppConfiguration config, ISourcePortData utility)
         {
             m_parent = parent;
             m_config = config;
@@ -26,7 +27,7 @@ namespace DoomLauncher
             SpecificFilesForm form = new SpecificFilesForm();
             form.AutoCheckSupportedExtensions(false);
             form.ShowPkContentsCheckBox(true);
-            form.Initialize(m_config.GameFileDirectory, new IGameFile[] { gameFile }, SourcePort.GetSupportedExtensions(m_utility), 
+            form.Initialize(m_config.GameFileDirectory, new IGameFile[] { gameFile }, SourcePortData.GetSupportedExtensions(m_utility), 
                 new string[] { }, m_config.TempDirectory);
             form.StartPosition = FormStartPosition.CenterParent;
 
@@ -36,7 +37,8 @@ namespace DoomLauncher
 
                 GameFilePlayAdapter adapter = new GameFilePlayAdapter();
                 StringBuilder sb = new StringBuilder();
-                adapter.HandleGameFile(gameFile, sb, m_config.GameFileDirectory, m_config.TempDirectory, m_utility, files); //this checks File.Exists and might not be same file
+                adapter.HandleGameFile(gameFile, sb, m_config.GameFileDirectory, m_config.TempDirectory, 
+                    new GenericSourcePort(m_utility), files); //this checks File.Exists and might not be same file
 
                 try
                 {

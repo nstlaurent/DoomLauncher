@@ -194,10 +194,10 @@ namespace DoomLauncher
             return ret.ToArray();
         }
 
-        public static List<ISourcePort> GetSourcePortsData(IDataSourceAdapter adapter)
+        public static List<ISourcePortData> GetSourcePortsData(IDataSourceAdapter adapter)
         {
-            List<ISourcePort> sourcePorts = adapter.GetSourcePorts().ToList();
-            SourcePort noPort = new SourcePort();
+            List<ISourcePortData> sourcePorts = adapter.GetSourcePorts().ToList();
+            SourcePortData noPort = new SourcePortData();
             noPort.Name = "N/A";
             noPort.SourcePortID = -1;
             sourcePorts.Insert(0, noPort);
@@ -254,7 +254,7 @@ namespace DoomLauncher
             return new List<IGameFile>();
         }
 
-        public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, ISourcePort sourcePort)
+        public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, ISourcePortData sourcePort)
         {
             return GetAdditionalFiles(adapter, null, sourcePort.SettingsFiles);
         }

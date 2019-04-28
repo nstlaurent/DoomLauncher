@@ -50,13 +50,13 @@ conflib=sunrise
             };
         }
 
-        private IEnumerable<ISourcePort> CreateSourcePorts()
+        private IEnumerable<ISourcePortData> CreateSourcePorts()
         {
-            return new ISourcePort[]
+            return new ISourcePortData[]
             {
-                new SourcePort { Name = "GZDoom" },
-                new SourcePort { Name = "PrBoom" },
-                new SourcePort { Name = "Chocolate Doom" }
+                new SourcePortData { Name = "GZDoom" },
+                new SourcePortData { Name = "PrBoom" },
+                new SourcePortData { Name = "Chocolate Doom" }
             };
         }
     }
