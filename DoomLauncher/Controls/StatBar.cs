@@ -72,7 +72,7 @@ namespace DoomLauncher
             }
 
             Brush fontBrush = new SolidBrush(Color.Black);
-            g.DrawString(text, new Font(FontFamily.GenericSansSerif, 10.0f), fontBrush, new PointF(pt.X + 3, pt.Y + 3));
+            g.DrawString(text, new Font(FontFamily.GenericSerif, 10.0f, FontStyle.Bold), fontBrush, new PointF(pt.X + 8, pt.Y + 2.5f));
         }
 
         private static Brush GetPercentBrush(Rectangle rect, double percent)

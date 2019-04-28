@@ -33,10 +33,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.lblMaps = new System.Windows.Forms.Label();
             this.pbKills = new System.Windows.Forms.PictureBox();
             this.pbSecrets = new System.Windows.Forms.PictureBox();
             this.pbItems = new System.Windows.Forms.PictureBox();
+            this.lblMaps = new System.Windows.Forms.Label();
             this.pbMaps = new System.Windows.Forms.PictureBox();
             this.ctrlStatsSecrets = new DoomLauncher.StatBar();
             this.ctrlStatsItems = new DoomLauncher.StatBar();
@@ -53,7 +53,7 @@
             // 
             this.tblStats.ColumnCount = 3;
             this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 76F));
+            this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 54F));
             this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180F));
             this.tblStats.Controls.Add(this.label1, 1, 1);
             this.tblStats.Controls.Add(this.label2, 1, 2);
@@ -111,6 +111,42 @@
             this.label3.TabIndex = 2;
             this.label3.Text = "Items:";
             // 
+            // pbKills
+            // 
+            this.pbKills.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbKills.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pbKills.Location = new System.Drawing.Point(15, 26);
+            this.pbKills.Margin = new System.Windows.Forms.Padding(0);
+            this.pbKills.Name = "pbKills";
+            this.pbKills.Size = new System.Drawing.Size(20, 20);
+            this.pbKills.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbKills.TabIndex = 6;
+            this.pbKills.TabStop = false;
+            // 
+            // pbSecrets
+            // 
+            this.pbSecrets.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbSecrets.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pbSecrets.Location = new System.Drawing.Point(15, 50);
+            this.pbSecrets.Margin = new System.Windows.Forms.Padding(0);
+            this.pbSecrets.Name = "pbSecrets";
+            this.pbSecrets.Size = new System.Drawing.Size(20, 20);
+            this.pbSecrets.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbSecrets.TabIndex = 7;
+            this.pbSecrets.TabStop = false;
+            // 
+            // pbItems
+            // 
+            this.pbItems.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbItems.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pbItems.Location = new System.Drawing.Point(15, 74);
+            this.pbItems.Margin = new System.Windows.Forms.Padding(0);
+            this.pbItems.Name = "pbItems";
+            this.pbItems.Size = new System.Drawing.Size(20, 20);
+            this.pbItems.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbItems.TabIndex = 8;
+            this.pbItems.TabStop = false;
+            // 
             // lblMaps
             // 
             this.lblMaps.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -121,57 +157,21 @@
             this.lblMaps.TabIndex = 13;
             this.lblMaps.Text = "Maps:";
             // 
-            // pbKills
-            // 
-            this.pbKills.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pbKills.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbKills.Location = new System.Drawing.Point(0, 24);
-            this.pbKills.Margin = new System.Windows.Forms.Padding(0);
-            this.pbKills.Name = "pbKills";
-            this.pbKills.Size = new System.Drawing.Size(50, 24);
-            this.pbKills.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pbKills.TabIndex = 6;
-            this.pbKills.TabStop = false;
-            // 
-            // pbSecrets
-            // 
-            this.pbSecrets.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pbSecrets.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbSecrets.Location = new System.Drawing.Point(0, 48);
-            this.pbSecrets.Margin = new System.Windows.Forms.Padding(0);
-            this.pbSecrets.Name = "pbSecrets";
-            this.pbSecrets.Size = new System.Drawing.Size(50, 24);
-            this.pbSecrets.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pbSecrets.TabIndex = 7;
-            this.pbSecrets.TabStop = false;
-            // 
-            // pbItems
-            // 
-            this.pbItems.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pbItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbItems.Location = new System.Drawing.Point(0, 72);
-            this.pbItems.Margin = new System.Windows.Forms.Padding(0);
-            this.pbItems.Name = "pbItems";
-            this.pbItems.Size = new System.Drawing.Size(50, 24);
-            this.pbItems.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pbItems.TabIndex = 8;
-            this.pbItems.TabStop = false;
-            // 
             // pbMaps
             // 
-            this.pbMaps.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbMaps.Location = new System.Drawing.Point(0, 0);
+            this.pbMaps.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbMaps.Location = new System.Drawing.Point(15, 2);
             this.pbMaps.Margin = new System.Windows.Forms.Padding(0);
             this.pbMaps.Name = "pbMaps";
-            this.pbMaps.Size = new System.Drawing.Size(50, 24);
-            this.pbMaps.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbMaps.Size = new System.Drawing.Size(20, 20);
+            this.pbMaps.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbMaps.TabIndex = 15;
             this.pbMaps.TabStop = false;
             // 
             // ctrlStatsSecrets
             // 
             this.ctrlStatsSecrets.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStatsSecrets.Location = new System.Drawing.Point(126, 49);
+            this.ctrlStatsSecrets.Location = new System.Drawing.Point(104, 49);
             this.ctrlStatsSecrets.Margin = new System.Windows.Forms.Padding(0);
             this.ctrlStatsSecrets.MaximumSize = new System.Drawing.Size(0, 21);
             this.ctrlStatsSecrets.MinimumSize = new System.Drawing.Size(160, 0);
@@ -182,7 +182,7 @@
             // ctrlStatsItems
             // 
             this.ctrlStatsItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStatsItems.Location = new System.Drawing.Point(126, 73);
+            this.ctrlStatsItems.Location = new System.Drawing.Point(104, 73);
             this.ctrlStatsItems.Margin = new System.Windows.Forms.Padding(0);
             this.ctrlStatsItems.MaximumSize = new System.Drawing.Size(0, 21);
             this.ctrlStatsItems.MinimumSize = new System.Drawing.Size(160, 0);
@@ -193,7 +193,7 @@
             // ctrlStatsKills
             // 
             this.ctrlStatsKills.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStatsKills.Location = new System.Drawing.Point(126, 25);
+            this.ctrlStatsKills.Location = new System.Drawing.Point(104, 25);
             this.ctrlStatsKills.Margin = new System.Windows.Forms.Padding(0);
             this.ctrlStatsKills.MaximumSize = new System.Drawing.Size(0, 21);
             this.ctrlStatsKills.MinimumSize = new System.Drawing.Size(160, 0);
@@ -204,7 +204,7 @@
             // ctrlStatsMaps
             // 
             this.ctrlStatsMaps.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStatsMaps.Location = new System.Drawing.Point(126, 1);
+            this.ctrlStatsMaps.Location = new System.Drawing.Point(104, 1);
             this.ctrlStatsMaps.Margin = new System.Windows.Forms.Padding(0);
             this.ctrlStatsMaps.MaximumSize = new System.Drawing.Size(0, 21);
             this.ctrlStatsMaps.MinimumSize = new System.Drawing.Size(160, 0);
