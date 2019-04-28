@@ -630,7 +630,9 @@
     <EmbeddedResource Include="Forms\TxtGenerator.resx">
       <DependentUpon>TxtGenerator.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="DoomLauncher.sqlite" />
+    <None Include="DoomLauncher.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Help.docx" />
     <None Include="Help.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
