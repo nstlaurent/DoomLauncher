@@ -38,30 +38,31 @@ namespace DoomLauncher
         public void SetStatistics(IEnumerable<IGameFile> gameFiles, IEnumerable<IStatsData> stats)
         {
             StatsData statTotal = new StatsData();
-
-            foreach (IStatsData stat in stats)
-            {
-                statTotal.KillCount += stat.KillCount;
-                statTotal.TotalKills += stat.TotalKills;
-                statTotal.SecretCount += stat.SecretCount;
-                statTotal.TotalSecrets += stat.TotalSecrets;
-                statTotal.ItemCount += stat.ItemCount;
-                statTotal.TotalItems += stat.TotalItems;
-                statTotal.LevelTime += stat.LevelTime;
-            }
-
             int maps = 0, totalMaps = 0;
+            var groupedStats = stats.OrderByDescending(x => x.RecordTime).GroupBy(x => x.GameFileID);
 
-            foreach(var gameFile in gameFiles)
+            foreach (var group in groupedStats)
             {
-                if (gameFile.MapCount.HasValue)
+                var gameFile = gameFiles.FirstOrDefault(x => x.GameFileID.Value == group.Key);
+                if (gameFile != null)
                 {
-                    var gameFileStats = stats.Where(x => x.GameFileID == gameFile.GameFileID.Value);
-                    int mapCount = gameFileStats.Select(x => x.MapName).Distinct().Count();
+                    var mapStats = group.GroupBy(x => x.MapName).Select(x => x.First());
+                    int mapCount = mapStats.Count();
                     if (mapCount > gameFile.MapCount.Value)
                         mapCount = gameFile.MapCount.Value;
                     maps += mapCount;
                     totalMaps += gameFile.MapCount.Value;
+
+                    foreach (var stat in mapStats)
+                    {
+                        statTotal.KillCount += stat.KillCount;
+                        statTotal.TotalKills += stat.TotalKills;
+                        statTotal.SecretCount += stat.SecretCount;
+                        statTotal.TotalSecrets += stat.TotalSecrets;
+                        statTotal.ItemCount += stat.ItemCount;
+                        statTotal.TotalItems += stat.TotalItems;
+                        statTotal.LevelTime += stat.LevelTime;
+                    }
                 }
             }
 
