@@ -62,13 +62,13 @@ namespace DoomLauncher
             }
         }
 
-        public void SetDataSource(ISourcePort sourcePort)
+        public void SetDataSource(ISourcePortData sourcePort)
         {
             sourcePortEdit1.SetDataSource(sourcePort);
             ctrlFiles.SetDataSource(Util.GetAdditionalFiles(m_adapter, sourcePort));
         }
 
-        public void UpdateDataSource(ISourcePort sourcePort)
+        public void UpdateDataSource(ISourcePortData sourcePort)
         {
             sourcePortEdit1.UpdateDataSource(sourcePort);
             sourcePort.SettingsFiles = ctrlFiles.GetAdditionalFilesString();

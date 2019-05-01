@@ -23,17 +23,6 @@ namespace DoomLauncher
 
         public IGameFile GameFile { get; set; }
 
-        public static bool Supported(ISourcePort sourcePort)
-        {
-            string exe = sourcePort.Executable.ToLower();
-            return exe.Contains("prboom") || exe.Contains("glboom");
-        }
-
-        public static IStatisticsReader CreateDefault(IGameFile gameFile, string directory)
-        {
-            return new BoomStatsReader(gameFile, Path.Combine(directory, "levelstat.txt"));
-        }
-
         public string LaunchParameter { get { return "-levelstat"; } }
         public bool ReadOnClose { get { return true; } }
 

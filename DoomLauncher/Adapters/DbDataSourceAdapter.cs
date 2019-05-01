@@ -276,11 +276,11 @@ namespace DoomLauncher
             }
         }
 
-        public IEnumerable<ISourcePort> GetSourcePorts()
+        public IEnumerable<ISourcePortData> GetSourcePorts()
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where LaunchType = {0} order by Name collate nocase", (int)SourcePortLaunchType.SourcePort)).Tables[0];
 
-            List<ISourcePort> sourcePorts = new List<ISourcePort>();
+            List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
 
             foreach(DataRow dr in dt.Rows)                       
                 sourcePorts.Add(CreateSourcePortDataSource(dt, dr));
@@ -288,11 +288,11 @@ namespace DoomLauncher
             return sourcePorts;
         }
 
-        public IEnumerable<ISourcePort> GetUtilities()
+        public IEnumerable<ISourcePortData> GetUtilities()
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where LaunchType = {0} order by Name collate nocase", (int)SourcePortLaunchType.Utility)).Tables[0];
 
-            List<ISourcePort> sourcePorts = new List<ISourcePort>();
+            List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
 
             foreach (DataRow dr in dt.Rows)
                 sourcePorts.Add(CreateSourcePortDataSource(dt, dr));
@@ -300,9 +300,9 @@ namespace DoomLauncher
             return sourcePorts;
         }
 
-        private static ISourcePort CreateSourcePortDataSource(DataTable dt, DataRow dr)
+        private static ISourcePortData CreateSourcePortDataSource(DataTable dt, DataRow dr)
         {
-            SourcePort sourcePort = new SourcePort();
+            SourcePortData sourcePort = new SourcePortData();
             sourcePort.Directory = new LauncherPath((string)dr["Directory"]);
             sourcePort.Executable = (string)dr["Executable"];
             sourcePort.Name = (string)dr["Name"];
@@ -325,7 +325,7 @@ namespace DoomLauncher
                 return obj;
         }
 
-        public ISourcePort GetSourcePort(int sourcePortID)
+        public ISourcePortData GetSourcePort(int sourcePortID)
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where SourcePortID = {0}", sourcePortID)).Tables[0];
 
@@ -335,7 +335,7 @@ namespace DoomLauncher
             return null;
         }
 
-        public void InsertSourcePort(ISourcePort sourcePort)
+        public void InsertSourcePort(ISourcePortData sourcePort)
         {
             string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption,ExtraParameters) 
                 values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption,@ExtraParameters)";
@@ -343,7 +343,7 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(insert, GetSourcePortParams(sourcePort));
         }
 
-        public void UpdateSourcePort(ISourcePort sourcePort)
+        public void UpdateSourcePort(ISourcePortData sourcePort)
         {
             string query = @"update SourcePorts set 
             Name = @Name, Executable = @Executable, SupportedExtensions = @SupportedExtensions,
@@ -353,7 +353,7 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(query, GetSourcePortParams(sourcePort));
         }
 
-        private List<DbParameter> GetSourcePortParams(ISourcePort sourcePort)
+        private List<DbParameter> GetSourcePortParams(ISourcePortData sourcePort)
         {
             List<DbParameter> parameters = new List<DbParameter>();
 
@@ -370,7 +370,7 @@ namespace DoomLauncher
             return parameters;
         }
 
-        public void DeleteSourcePort(ISourcePort sourcePort)
+        public void DeleteSourcePort(ISourcePortData sourcePort)
         {
             DataAccess.ExecuteNonQuery(string.Format("delete from SourcePorts where SourcePortID = {0}", sourcePort.SourcePortID));
         }

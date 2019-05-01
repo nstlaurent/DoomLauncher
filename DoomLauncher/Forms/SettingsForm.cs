@@ -192,7 +192,7 @@ namespace DoomLauncher
             };
             string[] configValues = new string[]
             { 
-                cmbSourcePorts.SelectedItem == null ? null : ((ISourcePort)cmbSourcePorts.SelectedItem).SourcePortID.ToString(),
+                cmbSourcePorts.SelectedItem == null ? null : ((ISourcePortData)cmbSourcePorts.SelectedItem).SourcePortID.ToString(),
                 cmbIwad.SelectedItem == null ? null : ((IIWadData)cmbIwad.SelectedItem).IWadID.ToString(),
                 cmbSkill.SelectedItem == null ? null : cmbSkill.SelectedItem.ToString()
             };

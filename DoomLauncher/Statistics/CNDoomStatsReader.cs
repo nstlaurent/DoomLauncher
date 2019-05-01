@@ -19,17 +19,6 @@ namespace DoomLauncher
 
         public IGameFile GameFile { get; set; }
 
-        public static bool Supported(ISourcePort sourcePort)
-        {
-            string exe = sourcePort.Executable.ToLower();
-            return exe.Contains("cndoom.exe");
-        }
-
-        public static CNDoomStatsReader CreateDefault(IGameFile gameFile, string directory)
-        {
-            return new CNDoomStatsReader(gameFile, Path.Combine(directory, "stdout.txt"));
-        }
-
         public string LaunchParameter { get { return "-printstats"; } }
         public bool ReadOnClose { get { return true; } }
 

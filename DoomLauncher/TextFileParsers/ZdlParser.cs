@@ -17,10 +17,10 @@ namespace DoomLauncher
 
         private readonly List<string> m_errors = new List<string>();
 
-        private readonly IEnumerable<ISourcePort> m_sourcePorts;
+        private readonly IEnumerable<ISourcePortData> m_sourcePorts;
         private readonly IEnumerable<IIWadData> m_iwads;
 
-        public ZdlParser(IEnumerable<ISourcePort> sourcePorts, IEnumerable<IIWadData> iwads)
+        public ZdlParser(IEnumerable<ISourcePortData> sourcePorts, IEnumerable<IIWadData> iwads)
         {
             m_sourcePorts = sourcePorts;
             m_iwads = iwads;
@@ -84,7 +84,7 @@ namespace DoomLauncher
 
         private int? GetSourcePort(string port)
         {
-            ISourcePort sp = m_sourcePorts.FirstOrDefault(x => x.Name.Equals(port, StringComparison.InvariantCultureIgnoreCase));
+            ISourcePortData sp = m_sourcePorts.FirstOrDefault(x => x.Name.Equals(port, StringComparison.InvariantCultureIgnoreCase));
 
             if (sp == null)
                 m_errors.Add(string.Format("Could not find Source Port - {0}", port));

@@ -2,6 +2,7 @@
 using DoomLauncher.Demo;
 using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,7 +17,7 @@ namespace DoomLauncher
     {
         private ITabView[] m_additionalFileViews;
         private bool m_init, m_demoChangedAdditionalFiles;
-        private ISourcePort m_lastSourcePort;
+        private ISourcePortData m_lastSourcePort;
         private IGameFile m_lastIwad;
 
         public event EventHandler SaveSettings;
@@ -56,7 +57,7 @@ namespace DoomLauncher
 
             m_handler = new FileLoadHandler(m_adapter, gameFile);
 
-            SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePort), "Name");
+            SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePortData), "Name");
             SetAutoCompleteCustomSource(cmbIwad, Util.GetIWadsDataSource(m_adapter), typeof(IIWadData), "FileName");
 
             if (gameFile != null)
@@ -142,9 +143,9 @@ namespace DoomLauncher
 
         public IGameFile GameFile { get; private set; }
 
-        public ISourcePort SelectedSourcePort
+        public ISourcePortData SelectedSourcePort
         {
-            get { return cmbSourcePorts.SelectedItem as ISourcePort; }
+            get { return cmbSourcePorts.SelectedItem as ISourcePortData; }
             set { cmbSourcePorts.SelectedItem = value; }
         }
 
@@ -284,7 +285,7 @@ namespace DoomLauncher
             if (cmbSourcePorts.SelectedItem != null && GameFile != null)
             {
                 PopulateDemos();
-                ISourcePort sourcePort = cmbSourcePorts.SelectedItem as ISourcePort;
+                ISourcePortData sourcePort = cmbSourcePorts.SelectedItem as ISourcePortData;
                 chkSaveStats.Enabled = SaveStatisticsSupported(sourcePort);
                 AddExtraAdditionalFiles();
             }
@@ -294,7 +295,7 @@ namespace DoomLauncher
 
         private void PopulateDemos()
         {
-            ISourcePort sourcePort = cmbSourcePorts.SelectedItem as ISourcePort;
+            ISourcePortData sourcePort = cmbSourcePorts.SelectedItem as ISourcePortData;
 
             if (GameFile.GameFileID.HasValue)
             {
@@ -305,16 +306,9 @@ namespace DoomLauncher
             }
         }
 
-        private bool SaveStatisticsSupported(ISourcePort sourcePort)
+        private bool SaveStatisticsSupported(ISourcePortData sourcePort)
         {
-            if (BoomStatsReader.Supported(sourcePort))
-                return true;
-            if (ZDoomStatsReader.Supported(sourcePort))
-                return true;
-            if (CNDoomStatsReader.Supported(sourcePort))
-                return true;
-
-            return false;
+            return SourcePortUtil.CreateSourcePort(sourcePort).StatisticsSupported();
         }
 
         private void chkMap_CheckedChanged(object sender, EventArgs e)
@@ -396,7 +390,7 @@ namespace DoomLauncher
 
         private string[] GetSupportedFiles(IGameFile gameFile)
         {
-            return SpecificFilesForm.GetSupportedFiles(m_appConfig.GameFileDirectory.GetFullPath(), gameFile, SourcePort.GetSupportedExtensions(SelectedSourcePort));
+            return SpecificFilesForm.GetSupportedFiles(m_appConfig.GameFileDirectory.GetFullPath(), gameFile, SourcePortData.GetSupportedExtensions(SelectedSourcePort));
         }
 
         private void cmbIwad_SelectedIndexChanged(object sender, EventArgs e)
@@ -418,7 +412,7 @@ namespace DoomLauncher
             if (InitAddFilesCheck())
             {
                 m_handler.CalculateAdditionalFiles(m_lastIwad, m_lastSourcePort);
-                m_handler.CalculateAdditionalFiles(SelectedIWad, cmbSourcePorts.SelectedItem as ISourcePort);
+                m_handler.CalculateAdditionalFiles(SelectedIWad, cmbSourcePorts.SelectedItem as ISourcePortData);
                 ResetSpecificFilesSelections(m_handler.GetCurrentAdditionalNewFiles().ToArray());
                 ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());
             }
@@ -445,7 +439,7 @@ namespace DoomLauncher
             List<IGameFile> gameFiles = new List<IGameFile>();
             gameFiles.AddRange(GetAdditionalFiles());
 
-            form.Initialize(m_appConfig.GameFileDirectory, gameFiles, SourcePort.GetSupportedExtensions(SelectedSourcePort), SpecificFiles);
+            form.Initialize(m_appConfig.GameFileDirectory, gameFiles, SourcePortData.GetSupportedExtensions(SelectedSourcePort), SpecificFiles);
 
             if (form.ShowDialog(this) == DialogResult.OK)
             {
@@ -496,7 +490,7 @@ namespace DoomLauncher
         {
             IGameFile gameFile = e.Item as IGameFile;
             IGameFile iwad = SelectedIWad;
-            ISourcePort port = cmbSourcePorts.SelectedValue as ISourcePort;
+            ISourcePortData port = cmbSourcePorts.SelectedValue as ISourcePortData;
             if (iwad != null && m_handler.IsIWadFile(gameFile))
                 e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, Util.RemoveExtension(iwad.FileName));
             if (port != null && m_handler.IsSourcePortFile(gameFile))
@@ -511,7 +505,7 @@ namespace DoomLauncher
         private void lnkOpenDemo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             List<IFileData> demoFiles = BasicFileView.CreateFileAssociation(this, m_adapter, m_appConfig.DemoDirectory, FileType.Demo, GameFile,
-                cmbSourcePorts.SelectedItem as ISourcePort);
+                cmbSourcePorts.SelectedItem as ISourcePortData);
 
             if (demoFiles.Count > 0)
             {

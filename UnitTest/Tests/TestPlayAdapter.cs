@@ -7,6 +7,7 @@ using DoomLauncher.Interfaces;
 using DoomLauncher.DataSources;
 using System.Collections.Generic;
 using System.Linq;
+using DoomLauncher.SourcePort;
 
 namespace UnitTest.Tests
 {
@@ -34,7 +35,7 @@ namespace UnitTest.Tests
                 for(int j = 0; j < 9; j++)
                 {
                     string map = string.Format("E{0}M{1}", i + 1, j + 1);
-                    Assert.AreEqual(GameFilePlayAdapter.BuildWarpParamter(map), string.Format(" -warp {0} {1}", i + 1, j + 1));
+                    Assert.AreEqual(GenericSourcePort.BuildWarpParameter(map), string.Format(" -warp {0} {1}", i + 1, j + 1));
                 }
             }
 
@@ -46,20 +47,20 @@ namespace UnitTest.Tests
                 else
                     map = string.Format("MAP0{0}", i + 1);
 
-                Assert.AreEqual(GameFilePlayAdapter.BuildWarpParamter(map), string.Format(" -warp {0}", i + 1));
+                Assert.AreEqual(GenericSourcePort.BuildWarpParameter(map), string.Format(" -warp {0}", i + 1));
             }
 
-            Assert.AreEqual(" -warp 0", GameFilePlayAdapter.BuildWarpParamter("MAP00"));
+            Assert.AreEqual(" -warp 0", GenericSourcePort.BuildWarpParameter("MAP00"));
         }
 
         [TestMethod]
         public void TestMap()
         {
-            Assert.AreEqual(" +map START", GameFilePlayAdapter.BuildWarpParamter("START"));
-            Assert.AreEqual(" +map MAPSTART", GameFilePlayAdapter.BuildWarpParamter("MAPSTART"));
-            Assert.AreEqual(" +map MAP01START", GameFilePlayAdapter.BuildWarpParamter("MAP01START"));
-            Assert.AreEqual(" +map MAP1", GameFilePlayAdapter.BuildWarpParamter("MAP1"));
-            Assert.AreEqual(" +map MAP001", GameFilePlayAdapter.BuildWarpParamter("MAP001"));
+            Assert.AreEqual(" +map START", GenericSourcePort.BuildWarpParameter("START"));
+            Assert.AreEqual(" +map MAPSTART", GenericSourcePort.BuildWarpParameter("MAPSTART"));
+            Assert.AreEqual(" +map MAP01START", GenericSourcePort.BuildWarpParameter("MAP01START"));
+            Assert.AreEqual(" +map MAP1", GenericSourcePort.BuildWarpParameter("MAP1"));
+            Assert.AreEqual(" +map MAP001", GenericSourcePort.BuildWarpParameter("MAP001"));
         }
 
         [TestMethod]
@@ -377,9 +378,9 @@ namespace UnitTest.Tests
             return new GameFile { FileName = "test1.zip" };
         }
 
-        private static ISourcePort GetTestPort(string extensions)
+        private static ISourcePortData GetTestPort(string extensions)
         {
-            return new SourcePort { Executable = "zdoom.exe", Directory = new LauncherPath("SourcePorts"), SupportedExtensions = extensions, FileOption = "-file" };
+            return new SourcePortData { Executable = "zdoom.exe", Directory = new LauncherPath("SourcePorts"), SupportedExtensions = extensions, FileOption = "-file" };
         }
     }
 }
