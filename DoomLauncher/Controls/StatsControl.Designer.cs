@@ -54,7 +54,7 @@
             this.tblStats.ColumnCount = 3;
             this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 54F));
-            this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180F));
+            this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblStats.Controls.Add(this.label1, 1, 1);
             this.tblStats.Controls.Add(this.label2, 1, 2);
             this.tblStats.Controls.Add(this.label3, 1, 3);
@@ -75,8 +75,8 @@
             this.tblStats.RowCount = 5;
             this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblStats.Size = new System.Drawing.Size(306, 150);
             this.tblStats.TabIndex = 7;
@@ -127,7 +127,7 @@
             // 
             this.pbSecrets.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pbSecrets.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pbSecrets.Location = new System.Drawing.Point(15, 50);
+            this.pbSecrets.Location = new System.Drawing.Point(15, 49);
             this.pbSecrets.Margin = new System.Windows.Forms.Padding(0);
             this.pbSecrets.Name = "pbSecrets";
             this.pbSecrets.Size = new System.Drawing.Size(20, 20);
@@ -139,7 +139,7 @@
             // 
             this.pbItems.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pbItems.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pbItems.Location = new System.Drawing.Point(15, 74);
+            this.pbItems.Location = new System.Drawing.Point(15, 73);
             this.pbItems.Margin = new System.Windows.Forms.Padding(0);
             this.pbItems.Name = "pbItems";
             this.pbItems.Size = new System.Drawing.Size(20, 20);
@@ -170,46 +170,42 @@
             // 
             // ctrlStatsSecrets
             // 
-            this.ctrlStatsSecrets.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStatsSecrets.Location = new System.Drawing.Point(104, 49);
-            this.ctrlStatsSecrets.Margin = new System.Windows.Forms.Padding(0);
+            this.ctrlStatsSecrets.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlStatsSecrets.Location = new System.Drawing.Point(104, 48);
+            this.ctrlStatsSecrets.Margin = new System.Windows.Forms.Padding(0, 4, 4, 0);
             this.ctrlStatsSecrets.MaximumSize = new System.Drawing.Size(0, 21);
-            this.ctrlStatsSecrets.MinimumSize = new System.Drawing.Size(160, 0);
             this.ctrlStatsSecrets.Name = "ctrlStatsSecrets";
-            this.ctrlStatsSecrets.Size = new System.Drawing.Size(160, 21);
+            this.ctrlStatsSecrets.Size = new System.Drawing.Size(194, 21);
             this.ctrlStatsSecrets.TabIndex = 10;
             // 
             // ctrlStatsItems
             // 
-            this.ctrlStatsItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStatsItems.Location = new System.Drawing.Point(104, 73);
-            this.ctrlStatsItems.Margin = new System.Windows.Forms.Padding(0);
+            this.ctrlStatsItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlStatsItems.Location = new System.Drawing.Point(104, 71);
+            this.ctrlStatsItems.Margin = new System.Windows.Forms.Padding(0, 4, 4, 0);
             this.ctrlStatsItems.MaximumSize = new System.Drawing.Size(0, 21);
-            this.ctrlStatsItems.MinimumSize = new System.Drawing.Size(160, 0);
             this.ctrlStatsItems.Name = "ctrlStatsItems";
-            this.ctrlStatsItems.Size = new System.Drawing.Size(160, 21);
+            this.ctrlStatsItems.Size = new System.Drawing.Size(194, 21);
             this.ctrlStatsItems.TabIndex = 11;
             // 
             // ctrlStatsKills
             // 
-            this.ctrlStatsKills.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStatsKills.Location = new System.Drawing.Point(104, 25);
-            this.ctrlStatsKills.Margin = new System.Windows.Forms.Padding(0);
+            this.ctrlStatsKills.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlStatsKills.Location = new System.Drawing.Point(104, 24);
+            this.ctrlStatsKills.Margin = new System.Windows.Forms.Padding(0, 4, 4, 0);
             this.ctrlStatsKills.MaximumSize = new System.Drawing.Size(0, 21);
-            this.ctrlStatsKills.MinimumSize = new System.Drawing.Size(160, 0);
             this.ctrlStatsKills.Name = "ctrlStatsKills";
-            this.ctrlStatsKills.Size = new System.Drawing.Size(160, 21);
+            this.ctrlStatsKills.Size = new System.Drawing.Size(194, 21);
             this.ctrlStatsKills.TabIndex = 12;
             // 
             // ctrlStatsMaps
             // 
-            this.ctrlStatsMaps.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStatsMaps.Location = new System.Drawing.Point(104, 1);
-            this.ctrlStatsMaps.Margin = new System.Windows.Forms.Padding(0);
+            this.ctrlStatsMaps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlStatsMaps.Location = new System.Drawing.Point(104, 0);
+            this.ctrlStatsMaps.Margin = new System.Windows.Forms.Padding(0, 4, 4, 0);
             this.ctrlStatsMaps.MaximumSize = new System.Drawing.Size(0, 21);
-            this.ctrlStatsMaps.MinimumSize = new System.Drawing.Size(160, 0);
             this.ctrlStatsMaps.Name = "ctrlStatsMaps";
-            this.ctrlStatsMaps.Size = new System.Drawing.Size(160, 21);
+            this.ctrlStatsMaps.Size = new System.Drawing.Size(194, 21);
             this.ctrlStatsMaps.TabIndex = 14;
             // 
             // StatsControl

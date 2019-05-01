@@ -638,10 +638,10 @@ namespace DoomLauncher
                 IEnumerable<ITagData> tags = GetTagsFromFile(gameFile);
 
                 if (tags.Any())
-                    return "Tags: " + string.Join(", ", tags.Select(x => x.Name));
+                    return string.Join(", ", tags.Select(x => x.Name));
             }
 
-            return string.Empty;
+            return "N/A";
         }
 
         private IEnumerable<ITagData> GetTagsFromFile(IGameFile gameFile)

@@ -142,13 +142,13 @@ namespace DoomLauncher
 
                 ctrlStats.SetStatistics(gameFile, stats);
 
-                lblLastMap.Text = string.Concat("Last Map: ", stats.OrderByDescending(x => x.RecordTime).First().MapName);
+                lblLastMap.Text = stats.OrderByDescending(x => x.RecordTime).First().MapName;
             }
             else
             {
                 ctrlStats.Visible = false;
                 GetRowStyle(ctrlStats).Height = 0;
-                lblLastMap.Text = string.Empty;
+                lblLastMap.Text = "N/A";
             }
         }
 

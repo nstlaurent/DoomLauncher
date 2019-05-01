@@ -222,7 +222,7 @@ namespace DoomLauncher
 
             items.Add(TimeString(ts.Minutes, "Minute"));
 
-            return string.Concat("Time Played: ", string.Join(", ", items.ToArray()));
+            return string.Join(", ", items.ToArray());
         }
 
         private static string TimeString(int time, string type)
