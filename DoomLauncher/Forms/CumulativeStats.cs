@@ -25,7 +25,7 @@ namespace DoomLauncher
             foreach (IStatsData stat in stats)
                 minutes += (int)(stat.LevelTime / 60.0);
 
-            lblTimePlayed.Text = Util.GetTimePlayedString(minutes);
+            lblTimePlayed.Text = string.Concat("Time Played: ", Util.GetTimePlayedString(minutes));
             ctrlStats.SetStatistics(gameFiles, stats);
         }
     }
