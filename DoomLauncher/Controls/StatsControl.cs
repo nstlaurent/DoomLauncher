@@ -44,14 +44,19 @@ namespace DoomLauncher
             foreach (var group in groupedStats)
             {
                 var gameFile = gameFiles.FirstOrDefault(x => x.GameFileID.Value == group.Key);
+
                 if (gameFile != null)
                 {
                     var mapStats = group.GroupBy(x => x.MapName).Select(x => x.First());
-                    int mapCount = mapStats.Count();
-                    if (mapCount > gameFile.MapCount.Value)
-                        mapCount = gameFile.MapCount.Value;
-                    maps += mapCount;
-                    totalMaps += gameFile.MapCount.Value;
+
+                    if (gameFile.MapCount.HasValue)
+                    {
+                        int mapCount = mapStats.Count();
+                        if (mapCount > gameFile.MapCount.Value)
+                            mapCount = gameFile.MapCount.Value;
+                        maps += mapCount;
+                        totalMaps += gameFile.MapCount.Value;
+                    }
 
                     foreach (var stat in mapStats)
                     {
