@@ -55,6 +55,7 @@ namespace DoomLauncher
             ctrlScreenshotView.DataDirectory = ScreenshotDirectory;
             ctrlScreenshotView.FileType = FileType.Screenshot;
             ctrlScreenshotView.SetContextMenu(BuildContextMenuStrip(ctrlScreenshotView));
+            ctrlScreenshotView.SetPictureWidth(Util.GetPreviewScreenshotWidth(config.ScreenshotPreviewSize));
 
             ctrlSaveGameView.DataSourceAdapter = DataSourceAdapter;
             ctrlSaveGameView.DataDirectory = SaveGameDirectory;

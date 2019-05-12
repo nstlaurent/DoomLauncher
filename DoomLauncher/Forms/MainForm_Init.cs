@@ -354,6 +354,8 @@ namespace DoomLauncher
                 await Task.Run(() => ExecuteVersionUpdate());
 
                 ProgressBarEnd(m_progressBarUpdate);
+
+                AppConfiguration.Refresh(); //We have to refresh here because a column may have been added to the Configuration table
             }
 
             try

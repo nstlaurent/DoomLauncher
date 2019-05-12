@@ -36,7 +36,7 @@ namespace DoomLauncher
         {
             AppVersion version = GetVersion();
 
-            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_3_2)
+            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_4_1)
             {
                 return true;
             }
@@ -72,6 +72,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_6_3, AppVersion.Version_2_6_3);
                 ExecuteUpdate(Pre_2_6_3_1, AppVersion.Version_2_6_3_1);
                 ExecuteUpdate(Pre_2_6_3_2, AppVersion.Version_2_6_3_2);
+                ExecuteUpdate(Pre_2_6_4_1, AppVersion.Version_2_6_4_1);
             }
         }
 
@@ -452,6 +453,18 @@ namespace DoomLauncher
         private void Pre_2_6_3_2()
         {
             DataAccess.ExecuteNonQuery("update SourcePorts set FileOption = '-file' where LaunchType = 0");
+        }
+
+        private void Pre_2_6_4_1()
+        {
+            ConfigurationData config = new ConfigurationData()
+            {
+                Name = "ScreenshotPreviewSize",
+                Value = "0",
+                UserCanModify = true
+            };
+
+            m_adapter.InsertConfiguration(config);
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)

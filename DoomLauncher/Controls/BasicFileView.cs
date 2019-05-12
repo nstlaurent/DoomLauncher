@@ -208,7 +208,7 @@ namespace DoomLauncher
             }
         }
 
-        public void View()
+        public virtual void View()
         {
             List<IFileData> selectedFiles = GetSelectedFiles();
 

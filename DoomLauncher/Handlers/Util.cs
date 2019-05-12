@@ -387,5 +387,13 @@ namespace DoomLauncher
 
             return -1;
         }
+
+        public static int GetPreviewScreenshotWidth(int value)
+        {
+            if (value > 0)
+                return 200 + (40 * value);
+            else
+                return 200 + (10 * value);
+        }
     }
 }
