@@ -89,6 +89,12 @@
     <Compile Include="Controls\CRichTextBox.Designer.cs">
       <DependentUpon>CRichTextBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ScreenshotViewerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ScreenshotViewerForm.Designer.cs">
+      <DependentUpon>ScreenshotViewerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Welcome.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -525,6 +531,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MetaDataForm.resx">
       <DependentUpon>MetaDataForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ScreenshotViewerForm.resx">
+      <DependentUpon>ScreenshotViewerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
