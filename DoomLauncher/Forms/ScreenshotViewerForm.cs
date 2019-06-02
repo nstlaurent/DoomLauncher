@@ -22,6 +22,15 @@ namespace DoomLauncher.Forms
 
             KeyPreview = true;
             KeyUp += ScreenshotViewerForm_KeyUp;
+            MouseWheel += ScreenshotViewerForm_MouseWheel;
+        }
+
+        private void ScreenshotViewerForm_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (e.Delta < 0)
+                SetPreviousImage();
+            else if (e.Delta > 0)
+                SetNextImage();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
