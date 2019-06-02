@@ -19,6 +19,63 @@ namespace DoomLauncher.Forms
         public ScreenshotViewerForm()
         {
             InitializeComponent();
+
+            KeyPreview = true;
+            KeyUp += ScreenshotViewerForm_KeyUp;
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            //this is to set the focus of the left/right buttons
+            if (!msg.HWnd.Equals(this.Handle) && (keyData == Keys.Left || keyData == Keys.Right))
+            {
+                switch (keyData)
+                {
+                    case Keys.Right:
+                        btnNext.Focus();
+                        break;
+                    case Keys.Left:
+                        btnPrev.Focus();
+                        break;
+                }
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void ScreenshotViewerForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Right:
+                    SetNextImage();
+                    break;
+                case Keys.Left:
+                    SetPreviousImage();
+                    break;
+                case Keys.Home:
+                    SetFirst();
+                    break;
+                case Keys.End:
+                    SetEnd();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SetEnd()
+        {
+            if (m_images.Length > 0)
+                m_index = m_images.Length - 1;
+            SetImage();
+        }
+
+        private void SetFirst()
+        {
+            m_index = 0;
+            SetImage();
         }
 
         public void SetImages(string[] filenames)
@@ -29,7 +86,7 @@ namespace DoomLauncher.Forms
 
         public void SetImage(string filename)
         {
-            for(int i = 0; i < m_images.Length; i++)
+            for (int i = 0; i < m_images.Length; i++)
             {
                 if (m_images[i] == filename)
                 {
