@@ -28,9 +28,9 @@ namespace DoomLauncher.Forms
         private void ScreenshotViewerForm_MouseWheel(object sender, MouseEventArgs e)
         {
             if (e.Delta < 0)
-                SetPreviousImage();
-            else if (e.Delta > 0)
                 SetNextImage();
+            else if (e.Delta > 0)
+                SetPreviousImage();       
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
