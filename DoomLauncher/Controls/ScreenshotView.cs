@@ -77,17 +77,22 @@ namespace DoomLauncher
 
         private void InitPictureBoxes()
         {
-            foreach(var pb in m_pictureBoxes)
+            foreach (var pb in m_pictureBoxes)
             {
                 if (flpScreenshots.Controls.Contains(pb))
                     flpScreenshots.Controls.Remove(pb);
                 if (pb.Image != null)
-                    pb.Image.Dispose();        
+                    pb.Image.Dispose();
             }
+
             m_pictureBoxes.Clear();
 
             for (int i = 0; i < 50; i++)
                 m_pictureBoxes.Add(CreatePictureBox());
+
+            ToolTip tt = new ToolTip();
+            foreach (var pb in m_pictureBoxes)
+                tt.SetToolTip(pb, "Double-click to view");
         }
 
         public void SetScreenshots(List<IFileData> screenshots)
@@ -149,7 +154,6 @@ namespace DoomLauncher
             pbScreen.Margin = new Padding(7);
             pbScreen.Click += pbScreen_Click;
             pbScreen.DoubleClick += PbScreen_DoubleClick;
-            //pbScreen.MouseDown += pbScreen_MouseDown;
             pbScreen.ContextMenuStrip = m_menu;
             return pbScreen;
         }
