@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Forms;
+using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,7 @@ namespace DoomLauncher
                         {
                             HandlePlaySettings(m_currentPlayForm, launchData.GameFile);
                             if (m_currentPlayForm.SelectedSourcePort != null)
-                                m_playInProgress = StartPlay(launchData.GameFile, m_currentPlayForm.SelectedSourcePort);
+                                m_playInProgress = StartPlay(launchData.GameFile, m_currentPlayForm.SelectedSourcePort, m_currentPlayForm.ScreenFilter);
                         }
                         catch (IOException)
                         {
@@ -95,7 +96,7 @@ namespace DoomLauncher
                 }
                 else
                 {
-                    gameFile = gameFiles.First();
+                    gameFile = gameFiles.FirstOrDefault();
                 }
             }
 
@@ -289,8 +290,9 @@ namespace DoomLauncher
 
         private DateTime m_dtStartPlay;
         private IGameFile m_currentPlayFile;
+        private FilterForm m_filterForm;
 
-        private bool StartPlay(IGameFile gameFile, ISourcePortData sourcePort)
+        private bool StartPlay(IGameFile gameFile, ISourcePortData sourcePort, bool screenFilter)
         {
             GameFilePlayAdapter playAdapter = CreatePlayAdapter(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
             m_saveGames = new IFileData[] { };
@@ -323,6 +325,12 @@ namespace DoomLauncher
             {
                 MessageBox.Show(this, playAdapter.LastError, "Launch Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
+            }
+
+            if (screenFilter)
+            {
+                m_filterForm = new FilterForm(Screen.FromControl(this), m_currentPlayForm.GetFilterSettings());
+                m_filterForm.Show(this);
             }
 
             return true;
@@ -473,6 +481,12 @@ namespace DoomLauncher
 
         private void HandleProcessExited(object sender)
         {
+            if (m_filterForm != null)
+            {
+                m_filterForm.Close();
+                m_filterForm = null;
+            }
+
             GameFilePlayAdapter adapter = sender as GameFilePlayAdapter;
             DateTime dtExit = DateTime.Now;
             Directory.SetCurrentDirectory(m_workingDirectory);

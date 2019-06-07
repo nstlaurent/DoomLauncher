@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.DataSources;
 using DoomLauncher.Demo;
+using DoomLauncher.Forms;
 using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace DoomLauncher
 {
@@ -27,12 +29,7 @@ namespace DoomLauncher
 
         private readonly AppConfiguration m_appConfig;
         private readonly IDataSourceAdapter m_adapter;
-
-        private enum AddFilesType
-        {
-            SourcePort,
-            IWAD
-        }
+        private ScreenFilter m_filterSettings;
 
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
@@ -46,6 +43,9 @@ namespace DoomLauncher
 
             m_appConfig = appConfig;
             m_adapter = adapter;
+
+            m_filterSettings = GetFilterSettings();
+            chkScreenFilter.Checked = m_filterSettings.Enabled;
         }
 
         public void Initialize(IEnumerable<ITabView> additionalFileViews, IGameFile gameFile)
@@ -254,6 +254,11 @@ namespace DoomLauncher
         public bool PreviewLaunchParameters
         {
             get { return chkPreview.Checked; }
+        }
+
+        public bool ScreenFilter
+        {
+            get { return chkScreenFilter.Checked; }
         }
 
         public bool ShouldSaveAdditionalFiles()
@@ -576,6 +581,80 @@ namespace DoomLauncher
         private void lnkCustomParameters_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        private void lnkFilterSettings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            FilterSettingsForm form = new FilterSettingsForm(m_filterSettings);
+            form.StartPosition = FormStartPosition.CenterParent;
+
+            if (form.ShowDialog(this) == DialogResult.OK)
+            {
+                m_filterSettings = form.GetFilterSettings();
+                m_filterSettings.Enabled = chkScreenFilter.Checked;
+                WriteFilterSettings(m_filterSettings);
+            }
+        }
+
+        private static readonly string s_filterFile = "FilterSettings.xml";
+
+        private static string GetFilterFile()
+        {
+            return Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), s_filterFile);
+        }
+
+        private void WriteFilterSettings(ScreenFilter settings)
+        {
+            try
+            {
+                XmlSerializer x = new XmlSerializer(typeof(ScreenFilter));
+                using (FileStream fs = new FileStream(GetFilterFile(), FileMode.Create))
+                    x.Serialize(fs, settings);
+            }
+            catch
+            {
+                //oh well, at least we tried
+            }
+        }
+
+        public ScreenFilter GetFilterSettings()
+        {
+            try
+            {
+                XmlSerializer x = new XmlSerializer(typeof(ScreenFilter));
+               
+                using (FileStream fs = new FileStream(GetFilterFile(), FileMode.Open))
+                    return (ScreenFilter)x.Deserialize(fs);
+            }
+            catch
+            {
+                if (File.Exists(GetFilterFile()))
+                    File.Delete(GetFilterFile());
+                return CreateDefaultFilterSettings();
+            }
+        }
+
+        private ScreenFilter CreateDefaultFilterSettings()
+        {
+            return new ScreenFilter()
+            {
+                Type = ScreenFilterType.Ellipse,
+                BlockSize = 4,
+                SpacingX = 0,
+                SpacingY = 0,
+                Stagger = true,
+                ScanlineSpacing = 4,
+                VerticalScanlines = true,
+                HorizontalScanlines = true,
+                Enabled = chkScreenFilter.Checked
+            };
+        }
+
+        private void chkScreenFilter_CheckedChanged(object sender, EventArgs e)
+        {
+            m_filterSettings = GetFilterSettings();
+            m_filterSettings.Enabled = chkScreenFilter.Checked;
+            WriteFilterSettings(m_filterSettings);
         }
 
         private List<IGameFile> GetGameFiles(string[] fileNames, List<string> unavailable, List<IGameFile> iwads)

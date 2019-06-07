@@ -89,6 +89,16 @@
     <Compile Include="Controls\CRichTextBox.Designer.cs">
       <DependentUpon>CRichTextBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FilterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FilterForm.Designer.cs">
+      <DependentUpon>FilterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FilterSettingsForm.cs" />
+    <Compile Include="Forms\FilterSettingsForm.Designer.cs">
+      <DependentUpon>FilterSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ScreenshotViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -517,6 +527,9 @@
     <EmbeddedResource Include="Controls\StatsControl.resx">
       <DependentUpon>StatsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FilterForm.resx">
+      <DependentUpon>FilterForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CumulativeStats.resx">
       <DependentUpon>CumulativeStats.cs</DependentUpon>
     </EmbeddedResource>
@@ -525,6 +538,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FileDetailsEditForm.resx">
       <DependentUpon>FileDetailsEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FilterSettingsForm.resx">
+      <DependentUpon>FilterSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MessageCheckBox.resx">
       <DependentUpon>MessageCheckBox.cs</DependentUpon>

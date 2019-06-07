@@ -54,10 +54,10 @@
             this.lnkMore = new System.Windows.Forms.LinkLabel();
             this.chkSaveStats = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.chkScreenFilter = new System.Windows.Forms.CheckBox();
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
-            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
             this.pbInfo = new System.Windows.Forms.PictureBox();
@@ -70,6 +70,8 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.ctrlFiles = new DoomLauncher.FilesCtrl();
+            this.lnkFilterSettings = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -332,15 +334,28 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.lnkFilterSettings);
+            this.groupBox4.Controls.Add(this.chkScreenFilter);
             this.groupBox4.Controls.Add(this.lnkPreviewLaunchParameters);
             this.groupBox4.Controls.Add(this.chkPreview);
             this.groupBox4.Controls.Add(this.chkSaveStats);
             this.groupBox4.Controls.Add(this.lnkMore);
             this.groupBox4.Location = new System.Drawing.Point(3, 279);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(256, 77);
+            this.groupBox4.Size = new System.Drawing.Size(256, 93);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
+            // 
+            // chkScreenFilter
+            // 
+            this.chkScreenFilter.AutoSize = true;
+            this.chkScreenFilter.Location = new System.Drawing.Point(6, 65);
+            this.chkScreenFilter.Name = "chkScreenFilter";
+            this.chkScreenFilter.Size = new System.Drawing.Size(85, 17);
+            this.chkScreenFilter.TabIndex = 23;
+            this.chkScreenFilter.Text = "Screen Filter";
+            this.chkScreenFilter.UseVisualStyleBackColor = true;
+            this.chkScreenFilter.CheckedChanged += new System.EventHandler(this.chkScreenFilter_CheckedChanged);
             // 
             // lnkPreviewLaunchParameters
             // 
@@ -359,7 +374,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(265, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(236, 355);
+            this.groupBox3.Size = new System.Drawing.Size(236, 369);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Additional Files / Load Order";
@@ -379,16 +394,8 @@
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tblFiles.Size = new System.Drawing.Size(230, 336);
+            this.tblFiles.Size = new System.Drawing.Size(230, 350);
             this.tblFiles.TabIndex = 0;
-            // 
-            // ctrlFiles
-            // 
-            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
-            this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(224, 266);
-            this.ctrlFiles.TabIndex = 20;
             // 
             // panel1
             // 
@@ -423,7 +430,7 @@
             this.flp1.Controls.Add(this.lnkSpecific);
             this.flp1.Controls.Add(this.lnkCustomParameters);
             this.flp1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp1.Location = new System.Drawing.Point(0, 312);
+            this.flp1.Location = new System.Drawing.Point(0, 326);
             this.flp1.Margin = new System.Windows.Forms.Padding(0);
             this.flp1.Name = "flp1";
             this.flp1.Size = new System.Drawing.Size(230, 24);
@@ -466,7 +473,7 @@
             this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tblMain.Size = new System.Drawing.Size(504, 393);
+            this.tblMain.Size = new System.Drawing.Size(504, 407);
             this.tblMain.TabIndex = 21;
             // 
             // tblInner
@@ -482,7 +489,7 @@
             this.tblInner.Name = "tblInner";
             this.tblInner.RowCount = 1;
             this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblInner.Size = new System.Drawing.Size(504, 361);
+            this.tblInner.Size = new System.Drawing.Size(504, 375);
             this.tblInner.TabIndex = 0;
             // 
             // pnlLeft
@@ -494,7 +501,7 @@
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
             this.pnlLeft.Margin = new System.Windows.Forms.Padding(0);
             this.pnlLeft.Name = "pnlLeft";
-            this.pnlLeft.Size = new System.Drawing.Size(262, 361);
+            this.pnlLeft.Size = new System.Drawing.Size(262, 375);
             this.pnlLeft.TabIndex = 0;
             // 
             // pnlBottom
@@ -503,7 +510,7 @@
             this.pnlBottom.Controls.Add(this.flpButtons);
             this.pnlBottom.Controls.Add(this.chkRemember);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 361);
+            this.pnlBottom.Location = new System.Drawing.Point(0, 375);
             this.pnlBottom.Margin = new System.Windows.Forms.Padding(0);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.Size = new System.Drawing.Size(504, 32);
@@ -531,13 +538,32 @@
             this.flpButtons.Size = new System.Drawing.Size(200, 32);
             this.flpButtons.TabIndex = 5;
             // 
+            // ctrlFiles
+            // 
+            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
+            this.ctrlFiles.Name = "ctrlFiles";
+            this.ctrlFiles.Size = new System.Drawing.Size(224, 280);
+            this.ctrlFiles.TabIndex = 20;
+            // 
+            // lnkFilterSettings
+            // 
+            this.lnkFilterSettings.AutoSize = true;
+            this.lnkFilterSettings.Location = new System.Drawing.Point(97, 65);
+            this.lnkFilterSettings.Name = "lnkFilterSettings";
+            this.lnkFilterSettings.Size = new System.Drawing.Size(45, 13);
+            this.lnkFilterSettings.TabIndex = 24;
+            this.lnkFilterSettings.TabStop = true;
+            this.lnkFilterSettings.Text = "Settings";
+            this.lnkFilterSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkFilterSettings_LinkClicked);
+            // 
             // PlayForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(504, 393);
+            this.ClientSize = new System.Drawing.Size(504, 407);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PlayForm";
@@ -608,5 +634,7 @@
         private System.Windows.Forms.FlowLayoutPanel flp1;
         private System.Windows.Forms.LinkLabel lnkSpecific;
         private System.Windows.Forms.LinkLabel lnkCustomParameters;
+        private System.Windows.Forms.CheckBox chkScreenFilter;
+        private System.Windows.Forms.LinkLabel lnkFilterSettings;
     }
 }
