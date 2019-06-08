@@ -10,25 +10,6 @@ using System.Windows.Forms;
 
 namespace DoomLauncher.Forms
 {
-    public enum ScreenFilterType
-    {
-        Ellipse,
-        Scanline
-    }
-
-    public class ScreenFilter
-    {
-        public ScreenFilterType Type { get; set; }
-        public int BlockSize { get; set; }     
-        public float SpacingX { get; set; }
-        public float SpacingY { get; set; }
-        public bool Stagger { get; set; }
-        public int ScanlineSpacing { get; set; }
-        public bool VerticalScanlines { get; set; }
-        public bool HorizontalScanlines { get; set; }
-        public bool Enabled { get; set; }
-    }
-
     public partial class FilterSettingsForm : Form
     {
         private FilterForm m_filterForm;
@@ -36,7 +17,10 @@ namespace DoomLauncher.Forms
         public FilterSettingsForm(ScreenFilter settings)
         {
             InitializeComponent();
+
             cmbMode.DropDownStyle = ComboBoxStyle.DropDownList;
+            numOpacity.Value = Convert.ToDecimal(settings.Opacity);
+            numThickness.Value = Convert.ToDecimal(settings.LineThickness);
             cmbMode.SelectedIndex = (int)settings.Type;
             numBlockSize.Value = settings.BlockSize;
             numSpacingX.Value = Convert.ToDecimal(settings.SpacingX);
@@ -52,6 +36,8 @@ namespace DoomLauncher.Forms
             return new ScreenFilter()
             {
                 Type = (ScreenFilterType)cmbMode.SelectedIndex,
+                Opacity = Convert.ToSingle(numOpacity.Value),
+                LineThickness = Convert.ToInt32(numThickness.Value),
                 BlockSize = Convert.ToInt32(numBlockSize.Value),
                 SpacingX = Convert.ToSingle(numSpacingX.Value),
                 SpacingY = Convert.ToSingle(numSpacingY.Value),

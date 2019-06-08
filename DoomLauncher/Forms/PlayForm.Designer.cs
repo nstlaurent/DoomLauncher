@@ -54,10 +54,12 @@
             this.lnkMore = new System.Windows.Forms.LinkLabel();
             this.chkSaveStats = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.lnkFilterSettings = new System.Windows.Forms.LinkLabel();
             this.chkScreenFilter = new System.Windows.Forms.CheckBox();
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
+            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
             this.pbInfo = new System.Windows.Forms.PictureBox();
@@ -70,8 +72,6 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.ctrlFiles = new DoomLauncher.FilesCtrl();
-            this.lnkFilterSettings = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -312,7 +312,7 @@
             // lnkMore
             // 
             this.lnkMore.AutoSize = true;
-            this.lnkMore.Location = new System.Drawing.Point(108, 20);
+            this.lnkMore.Location = new System.Drawing.Point(171, 21);
             this.lnkMore.Name = "lnkMore";
             this.lnkMore.Size = new System.Drawing.Size(61, 13);
             this.lnkMore.TabIndex = 20;
@@ -345,6 +345,17 @@
             this.groupBox4.Size = new System.Drawing.Size(256, 93);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
+            // 
+            // lnkFilterSettings
+            // 
+            this.lnkFilterSettings.AutoSize = true;
+            this.lnkFilterSettings.Location = new System.Drawing.Point(171, 65);
+            this.lnkFilterSettings.Name = "lnkFilterSettings";
+            this.lnkFilterSettings.Size = new System.Drawing.Size(45, 13);
+            this.lnkFilterSettings.TabIndex = 24;
+            this.lnkFilterSettings.TabStop = true;
+            this.lnkFilterSettings.Text = "Settings";
+            this.lnkFilterSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkFilterSettings_LinkClicked);
             // 
             // chkScreenFilter
             // 
@@ -396,6 +407,14 @@
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblFiles.Size = new System.Drawing.Size(230, 350);
             this.tblFiles.TabIndex = 0;
+            // 
+            // ctrlFiles
+            // 
+            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
+            this.ctrlFiles.Name = "ctrlFiles";
+            this.ctrlFiles.Size = new System.Drawing.Size(224, 280);
+            this.ctrlFiles.TabIndex = 20;
             // 
             // panel1
             // 
@@ -537,25 +556,6 @@
             this.flpButtons.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.flpButtons.Size = new System.Drawing.Size(200, 32);
             this.flpButtons.TabIndex = 5;
-            // 
-            // ctrlFiles
-            // 
-            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
-            this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(224, 280);
-            this.ctrlFiles.TabIndex = 20;
-            // 
-            // lnkFilterSettings
-            // 
-            this.lnkFilterSettings.AutoSize = true;
-            this.lnkFilterSettings.Location = new System.Drawing.Point(97, 65);
-            this.lnkFilterSettings.Name = "lnkFilterSettings";
-            this.lnkFilterSettings.Size = new System.Drawing.Size(45, 13);
-            this.lnkFilterSettings.TabIndex = 24;
-            this.lnkFilterSettings.TabStop = true;
-            this.lnkFilterSettings.Text = "Settings";
-            this.lnkFilterSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkFilterSettings_LinkClicked);
             // 
             // PlayForm
             // 

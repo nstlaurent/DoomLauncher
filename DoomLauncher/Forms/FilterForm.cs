@@ -39,9 +39,14 @@ namespace DoomLauncher.Forms
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, ExactSpelling = true, SetLastError = true)]
         internal static extern void MoveWindow(IntPtr hwnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
+        private readonly Pen m_pen;
+
         public FilterForm(Screen screen, ScreenFilter filter)
         {
             Init(screen);
+
+            m_pen = new Pen(new SolidBrush(Color.Black), filter.LineThickness);
+            Opacity = filter.Opacity;
             Rectangle rect = screen.Bounds;
 
             if (filter.Type == ScreenFilterType.Ellipse)
@@ -135,13 +140,11 @@ namespace DoomLauncher.Forms
         {
             base.OnPaint(e);
 
-            Pen p = new Pen(new SolidBrush(Color.FromArgb(255, Color.Black)), 0.1f);
-
             foreach (var item in m_rects)
-                e.Graphics.DrawEllipse(p, item);
+                e.Graphics.DrawEllipse(m_pen, item);
 
             foreach (var item in m_lines)
-                e.Graphics.DrawLine(p, item.Item1, item.Item2);
+                e.Graphics.DrawLine(m_pen, item.Item1, item.Item2);
         }
     }
 }

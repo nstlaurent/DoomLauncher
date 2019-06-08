@@ -38,21 +38,27 @@
             this.numSpacingY = new System.Windows.Forms.NumericUpDown();
             this.grpEllipse = new System.Windows.Forms.GroupBox();
             this.grpScanline = new System.Windows.Forms.GroupBox();
-            this.chkVertical = new System.Windows.Forms.CheckBox();
-            this.chkHorizontal = new System.Windows.Forms.CheckBox();
+            this.btnPreviewScanline = new System.Windows.Forms.Button();
             this.numScanlineSize = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
-            this.btnPreviewScanline = new System.Windows.Forms.Button();
+            this.chkHorizontal = new System.Windows.Forms.CheckBox();
+            this.chkVertical = new System.Windows.Forms.CheckBox();
             this.cmbMode = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.numOpacity = new System.Windows.Forms.NumericUpDown();
+            this.numThickness = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numBlockSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSpacingX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSpacingY)).BeginInit();
             this.grpEllipse.SuspendLayout();
             this.grpScanline.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numScanlineSize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numOpacity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numThickness)).BeginInit();
             this.SuspendLayout();
             // 
             // chkStagger
@@ -115,7 +121,7 @@
             // 
             // btnPreview
             // 
-            this.btnPreview.Location = new System.Drawing.Point(15, 118);
+            this.btnPreview.Location = new System.Drawing.Point(15, 124);
             this.btnPreview.Name = "btnPreview";
             this.btnPreview.Size = new System.Drawing.Size(157, 23);
             this.btnPreview.TabIndex = 7;
@@ -160,7 +166,7 @@
             this.grpEllipse.Controls.Add(this.numSpacingX);
             this.grpEllipse.Controls.Add(this.label2);
             this.grpEllipse.Controls.Add(this.label1);
-            this.grpEllipse.Location = new System.Drawing.Point(12, 44);
+            this.grpEllipse.Location = new System.Drawing.Point(12, 96);
             this.grpEllipse.Name = "grpEllipse";
             this.grpEllipse.Size = new System.Drawing.Size(274, 157);
             this.grpEllipse.TabIndex = 10;
@@ -174,36 +180,22 @@
             this.grpScanline.Controls.Add(this.label4);
             this.grpScanline.Controls.Add(this.chkHorizontal);
             this.grpScanline.Controls.Add(this.chkVertical);
-            this.grpScanline.Location = new System.Drawing.Point(12, 207);
+            this.grpScanline.Location = new System.Drawing.Point(12, 259);
             this.grpScanline.Name = "grpScanline";
-            this.grpScanline.Size = new System.Drawing.Size(274, 137);
+            this.grpScanline.Size = new System.Drawing.Size(274, 124);
             this.grpScanline.TabIndex = 11;
             this.grpScanline.TabStop = false;
             this.grpScanline.Text = "Scanline";
             // 
-            // chkVertical
+            // btnPreviewScanline
             // 
-            this.chkVertical.AutoSize = true;
-            this.chkVertical.Checked = true;
-            this.chkVertical.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkVertical.Location = new System.Drawing.Point(6, 41);
-            this.chkVertical.Name = "chkVertical";
-            this.chkVertical.Size = new System.Drawing.Size(61, 17);
-            this.chkVertical.TabIndex = 1;
-            this.chkVertical.Text = "Vertical";
-            this.chkVertical.UseVisualStyleBackColor = true;
-            // 
-            // chkHorizontal
-            // 
-            this.chkHorizontal.AutoSize = true;
-            this.chkHorizontal.Checked = true;
-            this.chkHorizontal.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkHorizontal.Location = new System.Drawing.Point(6, 64);
-            this.chkHorizontal.Name = "chkHorizontal";
-            this.chkHorizontal.Size = new System.Drawing.Size(73, 17);
-            this.chkHorizontal.TabIndex = 12;
-            this.chkHorizontal.Text = "Horizontal";
-            this.chkHorizontal.UseVisualStyleBackColor = true;
+            this.btnPreviewScanline.Location = new System.Drawing.Point(15, 88);
+            this.btnPreviewScanline.Name = "btnPreviewScanline";
+            this.btnPreviewScanline.Size = new System.Drawing.Size(157, 23);
+            this.btnPreviewScanline.TabIndex = 10;
+            this.btnPreviewScanline.Text = "Preview For 3 Seconds";
+            this.btnPreviewScanline.UseVisualStyleBackColor = true;
+            this.btnPreviewScanline.Click += new System.EventHandler(this.btnPreview_Click);
             // 
             // numScanlineSize
             // 
@@ -220,21 +212,35 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 21);
+            this.label4.Location = new System.Drawing.Point(15, 21);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(27, 13);
             this.label4.TabIndex = 14;
             this.label4.Text = "Size";
             // 
-            // btnPreviewScanline
+            // chkHorizontal
             // 
-            this.btnPreviewScanline.Location = new System.Drawing.Point(15, 97);
-            this.btnPreviewScanline.Name = "btnPreviewScanline";
-            this.btnPreviewScanline.Size = new System.Drawing.Size(157, 23);
-            this.btnPreviewScanline.TabIndex = 10;
-            this.btnPreviewScanline.Text = "Preview For 3 Seconds";
-            this.btnPreviewScanline.UseVisualStyleBackColor = true;
-            this.btnPreviewScanline.Click += new System.EventHandler(this.btnPreview_Click);
+            this.chkHorizontal.AutoSize = true;
+            this.chkHorizontal.Checked = true;
+            this.chkHorizontal.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkHorizontal.Location = new System.Drawing.Point(18, 60);
+            this.chkHorizontal.Name = "chkHorizontal";
+            this.chkHorizontal.Size = new System.Drawing.Size(73, 17);
+            this.chkHorizontal.TabIndex = 12;
+            this.chkHorizontal.Text = "Horizontal";
+            this.chkHorizontal.UseVisualStyleBackColor = true;
+            // 
+            // chkVertical
+            // 
+            this.chkVertical.AutoSize = true;
+            this.chkVertical.Checked = true;
+            this.chkVertical.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkVertical.Location = new System.Drawing.Point(18, 37);
+            this.chkVertical.Name = "chkVertical";
+            this.chkVertical.Size = new System.Drawing.Size(61, 17);
+            this.chkVertical.TabIndex = 1;
+            this.chkVertical.Text = "Vertical";
+            this.chkVertical.UseVisualStyleBackColor = true;
             // 
             // cmbMode
             // 
@@ -242,7 +248,7 @@
             this.cmbMode.Items.AddRange(new object[] {
             "Ellipse",
             "Scanline"});
-            this.cmbMode.Location = new System.Drawing.Point(63, 17);
+            this.cmbMode.Location = new System.Drawing.Point(101, 17);
             this.cmbMode.Name = "cmbMode";
             this.cmbMode.Size = new System.Drawing.Size(121, 21);
             this.cmbMode.TabIndex = 12;
@@ -251,7 +257,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 20);
+            this.label5.Location = new System.Drawing.Point(18, 20);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(34, 13);
             this.label5.TabIndex = 13;
@@ -260,7 +266,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(213, 368);
+            this.btnCancel.Location = new System.Drawing.Point(211, 394);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 14;
@@ -270,12 +276,75 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(132, 368);
+            this.btnOK.Location = new System.Drawing.Point(130, 394);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 15;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(19, 44);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(43, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Opacity";
+            // 
+            // numOpacity
+            // 
+            this.numOpacity.DecimalPlaces = 2;
+            this.numOpacity.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.numOpacity.Location = new System.Drawing.Point(101, 44);
+            this.numOpacity.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numOpacity.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.numOpacity.Name = "numOpacity";
+            this.numOpacity.Size = new System.Drawing.Size(83, 20);
+            this.numOpacity.TabIndex = 17;
+            this.numOpacity.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            65536});
+            // 
+            // numThickness
+            // 
+            this.numThickness.Location = new System.Drawing.Point(101, 70);
+            this.numThickness.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numThickness.Name = "numThickness";
+            this.numThickness.Size = new System.Drawing.Size(83, 20);
+            this.numThickness.TabIndex = 19;
+            this.numThickness.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(19, 70);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(56, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "Thickness";
             // 
             // FilterSettingsForm
             // 
@@ -283,7 +352,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(292, 393);
+            this.ClientSize = new System.Drawing.Size(292, 422);
+            this.Controls.Add(this.numThickness);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.numOpacity);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.label5);
@@ -291,6 +364,7 @@
             this.Controls.Add(this.grpScanline);
             this.Controls.Add(this.grpEllipse);
             this.Name = "FilterSettingsForm";
+            this.ShowIcon = false;
             this.Text = "Filter Settings";
             ((System.ComponentModel.ISupportInitialize)(this.numBlockSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSpacingX)).EndInit();
@@ -300,6 +374,8 @@
             this.grpScanline.ResumeLayout(false);
             this.grpScanline.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numScanlineSize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numOpacity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numThickness)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -326,5 +402,9 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown numOpacity;
+        private System.Windows.Forms.NumericUpDown numThickness;
+        private System.Windows.Forms.Label label7;
     }
 }

@@ -585,7 +585,18 @@ namespace DoomLauncher
 
         private void lnkFilterSettings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            FilterSettingsForm form = new FilterSettingsForm(m_filterSettings);
+            FilterSettingsForm form;
+
+            try
+            {
+                form = new FilterSettingsForm(m_filterSettings);
+            }
+            catch
+            {
+                m_filterSettings = CreateDefaultFilterSettings(); //this can happen due to an update and the xml not having the property, reset to default
+                form = new FilterSettingsForm(m_filterSettings);
+            }
+
             form.StartPosition = FormStartPosition.CenterParent;
 
             if (form.ShowDialog(this) == DialogResult.OK)
@@ -639,6 +650,8 @@ namespace DoomLauncher
             return new ScreenFilter()
             {
                 Type = ScreenFilterType.Ellipse,
+                Opacity = 0.3f,
+                LineThickness = 1,
                 BlockSize = 4,
                 SpacingX = 0,
                 SpacingY = 0,
