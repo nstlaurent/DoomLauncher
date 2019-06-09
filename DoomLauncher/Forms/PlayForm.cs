@@ -650,7 +650,7 @@ namespace DoomLauncher
             return new ScreenFilter()
             {
                 Type = ScreenFilterType.Ellipse,
-                Opacity = 0.3f,
+                Opacity = 0.5f,
                 LineThickness = 1,
                 BlockSize = 4,
                 SpacingX = 0,
