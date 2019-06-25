@@ -24,6 +24,7 @@ namespace DoomLauncher.Interfaces
         void InsertFile(IFileData file);
         void DeleteFile(IFileData file);
         void DeleteFile(IGameFile file);
+        void DeleteFiles(ISourcePortData sourcePort, FileType fileTypeID);
 
         IEnumerable<IGameFile> GetGameFiles(ITagData tag);
         IEnumerable<IGameFile> GetGameFiles(IGameFileGetOptions options, ITagData tag);

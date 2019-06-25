@@ -197,11 +197,6 @@ namespace DoomLauncher
             }
         }
 
-        public void UpdateFile(IFileData file)
-        {
-            throw new NotImplementedException();
-        }
-
         public void UpdateFiles(int sourcePortID_Where, int? sourcePortID_Set)
         {
             throw new NotImplementedException();
@@ -212,12 +207,22 @@ namespace DoomLauncher
             throw new NotImplementedException();
         }
 
+        public void UpdateFile(IFileData file)
+        {
+            throw new NotImplementedException();
+        }
+
         public void DeleteFile(IFileData file)
         {
             throw new NotImplementedException();
         }
 
         public void DeleteFile(IGameFile file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteFiles(ISourcePortData sourcePort, FileType fileTypeID)
         {
             throw new NotImplementedException();
         }
@@ -332,12 +337,22 @@ namespace DoomLauncher
             throw new NotImplementedException();
         }
 
+        public void UpdateStats(IStatsData stats)
+        {
+            throw new NotImplementedException();
+        }
+
         public void DeleteStatsByFile(int gameFileID)
         {
             throw new NotImplementedException();
         }
 
         public void DeleteStats(int statID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteStats(ISourcePortData sourcePort)
         {
             throw new NotImplementedException();
         }

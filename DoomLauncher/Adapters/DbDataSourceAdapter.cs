@@ -465,6 +465,11 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(string.Format("delete from Files where GameFileID = {0}", file.GameFileID.Value));
         }
 
+        public void DeleteFiles(ISourcePortData sourcePort, FileType fileTypeID)
+        {
+            DataAccess.ExecuteNonQuery(string.Format("delete from Files where SourcePortID = {0} and FileTypeID = {1}", sourcePort.SourcePortID, (int)fileTypeID));
+        }
+
         public IEnumerable<IConfigurationData> GetConfiguration()
         {
             DataTable dt = DataAccess.ExecuteSelect("select * from Configuration").Tables[0];
@@ -585,6 +590,17 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
 
+        public void UpdateStats(IStatsData stats)
+        {
+            string query = @"update Stats set SourcePortID = @SourcePortID where StatID = @StatID";
+
+            List<DbParameter> parameters = new List<DbParameter>();
+            parameters.Add(DataAccess.DbAdapter.CreateParameter("SourcePortID", stats.SourcePortID));
+            parameters.Add(DataAccess.DbAdapter.CreateParameter("StatID", stats.StatID));
+
+            DataAccess.ExecuteNonQuery(query, parameters);
+        }
+
         public void DeleteStatsByFile(int gameFileID)
         {
             DataAccess.ExecuteNonQuery(string.Format("delete from Stats where GameFileID = {0}", gameFileID));
@@ -593,6 +609,11 @@ namespace DoomLauncher
         public void DeleteStats(int statID)
         {
             DataAccess.ExecuteNonQuery(string.Format("delete from Stats where StatID = {0}", statID));
+        }
+
+        public void DeleteStats(ISourcePortData sourcePort)
+        {
+            DataAccess.ExecuteNonQuery(string.Format("delete from Stats where SourcePortID = {0}", sourcePort.SourcePortID));
         }
 
         private string InsertStatement(string tableName, object obj, string[] exclude, out List<DbParameter> parameters)
