@@ -38,6 +38,21 @@ namespace DoomLauncher
             return GetValueFromConfig(GetConfigValue(ct), type);
         }
 
+        public LauncherPath PathForFileType(FileType type)
+        {
+            switch(type)
+            {
+                case FileType.Demo:
+                    return DemoDirectory;
+                case FileType.SaveGame:
+                    return SaveGameDirectory;
+                case FileType.Screenshot:
+                    return ScreenshotDirectory;
+                default:
+                    throw new ArgumentException($"Invalid FileType {type}");
+            }
+        }
+
         private static object GetValueFromConfig(string value, Type type)
         {
             if (type == typeof(string))
@@ -90,7 +105,7 @@ namespace DoomLauncher
             catch(Exception ex)
             {
                 if (throwErrors)
-                    throw ex;
+                    throw;
             }
             VerifyPaths(throwErrors);
         }
