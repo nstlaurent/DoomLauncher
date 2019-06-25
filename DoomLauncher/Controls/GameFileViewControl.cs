@@ -226,6 +226,9 @@ namespace DoomLauncher
             ToolTipTimer.Elapsed += ToolTipTimer_Elapsed;
 
             dgvMain.ColumnHeaderMouseClick += dgvMain_ColumnHeaderMouseClick;
+
+            dgvMain.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dgvMain.AllowUserToResizeRows = false;
         }
 
         private void dgvMain_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
