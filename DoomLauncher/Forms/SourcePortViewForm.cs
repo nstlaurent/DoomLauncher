@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.DataSources;
+using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -143,15 +144,23 @@ namespace DoomLauncher
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (SelectedItem != null && MessageBox.Show(this, GetDeleteConfirm(), "Confirm",
-                    MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
+            MessageCheckBox messageBox = new MessageCheckBox("Confirm", GetDeleteConfirm(), "Delete save games, demos, and statistics associated with this port",
+                SystemIcons.Exclamation, MessageBoxButtons.OKCancel);
+
+            messageBox.SetShowCheckBox(m_launchType == SourcePortLaunchType.SourcePort);
+
+            if (SelectedItem != null && messageBox.ShowDialog(this) == DialogResult.OK)
             {
                 try
                 {
                     if (m_launchType == SourcePortLaunchType.SourcePort)
                     {
                         m_adapter.UpdateGameFiles(GameFileFieldType.SourcePortID, GameFileFieldType.SourcePortID, SelectedItem.SourcePortID, null);
-                        m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1);
+
+                        if (messageBox.Checked)
+                            DeleteSourcePortFiles();
+                        else
+                            UnlinkFilesFromSourcePort();
                     }
 
                     m_adapter.DeleteSourcePort(SelectedItem);
@@ -167,6 +176,27 @@ namespace DoomLauncher
                 }
 
                 ResetData();
+            }
+        }
+
+        private void DeleteSourcePortFiles()
+        {
+            m_adapter.DeleteFiles(SelectedItem, FileType.SaveGame); //FileType ones didn't seem to work
+            m_adapter.DeleteFiles(SelectedItem, FileType.Demo);
+            m_adapter.DeleteStats(SelectedItem);
+
+            m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1); //Since we didn't delete screenshots unlink them
+        }
+
+        private void UnlinkFilesFromSourcePort()
+        {
+            m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1);
+
+            var stats = m_adapter.GetStats().Where(x => x.SourcePortID == SelectedItem.SourcePortID);
+            foreach (var stat in stats)
+            {
+                stat.SourcePortID = -1;
+                m_adapter.UpdateStats(stat);
             }
         }
 

@@ -42,6 +42,11 @@ namespace UnitTest.Tests
             var sourcePorts = CreateTestSourcePorts();
             foreach (var port in sourcePorts)
                 adapter.InsertSourcePort(port);
+
+            Assert.AreEqual(sourcePorts.Count(x => x.LaunchType == SourcePortLaunchType.SourcePort), 
+                adapter.GetSourcePorts().Count());
+            Assert.AreEqual(sourcePorts.Count(x => x.LaunchType == SourcePortLaunchType.Utility), 
+                adapter.GetUtilities().Count());
         }
 
         [TestMethod]
