@@ -996,6 +996,7 @@ namespace DoomLauncher
                 form.DisplayInitSetupButton();
 
             form.ShowDialog(this);
+            HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
         private void HandleEditUtilities()
