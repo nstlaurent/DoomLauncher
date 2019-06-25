@@ -413,6 +413,12 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(string.Format("delete from IWads where IWadID = {0}", iwad.IWadID));
         }
 
+        public IEnumerable<IFileData> GetFiles()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("select * from Files").Tables[0];
+            return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
+        }
+
         public IEnumerable<IFileData> GetFiles(IGameFile gameFile)
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from Files where GameFileID = {0} order by FileOrder, FileID", gameFile.GameFileID.Value)).Tables[0];

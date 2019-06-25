@@ -166,6 +166,11 @@ namespace DoomLauncher
             throw new NotImplementedException();
         }
 
+        public IEnumerable<IFileData> GetFiles()
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<IFileData> GetFiles(IGameFile gameFile)
         {
             throw new NotImplementedException();

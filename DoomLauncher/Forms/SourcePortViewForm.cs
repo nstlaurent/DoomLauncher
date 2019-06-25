@@ -22,8 +22,9 @@ namespace DoomLauncher
         private readonly ITabView[] m_tabViews;
         private readonly SourcePortLaunchType m_launchType;
         private readonly IDataSourceAdapter m_adapter;
+        private readonly AppConfiguration m_appConfig;
 
-        public SourcePortViewForm(IDataSourceAdapter adapter, ITabView[] tabViews, SourcePortLaunchType type)
+        public SourcePortViewForm(IDataSourceAdapter adapter, AppConfiguration appConfig, ITabView[] tabViews, SourcePortLaunchType type)
         {
             InitializeComponent();
 
@@ -33,6 +34,7 @@ namespace DoomLauncher
             dgvSourcePorts.DefaultCellStyle.SelectionBackColor = Color.Gray;
 
             m_adapter = adapter;
+            m_appConfig = appConfig;
             m_tabViews = tabViews;
             m_launchType = type;
 
@@ -179,13 +181,35 @@ namespace DoomLauncher
             }
         }
 
+        private static FileType[] GetDeleteFileTypes()
+        {
+            return new FileType[] { FileType.SaveGame, FileType.Demo  };
+        }
+
         private void DeleteSourcePortFiles()
         {
-            m_adapter.DeleteFiles(SelectedItem, FileType.SaveGame); //FileType ones didn't seem to work
-            m_adapter.DeleteFiles(SelectedItem, FileType.Demo);
-            m_adapter.DeleteStats(SelectedItem);
+            var deleteFileTypes = GetDeleteFileTypes();
+            var files = m_adapter.GetFiles().Where(x => x.SourcePortID == SelectedItem.SourcePortID && deleteFileTypes.Contains(x.FileTypeID));
 
+            foreach(var fileType in deleteFileTypes)
+                m_adapter.DeleteFiles(SelectedItem, fileType);
+   
+            m_adapter.DeleteStats(SelectedItem);
             m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1); //Since we didn't delete screenshots unlink them
+
+            foreach(var file in files)
+            {
+                try
+                {
+                    string deleteFile = Path.Combine(m_appConfig.PathForFileType(file.FileTypeID).GetFullPath(), file.FileName);
+                    if (File.Exists(deleteFile))
+                        File.Delete(deleteFile);
+                }
+                catch
+                { 
+                    //we tried 
+                }
+            }
         }
 
         private void UnlinkFilesFromSourcePort()
@@ -211,16 +235,9 @@ namespace DoomLauncher
         private void btnLaunch_Click(object sender, EventArgs e)
         {
             if (IsInitSetup)
-            {
                 Close();
-            }
             else
-            {
-                if (SourcePortLaunched != null)
-                {
-                    SourcePortLaunched(this, new EventArgs());
-                }
-            }
+                SourcePortLaunched?.Invoke(this, new EventArgs());
         }
 
         public ISourcePortData GetSelectedSourcePort()
