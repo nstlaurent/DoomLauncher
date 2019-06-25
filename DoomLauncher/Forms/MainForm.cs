@@ -988,7 +988,7 @@ namespace DoomLauncher
 
         private void HandleEditSourcePorts(bool initSetup)
         {
-            SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.SourcePort);
+            SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, AppConfiguration, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.SourcePort);
             form.StartPosition = FormStartPosition.CenterParent;
             form.SourcePortLaunched += form_SourcePortLaunched;
 
@@ -1001,7 +1001,7 @@ namespace DoomLauncher
 
         private void HandleEditUtilities()
         {
-            SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.Utility);
+            SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, AppConfiguration, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.Utility);
             form.ShowPlayButton(false);
             form.StartPosition = FormStartPosition.CenterParent;
             form.ShowDialog(this);
