@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -22,6 +23,7 @@ namespace DoomLauncher
             {
                 IEnumerable<IFileData> files = DataSourceAdapter.GetFiles(gameFile, FileType);
                 List<ISourcePortData> sourcePorts = Util.GetSourcePortsData(DataSourceAdapter);
+                sourcePorts.Add(CreateNullSourcePort());
 
                 var items = from file in files
                             join sp in sourcePorts on file.SourcePortID equals sp.SourcePortID
@@ -37,6 +39,15 @@ namespace DoomLauncher
                 dgvMain.DataSource = null;
                 m_files = new IFileData[] { };
             }
+        }
+
+        private ISourcePortData CreateNullSourcePort()
+        {
+            return new SourcePortData()
+            {
+                SourcePortID = -1,
+                Name = "N/A"
+            };
         }
 
         public abstract void ClearData();
