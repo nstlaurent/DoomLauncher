@@ -35,8 +35,9 @@ namespace DoomLauncher
         public bool UpdateRequired()
         {
             AppVersion version = GetVersion();
+            var latestVersion = Enum.GetValues(typeof(AppVersion)).Cast<AppVersion>().Last();
 
-            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_4_1)
+            if (version == AppVersion.Unknown || version < latestVersion)
             {
                 return true;
             }
@@ -73,6 +74,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_6_3_1, AppVersion.Version_2_6_3_1);
                 ExecuteUpdate(Pre_2_6_3_2, AppVersion.Version_2_6_3_2);
                 ExecuteUpdate(Pre_2_6_4_1, AppVersion.Version_2_6_4_1);
+                ExecuteUpdate(Pre_2_6_4_1_Update, AppVersion.Version_2_6_4_1_Update1);
             }
         }
 
@@ -465,6 +467,22 @@ namespace DoomLauncher
             };
 
             m_adapter.InsertConfiguration(config);
+        }
+
+        private void Pre_2_6_4_1_Update()
+        {
+            var adapter = DbDataSourceAdapter.CreateAdapter();
+            var sourcePorts = adapter.GetSourcePorts();
+            var stats = adapter.GetStats();
+
+            foreach(var stat in stats)
+            {
+                if (!sourcePorts.Any(x => x.SourcePortID == stat.SourcePortID))
+                {
+                    stat.SourcePortID = -1;
+                    adapter.UpdateStats(stat);
+                }
+            }
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)
