@@ -17,6 +17,7 @@ namespace DoomLauncher.Interfaces
         void UpdateSourcePort(ISourcePortData sourcePort);
         void DeleteSourcePort(ISourcePortData sourcePort);
 
+        IEnumerable<IFileData> GetFiles();
         IEnumerable<IFileData> GetFiles(IGameFile gameFile);
         IEnumerable<IFileData> GetFiles(IGameFile gameFile, FileType fileTypeID);
         void UpdateFile(IFileData file);
