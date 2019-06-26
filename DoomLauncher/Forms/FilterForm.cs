@@ -97,6 +97,8 @@ namespace DoomLauncher.Forms
             TransparencyKey = BackColor;
             WindowState = FormWindowState.Maximized;
             DoubleBuffered = true;
+            //For some reason the first call randomly doesn't take up the whole screen, so call it again
+            MoveWindow(this.Handle, screen.Bounds.Location.X, screen.Bounds.Location.Y, screen.Bounds.Width, screen.Bounds.Height, false);
 
             Load += CrtFilterForm_Load;
         }
