@@ -308,6 +308,25 @@ namespace UnitTest.Tests
             Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test.wad")));
         }
 
+        [TestMethod]
+        public void TestExtraWithStats()
+        {
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+            var boomPort = GetPrBoomTestPort(".wad,.deh");
+            boomPort.ExtraParameters = "-boomextra";
+
+            adapter.ExtraParameters = "-extratest";
+            adapter.SaveStatistics = true;
+
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), boomPort, false);
+
+            Assert.IsTrue(launch.Contains(" -extratest "));
+            Assert.IsTrue(launch.Contains(" -boomextra "));
+            Assert.IsTrue(launch.Contains(" -levelstat"));
+        }
+
         private void CreateDirectoriesAndFiles()
         {
             if (Directory.Exists("GameFiles"))
@@ -381,6 +400,11 @@ namespace UnitTest.Tests
         private static ISourcePortData GetTestPort(string extensions)
         {
             return new SourcePortData { Executable = "zdoom.exe", Directory = new LauncherPath("SourcePorts"), SupportedExtensions = extensions, FileOption = "-file" };
+        }
+
+        private static ISourcePortData GetPrBoomTestPort(string extensions)
+        {
+            return new SourcePortData { Executable = "prboom.exe", Directory = new LauncherPath("SourcePorts"), SupportedExtensions = extensions, FileOption = "-file" };
         }
     }
 }
