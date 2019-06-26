@@ -302,7 +302,7 @@
             // chkPreview
             // 
             this.chkPreview.AutoSize = true;
-            this.chkPreview.Location = new System.Drawing.Point(6, 43);
+            this.chkPreview.Location = new System.Drawing.Point(6, 68);
             this.chkPreview.Name = "chkPreview";
             this.chkPreview.Size = new System.Drawing.Size(159, 17);
             this.chkPreview.TabIndex = 21;
@@ -349,7 +349,7 @@
             // lnkFilterSettings
             // 
             this.lnkFilterSettings.AutoSize = true;
-            this.lnkFilterSettings.Location = new System.Drawing.Point(171, 65);
+            this.lnkFilterSettings.Location = new System.Drawing.Point(171, 44);
             this.lnkFilterSettings.Name = "lnkFilterSettings";
             this.lnkFilterSettings.Size = new System.Drawing.Size(45, 13);
             this.lnkFilterSettings.TabIndex = 24;
@@ -360,7 +360,7 @@
             // chkScreenFilter
             // 
             this.chkScreenFilter.AutoSize = true;
-            this.chkScreenFilter.Location = new System.Drawing.Point(6, 65);
+            this.chkScreenFilter.Location = new System.Drawing.Point(6, 44);
             this.chkScreenFilter.Name = "chkScreenFilter";
             this.chkScreenFilter.Size = new System.Drawing.Size(85, 17);
             this.chkScreenFilter.TabIndex = 23;
@@ -371,7 +371,7 @@
             // lnkPreviewLaunchParameters
             // 
             this.lnkPreviewLaunchParameters.AutoSize = true;
-            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(171, 44);
+            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(171, 68);
             this.lnkPreviewLaunchParameters.Name = "lnkPreviewLaunchParameters";
             this.lnkPreviewLaunchParameters.Size = new System.Drawing.Size(34, 13);
             this.lnkPreviewLaunchParameters.TabIndex = 22;
