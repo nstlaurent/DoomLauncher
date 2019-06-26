@@ -306,7 +306,7 @@ namespace DoomLauncher
             bool isGameFileIwad = IsGameFileIwad(gameFile);
 
             if (m_currentPlayForm.SaveStatistics)
-                SetupStatsReader(sourcePort, playAdapter, gameFile);
+                SetupStatsReader(sourcePort, gameFile);
 
             if (playAdapter.Launch(AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, 
                 gameFile, sourcePort, isGameFileIwad))
@@ -394,14 +394,12 @@ namespace DoomLauncher
             form.ShowDialog(this);
         }
 
-        private void SetupStatsReader(ISourcePortData sourcePort, GameFilePlayAdapter playAdapter, IGameFile gameFile)
+        private void SetupStatsReader(ISourcePortData sourcePort, IGameFile gameFile)
         {
             m_statsReader = CreateStatisticsReader(sourcePort, gameFile);
 
             if (m_statsReader != null)
             {
-                if (!string.IsNullOrEmpty(m_statsReader.LaunchParameter))
-                    playAdapter.ExtraParameters += m_statsReader.LaunchParameter;
                 m_statsReader.NewStastics += m_statsReader_NewStastics;
                 m_statsReader.Start();
             }
@@ -429,6 +427,7 @@ namespace DoomLauncher
             playAdapter.AdditionalFiles = form.GetAdditionalFiles().ToArray();
             playAdapter.PlayDemo = form.PlayDemo;
             playAdapter.ExtraParameters = form.ExtraParameters;
+            playAdapter.SaveStatistics = form.SaveStatistics;
             playAdapter.ProcessExited += processExited;
             if (form.SelectedDemo != null) playAdapter.PlayDemoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
             return playAdapter;
