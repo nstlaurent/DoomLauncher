@@ -75,6 +75,10 @@ namespace DoomLauncher
                         stats.RecordTime = DateTime.Now;
                         stats.GameFileID = GameFile.GameFileID.Value;
 
+                        //Revived monsters adds to kill count
+                        if (stats.KillCount > stats.TotalKills)
+                            stats.KillCount = stats.TotalKills;
+
                         if (!m_statistics.Contains(stats))
                         {
                             m_statistics.Add(stats);
