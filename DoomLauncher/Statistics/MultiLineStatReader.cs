@@ -19,10 +19,12 @@ namespace DoomLauncher.Statistics
             GameFile = gameFile;
             m_parseItems = parseItems;
             m_statRegex = statRegex;
+            ErrorOnFail = false;
         }
 
         public IGameFile GameFile { get; set; }
         public bool ReadOnClose { get { return true; } }
+        public bool ErrorOnFail { get; set; }
         public abstract string LaunchParameter { get; }
 
         public void Start()
@@ -88,7 +90,8 @@ namespace DoomLauncher.Statistics
             }
             catch (Exception ex)
             {
-                m_errors.Add(string.Format("Unexpected exception: {0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
+                if (ErrorOnFail)
+                    m_errors.Add(string.Format("Unexpected exception: {0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
             }
         }
 
