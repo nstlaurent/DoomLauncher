@@ -172,6 +172,7 @@
     <Compile Include="SourcePort\BoomSourcePort.cs" />
     <Compile Include="SourcePort\ChocolateDoomSourcePort.cs" />
     <Compile Include="SourcePort\CNDoomSourcePort.cs" />
+    <Compile Include="SourcePort\CrispyDoomSourcePort.cs" />
     <Compile Include="SourcePort\DoomsdaySourcePort.cs" />
     <Compile Include="SourcePort\GenericSourcePort.cs" />
     <Compile Include="SourcePort\ISourcePort.cs" />
