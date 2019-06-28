@@ -226,9 +226,9 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(4, 265);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(86, 13);
+            this.label6.Size = new System.Drawing.Size(94, 26);
             this.label6.TabIndex = 6;
-            this.label6.Text = "Chocolate Doom";
+            this.label6.Text = "Chocolate Doom / Crispy Doom";
             // 
             // lblChocolate
             // 
