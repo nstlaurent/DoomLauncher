@@ -170,6 +170,7 @@
     </Compile>
     <Compile Include="Config\ScreenFilter.cs" />
     <Compile Include="SourcePort\BoomSourcePort.cs" />
+    <Compile Include="SourcePort\ChocolateDoomSourcePort.cs" />
     <Compile Include="SourcePort\CNDoomSourcePort.cs" />
     <Compile Include="SourcePort\DoomsdaySourcePort.cs" />
     <Compile Include="SourcePort\GenericSourcePort.cs" />
@@ -252,8 +253,10 @@
     <Compile Include="Forms\MainForm_Meta.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Statistics\ChocolateDoomStatsReader.cs" />
     <Compile Include="Statistics\CNDoomStatsReader.cs" />
     <Compile Include="Statistics\IStatisticsReader.cs" />
+    <Compile Include="Statistics\MultiLineStatReader.cs" />
     <Compile Include="Statistics\NewStatisticsEventArgs.cs" />
     <Compile Include="Statistics\StatFileScanner.cs" />
     <Compile Include="Statistics\ZDoomStatsReader.cs" />
