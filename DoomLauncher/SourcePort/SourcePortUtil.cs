@@ -17,6 +17,8 @@ namespace DoomLauncher.SourcePort
                 new BoomSourcePort(sourcePortData),
                 new DoomsdaySourcePort(sourcePortData),
                 new CNDoomSourcePort(sourcePortData),
+                new ChocolateDoomSourcePort(sourcePortData),
+                new CrispyDoomSourcePort(sourcePortData),
                 new GenericSourcePort(sourcePortData)
             };
 
