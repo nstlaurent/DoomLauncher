@@ -21,9 +21,9 @@ namespace DoomLauncher.Statistics
 
         public ChocolateDoomStatsReader(IGameFile gameFile, string statFile) : base(gameFile, statFile, s_statRegex, s_regexItems)
         {
-            GameFile = gameFile;
+            
         }
 
-        public override string LaunchParameter { get { return $"-statdump {StatFile}"; } }
+        public override string LaunchParameter { get { return $"-statdump \"{StatFile}\""; } }
     }
 }
