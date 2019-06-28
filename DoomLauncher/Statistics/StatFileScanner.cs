@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 
 namespace DoomLauncher
 {
     public class StatFileScanner
     {
-        private readonly string m_statFile;
-
         protected List<string> m_errors = new List<string>();
 
-        protected class ParseItem
+        public class ParseItem
         {
             public ParseItem(string regexInput, string replace, string dataSourceProperty)
             {
@@ -31,10 +24,10 @@ namespace DoomLauncher
 
         public StatFileScanner(string statFile)
         {
-            m_statFile = statFile;
+            StatFile = statFile;
         }
 
-        public string StatFile { get { return m_statFile; } }
+        public string StatFile { get; }
 
         protected void SetStatProperty(StatsData stats, ParseItem item, string value)
         {
