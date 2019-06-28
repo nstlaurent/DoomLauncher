@@ -20,11 +20,13 @@ namespace DoomLauncher.Statistics
             m_parseItems = parseItems;
             m_statRegex = statRegex;
             ErrorOnFail = false;
+            RemoveNewLines = true;
         }
 
         public IGameFile GameFile { get; set; }
         public bool ReadOnClose { get { return true; } }
         public bool ErrorOnFail { get; set; }
+        public bool RemoveNewLines { get; set; }
         public abstract string LaunchParameter { get; }
 
         public void Start()
@@ -61,7 +63,13 @@ namespace DoomLauncher.Statistics
             try
             {
                 string text = File.ReadAllText(StatFile);
-                text = text.Replace(" ", string.Empty).Replace("\r\n", string.Empty).Replace("\n", string.Empty).Replace("\t", string.Empty);
+                text = text.Replace(" ", string.Empty).Replace("\t", string.Empty);
+
+                if (RemoveNewLines)
+                    text = text.Replace("\r\n", string.Empty).Replace("\n", string.Empty);
+                else
+                    text = text.Replace("\r\n", "\n");
+
                 MatchCollection matches = Regex.Matches(text, m_statRegex, RegexOptions.Singleline);
 
                 foreach (Match match in matches)
