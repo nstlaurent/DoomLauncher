@@ -75,6 +75,7 @@ I_InitGraphics: Windowboxed (1280x960 within 1920x1080)
             statsReader.ReadNow();
 
             Assert.AreEqual(3, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("E1M1", m_args[0].Statistics.MapName);
             Assert.AreEqual(3, m_args[0].Statistics.KillCount);

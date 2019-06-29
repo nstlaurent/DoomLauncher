@@ -25,6 +25,7 @@ MAP02 - 0:03.83 (0:07)  K: 23/234  I: 7/28  S: 1/2 ";
             statsReader.ReadNow();
 
             Assert.AreEqual(2, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("MAP01", m_args[0].Statistics.MapName);
             Assert.AreEqual(12, m_args[0].Statistics.KillCount);
@@ -59,6 +60,7 @@ MAP03 - 0:04.83 (0:07)  K: 123/1234  I: 22/50  S: 2/2";
             statsReader.ReadNow();
 
             Assert.AreEqual(3, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("MAP03", m_args[2].Statistics.MapName);
             Assert.AreEqual(123, m_args[2].Statistics.KillCount);
@@ -88,6 +90,7 @@ MAP03 - 0:35.51 (1:12)  K: 14/56  I: 8/9   S: 0/1
             statsReader.ReadNow();
 
             Assert.AreEqual(3, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("MAP01", m_args[0].Statistics.MapName);
             Assert.AreEqual(8, m_args[0].Statistics.KillCount);
