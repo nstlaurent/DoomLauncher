@@ -102,7 +102,7 @@ namespace DoomLauncher
                 DateParseFormats = SplitString(GetValue(config, "DateParseFormats"));
                 ScreenshotCaptureDirectories = SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 if (throwErrors)
                     throw;

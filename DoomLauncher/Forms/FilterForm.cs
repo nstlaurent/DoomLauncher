@@ -16,29 +16,6 @@ namespace DoomLauncher.Forms
         private List<RectangleF> m_rects = new List<RectangleF>();
         private List<Tuple<PointF, PointF>> m_lines = new List<Tuple<PointF, PointF>>();
 
-        enum GWL
-        {
-            ExStyle = -20
-        }
-
-        enum LWA
-        {
-            ColorKey = 0x1,
-            Alpha = 0x2
-        }
-
-        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
-        static extern int GetWindowLong(IntPtr hWnd, GWL nIndex);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-        static extern int SetWindowLong(IntPtr hWnd, GWL nIndex, int dwNewLong);
-
-        [DllImport("user32.dll", EntryPoint = "SetLayeredWindowAttributes")]
-        static extern bool SetLayeredWindowAttributes(IntPtr hWnd, int crKey, byte alpha, LWA dwFlags);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, ExactSpelling = true, SetLastError = true)]
-        internal static extern void MoveWindow(IntPtr hwnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
-
         private readonly Pen m_pen;
 
         public FilterForm(Screen screen, ScreenFilter filter)
@@ -91,14 +68,14 @@ namespace DoomLauncher.Forms
         {
             InitializeComponent();
             Text = string.Empty;
-            MoveWindow(this.Handle, screen.Bounds.Location.X, screen.Bounds.Location.Y, screen.Bounds.Width, screen.Bounds.Height, false);
+            NativeMethods.MoveWindow(Handle, screen.Bounds.Location.X, screen.Bounds.Location.Y, screen.Bounds.Width, screen.Bounds.Height, false);
             ControlBox = false;
             FormBorderStyle = FormBorderStyle.None;
             TransparencyKey = BackColor;
             WindowState = FormWindowState.Maximized;
             DoubleBuffered = true;
             //For some reason the first call randomly doesn't take up the whole screen, so call it again
-            MoveWindow(this.Handle, screen.Bounds.Location.X, screen.Bounds.Location.Y, screen.Bounds.Width, screen.Bounds.Height, false);
+            NativeMethods.MoveWindow(Handle, screen.Bounds.Location.X, screen.Bounds.Location.Y, screen.Bounds.Width, screen.Bounds.Height, false);
 
             Load += CrtFilterForm_Load;
         }
@@ -106,9 +83,9 @@ namespace DoomLauncher.Forms
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            int wl = GetWindowLong(this.Handle, GWL.ExStyle);
+            int wl = NativeMethods.GetWindowLong(this.Handle, NativeMethods.GWL.ExStyle);
             wl = wl | 0x80000 | 0x20;
-            SetWindowLong(this.Handle, GWL.ExStyle, wl);
+            NativeMethods.SetWindowLong(this.Handle, NativeMethods.GWL.ExStyle, wl);
         }
 
         private void CrtFilterForm_Load(object sender, EventArgs e)
