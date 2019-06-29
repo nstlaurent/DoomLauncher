@@ -20,12 +20,14 @@ namespace DoomLauncher.Statistics
             m_parseItems = parseItems;
             m_statRegex = statRegex;
             ErrorOnFail = false;
+            ErrorOnParseItem = true;
             RemoveNewLines = true;
         }
 
         public IGameFile GameFile { get; set; }
         public bool ReadOnClose { get { return true; } }
         public bool ErrorOnFail { get; set; }
+        public bool ErrorOnParseItem { get; set; }
         public bool RemoveNewLines { get; set; }
         public abstract string LaunchParameter { get; }
 
@@ -62,14 +64,7 @@ namespace DoomLauncher.Statistics
         {
             try
             {
-                string text = File.ReadAllText(StatFile);
-                text = text.Replace(" ", string.Empty).Replace("\t", string.Empty);
-
-                if (RemoveNewLines)
-                    text = text.Replace("\r\n", string.Empty).Replace("\n", string.Empty);
-                else
-                    text = text.Replace("\r\n", "\n");
-
+                string text = GetCleanedFileText();
                 MatchCollection matches = Regex.Matches(text, m_statRegex, RegexOptions.Singleline);
 
                 foreach (Match match in matches)
@@ -103,6 +98,18 @@ namespace DoomLauncher.Statistics
             }
         }
 
+        private string GetCleanedFileText()
+        {
+            string text = File.ReadAllText(StatFile);
+            text = text.Replace(" ", string.Empty).Replace("\t", string.Empty);
+
+            if (RemoveNewLines)
+                text = text.Replace("\r\n", string.Empty).Replace("\n", string.Empty);
+            else
+                text = text.Replace("\r\n", "\n");
+            return text;
+        }
+
         private IStatsData ParseLine(string line)
         {
             StatsData ret = new StatsData();
@@ -117,7 +124,7 @@ namespace DoomLauncher.Statistics
                     if (item.DataSourceProperty != null)
                         SetStatProperty(ret, item, match.Value);
                 }
-                else
+                else if(ErrorOnParseItem)
                 {
                     m_errors.Add(string.Format("Failed to parse {0} from levelstat file.", item.DataSourceProperty));
                 }

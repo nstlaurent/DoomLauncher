@@ -34,6 +34,7 @@ Player 1 (Green):
             statsReader.ReadNow();
 
             Assert.AreEqual(1, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("E1M1", m_args[0].Statistics.MapName);
             Assert.AreEqual(5, m_args[0].Statistics.KillCount);
@@ -80,6 +81,7 @@ Player 1 (Green):
             statsReader.ReadNow();
 
             Assert.AreEqual(2, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("E1M1", m_args[0].Statistics.MapName);
             Assert.AreEqual(5, m_args[0].Statistics.KillCount);
@@ -122,6 +124,7 @@ Player 1 (Green):
             statsReader.ReadNow();
 
             Assert.AreEqual(1, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("MAP30", m_args[0].Statistics.MapName);
             Assert.AreEqual(0, m_args[0].Statistics.KillCount);

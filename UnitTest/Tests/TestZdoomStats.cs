@@ -28,6 +28,7 @@ namespace UnitTest.Tests
             statsReader.Stop();
 
             Assert.AreEqual(2, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("e1m1", m_args[0].Statistics.MapName.ToLower());
             Assert.AreEqual(5, m_args[0].Statistics.KillCount);
@@ -71,6 +72,7 @@ namespace UnitTest.Tests
             statsReader.Stop();
 
             Assert.AreEqual(2, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("e1m1", m_args[0].Statistics.MapName.ToLower());
             Assert.AreEqual(5, m_args[0].Statistics.KillCount);
@@ -126,6 +128,7 @@ namespace UnitTest.Tests
             statsReader.Stop();
 
             Assert.AreEqual(2, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
             Assert.AreEqual("e1m1", m_args[0].Statistics.MapName.ToLower());
             Assert.AreEqual(5, m_args[0].Statistics.KillCount);
