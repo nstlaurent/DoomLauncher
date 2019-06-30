@@ -36,7 +36,7 @@ Player 1 (Green):
             Assert.AreEqual(1, m_args.Count);
             Assert.AreEqual(0, statsReader.Errors.Length);
 
-            Assert.AreEqual("E1M1", m_args[0].Statistics.MapName);
+            Assert.AreEqual("E1M1/MAP01", m_args[0].Statistics.MapName);
             Assert.AreEqual(5, m_args[0].Statistics.KillCount);
             Assert.AreEqual(6, m_args[0].Statistics.TotalKills);
             Assert.AreEqual(3, m_args[0].Statistics.ItemCount);
