@@ -38,7 +38,6 @@
             this.numSpacingY = new System.Windows.Forms.NumericUpDown();
             this.grpEllipse = new System.Windows.Forms.GroupBox();
             this.grpScanline = new System.Windows.Forms.GroupBox();
-            this.btnPreviewScanline = new System.Windows.Forms.Button();
             this.numScanlineSize = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.chkHorizontal = new System.Windows.Forms.CheckBox();
@@ -51,6 +50,9 @@
             this.numOpacity = new System.Windows.Forms.NumericUpDown();
             this.numThickness = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
+            this.tblInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.label8 = new System.Windows.Forms.Label();
+            this.pbInfo = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.numBlockSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSpacingX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSpacingY)).BeginInit();
@@ -59,6 +61,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numScanlineSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numThickness)).BeginInit();
+            this.tblInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).BeginInit();
             this.SuspendLayout();
             // 
             // chkStagger
@@ -75,7 +79,7 @@
             // 
             this.numBlockSize.Location = new System.Drawing.Point(89, 40);
             this.numBlockSize.Name = "numBlockSize";
-            this.numBlockSize.Size = new System.Drawing.Size(83, 20);
+            this.numBlockSize.Size = new System.Drawing.Size(104, 20);
             this.numBlockSize.TabIndex = 1;
             this.numBlockSize.Value = new decimal(new int[] {
             4,
@@ -98,13 +102,13 @@
             0,
             -2147483648});
             this.numSpacingX.Name = "numSpacingX";
-            this.numSpacingX.Size = new System.Drawing.Size(83, 20);
+            this.numSpacingX.Size = new System.Drawing.Size(104, 20);
             this.numSpacingX.TabIndex = 2;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(15, 42);
+            this.label1.Location = new System.Drawing.Point(12, 42);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(57, 13);
             this.label1.TabIndex = 4;
@@ -121,9 +125,9 @@
             // 
             // btnPreview
             // 
-            this.btnPreview.Location = new System.Drawing.Point(15, 124);
+            this.btnPreview.Location = new System.Drawing.Point(47, 145);
             this.btnPreview.Name = "btnPreview";
-            this.btnPreview.Size = new System.Drawing.Size(157, 23);
+            this.btnPreview.Size = new System.Drawing.Size(162, 23);
             this.btnPreview.TabIndex = 7;
             this.btnPreview.Text = "Preview For 3 Seconds";
             this.btnPreview.UseVisualStyleBackColor = true;
@@ -153,12 +157,11 @@
             0,
             -2147483648});
             this.numSpacingY.Name = "numSpacingY";
-            this.numSpacingY.Size = new System.Drawing.Size(83, 20);
+            this.numSpacingY.Size = new System.Drawing.Size(104, 20);
             this.numSpacingY.TabIndex = 8;
             // 
             // grpEllipse
             // 
-            this.grpEllipse.Controls.Add(this.btnPreview);
             this.grpEllipse.Controls.Add(this.label3);
             this.grpEllipse.Controls.Add(this.chkStagger);
             this.grpEllipse.Controls.Add(this.numSpacingY);
@@ -166,42 +169,31 @@
             this.grpEllipse.Controls.Add(this.numSpacingX);
             this.grpEllipse.Controls.Add(this.label2);
             this.grpEllipse.Controls.Add(this.label1);
-            this.grpEllipse.Location = new System.Drawing.Point(12, 96);
+            this.grpEllipse.Location = new System.Drawing.Point(12, 174);
             this.grpEllipse.Name = "grpEllipse";
-            this.grpEllipse.Size = new System.Drawing.Size(274, 157);
+            this.grpEllipse.Size = new System.Drawing.Size(271, 122);
             this.grpEllipse.TabIndex = 10;
             this.grpEllipse.TabStop = false;
             this.grpEllipse.Text = "Ellipse";
             // 
             // grpScanline
             // 
-            this.grpScanline.Controls.Add(this.btnPreviewScanline);
             this.grpScanline.Controls.Add(this.numScanlineSize);
             this.grpScanline.Controls.Add(this.label4);
             this.grpScanline.Controls.Add(this.chkHorizontal);
             this.grpScanline.Controls.Add(this.chkVertical);
-            this.grpScanline.Location = new System.Drawing.Point(12, 259);
+            this.grpScanline.Location = new System.Drawing.Point(12, 302);
             this.grpScanline.Name = "grpScanline";
-            this.grpScanline.Size = new System.Drawing.Size(274, 124);
+            this.grpScanline.Size = new System.Drawing.Size(271, 86);
             this.grpScanline.TabIndex = 11;
             this.grpScanline.TabStop = false;
             this.grpScanline.Text = "Scanline";
-            // 
-            // btnPreviewScanline
-            // 
-            this.btnPreviewScanline.Location = new System.Drawing.Point(15, 88);
-            this.btnPreviewScanline.Name = "btnPreviewScanline";
-            this.btnPreviewScanline.Size = new System.Drawing.Size(157, 23);
-            this.btnPreviewScanline.TabIndex = 10;
-            this.btnPreviewScanline.Text = "Preview For 3 Seconds";
-            this.btnPreviewScanline.UseVisualStyleBackColor = true;
-            this.btnPreviewScanline.Click += new System.EventHandler(this.btnPreview_Click);
             // 
             // numScanlineSize
             // 
             this.numScanlineSize.Location = new System.Drawing.Point(89, 19);
             this.numScanlineSize.Name = "numScanlineSize";
-            this.numScanlineSize.Size = new System.Drawing.Size(83, 20);
+            this.numScanlineSize.Size = new System.Drawing.Size(104, 20);
             this.numScanlineSize.TabIndex = 13;
             this.numScanlineSize.Value = new decimal(new int[] {
             4,
@@ -223,7 +215,7 @@
             this.chkHorizontal.AutoSize = true;
             this.chkHorizontal.Checked = true;
             this.chkHorizontal.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkHorizontal.Location = new System.Drawing.Point(18, 60);
+            this.chkHorizontal.Location = new System.Drawing.Point(18, 62);
             this.chkHorizontal.Name = "chkHorizontal";
             this.chkHorizontal.Size = new System.Drawing.Size(73, 17);
             this.chkHorizontal.TabIndex = 12;
@@ -235,7 +227,7 @@
             this.chkVertical.AutoSize = true;
             this.chkVertical.Checked = true;
             this.chkVertical.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkVertical.Location = new System.Drawing.Point(18, 37);
+            this.chkVertical.Location = new System.Drawing.Point(17, 39);
             this.chkVertical.Name = "chkVertical";
             this.chkVertical.Size = new System.Drawing.Size(61, 17);
             this.chkVertical.TabIndex = 1;
@@ -248,16 +240,16 @@
             this.cmbMode.Items.AddRange(new object[] {
             "Ellipse",
             "Scanline"});
-            this.cmbMode.Location = new System.Drawing.Point(101, 17);
+            this.cmbMode.Location = new System.Drawing.Point(101, 66);
             this.cmbMode.Name = "cmbMode";
-            this.cmbMode.Size = new System.Drawing.Size(121, 21);
+            this.cmbMode.Size = new System.Drawing.Size(104, 21);
             this.cmbMode.TabIndex = 12;
             this.cmbMode.SelectedIndexChanged += new System.EventHandler(this.cmbMode_SelectedIndexChanged);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(18, 20);
+            this.label5.Location = new System.Drawing.Point(18, 69);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(34, 13);
             this.label5.TabIndex = 13;
@@ -286,7 +278,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(19, 44);
+            this.label6.Location = new System.Drawing.Point(19, 93);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(43, 13);
             this.label6.TabIndex = 16;
@@ -300,7 +292,7 @@
             0,
             0,
             131072});
-            this.numOpacity.Location = new System.Drawing.Point(101, 44);
+            this.numOpacity.Location = new System.Drawing.Point(101, 93);
             this.numOpacity.Maximum = new decimal(new int[] {
             10,
             0,
@@ -312,7 +304,7 @@
             0,
             131072});
             this.numOpacity.Name = "numOpacity";
-            this.numOpacity.Size = new System.Drawing.Size(83, 20);
+            this.numOpacity.Size = new System.Drawing.Size(104, 20);
             this.numOpacity.TabIndex = 17;
             this.numOpacity.Value = new decimal(new int[] {
             3,
@@ -322,14 +314,14 @@
             // 
             // numThickness
             // 
-            this.numThickness.Location = new System.Drawing.Point(101, 70);
+            this.numThickness.Location = new System.Drawing.Point(101, 119);
             this.numThickness.Minimum = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numThickness.Name = "numThickness";
-            this.numThickness.Size = new System.Drawing.Size(83, 20);
+            this.numThickness.Size = new System.Drawing.Size(104, 20);
             this.numThickness.TabIndex = 19;
             this.numThickness.Value = new decimal(new int[] {
             10,
@@ -340,11 +332,47 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(19, 70);
+            this.label7.Location = new System.Drawing.Point(19, 119);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(56, 13);
             this.label7.TabIndex = 18;
             this.label7.Text = "Thickness";
+            // 
+            // tblInfo
+            // 
+            this.tblInfo.ColumnCount = 2;
+            this.tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblInfo.Controls.Add(this.label8, 1, 0);
+            this.tblInfo.Controls.Add(this.pbInfo, 0, 0);
+            this.tblInfo.Location = new System.Drawing.Point(9, 6);
+            this.tblInfo.Margin = new System.Windows.Forms.Padding(0);
+            this.tblInfo.Name = "tblInfo";
+            this.tblInfo.RowCount = 1;
+            this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblInfo.Size = new System.Drawing.Size(274, 49);
+            this.tblInfo.TabIndex = 20;
+            // 
+            // label8
+            // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(35, 5);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(232, 39);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "Works best with ports that use a software renderer and do not change your resolut" +
+    "ion like Chocolate/Crispy Doom or Odamex.";
+            // 
+            // pbInfo
+            // 
+            this.pbInfo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pbInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbInfo.Location = new System.Drawing.Point(3, 3);
+            this.pbInfo.Name = "pbInfo";
+            this.pbInfo.Size = new System.Drawing.Size(26, 43);
+            this.pbInfo.TabIndex = 0;
+            this.pbInfo.TabStop = false;
             // 
             // FilterSettingsForm
             // 
@@ -353,6 +381,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(292, 422);
+            this.Controls.Add(this.btnPreview);
+            this.Controls.Add(this.tblInfo);
             this.Controls.Add(this.numThickness);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.numOpacity);
@@ -376,6 +406,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.numScanlineSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOpacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numThickness)).EndInit();
+            this.tblInfo.ResumeLayout(false);
+            this.tblInfo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -397,7 +430,6 @@
         private System.Windows.Forms.CheckBox chkHorizontal;
         private System.Windows.Forms.NumericUpDown numScanlineSize;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button btnPreviewScanline;
         private System.Windows.Forms.ComboBox cmbMode;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnCancel;
@@ -406,5 +438,8 @@
         private System.Windows.Forms.NumericUpDown numOpacity;
         private System.Windows.Forms.NumericUpDown numThickness;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TableLayoutPanel tblInfo;
+        private System.Windows.Forms.PictureBox pbInfo;
+        private System.Windows.Forms.Label label8;
     }
 }

@@ -18,6 +18,8 @@ namespace DoomLauncher.Forms
         {
             InitializeComponent();
 
+            pbInfo.Image = DoomLauncher.Properties.Resources.bon2b;
+
             cmbMode.DropDownStyle = ComboBoxStyle.DropDownList;
             numOpacity.Value = Convert.ToDecimal(settings.Opacity);
             numThickness.Value = Convert.ToDecimal(settings.LineThickness);
