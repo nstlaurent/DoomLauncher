@@ -546,6 +546,7 @@ namespace DoomLauncher
                         m_lastSelectedItem = null;
                         ctrlAssociationView.ClearData();
                         ClearSummary();
+                        btnPlay.Enabled = false;
                     }
                     return;
                 }
@@ -575,6 +576,7 @@ namespace DoomLauncher
                 else
                 {
                     btnPlay.Enabled = false;
+                    ctrlAssociationView.ClearData();
                 }
 
                 ctrlSummary.Visible = true;

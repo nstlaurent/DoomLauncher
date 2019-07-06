@@ -82,6 +82,7 @@ namespace DoomLauncher
         {
             m_gameFile = gameFile;
             Array.ForEach(GetViews(), x => SetViewData(x, gameFile));
+            SetButtonsEnabled(CurrentView);
         }
 
         private void SetViewData(IFileAssociationView view, IGameFile gameFile)
@@ -94,6 +95,7 @@ namespace DoomLauncher
         {
             m_gameFile = null;
             Array.ForEach(GetViews(), x => x.ClearData());
+            SetButtonsAllButtonsEnabled(false);
         }
 
         public IDataSourceAdapter DataSourceAdapter { get; set; }
@@ -102,10 +104,8 @@ namespace DoomLauncher
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (CurrentView != null)
-            {
+            if (CurrentView != null && m_gameFile != null)
                 SetButtonsEnabled(CurrentView);
-            }
         }
 
         private void SetButtonsEnabled(IFileAssociationView view)
@@ -116,6 +116,18 @@ namespace DoomLauncher
             btnEdit.Enabled = view.EditAllowed;
             btnMoveDown.Enabled = btnMoveUp.Enabled = btnSetFirst.Enabled = view.ChangeOrderAllowed;
             btnOpenFile.Enabled = view.ViewAllowed;
+            btnCopyAll.Enabled = true;
+        }
+
+        private void SetButtonsAllButtonsEnabled(bool enabled)
+        {
+            btnAddFile.Enabled = enabled;
+            btnCopy.Enabled = enabled;
+            btnDelete.Enabled = enabled;
+            btnEdit.Enabled = enabled;
+            btnMoveDown.Enabled = btnMoveUp.Enabled = btnSetFirst.Enabled = enabled;
+            btnOpenFile.Enabled = enabled;
+            btnCopyAll.Enabled = enabled;
         }
 
         private IFileAssociationView CurrentView
