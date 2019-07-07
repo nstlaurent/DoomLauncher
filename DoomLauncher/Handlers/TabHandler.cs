@@ -31,6 +31,7 @@ namespace DoomLauncher
         {
             Control ctrl = tab as Control;
             TabPage page = new TabPage(tab.Title);
+            page.Name = tab.Key.ToString();
 
             if (ctrl != null)
             {
