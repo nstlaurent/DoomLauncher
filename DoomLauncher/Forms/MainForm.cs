@@ -209,6 +209,7 @@ namespace DoomLauncher
                 {
                     try
                     {
+                        TrySetFileAttributes(fi);
                         fi.Delete();
                     }
                     catch
@@ -216,6 +217,18 @@ namespace DoomLauncher
                         //failed, nothing to do
                     }
                 }
+            }
+        }
+
+        private void TrySetFileAttributes(FileInfo fi)
+        {
+            try
+            {
+                File.SetAttributes(fi.FullName, FileAttributes.Normal);
+            }
+            catch
+            {
+                //failed, nothing to do
             }
         }
 
@@ -1753,8 +1766,8 @@ namespace DoomLauncher
                 options.SearchField = new GameFileSearchField(GameFileFieldType.GameFileID, gameFile.GameFileID.ToString());
 
                 gameFile = DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
-
-                tabControl.SelectedTab = tabControl.TabPages[1];
+                
+                tabControl.SelectTab(s_localKey);
                 ITabView tabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Title == s_localKey);
                 tabView.GameFileViewControl.SelectedItem = gameFile;
 
