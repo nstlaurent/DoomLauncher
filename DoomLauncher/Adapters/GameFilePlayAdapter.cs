@@ -135,7 +135,11 @@ namespace DoomLauncher
                     ZipArchiveEntry zae = za.Entries.First();
                     string extractFile = Path.Combine(tempDirectory.GetFullPath(), zae.Name);
                     if (ExtractFiles)
+                    {
+                        if (File.Exists(extractFile))
+                            TrySetFileAttributes(extractFile);
                         zae.ExtractToFile(extractFile, true);
+                    }
 
                     sb.Append(sourcePort.IwadParameter(new SpData(extractFile, gameFile, AdditionalFiles)));
                 }
@@ -150,6 +154,11 @@ namespace DoomLauncher
                 LastError = string.Format("File in use: {0}", gameFile.FileName);
                 return false;
             }
+            catch(UnauthorizedAccessException)
+            {
+                LastError = string.Format("Could not overwrite temporary file: {0}", gameFile.FileName);
+                return false;
+            }
             catch (Exception)
             {
                 LastError = string.Format("There was an issue with the IWad: {0}. Corrupted file?", gameFile.FileName);
@@ -157,6 +166,18 @@ namespace DoomLauncher
             }
 
             return true;
+        }
+
+        private void TrySetFileAttributes(string file)
+        {
+            try
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+            }
+            catch
+            {
+                //failed, nothing to do
+            }
         }
 
         private bool HandleGameFile(IGameFile gameFile, List<string> launchFiles, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
