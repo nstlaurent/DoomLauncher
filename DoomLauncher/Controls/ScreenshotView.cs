@@ -12,6 +12,7 @@ using System.IO;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Threading;
+using DoomLauncher.Forms;
 
 namespace DoomLauncher
 {
@@ -26,6 +27,8 @@ namespace DoomLauncher
         private Dictionary<PictureBox, IFileData> m_lookup = new Dictionary<PictureBox, IFileData>();
         private double m_aspectWidth = 16, m_aspectHeight = 9;
         private List<PictureBox> m_pictureBoxes = new List<PictureBox>();
+        private List<IFileData> m_screenshots = new List<IFileData>();
+        private int m_pictureWidth;
 
         public event EventHandler<RequestScreenshotsEventArgs> RequestScreenshots;
 
@@ -35,29 +38,23 @@ namespace DoomLauncher
             flpScreenshots.Click += FlpScreenshots_Click;
         }
 
+        public void SetPictureWidth(int pictureWidth)
+        {
+            m_pictureWidth = pictureWidth;
+            InitPictureBoxes();
+        }
+
         private void FlpScreenshots_Click(object sender, EventArgs e)
         {
-                        SelectedFile = null;
+            SelectedFile = null;
             foreach (PictureBox pbSet in m_lookup.Keys)
                 SetSelectedStyle(pbSet, false);
         }
 
-        private void pbScreen_LoadCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-
-        }
-
         public override void SetData(IGameFile gameFile)
         {
-            if (m_pictureBoxes.Count == 0)
-            {
-                InitPictureBoxes();
-            }
-            else
-            {
-                foreach (PictureBox pbSet in m_lookup.Keys)
-                    SetSelectedStyle(pbSet, false);
-            }
+            foreach (PictureBox pbSet in m_lookup.Keys)
+                SetSelectedStyle(pbSet, false);
 
             flpScreenshots.SuspendLayout();
             flpScreenshots.Controls.Clear();
@@ -67,10 +64,7 @@ namespace DoomLauncher
             m_lookup.Clear();
 
             if (gameFile != null && gameFile.GameFileID.HasValue)
-            {
-                if (RequestScreenshots != null)
-                    RequestScreenshots(this, new RequestScreenshotsEventArgs(gameFile));
-            }
+                RequestScreenshots?.Invoke(this, new RequestScreenshotsEventArgs(gameFile));
         }
 
         public override void ClearData()
@@ -83,14 +77,31 @@ namespace DoomLauncher
 
         private void InitPictureBoxes()
         {
+            foreach (var pb in m_pictureBoxes)
+            {
+                if (flpScreenshots.Controls.Contains(pb))
+                    flpScreenshots.Controls.Remove(pb);
+                if (pb.Image != null)
+                    pb.Image.Dispose();
+            }
+
+            m_pictureBoxes.Clear();
+
             for (int i = 0; i < 50; i++)
                 m_pictureBoxes.Add(CreatePictureBox());
+
+            ToolTip tt = new ToolTip();
+            foreach (var pb in m_pictureBoxes)
+                tt.SetToolTip(pb, "Double-click to view");
         }
 
         public void SetScreenshots(List<IFileData> screenshots)
         {
             flpScreenshots.SuspendLayout();
             List<PictureBox>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
+
+            m_screenshots = screenshots.ToList();
+            m_lookup.Clear();
 
             foreach (IFileData screen in screenshots)
             {
@@ -137,15 +148,19 @@ namespace DoomLauncher
             PictureBox pbScreen = new PictureBox();
             pbScreen.WaitOnLoad = false;
             pbScreen.BackColor = Color.Black;
-            pbScreen.Width = 200;
+            pbScreen.Width = m_pictureWidth;
             pbScreen.Height = Convert.ToInt32(pbScreen.Width / (m_aspectWidth / m_aspectHeight));
             pbScreen.SizeMode = PictureBoxSizeMode.StretchImage;
             pbScreen.Margin = new Padding(7);
             pbScreen.Click += pbScreen_Click;
-            pbScreen.MouseDown += pbScreen_MouseDown;
-            pbScreen.LoadCompleted += pbScreen_LoadCompleted;
+            pbScreen.DoubleClick += PbScreen_DoubleClick;
             pbScreen.ContextMenuStrip = m_menu;
             return pbScreen;
+        }
+
+        private void PbScreen_DoubleClick(object sender, EventArgs e)
+        {
+            HandleDoubleClick(sender);
         }
 
         void pbScreen_MouseDown(object sender, MouseEventArgs e)
@@ -158,16 +173,36 @@ namespace DoomLauncher
             HandleClick(sender);
         }
 
-        private void HandleClick(object sender)
+        private void HandleDoubleClick(object sender)
         {
             PictureBox pb = sender as PictureBox;
 
             if (pb != null && m_lookup.ContainsKey(pb))
             {
+                HandleClick(pb);
+                View();
+            }
+        }
+
+        public override void View()
+        {
+            ScreenshotViewerForm screenshotForm = new ScreenshotViewerForm();
+            screenshotForm.StartPosition = FormStartPosition.CenterParent;
+            screenshotForm.SetImages(m_screenshots.Select(x => Path.Combine(DataDirectory.GetFullPath(), x.FileName)).ToArray());
+            if (SelectedFile != null)
+                screenshotForm.SetImage(Path.Combine(DataDirectory.GetFullPath(), SelectedFile.FileName));
+            screenshotForm.WindowState = FormWindowState.Maximized;
+            screenshotForm.ShowDialog(this);
+        }
+
+        private void HandleClick(object sender)
+        {
+            PictureBox pb = sender as PictureBox;
+
+            if (pb != null && m_lookup.ContainsKey(pb) && SelectedFile != m_lookup[pb])
+            {
                 foreach (PictureBox pbSet in m_lookup.Keys)
-                {
                     SetSelectedStyle(pbSet, false);
-                }
 
                 SelectedFile = m_lookup[pb];
                 SetSelectedStyle(pb, true);
@@ -176,16 +211,23 @@ namespace DoomLauncher
 
         private void SetSelectedStyle(PictureBox pb, bool selected)
         {
-            if (selected)
+            if (InvokeRequired)
             {
-                pb.BackColor = Color.LightBlue;
-                pb.Padding = new Padding(2);
-                pb.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+                Invoke(new Action<PictureBox, bool>(SetSelectedStyle), new object[] { pb, selected });
             }
             else
             {
-                pb.Padding = new Padding(0);
-                pb.BorderStyle = System.Windows.Forms.BorderStyle.None;
+                if (selected)
+                {
+                    pb.BackColor = Color.LightBlue;
+                    pb.Padding = new Padding(2);
+                    pb.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+                }
+                else
+                {
+                    pb.Padding = new Padding(0);
+                    pb.BorderStyle = System.Windows.Forms.BorderStyle.None;
+                }
             }
         }
 

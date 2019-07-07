@@ -194,10 +194,10 @@ namespace DoomLauncher
             return ret.ToArray();
         }
 
-        public static List<ISourcePort> GetSourcePortsData(IDataSourceAdapter adapter)
+        public static List<ISourcePortData> GetSourcePortsData(IDataSourceAdapter adapter)
         {
-            List<ISourcePort> sourcePorts = adapter.GetSourcePorts().ToList();
-            SourcePort noPort = new SourcePort();
+            List<ISourcePortData> sourcePorts = adapter.GetSourcePorts().ToList();
+            SourcePortData noPort = new SourcePortData();
             noPort.Name = "N/A";
             noPort.SourcePortID = -1;
             sourcePorts.Insert(0, noPort);
@@ -211,20 +211,23 @@ namespace DoomLauncher
 
         public static string GetTimePlayedString(int minutes)
         {
-            string ret = "Time Played: ";
-            if (minutes < 60)
-            {
-                ret += string.Format("{0} minute{1}", minutes,
-                    minutes == 1 ? string.Empty : "s");
-            }
-            else
-            {
-                double hours = Math.Round(minutes / 60.0, 2);
-                ret += string.Format("{0} hour{1}", hours.ToString("N", CultureInfo.InvariantCulture),
-                    hours == 1 ? string.Empty : "s");
-            }
+            List<string> items = new List<string>();
 
-            return ret;
+            TimeSpan ts = new TimeSpan(0, minutes, 0);
+
+            if (ts.Days > 0)
+                items.Add(TimeString(ts.Days, "Day"));
+            if (ts.Hours > 0)
+                items.Add(TimeString(ts.Hours, "Hour"));
+
+            items.Add(TimeString(ts.Minutes, "Minute"));
+
+            return string.Join(", ", items.ToArray());
+        }
+
+        private static string TimeString(int time, string type)
+        {
+            return string.Concat(time.ToString(), " ",  type, time == 1 ? string.Empty : "s");
         }
 
         public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)
@@ -251,7 +254,7 @@ namespace DoomLauncher
             return new List<IGameFile>();
         }
 
-        public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, ISourcePort sourcePort)
+        public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, ISourcePortData sourcePort)
         {
             return GetAdditionalFiles(adapter, null, sourcePort.SettingsFiles);
         }
@@ -383,6 +386,14 @@ namespace DoomLauncher
             }
 
             return -1;
+        }
+
+        public static int GetPreviewScreenshotWidth(int value)
+        {
+            if (value > 0)
+                return 200 + (40 * value);
+            else
+                return 200 + (10 * value);
         }
     }
 }

@@ -48,23 +48,6 @@ namespace DoomLauncher
 
         public IGameFile GameFile { get; set; }
 
-        public static bool Supported(ISourcePort sourcePort)
-        {
-            string exe = sourcePort.Executable.ToLower();
-
-            if (exe.Contains("zdoom.exe"))
-                return true;
-            if (exe.Contains("zandronum.exe"))
-                return true;
-
-            return false;
-        }
-
-        public static IStatisticsReader CreateDefault(IGameFile gameFile, string directory, IEnumerable<IStatsData> existingStats)
-        {
-            return new ZDoomStatsReader(gameFile, directory, existingStats);
-        }
-
         public string LaunchParameter { get { return string.Empty; } }
         public bool ReadOnClose { get { return false; } }
 

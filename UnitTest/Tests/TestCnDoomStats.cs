@@ -60,6 +60,13 @@ I_InitGraphics: Windowboxed (1280x960 within 1920x1080)
 #  Items:     6/42      Secrets:     3/6      #
 #                                             #
 ################### Total time: 00:01:07.77 ###
+
+### MAP11 #####################################
+#                                             #
+#   Time:  05:03.23       Kills:    82/71     #
+#  Items:    19/21      Secrets:     2/3      #
+#                                             #
+################### Total time: 00:05:03.23 ###
 ";
 
             CNDoomStatsReader statsReader = new CNDoomStatsReader(new GameFile() { GameFileID = 1 }, "stdout.txt");
@@ -67,9 +74,10 @@ I_InitGraphics: Windowboxed (1280x960 within 1920x1080)
             File.WriteAllText("stdout.txt", file);
             statsReader.ReadNow();
 
-            Assert.AreEqual(2, m_args.Count);
+            Assert.AreEqual(3, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
 
-            Assert.AreEqual("e1m1", m_args[0].Statistics.MapName.ToLower());
+            Assert.AreEqual("E1M1", m_args[0].Statistics.MapName);
             Assert.AreEqual(3, m_args[0].Statistics.KillCount);
             Assert.AreEqual(6, m_args[0].Statistics.TotalKills);
 
@@ -81,7 +89,7 @@ I_InitGraphics: Windowboxed (1280x960 within 1920x1080)
 
             Assert.AreEqual(22.57f, m_args[0].Statistics.LevelTime);
 
-            Assert.AreEqual("e1m2", m_args[1].Statistics.MapName.ToLower());
+            Assert.AreEqual("E1M2", m_args[1].Statistics.MapName);
             Assert.AreEqual(4, m_args[1].Statistics.KillCount);
             Assert.AreEqual(41, m_args[1].Statistics.TotalKills);
 
@@ -92,6 +100,19 @@ I_InitGraphics: Windowboxed (1280x960 within 1920x1080)
             Assert.AreEqual(6, m_args[1].Statistics.TotalSecrets);
 
             Assert.AreEqual(45.20f, m_args[1].Statistics.LevelTime);
+
+            //Kill count should not exceed total
+            Assert.AreEqual("MAP11", m_args[2].Statistics.MapName);
+            Assert.AreEqual(71, m_args[2].Statistics.KillCount);
+            Assert.AreEqual(71, m_args[2].Statistics.TotalKills);
+
+            Assert.AreEqual(19, m_args[2].Statistics.ItemCount);
+            Assert.AreEqual(21, m_args[2].Statistics.TotalItems);
+
+            Assert.AreEqual(2, m_args[2].Statistics.SecretCount);
+            Assert.AreEqual(3, m_args[2].Statistics.TotalSecrets);
+
+            Assert.AreEqual(303.23f, m_args[2].Statistics.LevelTime);
         }
 
         private void StatsReader_NewStastics(object sender, NewStatisticsEventArgs e)

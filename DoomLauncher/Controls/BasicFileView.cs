@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -21,7 +22,7 @@ namespace DoomLauncher
             if (GameFile != null && GameFile.GameFileID.HasValue)
             {
                 IEnumerable<IFileData> files = DataSourceAdapter.GetFiles(gameFile, FileType);
-                List<ISourcePort> sourcePorts = Util.GetSourcePortsData(DataSourceAdapter);
+                List<ISourcePortData> sourcePorts = Util.GetSourcePortsData(DataSourceAdapter);
 
                 var items = from file in files
                             join sp in sourcePorts on file.SourcePortID equals sp.SourcePortID
@@ -81,7 +82,7 @@ namespace DoomLauncher
             return CreateFileAssociation(this, DataSourceAdapter, DataDirectory, FileType, GameFile, null).Count > 0;
         }
 
-        public static List<IFileData> CreateFileAssociation(IWin32Window parent, IDataSourceAdapter adapter, LauncherPath directory, FileType type, IGameFile gameFile, ISourcePort sourcePort)
+        public static List<IFileData> CreateFileAssociation(IWin32Window parent, IDataSourceAdapter adapter, LauncherPath directory, FileType type, IGameFile gameFile, ISourcePortData sourcePort)
         {
             List<IFileData> fileDataList = new List<IFileData>();
             OpenFileDialog dialog = new OpenFileDialog();
@@ -208,7 +209,7 @@ namespace DoomLauncher
             }
         }
 
-        public void View()
+        public virtual void View()
         {
             List<IFileData> selectedFiles = GetSelectedFiles();
 

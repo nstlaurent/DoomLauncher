@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DoomLauncher.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,15 +18,15 @@ namespace DoomLauncher
             InitializeComponent();
         }
 
-        public void SetStatistics(IEnumerable<IStatsData> stats)
+        public void SetStatistics(IEnumerable<IGameFile> gameFiles, IEnumerable<IStatsData> stats)
         {
             int minutes = 0;
 
             foreach (IStatsData stat in stats)
                 minutes += (int)(stat.LevelTime / 60.0);
 
-            lblTimePlayed.Text = Util.GetTimePlayedString(minutes);
-            ctrlStats.SetStatistics(stats);
+            lblTimePlayed.Text = string.Concat("Time Played: ", Util.GetTimePlayedString(minutes));
+            ctrlStats.SetStatistics(gameFiles, stats);
         }
     }
 }

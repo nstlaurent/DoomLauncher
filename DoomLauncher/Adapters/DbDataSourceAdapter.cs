@@ -52,6 +52,12 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(GameFile)).Cast<IGameFile>();
         }
 
+        public IEnumerable<IGameFile> GetUntaggedGameFiles()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("select GameFiles.* from GameFiles left join TagMapping on GameFiles.GameFileID = TagMapping.FileID where FileID is null").Tables[0];
+            return Util.TableToStructure(dt, typeof(GameFile)).Cast<IGameFile>();
+        }
+
         public IEnumerable<IGameFile> GetGameFiles(ITagData tag)
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select GameFiles.* from GameFiles join TagMapping on TagMapping.FileID = GameFiles.GameFileID where TagID = {0}", 
@@ -270,11 +276,11 @@ namespace DoomLauncher
             }
         }
 
-        public IEnumerable<ISourcePort> GetSourcePorts()
+        public IEnumerable<ISourcePortData> GetSourcePorts()
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where LaunchType = {0} order by Name collate nocase", (int)SourcePortLaunchType.SourcePort)).Tables[0];
 
-            List<ISourcePort> sourcePorts = new List<ISourcePort>();
+            List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
 
             foreach(DataRow dr in dt.Rows)                       
                 sourcePorts.Add(CreateSourcePortDataSource(dt, dr));
@@ -282,11 +288,11 @@ namespace DoomLauncher
             return sourcePorts;
         }
 
-        public IEnumerable<ISourcePort> GetUtilities()
+        public IEnumerable<ISourcePortData> GetUtilities()
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where LaunchType = {0} order by Name collate nocase", (int)SourcePortLaunchType.Utility)).Tables[0];
 
-            List<ISourcePort> sourcePorts = new List<ISourcePort>();
+            List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
 
             foreach (DataRow dr in dt.Rows)
                 sourcePorts.Add(CreateSourcePortDataSource(dt, dr));
@@ -294,9 +300,9 @@ namespace DoomLauncher
             return sourcePorts;
         }
 
-        private static ISourcePort CreateSourcePortDataSource(DataTable dt, DataRow dr)
+        private static ISourcePortData CreateSourcePortDataSource(DataTable dt, DataRow dr)
         {
-            SourcePort sourcePort = new SourcePort();
+            SourcePortData sourcePort = new SourcePortData();
             sourcePort.Directory = new LauncherPath((string)dr["Directory"]);
             sourcePort.Executable = (string)dr["Executable"];
             sourcePort.Name = (string)dr["Name"];
@@ -319,7 +325,7 @@ namespace DoomLauncher
                 return obj;
         }
 
-        public ISourcePort GetSourcePort(int sourcePortID)
+        public ISourcePortData GetSourcePort(int sourcePortID)
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where SourcePortID = {0}", sourcePortID)).Tables[0];
 
@@ -329,7 +335,7 @@ namespace DoomLauncher
             return null;
         }
 
-        public void InsertSourcePort(ISourcePort sourcePort)
+        public void InsertSourcePort(ISourcePortData sourcePort)
         {
             string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption,ExtraParameters) 
                 values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption,@ExtraParameters)";
@@ -337,7 +343,7 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(insert, GetSourcePortParams(sourcePort));
         }
 
-        public void UpdateSourcePort(ISourcePort sourcePort)
+        public void UpdateSourcePort(ISourcePortData sourcePort)
         {
             string query = @"update SourcePorts set 
             Name = @Name, Executable = @Executable, SupportedExtensions = @SupportedExtensions,
@@ -347,7 +353,7 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(query, GetSourcePortParams(sourcePort));
         }
 
-        private List<DbParameter> GetSourcePortParams(ISourcePort sourcePort)
+        private List<DbParameter> GetSourcePortParams(ISourcePortData sourcePort)
         {
             List<DbParameter> parameters = new List<DbParameter>();
 
@@ -364,7 +370,7 @@ namespace DoomLauncher
             return parameters;
         }
 
-        public void DeleteSourcePort(ISourcePort sourcePort)
+        public void DeleteSourcePort(ISourcePortData sourcePort)
         {
             DataAccess.ExecuteNonQuery(string.Format("delete from SourcePorts where SourcePortID = {0}", sourcePort.SourcePortID));
         }
@@ -405,6 +411,12 @@ namespace DoomLauncher
         public void DeleteIWad(IIWadData iwad)
         {
             DataAccess.ExecuteNonQuery(string.Format("delete from IWads where IWadID = {0}", iwad.IWadID));
+        }
+
+        public IEnumerable<IFileData> GetFiles()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("select * from Files").Tables[0];
+            return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
         }
 
         public IEnumerable<IFileData> GetFiles(IGameFile gameFile)
@@ -457,6 +469,11 @@ namespace DoomLauncher
         public void DeleteFile(IGameFile file)
         {
             DataAccess.ExecuteNonQuery(string.Format("delete from Files where GameFileID = {0}", file.GameFileID.Value));
+        }
+
+        public void DeleteFiles(ISourcePortData sourcePort, FileType fileTypeID)
+        {
+            DataAccess.ExecuteNonQuery(string.Format("delete from Files where SourcePortID = {0} and FileTypeID = {1}", sourcePort.SourcePortID, (int)fileTypeID));
         }
 
         public IEnumerable<IConfigurationData> GetConfiguration()
@@ -579,6 +596,17 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
 
+        public void UpdateStats(IStatsData stats)
+        {
+            string query = @"update Stats set SourcePortID = @SourcePortID where StatID = @StatID";
+
+            List<DbParameter> parameters = new List<DbParameter>();
+            parameters.Add(DataAccess.DbAdapter.CreateParameter("SourcePortID", stats.SourcePortID));
+            parameters.Add(DataAccess.DbAdapter.CreateParameter("StatID", stats.StatID));
+
+            DataAccess.ExecuteNonQuery(query, parameters);
+        }
+
         public void DeleteStatsByFile(int gameFileID)
         {
             DataAccess.ExecuteNonQuery(string.Format("delete from Stats where GameFileID = {0}", gameFileID));
@@ -587,6 +615,11 @@ namespace DoomLauncher
         public void DeleteStats(int statID)
         {
             DataAccess.ExecuteNonQuery(string.Format("delete from Stats where StatID = {0}", statID));
+        }
+
+        public void DeleteStats(ISourcePortData sourcePort)
+        {
+            DataAccess.ExecuteNonQuery(string.Format("delete from Stats where SourcePortID = {0}", sourcePort.SourcePortID));
         }
 
         private string InsertStatement(string tableName, object obj, string[] exclude, out List<DbParameter> parameters)

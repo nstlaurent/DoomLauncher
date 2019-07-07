@@ -35,8 +35,9 @@ namespace DoomLauncher
         public bool UpdateRequired()
         {
             AppVersion version = GetVersion();
+            var latestVersion = Enum.GetValues(typeof(AppVersion)).Cast<AppVersion>().Last();
 
-            if (version == AppVersion.Unknown || version < AppVersion.Version_2_6_3_2)
+            if (version == AppVersion.Unknown || version < latestVersion)
             {
                 return true;
             }
@@ -72,6 +73,8 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_6_3, AppVersion.Version_2_6_3);
                 ExecuteUpdate(Pre_2_6_3_1, AppVersion.Version_2_6_3_1);
                 ExecuteUpdate(Pre_2_6_3_2, AppVersion.Version_2_6_3_2);
+                ExecuteUpdate(Pre_2_6_4_1, AppVersion.Version_2_6_4_1);
+                ExecuteUpdate(Pre_2_6_4_1_Update, AppVersion.Version_2_6_4_1_Update1);
             }
         }
 
@@ -307,9 +310,9 @@ namespace DoomLauncher
 
         private void Pre_2_2_1()
         {
-            IEnumerable<ISourcePort> sourcePorts = m_adapter.GetSourcePorts();
+            IEnumerable<ISourcePortData> sourcePorts = m_adapter.GetSourcePorts();
 
-            foreach (ISourcePort sourcePort in sourcePorts)
+            foreach (ISourcePortData sourcePort in sourcePorts)
             {
                 if (sourcePort.SupportedExtensions.Contains(".pk3"))
                     sourcePort.SupportedExtensions = sourcePort.SupportedExtensions.Replace(".pk3", ".pk3,.pk7");
@@ -436,7 +439,7 @@ namespace DoomLauncher
                     var files = Util.GetAdditionalFiles(adapter, gameFile).Select(x => x.FileName);
                     FileLoadHandlerLegacy filehandler = new FileLoadHandlerLegacy(adapter, gameFile);
                     filehandler.CalculateAdditionalFiles(GetDictionaryData<IGameFile>(gameFile.IWadID, gameFileIwads),
-                        GetDictionaryData<ISourcePort>(gameFile.SourcePortID, ports));
+                        GetDictionaryData<ISourcePortData>(gameFile.SourcePortID, ports));
 
                     var sourcePortFiles = filehandler.GetSourcePortFiles().Select(x => x.FileName).Where(x => files.Contains(x));
                     var iwadFiles = filehandler.GetIWadFiles().Select(x => x.FileName).Where(x => files.Contains(x)).Except(sourcePortFiles);
@@ -452,6 +455,34 @@ namespace DoomLauncher
         private void Pre_2_6_3_2()
         {
             DataAccess.ExecuteNonQuery("update SourcePorts set FileOption = '-file' where LaunchType = 0");
+        }
+
+        private void Pre_2_6_4_1()
+        {
+            ConfigurationData config = new ConfigurationData()
+            {
+                Name = "ScreenshotPreviewSize",
+                Value = "0",
+                UserCanModify = true
+            };
+
+            m_adapter.InsertConfiguration(config);
+        }
+
+        private void Pre_2_6_4_1_Update()
+        {
+            var adapter = DbDataSourceAdapter.CreateAdapter();
+            var sourcePorts = adapter.GetSourcePorts();
+            var stats = adapter.GetStats();
+
+            foreach(var stat in stats)
+            {
+                if (!sourcePorts.Any(x => x.SourcePortID == stat.SourcePortID))
+                {
+                    stat.SourcePortID = -1;
+                    adapter.UpdateStats(stat);
+                }
+            }
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)

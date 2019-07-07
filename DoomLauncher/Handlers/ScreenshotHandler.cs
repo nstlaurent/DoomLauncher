@@ -16,7 +16,7 @@ namespace DoomLauncher
             ScreenshotDirectory = screenshotDirectory;
         }
 
-        public IEnumerable<IFileData> HandleNewScreenshots(ISourcePort sourcePort, IGameFile gameFile, string[] files)
+        public IEnumerable<IFileData> HandleNewScreenshots(ISourcePortData sourcePort, IGameFile gameFile, string[] files)
         {
             List<IFileData> ret = new List<IFileData>();
 

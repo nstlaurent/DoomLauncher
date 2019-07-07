@@ -25,7 +25,7 @@ namespace DoomLauncher
 
         public string GetConfigValue(ConfigType ct)
         {
-            IConfigurationData config = DataSourceAdapter.GetConfiguration().Where(x => x.Name == ct.ToString("g")).FirstOrDefault();
+            IConfigurationData config = DataSourceAdapter.GetConfiguration().FirstOrDefault(x => x.Name == ct.ToString("g"));
 
             if (config != null)
                 return config.Value;
@@ -36,6 +36,21 @@ namespace DoomLauncher
         public object GetTypedConfigValue(ConfigType ct, Type type)
         {
             return GetValueFromConfig(GetConfigValue(ct), type);
+        }
+
+        public LauncherPath PathForFileType(FileType type)
+        {
+            switch(type)
+            {
+                case FileType.Demo:
+                    return DemoDirectory;
+                case FileType.SaveGame:
+                    return SaveGameDirectory;
+                case FileType.Screenshot:
+                    return ScreenshotDirectory;
+                default:
+                    throw new ArgumentException($"Invalid FileType {type}");
+            }
         }
 
         private static object GetValueFromConfig(string value, Type type)
@@ -64,31 +79,40 @@ namespace DoomLauncher
 
         private void Refresh(bool throwErrors)
         {
-            IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
+            try
+            {
+                IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
 
-            IdGamesUrl = GetValue(config, "IdGamesUrl");
-            ApiPage = GetValue(config, "ApiPage");
-            MirrorUrl = GetValue(config, "MirrorUrl");
-            CleanTemp = Convert.ToBoolean(GetValue(config, "CleanTemp"));
+                IdGamesUrl = GetValue(config, "IdGamesUrl");
+                ApiPage = GetValue(config, "ApiPage");
+                MirrorUrl = GetValue(config, "MirrorUrl");
+                CleanTemp = Convert.ToBoolean(GetValue(config, "CleanTemp"));
 
-            SetChildDirectories(config);
-            SplitTopBottom = Convert.ToInt32(GetValue(config, "SplitTopBottom"));
-            SplitLeftRight = Convert.ToInt32(GetValue(config, "SplitLeftRight"));
-            AppWidth = Convert.ToInt32(GetValue(config, "AppWidth"));
-            AppHeight = Convert.ToInt32(GetValue(config, "AppHeight"));
-            AppX = Convert.ToInt32(GetValue(config, "AppX"));
-            AppY = Convert.ToInt32(GetValue(config, "AppY"));
-            WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), GetValue(config, "WindowState"));
-            ColumnConfig = GetValue(config, "ColumnConfig");
+                SetChildDirectories(config);
+                SplitTopBottom = Convert.ToInt32(GetValue(config, "SplitTopBottom"));
+                SplitLeftRight = Convert.ToInt32(GetValue(config, "SplitLeftRight"));
+                AppWidth = Convert.ToInt32(GetValue(config, "AppWidth"));
+                AppHeight = Convert.ToInt32(GetValue(config, "AppHeight"));
+                AppX = Convert.ToInt32(GetValue(config, "AppX"));
+                AppY = Convert.ToInt32(GetValue(config, "AppY"));
+                WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), GetValue(config, "WindowState"));
+                ColumnConfig = GetValue(config, "ColumnConfig");
+                ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, "ScreenshotPreviewSize"));
 
-            DateParseFormats = SplitString(GetValue(config, "DateParseFormats"));
-            ScreenshotCaptureDirectories = SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
+                DateParseFormats = SplitString(GetValue(config, "DateParseFormats"));
+                ScreenshotCaptureDirectories = SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
+            }
+            catch(Exception)
+            {
+                if (throwErrors)
+                    throw;
+            }
             VerifyPaths(throwErrors);
         }
 
         private static string GetValue(IEnumerable<IConfigurationData> config, string name)
         {
-            return config.Where(x => x.Name == name).First().Value;
+            return config.First(x => x.Name == name).Value;
         }
 
         private void SetChildDirectories(IEnumerable<IConfigurationData> config)
@@ -158,5 +182,6 @@ namespace DoomLauncher
         public string[] ScreenshotCaptureDirectories { get; private set; }
         public string[] DateParseFormats { get; private set; }
         public string ColumnConfig { get; private set; }
+        public int ScreenshotPreviewSize { get; private set; }
     }
 }

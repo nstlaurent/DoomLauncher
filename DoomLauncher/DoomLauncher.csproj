@@ -89,6 +89,24 @@
     <Compile Include="Controls\CRichTextBox.Designer.cs">
       <DependentUpon>CRichTextBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FilterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FilterForm.Designer.cs">
+      <DependentUpon>FilterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FilterSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FilterSettingsForm.Designer.cs">
+      <DependentUpon>FilterSettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ScreenshotViewerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ScreenshotViewerForm.Designer.cs">
+      <DependentUpon>ScreenshotViewerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Welcome.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,9 +162,24 @@
       <DependentUpon>SimpleFileSelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\LaunchData.cs" />
+    <Compile Include="Handlers\NativeMethods.cs" />
     <Compile Include="SaveGame\DsgSaveGameReader.cs" />
     <Compile Include="SaveGame\ISaveGameReader.cs" />
     <Compile Include="SaveGame\ZDoomSaveGameReader.cs" />
+    <Compile Include="Controls\StatBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Config\ScreenFilter.cs" />
+    <Compile Include="SourcePort\BoomSourcePort.cs" />
+    <Compile Include="SourcePort\ChocolateDoomSourcePort.cs" />
+    <Compile Include="SourcePort\CNDoomSourcePort.cs" />
+    <Compile Include="SourcePort\CrispyDoomSourcePort.cs" />
+    <Compile Include="SourcePort\DoomsdaySourcePort.cs" />
+    <Compile Include="SourcePort\GenericSourcePort.cs" />
+    <Compile Include="SourcePort\ISourcePort.cs" />
+    <Compile Include="SourcePort\SourcePortUtil.cs" />
+    <Compile Include="SourcePort\SpData.cs" />
+    <Compile Include="SourcePort\ZDoomSourcePort.cs" />
     <Compile Include="Statistics\BoomStatsReader.cs" />
     <Compile Include="Config\AppVersion.cs" />
     <Compile Include="Config\ColumnConfig.cs" />
@@ -222,8 +255,10 @@
     <Compile Include="Forms\MainForm_Meta.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Statistics\ChocolateDoomStatsReader.cs" />
     <Compile Include="Statistics\CNDoomStatsReader.cs" />
     <Compile Include="Statistics\IStatisticsReader.cs" />
+    <Compile Include="Statistics\MultiLineStatReader.cs" />
     <Compile Include="Statistics\NewStatisticsEventArgs.cs" />
     <Compile Include="Statistics\StatFileScanner.cs" />
     <Compile Include="Statistics\ZDoomStatsReader.cs" />
@@ -272,7 +307,7 @@
     <Compile Include="DataSources\ConfigurationData.cs" />
     <Compile Include="DataSources\IdGamesGameFile.cs" />
     <Compile Include="DataSources\FileData.cs" />
-    <Compile Include="DataSources\SourcePort.cs" />
+    <Compile Include="DataSources\SourcePortData.cs" />
     <Compile Include="Adapters\GameFilePlayAdapter.cs" />
     <Compile Include="Adapters\IdGamesDataAdapater.cs" />
     <Compile Include="Controls\GameFileEdit.cs">
@@ -421,7 +456,7 @@
     <Compile Include="Interfaces\IGameFileDataSourceAdapter.cs" />
     <Compile Include="Interfaces\IGameFile.cs" />
     <Compile Include="Interfaces\IIWadData.cs" />
-    <Compile Include="Interfaces\ISourcePort.cs" />
+    <Compile Include="Interfaces\ISourcePortData.cs" />
     <Compile Include="Interfaces\ITextFileParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -488,6 +523,9 @@
     <Compile Include="Handlers\VersionHandler.cs" />
     <Compile Include="TextFileParsers\ZdlParser.cs" />
     <Compile Include="Handlers\UtilityHandler.cs" />
+    <Compile Include="TabViews\UntaggedTabView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <EmbeddedResource Include="Controls\FilesCtrl.resx">
       <DependentUpon>FilesCtrl.cs</DependentUpon>
     </EmbeddedResource>
@@ -496,6 +534,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\StatsControl.resx">
       <DependentUpon>StatsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FilterForm.resx">
+      <DependentUpon>FilterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CumulativeStats.resx">
       <DependentUpon>CumulativeStats.cs</DependentUpon>
@@ -506,11 +547,17 @@
     <EmbeddedResource Include="Forms\FileDetailsEditForm.resx">
       <DependentUpon>FileDetailsEditForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FilterSettingsForm.resx">
+      <DependentUpon>FilterSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MessageCheckBox.resx">
       <DependentUpon>MessageCheckBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MetaDataForm.resx">
       <DependentUpon>MetaDataForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ScreenshotViewerForm.resx">
+      <DependentUpon>ScreenshotViewerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
@@ -685,6 +732,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\DoomLauncherTile.png" />
+    <None Include="Resources\map.bmp" />
+    <None Include="Resources\PMAPA0.png" />
     <Content Include="TileImages\DoomLauncherTile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.DataSources;
+using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,9 @@ namespace DoomLauncher
         private readonly ITabView[] m_tabViews;
         private readonly SourcePortLaunchType m_launchType;
         private readonly IDataSourceAdapter m_adapter;
+        private readonly AppConfiguration m_appConfig;
 
-        public SourcePortViewForm(IDataSourceAdapter adapter, ITabView[] tabViews, SourcePortLaunchType type)
+        public SourcePortViewForm(IDataSourceAdapter adapter, AppConfiguration appConfig, ITabView[] tabViews, SourcePortLaunchType type)
         {
             InitializeComponent();
 
@@ -32,6 +34,7 @@ namespace DoomLauncher
             dgvSourcePorts.DefaultCellStyle.SelectionBackColor = Color.Gray;
 
             m_adapter = adapter;
+            m_appConfig = appConfig;
             m_tabViews = tabViews;
             m_launchType = type;
 
@@ -56,7 +59,7 @@ namespace DoomLauncher
 
         private void ResetData()
         {
-            IEnumerable<ISourcePort> data;
+            IEnumerable<ISourcePortData> data;
             if (m_launchType == SourcePortLaunchType.Utility)
             {
                 Text = "Utilities";
@@ -71,14 +74,14 @@ namespace DoomLauncher
             SetDataSource(data);
         }
 
-        private void SetDataSource(IEnumerable<ISourcePort> sourcePorts)
+        private void SetDataSource(IEnumerable<ISourcePortData> sourcePorts)
         {
             dgvSourcePorts.DataSource =
                 (from item in sourcePorts
                  select new { item.SourcePortID, item.Name, item.Executable, Directory = item.Directory.GetPossiblyRelativePath(), SourcePort = item }).ToList();
         }
 
-        private ISourcePort SelectedItem
+        private ISourcePortData SelectedItem
         {
             get
             {
@@ -88,7 +91,7 @@ namespace DoomLauncher
                 object item = dgvSourcePorts.SelectedRows[0].DataBoundItem;
                 PropertyInfo pi = item.GetType().GetProperty("SourcePort");
 
-                return pi.GetValue(item) as ISourcePort;
+                return pi.GetValue(item) as ISourcePortData;
             }
         }
 
@@ -107,7 +110,7 @@ namespace DoomLauncher
             if (SelectedItem != null)
             {
                 SourcePortEditForm editForm = new SourcePortEditForm(m_adapter, m_tabViews, m_launchType);
-                ISourcePort sourcePort = SelectedItem;
+                ISourcePortData sourcePort = SelectedItem;
                 editForm.SetDataSource(sourcePort);
                 editForm.StartPosition = FormStartPosition.CenterParent;
 
@@ -133,7 +136,7 @@ namespace DoomLauncher
 
             if (editForm.ShowDialog(this) == DialogResult.OK)
             {
-                SourcePort sourcePort = new SourcePort();
+                SourcePortData sourcePort = new SourcePortData();
                 editForm.UpdateDataSource(sourcePort);
                 sourcePort.LaunchType = m_launchType;
                 m_adapter.InsertSourcePort(sourcePort);
@@ -143,15 +146,23 @@ namespace DoomLauncher
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (SelectedItem != null && MessageBox.Show(this, GetDeleteConfirm(), "Confirm",
-                    MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
+            MessageCheckBox messageBox = new MessageCheckBox("Confirm", GetDeleteConfirm(), "Delete save games, demos, and statistics associated with this port",
+                SystemIcons.Exclamation, MessageBoxButtons.OKCancel);
+
+            messageBox.SetShowCheckBox(m_launchType == SourcePortLaunchType.SourcePort);
+
+            if (SelectedItem != null && messageBox.ShowDialog(this) == DialogResult.OK)
             {
                 try
                 {
                     if (m_launchType == SourcePortLaunchType.SourcePort)
                     {
                         m_adapter.UpdateGameFiles(GameFileFieldType.SourcePortID, GameFileFieldType.SourcePortID, SelectedItem.SourcePortID, null);
-                        m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1);
+
+                        if (messageBox.Checked)
+                            DeleteSourcePortFiles();
+                        else
+                            UnlinkFilesFromSourcePort();
                     }
 
                     m_adapter.DeleteSourcePort(SelectedItem);
@@ -170,6 +181,49 @@ namespace DoomLauncher
             }
         }
 
+        private static FileType[] GetDeleteFileTypes()
+        {
+            return new FileType[] { FileType.SaveGame, FileType.Demo  };
+        }
+
+        private void DeleteSourcePortFiles()
+        {
+            var deleteFileTypes = GetDeleteFileTypes();
+            var files = m_adapter.GetFiles().Where(x => x.SourcePortID == SelectedItem.SourcePortID && deleteFileTypes.Contains(x.FileTypeID));
+
+            foreach(var fileType in deleteFileTypes)
+                m_adapter.DeleteFiles(SelectedItem, fileType);
+   
+            m_adapter.DeleteStats(SelectedItem);
+            m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1); //Since we didn't delete screenshots unlink them
+
+            foreach(var file in files)
+            {
+                try
+                {
+                    string deleteFile = Path.Combine(m_appConfig.PathForFileType(file.FileTypeID).GetFullPath(), file.FileName);
+                    if (File.Exists(deleteFile))
+                        File.Delete(deleteFile);
+                }
+                catch
+                { 
+                    //we tried 
+                }
+            }
+        }
+
+        private void UnlinkFilesFromSourcePort()
+        {
+            m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1);
+
+            var stats = m_adapter.GetStats().Where(x => x.SourcePortID == SelectedItem.SourcePortID);
+            foreach (var stat in stats)
+            {
+                stat.SourcePortID = -1;
+                m_adapter.UpdateStats(stat);
+            }
+        }
+
         private string GetDeleteConfirm()
         {
             if (m_launchType == SourcePortLaunchType.SourcePort)
@@ -181,19 +235,12 @@ namespace DoomLauncher
         private void btnLaunch_Click(object sender, EventArgs e)
         {
             if (IsInitSetup)
-            {
                 Close();
-            }
             else
-            {
-                if (SourcePortLaunched != null)
-                {
-                    SourcePortLaunched(this, new EventArgs());
-                }
-            }
+                SourcePortLaunched?.Invoke(this, new EventArgs());
         }
 
-        public ISourcePort GetSelectedSourcePort()
+        public ISourcePortData GetSelectedSourcePort()
         {
              return SelectedItem;
         }

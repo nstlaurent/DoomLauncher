@@ -38,7 +38,7 @@ namespace DoomLauncher
                 txtFileOption.Text = string.Empty;
         }
 
-        public void SetDataSource(ISourcePort sourcePort)
+        public void SetDataSource(ISourcePortData sourcePort)
         {
             m_directory = sourcePort.Directory.GetPossiblyRelativePath();
             m_exec = sourcePort.Executable;
@@ -58,7 +58,7 @@ namespace DoomLauncher
                 txtParameters.Text = sourcePort.ExtraParameters;
         }
 
-        public void UpdateDataSource(ISourcePort sourcePort)
+        public void UpdateDataSource(ISourcePortData sourcePort)
         {
             sourcePort.Name = txtName.Text;
             sourcePort.Directory = new LauncherPath(m_directory);

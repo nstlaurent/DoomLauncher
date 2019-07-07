@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DoomLauncher.Interfaces
 {
-    public interface ISourcePort
+    public interface ISourcePortData
     {
         int SourcePortID { get; set; }
         string Name { get; set; }

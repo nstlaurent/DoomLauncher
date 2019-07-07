@@ -10,7 +10,7 @@ namespace DoomLauncher
 {
     public class LocalTabViewCtrl : BasicTabViewCtrl
     {
-        private ITagMapLookup m_tagLookup;
+        private readonly ITagMapLookup m_tagLookup;
 
         public LocalTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup)
             : base(key, title, adapter, selectFields)
@@ -32,7 +32,7 @@ namespace DoomLauncher
 
             if (gameFile != null)
             {
-                ITagData tag = m_tagLookup.GetTags(gameFile).Where(x => x.HasColor && x.Color.HasValue).FirstOrDefault();
+                ITagData tag = m_tagLookup.GetTags(gameFile).FirstOrDefault(x => x.HasColor && x.Color.HasValue);
 
                 if (tag != null)
                 {
