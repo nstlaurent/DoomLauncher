@@ -7,7 +7,7 @@ namespace UnitTest.Tests
     [TestClass]
     public class TestIdGamesFileParser
     {
-        private static string[] s_formats = new string[] { "dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" };
+        private static string[] s_formats = new[] { "dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" };
 
         [TestMethod]
         public void TestEmpty()
@@ -44,7 +44,7 @@ namespace UnitTest.Tests
         {
             IdGamesTextFileParser parser = new IdGamesTextFileParser(s_formats);
 
-            string[] dates = new string[]
+            string[] dates = new[]
             {
                 "Release date : 5/April/16",
                 "Release date:4/05/2016",

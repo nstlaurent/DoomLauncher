@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DoomLauncher.Interfaces;
 using System.Reflection;
-using DoomLauncher.DataSources;
-using System.IO;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Globalization;
 
 namespace DoomLauncher
@@ -30,7 +22,7 @@ namespace DoomLauncher
             dgvMain.ShowCellToolTips = false;
             dgvMain.DefaultCellStyle.SelectionBackColor = Color.Gray;
 
-            SetColumnFields(new Tuple<string, string>[]
+            SetColumnFields(new[]
             {
                 new Tuple<string, string>("Description", "Description"),
                 new Tuple<string, string>(s_dateColumn, "Created"),

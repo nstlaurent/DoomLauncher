@@ -5,7 +5,7 @@ namespace DoomLauncher
     public class BoomStatsReader : MultiLineStatReader
     {
         private static string s_statRegex = @"\S+-\d+:\d+.\d+\(\d+:\d+\)K:\d+/\d+I:\d+/\d+S:\d+/\d+";
-        private static ParseItem[] s_regexItems = new ParseItem[]
+        private static ParseItem[] s_regexItems = new[]
         {
             new ParseItem(@"\S+-", "-", "MapName"),
             new ParseItem(@"\S+:\S+\(", "-(", "LevelTime"),

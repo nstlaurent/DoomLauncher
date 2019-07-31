@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.ComponentModel;
 
@@ -131,7 +129,7 @@ namespace PresentationControls
         /// <returns></returns>
         private ObjectSelectionWrapper<T> CreateSelectionWrapper(IEnumerator Object)
         {
-            Type[] Types = new Type[] { typeof(T), this.GetType() };
+            Type[] Types = new[] { typeof(T), this.GetType() };
             ConstructorInfo CI = typeof(ObjectSelectionWrapper<T>).GetConstructor(Types);
             if (CI == null)
                 throw new Exception(String.Format(
@@ -139,7 +137,7 @@ namespace PresentationControls
                               typeof(ObjectSelectionWrapper<T>),
                               typeof(T),
                               this.GetType()));
-            object[] parameters = new object[] { Object.Current, this };
+            object[] parameters = new[] { Object.Current, this };
             object result = CI.Invoke(parameters);
             return (ObjectSelectionWrapper<T>)result;
         }

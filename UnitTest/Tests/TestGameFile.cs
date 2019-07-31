@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DoomLauncher.Interfaces;
-using System.IO;
 using DoomLauncher;
 using DoomLauncher.DataSources;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace UnitTest.Tests
     {
         private static string s_garbage = "'s like = % ";
 
-        private static GameFileFieldType[] s_fields = new GameFileFieldType[]
+        private static GameFileFieldType[] s_fields = new[]
         {
             GameFileFieldType.GameFileID,
             GameFileFieldType.Filename,
@@ -383,7 +382,7 @@ namespace UnitTest.Tests
             {
                 string oldFileName = gameFile.FileName;
                 gameFile.FileName = gameFile.FileName.Replace(gameFile.GameFileID.ToString(), string.Format("Update_{0}", gameFile.GameFileID));
-                adapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Filename });
+                adapter.UpdateGameFile(gameFile, new[] { GameFileFieldType.Filename });
 
                 IGameFile gameFileFind = adapter.GetGameFile(oldFileName);
                 Assert.IsTrue(gameFileFind == null);
@@ -516,7 +515,7 @@ namespace UnitTest.Tests
         {
             int value = 0;
             //Properties we do not write to the database
-            string[] exclude = new string[] { "FileSizeBytes", "GameFileID" };
+            string[] exclude = new[] { "FileSizeBytes", "GameFileID" };
 
             foreach (var gameFile in gameFiles)
             {

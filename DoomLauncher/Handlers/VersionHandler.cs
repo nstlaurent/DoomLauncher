@@ -9,10 +9,6 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -221,10 +217,10 @@ namespace DoomLauncher
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'MapCount' int;");
 
                 GameFileGetOptions options = new GameFileGetOptions();
-                options.SelectFields = new GameFileFieldType[] { GameFileFieldType.GameFileID, GameFileFieldType.Map };
+                options.SelectFields = new[] { GameFileFieldType.GameFileID, GameFileFieldType.Map };
                 IEnumerable<IGameFile> gameFiles = m_adapter.GetGameFiles(options);
 
-                GameFileFieldType[] updateFields = new GameFileFieldType[] { GameFileFieldType.MapCount };
+                GameFileFieldType[] updateFields = new[] { GameFileFieldType.MapCount };
                 float total = gameFiles.Count();
                 int count = 0;
 
@@ -373,7 +369,7 @@ namespace DoomLauncher
 
         private void Pre_2_4_1()
         {
-            string[] saveExts = new string[] { "*.zds", "*.dsg", "*.esg" };
+            string[] saveExts = new[] { "*.zds", "*.dsg", "*.esg" };
             foreach (string ext in saveExts)
             {
                 string[] files = Directory.GetFiles(m_appConfig.DemoDirectory.GetFullPath(), ext);

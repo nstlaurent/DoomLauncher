@@ -1,10 +1,7 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -73,7 +70,7 @@ namespace DoomLauncher
 
         private string FormatDescritionToWidth(Font font, string description, int maxWidth, int maxLines, out int lineCount)
         {
-            string[] lines = description.Split(new char[] { '\n' });
+            string[] lines = description.Split(new[] { '\n' });
             StringBuilder sb = new StringBuilder();
             lineCount = 0;
 

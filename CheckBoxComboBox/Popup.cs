@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
@@ -19,7 +16,7 @@ namespace PresentationControls
     /// CodeProject.com "Simple pop-up control" "http://www.codeproject.com/cs/miscctrl/simplepopup.asp".
     /// Represents a pop-up window.
     /// </summary>
-    [CLSCompliant(true), ToolboxItem(false)]
+    [ToolboxItem(false)]
     public partial class Popup : ToolStripDropDown
     {
         #region " Fields & Properties "

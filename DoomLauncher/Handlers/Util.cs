@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -75,7 +73,7 @@ namespace DoomLauncher
 
             if (method != null)
             {
-                object[] args = new object[] { obj, convertedObj };
+                object[] args = new[] { obj, convertedObj };
 
                 if ((bool)method.Invoke(null, args))
                 {
@@ -163,7 +161,7 @@ namespace DoomLauncher
 
         public static void SetDefaultSearchFields(SearchControl ctrlSearch)
         {
-            string[] filters = new string[]
+            string[] filters = new[]
             {
                 "Title",
                 "Author",
@@ -206,7 +204,7 @@ namespace DoomLauncher
 
         public static string[] GetSkills()
         {
-            return new string[] { "1", "2", "3", "4", "5" };
+            return new[] { "1", "2", "3", "4", "5" };
         }
 
         public static string GetTimePlayedString(int minutes)
@@ -261,7 +259,7 @@ namespace DoomLauncher
 
         private static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile, string property)
         {
-            string[] fileNames = property.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] fileNames = property.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             List<IGameFile> gameFiles = new List<IGameFile>();
             Array.ForEach(fileNames, x => gameFiles.Add(adapter.GetGameFile(x)));
             return gameFiles.Where(x => x != null).ToList();
@@ -288,7 +286,7 @@ namespace DoomLauncher
 
         public static string[] GetPkExtenstions()
         {
-            return new string[] { ".pk3", ".pk7" };
+            return new[] { ".pk3", ".pk7" };
         }
 
         public static string GetPkExtensionsCsv()
@@ -300,7 +298,7 @@ namespace DoomLauncher
         {
             get
             {
-                return new GameFileFieldType[]
+                return new[]
                 {
                     GameFileFieldType.Author,
                     GameFileFieldType.Title,
@@ -316,7 +314,7 @@ namespace DoomLauncher
 
         public static GameFileFieldType[] GetSyncGameFileUpdateFields()
         {
-            return DefaultGameFileUpdateFields.Union(new GameFileFieldType[] { GameFileFieldType.Map, GameFileFieldType.MapCount }).ToArray();
+            return DefaultGameFileUpdateFields.Union(new[] { GameFileFieldType.Map, GameFileFieldType.MapCount }).ToArray();
         }
 
         //Takes a file 'MAP01.wad' and makes it 'MAP01_GUID.wad'.
@@ -354,7 +352,7 @@ namespace DoomLauncher
 
         public static string CleanDescription(string description)
         {
-            string[] items = description.Split(new char[] { '\n' });
+            string[] items = description.Split(new[] { '\n' });
             StringBuilder sb = new StringBuilder();
 
             foreach (string item in items)

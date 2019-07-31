@@ -5,7 +5,7 @@ namespace DoomLauncher.Statistics
     public class ChocolateDoomStatsReader : MultiLineStatReader
     {
         private static string s_statRegex = @"=+\w+(/\w+)?=+Time:\d+:\d+\(par:\d+:\d+\)\w+\(\w+\):Kills:\d+(/\d+\(\d+%\))?Items:\d+(/\d+\(\d+%\))?Secrets:\d+(/\d+)?";
-        private static ParseItem[] s_regexItems = new ParseItem[]
+        private static ParseItem[] s_regexItems = new[]
         {
             new ParseItem(@"\w+(/\w+)?", string.Empty, "MapName"),
             new ParseItem(@"\d+:\d+", string.Empty, "LevelTime"),

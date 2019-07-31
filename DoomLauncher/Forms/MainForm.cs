@@ -6,7 +6,6 @@ using PresentationControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -26,7 +25,7 @@ namespace DoomLauncher
         private static readonly string s_idGamesKey = "Id Games";
         private static readonly string s_untaggedKey = "Untagged";
 
-        public static string[] GetBaseTabs() { return new string[] { s_recentKey, s_localKey, s_iwadKey, s_idGamesKey, s_untaggedKey }; }
+        public static string[] GetBaseTabs() { return new[] { s_recentKey, s_localKey, s_iwadKey, s_idGamesKey, s_untaggedKey }; }
 
         private string m_workingDirectory;
         private bool m_playInProgress = false, m_idGamesLoaded;
@@ -120,7 +119,7 @@ namespace DoomLauncher
             {
                 IGameFile gameFile = DataSourceAdapter.GetGameFile(m_downloadView.SelectedItem.Key.ToString());
                 if (gameFile != null)
-                    HandlePlay(new IGameFile[] { gameFile });
+                    HandlePlay(new[] { gameFile });
             }
         }
 
@@ -339,7 +338,7 @@ namespace DoomLauncher
                     IGameFile gameFileUpdate = DataSourceAdapter.GetGameFile(gameFile.FileName); //Need to to populate all info before updating
                     gameFile.FileName = fileName;
                     gameFileUpdate.FileName = fileName;
-                    DataSourceAdapter.UpdateGameFile(gameFileUpdate, new GameFileFieldType[] { GameFileFieldType.Filename });
+                    DataSourceAdapter.UpdateGameFile(gameFileUpdate, new[] { GameFileFieldType.Filename });
                     HandleSelectionChange(GetCurrentViewControl());
                 }
                 else
@@ -929,7 +928,7 @@ namespace DoomLauncher
                 fi.CopyTo(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), dlFile.FileName), true);
                 fi.Delete();
 
-                await SyncLocalDatabase(new string[] { fi.Name });
+                await SyncLocalDatabase(new[] { fi.Name });
             }
             catch (IOException)
             {
@@ -1169,24 +1168,24 @@ namespace DoomLauncher
         //    return null;
         //}
 
-        private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HandleAddFiles();
+            await HandleAddFiles();
         }
 
-        private void HandleAddFiles()
+        private async Task HandleAddFiles()
         {
-            HandleAddFiles(AddFileType.GameFile, new string[] { "Zip", "WAD", "pk3", "txt", "zdl" }, "Select Game Files");
+            await HandleAddFiles(AddFileType.GameFile, new[] { "Zip", "WAD", "pk3", "txt", "zdl" }, "Select Game Files");
         }
 
-        private void addIWADsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void addIWADsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HandleAddIWads();
+            await HandleAddIWads();
         }
 
         private async Task HandleAddIWads()
         {
-            await HandleAddFiles(AddFileType.IWad, new string[] {"WAD"}, "Select IWADs");
+            await HandleAddFiles(AddFileType.IWad, new[] {"WAD"}, "Select IWADs");
         }
 
         private void UpdateLocal()
@@ -1521,7 +1520,7 @@ namespace DoomLauncher
             }
         }
 
-        private void ctrlView_DragDrop(object sender, DragEventArgs e)
+        private async void ctrlView_DragDrop(object sender, DragEventArgs e)
         {
             GameFileViewControl ctrl = sender as GameFileViewControl;
             string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
@@ -1529,9 +1528,9 @@ namespace DoomLauncher
             if (ctrl != null && files != null)
             {
                 if (ctrl.DoomLauncherParent != null && ctrl.DoomLauncherParent is IWadTabViewCtrl)
-                    HandleAddGameFiles(AddFileType.IWad, files);
+                    await HandleAddGameFiles(AddFileType.IWad, files);
                 else
-                    HandleAddGameFiles(AddFileType.GameFile, files);
+                    await HandleAddGameFiles(AddFileType.GameFile, files);
             }
         }
 
@@ -1745,7 +1744,7 @@ namespace DoomLauncher
 
         private void PlayRandom(GameFileFieldType? field)
         {
-            IGameFileGetOptions options = new GameFileGetOptions(new GameFileFieldType[] { GameFileFieldType.GameFileID , GameFileFieldType.LastPlayed, GameFileFieldType.Rating});
+            IGameFileGetOptions options = new GameFileGetOptions(new[] { GameFileFieldType.GameFileID , GameFileFieldType.LastPlayed, GameFileFieldType.Rating});
             IEnumerable<IGameFile> gameFiles = DataSourceAdapter.GetGameFiles(options);
 
             if (field != null)
@@ -1772,7 +1771,7 @@ namespace DoomLauncher
                 tabView.GameFileViewControl.SelectedItem = gameFile;
 
                 if (gameFile != null)
-                    HandlePlay(new IGameFile[] { gameFile });
+                    HandlePlay(new[] { gameFile });
             }
             else
             {
@@ -1782,7 +1781,7 @@ namespace DoomLauncher
 
         private void UpdateTagTabData(int tagID)
         {
-            UpdateTagTabData(new int[] { tagID });
+            UpdateTagTabData(new[] { tagID });
         }
 
         private void UpdateTagTabData(IEnumerable<int> tagIDs)

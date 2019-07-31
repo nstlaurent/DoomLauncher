@@ -4,12 +4,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 namespace DoomLauncher
 {
@@ -27,7 +23,7 @@ namespace DoomLauncher
         {
             var md5 = MD5.Create();
 
-            byte[] hash = null;
+            byte[] hash;
 
             using (var stream = File.OpenRead(filePath))
             {
@@ -87,7 +83,7 @@ namespace DoomLauncher
         {
             if (options.SearchField.SearchFieldType == GameFileFieldType.MD5)
             {
-                return new WadArchiveGameFile[] { GetGameFileFromMD5(options.SearchField.SearchText) };
+                return new[] { GetGameFileFromMD5(options.SearchField.SearchText) };
             }
             else
             {

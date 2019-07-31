@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D;
 using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
@@ -32,7 +27,7 @@ namespace DoomLauncher
 
         public void SetStatistics(IGameFile gameFile, IEnumerable<IStatsData> stats)
         {
-            SetStatistics(new IGameFile[] { gameFile }, stats);
+            SetStatistics(new[] { gameFile }, stats);
         }
 
         public void SetStatistics(IEnumerable<IGameFile> gameFiles, IEnumerable<IStatsData> stats)

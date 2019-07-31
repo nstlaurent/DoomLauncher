@@ -37,7 +37,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void TestMultipleMaps()
         {
-            string[] maps = new string[] { "MAP01", "MAP02", "MAP03", "MAP04", "MAP05", "MAP06" };
+            string[] maps = new[] { "MAP01", "MAP02", "MAP03", "MAP04", "MAP05", "MAP06" };
             List<FileLump> lumps = new List<FileLump>();
 
             Array.ForEach(maps, x => lumps.AddRange(CreateMapSetLumps(x)));
@@ -51,7 +51,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void TestNonStandardMapNames()
         {
-            string[] maps = new string[] { "MYMAP", "ZMAP1", "XMAP2", "ANOTHERMAP", "WHOCARES", "LOOKATME" };
+            string[] maps = new[] { "MYMAP", "ZMAP1", "XMAP2", "ANOTHERMAP", "WHOCARES", "LOOKATME" };
             List<FileLump> lumps = new List<FileLump>();
 
             Array.ForEach(maps, x => lumps.AddRange(CreateMapSetLumps(x)));
@@ -65,7 +65,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void TestMultipleMapsWithExtra()
         {
-            string[] maps = new string[] { "MAP01", "MAP02", "MAP03", "MAP04", "MAP05", "MAP06" };
+            string[] maps = new[] { "MAP01", "MAP02", "MAP03", "MAP04", "MAP05", "MAP06" };
             List<FileLump> lumps = new List<FileLump>();
 
             foreach(var map in maps)
@@ -110,13 +110,13 @@ namespace UnitTest.Tests
         [TestMethod]
         public void TestUdmf()
         {
-            List<FileLump> lumps = CreateLumps(new string[] { "MAP01", "TEXTMAP", "ZNODES", "ENDMAP"  });
+            List<FileLump> lumps = CreateLumps(new[] { "MAP01", "TEXTMAP", "ZNODES", "ENDMAP"  });
             List<FileLump> mapLumps = WadFileReader.GetMapMarkerLumps(lumps);
 
             Assert.AreEqual(1, mapLumps.Count);
             Assert.AreEqual("MAP01", mapLumps.First().Name);
 
-            lumps.AddRange(CreateLumps(new string[] { "WHOCARES", "MAP02", "TEXTMAP", "ZNODES", "REJECT", "DIALOGUE", "ENDMAP", "JUNK" }));
+            lumps.AddRange(CreateLumps(new[] { "WHOCARES", "MAP02", "TEXTMAP", "ZNODES", "REJECT", "DIALOGUE", "ENDMAP", "JUNK" }));
             mapLumps = WadFileReader.GetMapMarkerLumps(lumps);
 
             Assert.AreEqual(2, mapLumps.Count);
@@ -126,7 +126,7 @@ namespace UnitTest.Tests
 
         private List<FileLump> CreateMapSetLumps(string mapName)
         {
-            return CreateLumps(new string[] { mapName, "THINGS", "LINEDEFS", "SIDEDEFS", "VERTEXES", "SEGS", "SECTORS", "GL_NODES", "GL_ANY" });
+            return CreateLumps(new[] { mapName, "THINGS", "LINEDEFS", "SIDEDEFS", "VERTEXES", "SEGS", "SECTORS", "GL_NODES", "GL_ANY" });
         }
 
         private List<FileLump> CreateLumps(string[] names)

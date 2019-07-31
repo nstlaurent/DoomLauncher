@@ -93,7 +93,7 @@ namespace DoomLauncherRelease
 
         static string[] GetFilesToCopy()
         {
-            return new string[]
+            return new[]
             {
                 "CheckBoxComboBox.dll",
                 "DoomLauncher.exe",

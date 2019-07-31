@@ -191,7 +191,7 @@ namespace DoomLauncher
 
         private IdGamesTabViewCtrl CreateTabViewIdGames(ColumnConfig[] colConfig)
         {
-            ColumnField[] columnTextFields = new ColumnField[]
+            ColumnField[] columnTextFields = new[]
             {
                 new ColumnField("Title", "Title"),
                 new ColumnField("Author", "Author"),
@@ -207,7 +207,7 @@ namespace DoomLauncher
 
         private IWadTabViewCtrl CreateTabViewIwad(ColumnConfig[] colConfig)
         {
-            ColumnField[] columnTextFields = new ColumnField[]
+            ColumnField[] columnTextFields = new[]
             {
                 new ColumnField("FileName", "File"),
                 new ColumnField("Title", "Title"),
@@ -440,7 +440,7 @@ namespace DoomLauncher
             welcome.ShowDialog();
         }
 
-        private void MainForm_Shown(object sender, EventArgs e)
+        private async void MainForm_Shown(object sender, EventArgs e)
         {
             if (m_launchFile != null)
             {
@@ -450,9 +450,9 @@ namespace DoomLauncher
                 m_launchFile = null;
 
                 if (launchFile == null && File.Exists(addFile))
-                    HandleAddGameFiles(AddFileType.GameFile, new string[] { addFile });
+                    await HandleAddGameFiles(AddFileType.GameFile, new[] { addFile });
                 else
-                    HandlePlay(new IGameFile[] { launchFile });
+                    HandlePlay(new[] { launchFile });
             }
         }
 
@@ -540,7 +540,7 @@ namespace DoomLauncher
         {
             get
             {
-                 return new ColumnField[]
+                 return new[]
                  {
                     new ColumnField("FileName", "File"),
                     new ColumnField("Title", "Title"),
@@ -559,7 +559,7 @@ namespace DoomLauncher
         {
             get
             {
-                return new GameFileFieldType[]
+                return new[]
                 {
                     GameFileFieldType.GameFileID,
                     GameFileFieldType.Filename,

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DoomLauncher.Interfaces;
-using System.Data;
+﻿using DoomLauncher.Interfaces;
 using System.Data.SQLite;
 using System.Data.Common;
 

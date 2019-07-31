@@ -3,14 +3,10 @@ using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -183,7 +179,7 @@ namespace DoomLauncher
 
         private static FileType[] GetDeleteFileTypes()
         {
-            return new FileType[] { FileType.SaveGame, FileType.Demo  };
+            return new[] { FileType.SaveGame, FileType.Demo  };
         }
 
         private void DeleteSourcePortFiles()

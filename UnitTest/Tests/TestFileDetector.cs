@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DoomLauncher;
 using System.IO;
 using System.Linq;
@@ -15,7 +14,7 @@ namespace UnitTest.Tests
         [TestInitialize]
         public void Init()
         {
-            m_detector = new NewFileDetector(new string[] { ".zds", ".dsg" }, s_testFileDir);
+            m_detector = new NewFileDetector(new[] { ".zds", ".dsg" }, s_testFileDir);
 
             if (Directory.Exists(s_testFileDir))
                 Directory.Delete(s_testFileDir, true);

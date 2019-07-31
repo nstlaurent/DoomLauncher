@@ -8,13 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
     public class DbDataSourceAdapter : IDataSourceAdapter
     {
-        private static string[] s_opLookup = new string[] { "= ", "<>", "<", ">", "like" };
+        private static string[] s_opLookup = new[] { "= ", "<>", "<", ">", "like" };
 
         public DbDataSourceAdapter(IDatabaseAdapter dbAdapter, string connectionString)
         {
@@ -106,7 +105,7 @@ namespace DoomLauncher
 
                 string query = string.Format("select {2} from GameFiles {5} where {0} {1} {3} {4} {6}",
                         searchCol, op, selectColumns, searchParam, GetLimitOrderString(options), join, where);
-                dt = DataAccess.ExecuteSelect(query, new DbParameter[] { DataAccess.DbAdapter.CreateParameter("search", options.SearchField.SearchText) }).Tables[0];
+                dt = DataAccess.ExecuteSelect(query, new[] { DataAccess.DbAdapter.CreateParameter("search", options.SearchField.SearchText) }).Tables[0];
             }
             else
             {
@@ -181,7 +180,7 @@ namespace DoomLauncher
         public void InsertGameFile(IGameFile gameFile)
         {
             List<DbParameter> parameters;
-            string insert = InsertStatement("GameFiles", gameFile, new string[] { "GameFileID", "FileSizeBytes" }, out parameters);
+            string insert = InsertStatement("GameFiles", gameFile, new[] { "GameFileID", "FileSizeBytes" }, out parameters);
 
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
@@ -390,7 +389,7 @@ namespace DoomLauncher
         public void InsertIWad(IIWadData iwad)
         {
             List<DbParameter> parameters;
-            string insert = InsertStatement("IWads", iwad, new string[] { "IWadID" }, out parameters);
+            string insert = InsertStatement("IWads", iwad, new[] { "IWadID" }, out parameters);
 
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
@@ -450,13 +449,13 @@ namespace DoomLauncher
         public void UpdateFiles(int sourcePortID_Where, int? sourcePortID_Set)
         {
             DataAccess.ExecuteNonQuery(string.Format("update Files set SourcePortID = @id where SourcePortID = {0}", sourcePortID_Where), 
-                new DbParameter[] { DataAccess.DbAdapter.CreateParameter("id", sourcePortID_Set.HasValue? sourcePortID_Set.Value : (object)DBNull.Value) });
+                new[] { DataAccess.DbAdapter.CreateParameter("id", sourcePortID_Set.HasValue? sourcePortID_Set.Value : (object)DBNull.Value) });
         }
 
         public void InsertFile(IFileData file)
         {
             List<DbParameter> parameters;
-            string insert = InsertStatement("Files", file, new string[] { "FileID" }, out parameters);
+            string insert = InsertStatement("Files", file, new[] { "FileID" }, out parameters);
 
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
@@ -485,7 +484,7 @@ namespace DoomLauncher
         public void InsertConfiguration(IConfigurationData config)
         {
             List<DbParameter> parameters;
-            string insert = InsertStatement("Configuration", config, new string[] { "ConfigID" }, out parameters);
+            string insert = InsertStatement("Configuration", config, new[] { "ConfigID" }, out parameters);
 
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
@@ -515,7 +514,7 @@ namespace DoomLauncher
         public void InsertTag(ITagData tag)
         {
             List<DbParameter> parameters;
-            string insert = InsertStatement("Tags", tag, new string[] { "TagID" }, out parameters);
+            string insert = InsertStatement("Tags", tag, new[] { "TagID" }, out parameters);
 
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
@@ -592,7 +591,7 @@ namespace DoomLauncher
         public void InsertStats(IStatsData stats)
         {
             List<DbParameter> parameters;
-            string insert = InsertStatement("Stats", stats, new string[] { "StatID", "SaveFile" }, out parameters);
+            string insert = InsertStatement("Stats", stats, new[] { "StatID", "SaveFile" }, out parameters);
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
 

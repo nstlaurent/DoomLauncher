@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace WadReader
 {
     public class WadFileReader
     {
-        private static readonly string[] s_mapData = new string[] { "THINGS", "LINEDEFS", "SIDEDEFS", "VERTEXES", "SEGS", "SSECTORS", "NODES", "SECTORS", "REJECT", "BLOCKMAP", "BEHAVIOR",
+        private static readonly string[] s_mapData = new[] { "THINGS", "LINEDEFS", "SIDEDEFS", "VERTEXES", "SEGS", "SSECTORS", "NODES", "SECTORS", "REJECT", "BLOCKMAP", "BEHAVIOR",
             "TEXTMAP", "ZNODES", "ENDMAP", "DIALOGUE", "SCRIPTS", };
-        private static readonly string[] s_importantMapData = new string[] { "BLOCKMAP", "VERTEXES", "SECTORS", "SIDEDEFS", "LINEDEFS", "SSECTORS", "NODES", "SEGS" };
+        private static readonly string[] s_importantMapData = new[] { "BLOCKMAP", "VERTEXES", "SECTORS", "SIDEDEFS", "LINEDEFS", "SSECTORS", "NODES", "SEGS" };
 
         private static readonly string s_mapdataRegex = @"^GL_\S+";
 

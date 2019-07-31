@@ -2,12 +2,7 @@
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -83,7 +78,7 @@ namespace DoomLauncher
         private FileSelectForm CreateFileSelectForm()
         {
             FileSelectForm fileSelect = new FileSelectForm();
-            fileSelect.Initialize(m_adapter, new ITabView[] { m_view });
+            fileSelect.Initialize(m_adapter, new[] { m_view });
             fileSelect.StartPosition = FormStartPosition.CenterParent;
             fileSelect.MultiSelect = false;
             return fileSelect;

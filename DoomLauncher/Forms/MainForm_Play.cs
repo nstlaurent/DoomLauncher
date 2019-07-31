@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -117,7 +116,7 @@ namespace DoomLauncher
 
                 if (gameFiles.Count() > 1) //for when the user selected more than one file
                 {
-                    HandleMultiSelectPlay(gameFile, gameFiles.Except(new IGameFile[] { gameFile })); //sets SettingsFiles with all the other game files
+                    HandleMultiSelectPlay(gameFile, gameFiles.Except(new[] { gameFile })); //sets SettingsFiles with all the other game files
                     List<IGameFile> gameFilesList = new List<IGameFile>();
                     gameFilesList.Add(gameFile);
                     Array.ForEach(gameFiles.Skip(1).ToArray(), x => gameFilesList.Add(x));
@@ -194,7 +193,7 @@ namespace DoomLauncher
                         gameFile.SettingsSpecificFiles = string.Empty; //this setting can be turned off
                 }
 
-                DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap, 
+                DataSourceAdapter.UpdateGameFile(gameFile, new[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap, 
                     GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
                     GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort });
             }
@@ -235,7 +234,7 @@ namespace DoomLauncher
                 if (!string.IsNullOrEmpty(gameFile.SettingsMap)) m_currentPlayForm.SelectedMap = gameFile.SettingsMap;
                 if (!string.IsNullOrEmpty(gameFile.SettingsSkill)) m_currentPlayForm.SelectedSkill = gameFile.SettingsSkill;
                 if (!string.IsNullOrEmpty(gameFile.SettingsExtraParams)) m_currentPlayForm.ExtraParameters = gameFile.SettingsExtraParams;
-                if (!string.IsNullOrEmpty(gameFile.SettingsSpecificFiles)) m_currentPlayForm.SpecificFiles = gameFile.SettingsSpecificFiles.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                if (!string.IsNullOrEmpty(gameFile.SettingsSpecificFiles)) m_currentPlayForm.SpecificFiles = gameFile.SettingsSpecificFiles.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             }
 
             m_currentPlayForm.InitializeComplete();
@@ -317,7 +316,7 @@ namespace DoomLauncher
                 {
                     gameFile.LastPlayed = DateTime.Now;
                     m_dtStartPlay = DateTime.Now;
-                    DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.LastPlayed });
+                    DataSourceAdapter.UpdateGameFile(gameFile, new[] { GameFileFieldType.LastPlayed });
                     UpdateDataSourceViews(gameFile);
                 }
             }
@@ -470,7 +469,7 @@ namespace DoomLauncher
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<object>(HandleProcessExited), new object[] { sender });
+                Invoke(new Action<object>(HandleProcessExited), new[] { sender });
             }
             else
             {
@@ -529,7 +528,7 @@ namespace DoomLauncher
         private void SetMinutesPlayed(DateTime dtExit, IGameFile gameFile)
         {
             gameFile.MinutesPlayed += Convert.ToInt32(dtExit.Subtract(m_dtStartPlay).TotalMinutes);
-            DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.MinutesPlayed });
+            DataSourceAdapter.UpdateGameFile(gameFile, new[] { GameFileFieldType.MinutesPlayed });
             UpdateDataSourceViews(gameFile);
         }
 
@@ -599,12 +598,12 @@ namespace DoomLauncher
 
         private INewFileDetector CreateScreenshotDetector(string dir)
         {
-            return new NewFileDetector(new string[] { ".png", ".jpg", ".bmp" }, dir, true); //future - should be configurable
+            return new NewFileDetector(new[] { ".png", ".jpg", ".bmp" }, dir, true); //future - should be configurable
         }
 
         private INewFileDetector CreateSaveGameDetector(string dir)
         {
-            return new NewFileDetector(new string[] { ".zds", ".dsg", ".esg" }, dir, true); //future - should be configurable
+            return new NewFileDetector(new[] { ".zds", ".dsg", ".esg" }, dir, true); //future - should be configurable
         }
 
         private string[] GetNewScreenshots()

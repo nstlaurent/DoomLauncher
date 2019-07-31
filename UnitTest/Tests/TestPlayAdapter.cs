@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DoomLauncher;
 using System.IO;
 using System.IO.Compression;
@@ -300,7 +299,7 @@ namespace UnitTest.Tests
             string file = Path.Combine("data", "test.wad");
 
             IGameFile gameFile = new GameFile() { FileName = "testpathed.zip" };
-            adapter.SpecificFiles = new string[] { file };
+            adapter.SpecificFiles = new[] { file };
 
             string parameters = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, GetTestPort(".wad,.deh"), false);
             Assert.IsNull(adapter.LastError);
@@ -365,7 +364,7 @@ namespace UnitTest.Tests
         {
             for (int i = 1; i < 5; i++)
             {
-                string[] files = new string[] { string.Format("test{0}.wad", i), string.Format("test{0}.deh", i), string.Format("test{0}.txt", i) };
+                string[] files = new[] { string.Format("test{0}.wad", i), string.Format("test{0}.deh", i), string.Format("test{0}.txt", i) };
 
                 string filename = string.Format(@"GameFiles\test{0}.zip", i);
                 if (File.Exists(filename))

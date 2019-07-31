@@ -41,7 +41,7 @@ namespace UnitTest.Tests
 
             string file = "uroburos.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { "uroburos.zip" });
+            handler.Execute(new[] { "uroburos.zip" });
 
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
@@ -61,7 +61,7 @@ namespace UnitTest.Tests
             SyncLibraryHandler handler = CreateSyncLibraryHandler();
             Assert.AreEqual(0, handler.DbDataSource.GetGameFilesCount());
 
-            string[] files = new string[] { "uroburos.zip", "pyrrhic.zip" };
+            string[] files = new[] { "uroburos.zip", "pyrrhic.zip" };
             Array.ForEach(files, x => File.Copy(Path.Combine("Resources", x), Path.Combine(s_filedir, x)));
 
             handler.Execute(files);
@@ -97,7 +97,7 @@ namespace UnitTest.Tests
 
             string file = "joymaps1.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { file });
+            handler.Execute(new[] { file });
 
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
@@ -113,7 +113,7 @@ namespace UnitTest.Tests
 
             string file = "pyrrhicmaps.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { file });
+            handler.Execute(new[] { file });
 
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
@@ -130,7 +130,7 @@ namespace UnitTest.Tests
 
             string file = "joymaps1.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { file });
+            handler.Execute(new[] { file });
 
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
@@ -142,7 +142,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("8/1/2016"));
 
             File.Copy(Path.Combine("Resources", "uroburos.zip"), Path.Combine(s_filedir, file), true);
-            handler.Execute(new string[] { file });
+            handler.Execute(new[] { file });
 
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             gameFile = handler.DbDataSource.GetGameFiles().First();
@@ -166,7 +166,7 @@ namespace UnitTest.Tests
 
             using (var reader = File.OpenWrite(Path.Combine(s_filedir, file))) //lock file
             {
-                handler.Execute(new string[] { file });
+                handler.Execute(new[] { file });
             }
 
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
@@ -183,7 +183,7 @@ namespace UnitTest.Tests
             string file = "bad.zip";
             File.WriteAllText(Path.Combine(s_filedir, file), "bad data");
 
-            handler.Execute(new string[] { file });
+            handler.Execute(new[] { file });
 
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             Assert.AreEqual(1, handler.InvalidFiles.Length);
@@ -196,7 +196,7 @@ namespace UnitTest.Tests
         private static SyncLibraryHandler CreateSyncLibraryHandler()
         {
             return new SyncLibraryHandler(TestUtil.CreateAdapter(), CreateDirectoryAdapater(), new LauncherPath(s_filedir), 
-                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" });
+                new LauncherPath(s_tempdir), new[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" });
         }
 
         private static DirectoryDataSourceAdapter CreateDirectoryAdapater()

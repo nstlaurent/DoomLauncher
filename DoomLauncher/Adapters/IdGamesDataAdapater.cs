@@ -6,15 +6,12 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DoomLauncher
 {
     class IdGamesDataAdapater : IGameFileDataSourceAdapter
     {
-        static string[] s_queryLookup = new string[] { 
+        static string[] s_queryLookup = new[] { 
             "action=search&type=filename&query={0}", //Filename,
             "action=search&type=title&query={0}", //Title,
             "action=search&type=author&query={0}", //Author,

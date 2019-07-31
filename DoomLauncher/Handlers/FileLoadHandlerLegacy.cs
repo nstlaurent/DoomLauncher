@@ -1,10 +1,6 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
-using System;
+﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.Handlers
 {
@@ -125,7 +121,7 @@ namespace DoomLauncher.Handlers
 
         private List<IGameFile> GetAdditionalFiles(IGameFile gameIwad, ISourcePortData sourcePort)
         {
-            IEnumerable<IGameFile> exclude = new IGameFile[] { m_gameFile };
+            IEnumerable<IGameFile> exclude = new[] { m_gameFile };
             return GetAdditionalFiles(AddFilesType.IWAD, gameIwad, sourcePort)
                 .Union(GetAdditionalFiles(AddFilesType.SourcePort, gameIwad, sourcePort))
                 .Except(exclude).ToList();

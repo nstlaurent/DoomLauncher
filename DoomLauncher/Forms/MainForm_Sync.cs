@@ -45,7 +45,7 @@ namespace DoomLauncher
                 IGameFile launchFile = DataSourceAdapter.GetGameFile(Path.GetFileName(m_launchFile));
                 m_launchFile = null;
                 if (launchFile != null)
-                    HandlePlay(new IGameFile[] { launchFile });
+                    HandlePlay(new[] { launchFile });
             }
         }
 
@@ -67,7 +67,7 @@ namespace DoomLauncher
                             FillIwadData(find);
                             gameFileDataUpdate.Add(find);
                             find.IWadID = iwad.IWadID;
-                            DataSourceAdapter.UpdateGameFile(find, new GameFileFieldType[] { GameFileFieldType.IWadID });
+                            DataSourceAdapter.UpdateGameFile(find, new[] { GameFileFieldType.IWadID });
                         }
 
                         if (!iwad.GameFileID.HasValue)
@@ -210,7 +210,7 @@ namespace DoomLauncher
                         break;
                 }
 
-                DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
+                DataSourceAdapter.UpdateGameFile(gameFile, new[] { GameFileFieldType.Title });
             }
         }
 
@@ -291,14 +291,14 @@ namespace DoomLauncher
             IEnumerable<string> diff = dsFiles.Except(dbFiles);
 
             SyncStatusForm form = ShowSyncStatusForm("Sync Status", "Files that exist in the GameFiles directory but not the Database:", diff,
-                new string[] { "Do Nothing", "Add to Library", "Delete" });
+                new[] { "Do Nothing", "Add to Library", "Delete" });
             Task task = HandleSyncStatusGameFilesOption((SyncFileOption)form.SelectedOptionIndex, form.GetSelectedFiles());
             await task;
 
             diff = dbFiles.Except(dsFiles);
 
             form = ShowSyncStatusForm("Sync Status", "Files that exist in the Database but not the GameFiles directory:", diff,
-                new string[] { "Do Nothing", "Find in idgames", "Delete" });
+                new[] { "Do Nothing", "Find in idgames", "Delete" });
             task = HandleSyncStatusLibraryOptions((SyncFileOption)form.SelectedOptionIndex, form.GetSelectedFiles());
             await task;
         }

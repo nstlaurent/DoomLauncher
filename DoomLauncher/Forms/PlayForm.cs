@@ -6,7 +6,6 @@ using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -84,7 +83,7 @@ namespace DoomLauncher
 
         private static string[] MapSplit(IGameFile gameFile)
         {
-            return gameFile.Map.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+            return gameFile.Map.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         private static void SetAutoCompleteCustomSource(ComboBox cmb, IEnumerable<object> datasource, Type dataType, string property)
@@ -331,7 +330,7 @@ namespace DoomLauncher
 
                 if (fileSelect.ShowDialog(this) == DialogResult.OK)
                 {
-                    IGameFile[] selectedFiles = fileSelect.SelectedFiles.Except(new IGameFile[] { GameFile }).ToArray();
+                    IGameFile[] selectedFiles = fileSelect.SelectedFiles.Except(new[] { GameFile }).ToArray();
 
                     if (selectedFiles.Length > 0)
                     {

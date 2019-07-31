@@ -3,12 +3,7 @@ using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -102,7 +97,7 @@ namespace DoomLauncher
             ComboBox cmb = new ComboBox();
             cmb.Dock = DockStyle.Fill;
 
-            string[] items = config.AvailableValues.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] items = config.AvailableValues.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             List<Tuple<string, string>> cmbDataSource = new List<Tuple<string, string>>();
 
             for (int i = 0; i < items.Length - 1; i += 2)
@@ -190,7 +185,7 @@ namespace DoomLauncher
         private void ChangeButton_Click(object sender, EventArgs e)
         {
             DirectoriesForm form = new DirectoriesForm();
-            form.SetDirectories(m_screenshotDirectories.Text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+            form.SetDirectories(m_screenshotDirectories.Text.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
             form.StartPosition = FormStartPosition.CenterParent;
 
             if (form.ShowDialog(this) == DialogResult.OK)
@@ -222,13 +217,13 @@ namespace DoomLauncher
 
         private void HandleLaunchSettings()
         { 
-            string[] configNames = new string[]
+            string[] configNames = new[]
             {  
                 ConfigType.DefaultSourcePort.ToString("g"), 
                 ConfigType.DefaultIWad.ToString("g"), 
                 ConfigType.DefaultSkill.ToString("g") 
             };
-            string[] configValues = new string[]
+            string[] configValues = new[]
             { 
                 cmbSourcePorts.SelectedItem == null ? null : ((ISourcePortData)cmbSourcePorts.SelectedItem).SourcePortID.ToString(),
                 cmbIwad.SelectedItem == null ? null : ((IIWadData)cmbIwad.SelectedItem).IWadID.ToString(),

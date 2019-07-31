@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DoomLauncher.Interfaces;
 using System.Globalization;
-using System.Reflection;
 using Equin.ApplicationFramework;
 
 namespace DoomLauncher
@@ -27,7 +22,7 @@ namespace DoomLauncher
             dgvMain.ShowCellToolTips = false;
             dgvMain.DefaultCellStyle.SelectionBackColor = Color.Gray;
 
-            SetColumnFields(new Tuple<string, string>[]
+            SetColumnFields(new[]
             {
                 new Tuple<string, string>("MapName", "Map"),
                 new Tuple<string, string>("FormattedKills", "Kills"),

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace DoomLauncher
 {
     public class GameFileSearchField
     {
-        private static GameFileFieldType[] s_dateTimeFields = new GameFileFieldType[]
+        private static GameFileFieldType[] s_dateTimeFields = new[]
         {
             GameFileFieldType.ReleaseDate,
             GameFileFieldType.Downloaded,

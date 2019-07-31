@@ -8,8 +8,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace DoomLauncher
@@ -41,7 +39,7 @@ namespace DoomLauncher
         public ZDoomStatsReader(IGameFile gameFile, string directory, IEnumerable<IStatsData> existingStats)
         {
             m_dir = directory;
-            m_detector = new NewFileDetector(new string[] { ".zds" }, directory, true);
+            m_detector = new NewFileDetector(new[] { ".zds" }, directory, true);
             m_statistics = existingStats.ToList();
             GameFile = gameFile;
         }
@@ -90,7 +88,7 @@ namespace DoomLauncher
             {
                 Array.ForEach(files, x => HandleSaveFile(x));
 
-                m_detector = new NewFileDetector(new string[] { ".zds" }, m_dir, true);
+                m_detector = new NewFileDetector(new[] { ".zds" }, m_dir, true);
                 m_detector.StartDetection();
             }
 

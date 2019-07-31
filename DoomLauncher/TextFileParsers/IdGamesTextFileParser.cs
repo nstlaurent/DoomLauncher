@@ -1,11 +1,8 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.TextFileParsers
 {
@@ -27,7 +24,7 @@ namespace DoomLauncher.TextFileParsers
             Description = FindValue(text, "Description", s_fullRegexDescription, false).Replace("\r\n", "\n");
             ReleaseDate = null;
 
-            string[] dateItems = new string[] { "Date Finished", "Release date" };
+            string[] dateItems = new[] { "Date Finished", "Release date" };
 
             string date = string.Empty;
 

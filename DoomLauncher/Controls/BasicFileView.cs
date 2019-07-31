@@ -1,5 +1,4 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;

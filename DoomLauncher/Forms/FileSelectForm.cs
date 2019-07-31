@@ -3,12 +3,6 @@ using DoomLauncher.Interfaces;
 using Equin.ApplicationFramework;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -38,7 +32,7 @@ namespace DoomLauncher
 
         public void Initialize(IDataSourceAdapter adapter, ITabView tabView, IEnumerable<IGameFile> gameFilesBind)
         {
-            Initialize(adapter, new ITabView[] { tabView });
+            Initialize(adapter, new[] { tabView });
             m_tabHandler.TabViews[0].SetGameFilesData(gameFilesBind);
             m_bOverrideInit = true;
         }

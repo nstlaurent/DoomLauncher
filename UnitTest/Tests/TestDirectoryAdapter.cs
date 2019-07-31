@@ -14,7 +14,7 @@ namespace UnitTest.Tests
         private static string s_testdir = "TestAdapterDirectory";
 
         private static string[] s_testfilenames =
-            new string[]
+            new[]
             {
                 "test1.zip",
                 "file.zip",

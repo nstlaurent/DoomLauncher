@@ -1,10 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.DataSources
 {
@@ -52,7 +48,7 @@ namespace DoomLauncher.DataSources
             string[] supportedExtensions = new string[] { };
 
             if (sourcePort != null)
-                supportedExtensions = sourcePort.SupportedExtensions.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+                supportedExtensions = sourcePort.SupportedExtensions.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
 
             return supportedExtensions;
         }

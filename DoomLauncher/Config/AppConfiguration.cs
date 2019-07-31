@@ -1,11 +1,8 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -142,7 +139,7 @@ namespace DoomLauncher
         private string[] SplitString(string item)
         {
             if (!string.IsNullOrEmpty(item))
-                return item.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                return item.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             else
                 return new string[] { };
         }

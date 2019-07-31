@@ -38,7 +38,7 @@ namespace DoomLauncher
 
             if (item.DataSourceProperty == "LevelTime") //speical case, need to split out ':' and calculate time
             {
-                string[] time = value.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] time = value.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 pi.SetValue(stats, (Convert.ToSingle(time[0]) * 60) + Convert.ToSingle(time[1]));
             }
             else

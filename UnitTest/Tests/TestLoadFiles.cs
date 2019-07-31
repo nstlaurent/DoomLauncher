@@ -12,9 +12,9 @@ namespace UnitTest.Tests
     [TestClass]
     public class TestLoadFiles
     {
-        private static string[] s_iwads = new string[] { "DOOM.WAD", "DOOM2.WAD", "TNT.WAD" };
-        private static string[] s_files = new string[] { "GAMEFILE1.WAD", "GAMEFILE2.WAD", "GAMEFILE3.WAD" };
-        private static string[] s_mods = new string[] { "SUPERCOOLMOD.WAD", "MOD2.WAD", "MOD3.WAD", "MOD4.WAD", "PORTMOD1.WAD", "PORTMOD2.WAD", "IWADMOD1.WAD" };
+        private static string[] s_iwads = new[] { "DOOM.WAD", "DOOM2.WAD", "TNT.WAD" };
+        private static string[] s_files = new[] { "GAMEFILE1.WAD", "GAMEFILE2.WAD", "GAMEFILE3.WAD" };
+        private static string[] s_mods = new[] { "SUPERCOOLMOD.WAD", "MOD2.WAD", "MOD3.WAD", "MOD4.WAD", "PORTMOD1.WAD", "PORTMOD2.WAD", "IWADMOD1.WAD" };
 
         [TestMethod]
         public void TestFiles()

@@ -1,16 +1,12 @@
 ﻿using DoomLauncher.Interfaces;
 using DoomLauncher.Statistics;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace DoomLauncher
 {
     public class CNDoomStatsReader : MultiLineStatReader
     {
         private static string s_statRegex = @"#+\w+#+Time:\d+:\d+.\d+Kills:\d+/\d+#+Items:\d+/\d+Secrets:\d+/\d+";
-        private static ParseItem[] s_regexItems = new ParseItem[]
+        private static ParseItem[] s_regexItems = new[]
         {
             new ParseItem(@"\w+", string.Empty, "MapName"),
             new ParseItem(@"\d+:\d+.\d+", string.Empty, "LevelTime"),

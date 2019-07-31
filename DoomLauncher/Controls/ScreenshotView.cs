@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DoomLauncher.Interfaces;
 using System.IO;
-using System.Diagnostics;
-using System.IO.Compression;
-using System.Threading;
 using DoomLauncher.Forms;
 
 namespace DoomLauncher

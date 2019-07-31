@@ -7,9 +7,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -88,7 +85,7 @@ namespace DoomLauncher
                 if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePortData, true)) return null;
             }
 
-            string[] extensions = sourcePortData.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] extensions = sourcePortData.SupportedExtensions.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             launchFiles = SortParameters(launchFiles, extensions).ToList();
 
             BuildLaunchString(sb, sourcePort, launchFiles);
@@ -185,7 +182,7 @@ namespace DoomLauncher
         {
             try
             {
-                string[] extensions = sourcePort.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] extensions = sourcePort.SupportedExtensions.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 launchFiles.AddRange(GetFilesFromGameFileSettings(gameFile, gameFileDirectory, tempDirectory, checkSpecific, extensions));
             }
             catch (FileNotFoundException)
@@ -243,7 +240,7 @@ namespace DoomLauncher
 
         private void BuildLaunchString(StringBuilder sb, ISourcePort sourcePort, List<string> files)
         {
-            string[] dehExt = new string[] { ".deh", ".bex" }; //future - should be configurable
+            string[] dehExt = new[] { ".deh", ".bex" }; //future - should be configurable
             List<string> dehFiles = new List<string>();
 
             if (files.Count > 0)
