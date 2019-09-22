@@ -555,6 +555,7 @@ namespace DoomLauncher
 
                 if (item != null)
                 {
+                    RebuildTagToolStrip();
                     ctrlSummary.Visible = false;
                     ctrlSummary.SuspendLayout();
                     SetSummary(item);
