@@ -288,30 +288,45 @@ namespace DoomLauncher
 
         private void RebuildTagToolStrip()
         {
-            IEnumerable<ITagData> tags = DataSourceAdapter.GetTags().OrderBy(x => x.Name);
-            Tags = tags.ToArray();
-
-            ToolStripMenuItem tagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Tag") as ToolStripMenuItem;
-            ToolStripMenuItem removeTagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Remove Tag") as ToolStripMenuItem;
-
-            if (tagToolStrip != null)
+            GameFileViewControl currentControl = GetCurrentViewControl();
+            if (currentControl != null)
             {
-                BuildTagToolStrip(tagToolStrip, tags, tagToolStripItem_Click);
-                BuildTagToolStrip(removeTagToolStrip, tags, removeTagToolStripItem_Click);
+                List<ITagData> addTags = new List<ITagData>();
+                List<ITagData> removeTags = new List<ITagData>();
+
+                Tags = DataSourceAdapter.GetTags().OrderBy(x => x.Name).ToArray();
+
+                foreach (var gameFile in SelectedItems(currentControl))
+                {
+                    if (gameFile.GameFileID.HasValue)
+                    {
+                        var gameFileTags = TagMapLookup.GetTags(gameFile);
+                        var currentRemoveTags = Tags.Where(x => gameFileTags.Any(y => y.TagID == x.TagID));
+                        var currentAddTags = Tags.Except(currentRemoveTags);
+
+                        addTags = addTags.Union(currentAddTags).ToList();
+                        removeTags = removeTags.Union(currentRemoveTags).ToList();
+                    }
+                }
+
+                ToolStripMenuItem tagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Tag") as ToolStripMenuItem;
+                ToolStripMenuItem removeTagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Remove Tag") as ToolStripMenuItem;
+
+                if (tagToolStrip != null)
+                {
+                    BuildTagToolStrip(tagToolStrip, addTags, tagToolStripItem_Click);
+                    BuildTagToolStrip(removeTagToolStrip, removeTags, removeTagToolStripItem_Click);
+                }
             }
         }
 
         private void BuildTagToolStrip(ToolStripMenuItem tagToolStrip, IEnumerable<ITagData> tags, EventHandler handler)
         {
             while (tagToolStrip.DropDownItems.Count > 2)
-            {
                 tagToolStrip.DropDownItems.RemoveAt(tagToolStrip.DropDownItems.Count - 1);
-            }
 
             foreach (ITagData tag in tags)
-            {
                 tagToolStrip.DropDownItems.Add(tag.Name, null, handler);
-            }
         }
 
         private void SetGameFileViewEvents(GameFileViewControl ctrl, bool dragDrop)
@@ -388,7 +403,6 @@ namespace DoomLauncher
 
             DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory);
             SetupTabs();
-            RebuildTagToolStrip();
             RebuildUtilityToolStrip();
 
             m_downloadView = new DownloadView();
