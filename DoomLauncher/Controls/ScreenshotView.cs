@@ -53,6 +53,8 @@ namespace DoomLauncher
 
         public override void SetData(IGameFile gameFile)
         {
+            SelectedFile = null;
+
             foreach (PictureBox pbSet in m_lookup.Keys)
                 SetSelectedStyle(pbSet, false);
 
@@ -69,6 +71,7 @@ namespace DoomLauncher
 
         public override void ClearData()
         {
+            SelectedFile = null;
             flpScreenshots.SuspendLayout();
             flpScreenshots.Controls.Clear();
             flpScreenshots.ResumeLayout();
@@ -186,13 +189,16 @@ namespace DoomLauncher
 
         public override void View()
         {
-            ScreenshotViewerForm screenshotForm = new ScreenshotViewerForm();
-            screenshotForm.StartPosition = FormStartPosition.CenterParent;
-            screenshotForm.SetImages(m_screenshots.Select(x => Path.Combine(DataDirectory.GetFullPath(), x.FileName)).ToArray());
-            if (SelectedFile != null)
-                screenshotForm.SetImage(Path.Combine(DataDirectory.GetFullPath(), SelectedFile.FileName));
-            screenshotForm.WindowState = FormWindowState.Maximized;
-            screenshotForm.ShowDialog(this);
+            if (m_screenshots.Count > 0)
+            {
+                ScreenshotViewerForm screenshotForm = new ScreenshotViewerForm();
+                screenshotForm.StartPosition = FormStartPosition.CenterParent;
+                screenshotForm.SetImages(m_screenshots.Select(x => Path.Combine(DataDirectory.GetFullPath(), x.FileName)).ToArray());
+                if (SelectedFile != null)
+                    screenshotForm.SetImage(Path.Combine(DataDirectory.GetFullPath(), SelectedFile.FileName));
+                screenshotForm.WindowState = FormWindowState.Maximized;
+                screenshotForm.ShowDialog(this);
+            }
         }
 
         private void HandleClick(object sender)

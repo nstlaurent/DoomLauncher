@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher.Forms
@@ -108,10 +103,13 @@ namespace DoomLauncher.Forms
 
         private void SetImage()
         {
-            if (pbMain.Image != null)
-                pbMain.Image.Dispose();
-            pbMain.Image = Image.FromFile(GetImageFilename());
-            Text = string.Format("Screenshot Viewer - {0}/{1}", m_index + 1, m_images.Length);
+            if (m_images.Length > 0)
+            {
+                if (pbMain.Image != null)
+                    pbMain.Image.Dispose();
+                pbMain.Image = Image.FromFile(GetImageFilename());
+                Text = string.Format("Screenshot Viewer - {0}/{1}", m_index + 1, m_images.Length);
+            }
         }
 
         private string GetImageFilename()
