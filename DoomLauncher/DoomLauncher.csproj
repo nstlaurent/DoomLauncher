@@ -95,7 +95,7 @@
     <Compile Include="Controls\CRichTextBox.Designer.cs">
       <DependentUpon>CRichTextBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="DpiScale.cs" />
+    <Compile Include="Dpi\DpiScale.cs" />
     <Compile Include="Forms\FilterForm.cs">
       <SubType>Form</SubType>
     </Compile>
