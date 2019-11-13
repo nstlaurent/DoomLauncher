@@ -6,8 +6,8 @@ namespace DoomLauncher
     {
         public DpiScale(Graphics g)
         {
-            DpiScaleX = g.DpiX / 100.0f;
-            DpiScaleY = g.DpiY / 100.0f;
+            DpiScaleX = g.DpiX / 96.0f;
+            DpiScaleY = g.DpiY / 96.0f;
         }
 
         public int ScaleIntY(int height) => (int)(height * DpiScaleY);
