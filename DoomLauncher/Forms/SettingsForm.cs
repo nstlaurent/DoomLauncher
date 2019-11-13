@@ -14,6 +14,7 @@ namespace DoomLauncher
         private List<Tuple<IConfigurationData, object>> m_configValues = new List<Tuple<IConfigurationData, object>>();
         private TextBox m_gameFileDirectory, m_screenshotDirectories;
         private Label m_lblScreenshotWidth;
+        private TrackBar m_screenshotTrackBar;
 
         private readonly IDataSourceAdapter m_adapter;
         private readonly AppConfiguration m_appConfig;
@@ -32,6 +33,7 @@ namespace DoomLauncher
 
             PopulateDefaultSettings(m_adapter);
             PopulateConfiguration();
+            UpdateScreenshotWidth(m_screenshotTrackBar);
         }
 
         public void SetToLaunchSettingsTab()
@@ -136,29 +138,34 @@ namespace DoomLauncher
                 Margin = new Padding(0, dpiScale.ScaleIntX(8), 0, 0)
             };
 
-            TrackBar trk = new TrackBar
+            m_screenshotTrackBar = new TrackBar
             {
                 Minimum = -8,
                 Maximum = 8,
                 Value = Convert.ToInt32(config.Value),
                 Width = dpiScale.ScaleIntX(200)
             };
-            trk.ValueChanged += Trk_ValueChanged;
+            m_screenshotTrackBar.ValueChanged += Trk_ValueChanged;
 
             FlowLayoutPanel flp = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill
             };
-            flp.Controls.Add(trk);
+            flp.Controls.Add(m_screenshotTrackBar);
             flp.Controls.Add(m_lblScreenshotWidth);
 
             tblMain.Controls.Add(flp, 1, tblMain.RowStyles.Count - 1);
-            m_configValues.Add(new Tuple<IConfigurationData, object>(config, trk));
+            m_configValues.Add(new Tuple<IConfigurationData, object>(config, m_screenshotTrackBar));
         }
 
         private void Trk_ValueChanged(object sender, EventArgs e)
         {
-            m_lblScreenshotWidth.Text = string.Concat("Width: ", Util.GetPreviewScreenshotWidth(((TrackBar)sender).Value));
+            UpdateScreenshotWidth(((TrackBar)sender));
+        }
+
+        private void UpdateScreenshotWidth(TrackBar trackBar)
+        {
+            m_lblScreenshotWidth.Text = string.Concat("Width: ", Util.GetPreviewScreenshotWidth(trackBar.Value));
         }
 
         private void HandleScreenshotCaptureDirectories(TableLayoutPanel tblMain, TextBox txt)
