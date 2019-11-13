@@ -41,8 +41,8 @@
             this.ctrlStats = new DoomLauncher.StatsControl();
             this.txtDescription = new DoomLauncher.Controls.CRichTextBox();
             this.txtComments = new DoomLauncher.Controls.CRichTextBox();
-            this.lblTimePlayed = new System.Windows.Forms.Label();
             this.tbl2 = new DoomLauncher.TableLayoutPanelDB();
+            this.lblTimePlayed = new System.Windows.Forms.Label();
             this.lblTimePlayedText = new System.Windows.Forms.Label();
             this.tblMain.SuspendLayout();
             this.tableLayoutPanelDB2.SuspendLayout();
@@ -169,11 +169,12 @@
             // 
             // pbImage
             // 
+            this.pbImage.BackColor = System.Drawing.Color.Black;
             this.pbImage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbImage.Location = new System.Drawing.Point(4, 45);
             this.pbImage.Name = "pbImage";
             this.pbImage.Size = new System.Drawing.Size(196, 194);
-            this.pbImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbImage.TabIndex = 2;
             this.pbImage.TabStop = false;
             // 
@@ -208,16 +209,6 @@
             this.txtComments.Text = "";
             this.txtComments.WarnLinkClick = true;
             // 
-            // lblTimePlayed
-            // 
-            this.lblTimePlayed.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblTimePlayed.AutoSize = true;
-            this.lblTimePlayed.Location = new System.Drawing.Point(101, 3);
-            this.lblTimePlayed.Name = "lblTimePlayed";
-            this.lblTimePlayed.Size = new System.Drawing.Size(60, 13);
-            this.lblTimePlayed.TabIndex = 8;
-            this.lblTimePlayed.Text = "time played";
-            // 
             // tbl2
             // 
             this.tbl2.ColumnCount = 3;
@@ -234,6 +225,16 @@
             this.tbl2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tbl2.Size = new System.Drawing.Size(202, 20);
             this.tbl2.TabIndex = 13;
+            // 
+            // lblTimePlayed
+            // 
+            this.lblTimePlayed.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTimePlayed.AutoSize = true;
+            this.lblTimePlayed.Location = new System.Drawing.Point(101, 3);
+            this.lblTimePlayed.Name = "lblTimePlayed";
+            this.lblTimePlayed.Size = new System.Drawing.Size(60, 13);
+            this.lblTimePlayed.TabIndex = 8;
+            this.lblTimePlayed.Text = "time played";
             // 
             // lblTimePlayedText
             // 
