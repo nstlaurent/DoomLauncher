@@ -134,7 +134,7 @@ namespace DoomLauncher
             {
                 DpiScale dpiScale = new DpiScale(CreateGraphics());
                 ctrlStats.Visible = true;
-                GetRowStyle(ctrlStats).Height = 120 * dpiScale.DpiScaleY;
+                GetRowStyle(ctrlStats).Height = dpiScale.ScaleFloatY(120);
 
                 ctrlStats.SetStatistics(gameFile, stats);
 
