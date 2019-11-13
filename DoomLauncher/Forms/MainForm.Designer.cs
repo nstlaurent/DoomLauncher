@@ -198,14 +198,14 @@
             // newTagToolStripMenuItem
             // 
             this.newTagToolStripMenuItem.Name = "newTagToolStripMenuItem";
-            this.newTagToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.newTagToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newTagToolStripMenuItem.Text = "Manage Tags...";
             this.newTagToolStripMenuItem.Click += new System.EventHandler(this.newTagToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(150, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
             // 
             // removeTagToolStripMenuItem
             // 
@@ -219,14 +219,14 @@
             // manageTagsToolStripMenuItem1
             // 
             this.manageTagsToolStripMenuItem1.Name = "manageTagsToolStripMenuItem1";
-            this.manageTagsToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
+            this.manageTagsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.manageTagsToolStripMenuItem1.Text = "Manage Tags...";
             this.manageTagsToolStripMenuItem1.Click += new System.EventHandler(this.manageTagsToolStripMenuItem1_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(150, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
             // 
             // utilityToolStripMenuItem
             // 
@@ -317,7 +317,7 @@
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblMain.Size = new System.Drawing.Size(1008, 730);
+            this.tblMain.Size = new System.Drawing.Size(1008, 701);
             this.tblMain.TabIndex = 1;
             // 
             // tblTop
@@ -598,7 +598,6 @@
             this.btnDownloads.FlatAppearance.BorderSize = 0;
             this.btnDownloads.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDownloads.Image = global::DoomLauncher.Properties.Resources.th;
-            this.btnDownloads.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnDownloads.Location = new System.Drawing.Point(911, 2);
             this.btnDownloads.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
             this.btnDownloads.Name = "btnDownloads";
@@ -622,7 +621,7 @@
             this.tblDataView.Name = "tblDataView";
             this.tblDataView.RowCount = 1;
             this.tblDataView.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblDataView.Size = new System.Drawing.Size(1002, 698);
+            this.tblDataView.Size = new System.Drawing.Size(1002, 669);
             this.tblDataView.TabIndex = 4;
             // 
             // splitLeftRight
@@ -639,7 +638,7 @@
             // splitLeftRight.Panel2
             // 
             this.splitLeftRight.Panel2.Controls.Add(this.ctrlSummary);
-            this.splitLeftRight.Size = new System.Drawing.Size(996, 689);
+            this.splitLeftRight.Size = new System.Drawing.Size(996, 660);
             this.splitLeftRight.SplitterDistance = 680;
             this.splitLeftRight.TabIndex = 9;
             // 
@@ -658,8 +657,8 @@
             // splitTopBottom.Panel2
             // 
             this.splitTopBottom.Panel2.Controls.Add(this.ctrlAssociationView);
-            this.splitTopBottom.Size = new System.Drawing.Size(680, 689);
-            this.splitTopBottom.SplitterDistance = 475;
+            this.splitTopBottom.Size = new System.Drawing.Size(680, 660);
+            this.splitTopBottom.SplitterDistance = 455;
             this.splitTopBottom.TabIndex = 8;
             // 
             // tabControl
@@ -669,7 +668,7 @@
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(680, 475);
+            this.tabControl.Size = new System.Drawing.Size(680, 455);
             this.tabControl.TabIndex = 6;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
@@ -681,7 +680,7 @@
             this.ctrlAssociationView.Name = "ctrlAssociationView";
             this.ctrlAssociationView.SaveGameDirectory = null;
             this.ctrlAssociationView.ScreenshotDirectory = null;
-            this.ctrlAssociationView.Size = new System.Drawing.Size(680, 210);
+            this.ctrlAssociationView.Size = new System.Drawing.Size(680, 201);
             this.ctrlAssociationView.TabIndex = 7;
             // 
             // ctrlSummary
@@ -692,7 +691,7 @@
             this.ctrlSummary.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.ctrlSummary.Name = "ctrlSummary";
             this.ctrlSummary.Padding = new System.Windows.Forms.Padding(0, 20, 0, 0);
-            this.ctrlSummary.Size = new System.Drawing.Size(312, 689);
+            this.ctrlSummary.Size = new System.Drawing.Size(312, 660);
             this.ctrlSummary.TabIndex = 4;
             this.ctrlSummary.TagText = "Tags:";
             // 
@@ -723,7 +722,7 @@
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 730);
+            this.ClientSize = new System.Drawing.Size(1008, 701);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(800, 600);

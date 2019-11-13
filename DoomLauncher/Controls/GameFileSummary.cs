@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
 using System.IO;
-using System.Diagnostics;
 using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
@@ -137,8 +132,9 @@ namespace DoomLauncher
         {
             if (stats.Any())
             {
+                DpiScale dpiScale = new DpiScale(CreateGraphics());
                 ctrlStats.Visible = true;
-                GetRowStyle(ctrlStats).Height = 120;
+                GetRowStyle(ctrlStats).Height = 120 * dpiScale.DpiScaleY;
 
                 ctrlStats.SetStatistics(gameFile, stats);
 

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{938B529A-9AFD-4AE0-9F0F-5CB9527AD2F1}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DoomLauncher</RootNamespace>
     <AssemblyName>DoomLauncher</AssemblyName>
@@ -95,6 +95,7 @@
     <Compile Include="Controls\CRichTextBox.Designer.cs">
       <DependentUpon>CRichTextBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="DpiScale.cs" />
     <Compile Include="Forms\FilterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -345,12 +346,6 @@
     </Compile>
     <Compile Include="Forms\FileSelectForm.Designer.cs">
       <DependentUpon>FileSelectForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\DownloadForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\DownloadForm.Designer.cs">
-      <DependentUpon>DownloadForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
@@ -603,9 +598,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DownloadViewItem.resx">
       <DependentUpon>DownloadViewItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DownloadForm.resx">
-      <DependentUpon>DownloadForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FileSelectForm.resx">
       <DependentUpon>FileSelectForm.cs</DependentUpon>

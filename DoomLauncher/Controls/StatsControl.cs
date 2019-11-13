@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D;
 using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
@@ -17,10 +13,24 @@ namespace DoomLauncher
         public StatsControl()
         {
             InitializeComponent();
-            SetImage(pbMaps, DoomLauncher.Properties.Resources.map, 0.7f);
-            SetImage(pbKills, DoomLauncher.Properties.Resources.kill, 0.7f);
-            SetImage(pbItems, DoomLauncher.Properties.Resources.bon2b, 0.8f);
-            SetImage(pbSecrets, DoomLauncher.Properties.Resources.secret, 0.8f);
+            SetImage(pbMaps, Properties.Resources.map, 0.7f);
+            SetImage(pbKills, Properties.Resources.kill, 0.7f);
+            SetImage(pbItems, Properties.Resources.bon2b, 0.8f);
+            SetImage(pbSecrets, Properties.Resources.secret, 0.8f);
+
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+
+            SetStatBarDpi(ctrlStatsMaps, dpiScale);
+            SetStatBarDpi(ctrlStatsKills, dpiScale);
+            SetStatBarDpi(ctrlStatsSecrets, dpiScale);
+            SetStatBarDpi(ctrlStatsItems, dpiScale);
+        }
+
+        private void SetStatBarDpi(StatBar statBar, DpiScale dpiScale)
+        {
+            statBar.MaximumSize = new Size(statBar.MaximumSize.Width, dpiScale.ScaleIntY(ctrlStatsMaps.Height));
+            statBar.SetMaxHeight(statBar.MaximumSize.Height);
+            statBar.Size = MaximumSize;
         }
 
         private void SetImage(PictureBox pb, Bitmap bmp, float scale)

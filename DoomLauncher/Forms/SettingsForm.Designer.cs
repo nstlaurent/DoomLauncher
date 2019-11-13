@@ -64,7 +64,7 @@
             this.tblOuter.RowCount = 2;
             this.tblOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tblOuter.Size = new System.Drawing.Size(409, 211);
+            this.tblOuter.Size = new System.Drawing.Size(409, 158);
             this.tblOuter.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -73,7 +73,7 @@
             this.flowLayoutPanel1.Controls.Add(this.btnSave);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 179);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 126);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(409, 32);
@@ -108,7 +108,7 @@
             this.tabControl.Location = new System.Drawing.Point(3, 3);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(403, 173);
+            this.tabControl.Size = new System.Drawing.Size(403, 120);
             this.tabControl.TabIndex = 1;
             // 
             // tabPageConfig
@@ -117,7 +117,7 @@
             this.tabPageConfig.Location = new System.Drawing.Point(4, 22);
             this.tabPageConfig.Name = "tabPageConfig";
             this.tabPageConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageConfig.Size = new System.Drawing.Size(395, 147);
+            this.tabPageConfig.Size = new System.Drawing.Size(395, 94);
             this.tabPageConfig.TabIndex = 0;
             this.tabPageConfig.Text = "Configuration";
             // 
@@ -220,7 +220,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(409, 211);
+            this.ClientSize = new System.Drawing.Size(409, 158);
             this.Controls.Add(this.tblOuter);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsForm";

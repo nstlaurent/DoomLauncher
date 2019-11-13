@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -40,13 +35,14 @@ namespace DoomLauncher
 
             if (!m_downloadLookup.ContainsKey(key))
             {
+                DpiScale dpiScale = new DpiScale(CreateGraphics());
                 DownloadViewItem item = CreateDownloadViewItem(text);
                 m_downloadLookup.Add(key, item);
 
                 tblMain.RowCount++;
                 tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
                 tblMain.RowStyles[tblMain.RowStyles.Count - 2].SizeType = SizeType.Absolute;
-                tblMain.RowStyles[tblMain.RowStyles.Count - 2].Height = s_rowHeight;
+                tblMain.RowStyles[tblMain.RowStyles.Count - 2].Height = dpiScale.ScaleIntY(s_rowHeight);
                 tblMain.Controls.Add(item, 0, tblMain.RowStyles.Count - 2);
 
                 UpdateSize();
@@ -80,17 +76,14 @@ namespace DoomLauncher
 
         private void UpdateSize()
         {
-            Height = tblMain.RowStyles.Count * s_rowHeight;
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            Height = tblMain.RowStyles.Count * dpiScale.ScaleIntY(s_rowHeight);
         }
 
         void item_Cancelled(object sender, EventArgs e)
         {
-            DownloadViewItem item = sender as DownloadViewItem;
-
-            if (item != null)
-            {
+            if (sender is DownloadViewItem item)
                 HandleItemCancel(item);
-            }
         }
 
         private void HandleItemCancel(DownloadViewItem item)
@@ -193,9 +186,7 @@ namespace DoomLauncher
 
         private void removeFromHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DownloadViewItem item = menuOptions.SourceControl as DownloadViewItem;
-
-            if (item != null)
+            if (menuOptions.SourceControl is DownloadViewItem item)
             {
                 RemoveDownloadRow(item);
                 object key = GetKey(item);
