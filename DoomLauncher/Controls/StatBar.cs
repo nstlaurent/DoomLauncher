@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -19,6 +15,8 @@ namespace DoomLauncher
             Paint += StatBar_Paint;
             SizeChanged += StatBar_SizeChanged;
         }
+
+        public void SetMaxHeight(int maxHeight) => m_maxHeight = maxHeight;
 
         //this is to get around some sort of bug with the designer initilization blowing away the max size somewhere...
         private void StatBar_SizeChanged(object sender, EventArgs e)
@@ -44,9 +42,13 @@ namespace DoomLauncher
 
         private void DrawProgress(Point pt, int count, int total, string text)
         {
-            int height = Height - 1;
-            int width = Width - 1;
-            Graphics g = this.CreateGraphics();
+            Graphics g = CreateGraphics();
+            DpiScale dpiScale = new DpiScale(g);
+            int offsetX = dpiScale.ScaleIntX(1);
+            int offsetY = dpiScale.ScaleIntY(1);
+
+            int height = Height - offsetX;
+            int width = Width - offsetY;
             Pen pen = new Pen(Color.Black, 1.0f);
             Rectangle rect = new Rectangle(pt, new Size(width, height));
 
@@ -55,10 +57,10 @@ namespace DoomLauncher
             double percent = 0;
             if (total > 0)
                 percent = count / (double)total;
-            width = (int)((Width - 1) * percent);
+            width = (int)((Width - offsetX) * percent);
 
-            pt.Offset(1, 1);
-            rect = new Rectangle(pt, new Size(rect.Width - 1, rect.Height - 1));
+            pt.Offset(offsetX, offsetY);
+            rect = new Rectangle(pt, new Size(rect.Width - offsetX, rect.Height - offsetY));
             Brush bgBrush = new LinearGradientBrush(rect, Color.DarkGray, Color.LightGray, 90.0f);
             Rectangle percentRect = new Rectangle(rect.Location, new Size(width, rect.Height));
             Brush brush = GetPercentBrush(rect, percent);
@@ -67,12 +69,13 @@ namespace DoomLauncher
             if (percent > 0)
             {
                 g.FillRectangle(brush, percentRect);
-                pt.Offset(-1, -1);
-                g.DrawRectangle(GetPrecentPen(percent), new Rectangle(pt, new Size(percentRect.Width + 1, percentRect.Height + 1)));
+                pt.Offset(-offsetX, -offsetY);
+                g.DrawRectangle(GetPrecentPen(percent), new Rectangle(pt, new Size(percentRect.Width + offsetX, percentRect.Height + offsetY)));
             }
 
             Brush fontBrush = new SolidBrush(Color.Black);
-            g.DrawString(text, new Font(FontFamily.GenericSerif, 10.0f, FontStyle.Bold), fontBrush, new PointF(pt.X + 8, pt.Y + 2.5f));
+            PointF position = new PointF(pt.X + dpiScale.ScaleIntX(8), pt.Y + dpiScale.ScaleFloatY(2.5f));
+            g.DrawString(text, new Font(FontFamily.GenericSerif, 10.0f, FontStyle.Bold), fontBrush, position);
         }
 
         private static Brush GetPercentBrush(Rectangle rect, double percent)

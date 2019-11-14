@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
@@ -31,7 +28,6 @@ namespace DoomLauncher
             foreach (object obj in cancelled)
             {
                 IGameFileDownloadable dlItem = obj as IGameFileDownloadable;
-
                 if (dlItem != null)
                 {
                     dlItem.Cancel();
@@ -81,7 +77,6 @@ namespace DoomLauncher
         void dlItem_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             IGameFileDownloadable dlItem = sender as IGameFileDownloadable;
-
             if (DownloadView != null && dlItem != null)
             {
                 DownloadView.UpdateDownload(sender, string.Format("{0} ({1})", dlItem.FileName, 

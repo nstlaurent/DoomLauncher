@@ -1022,9 +1022,12 @@ namespace DoomLauncher
 
         private void DisplayDownloads()
         {
-            Popup popup = new Popup(m_downloadView);
-            popup.Width = 300;
-            popup.Height = m_downloadView.Height;
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            Popup popup = new Popup(m_downloadView)
+            {
+                Width = dpiScale.ScaleIntX(300),
+                Height = m_downloadView.Height
+            };
             popup.Show(btnDownloads);
         }
 

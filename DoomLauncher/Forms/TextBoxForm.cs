@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -24,6 +17,7 @@ namespace DoomLauncher
         public TextBoxForm(bool multiline, MessageBoxButtons buttons)
         {
             InitializeComponent();
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
 
             if (buttons != MessageBoxButtons.OK && buttons != MessageBoxButtons.OKCancel)
                 throw new NotSupportedException(buttons.ToString() + " not supported");
@@ -35,8 +29,8 @@ namespace DoomLauncher
 
             if (!multiline)
             {
-                this.Height = 100;
-                this.Width = 300;
+                Height = dpiScale.ScaleIntY(100);
+                Width = dpiScale.ScaleIntX(300);
             }
 
             tblMain.RowStyles[1].Height = 0;
@@ -44,9 +38,10 @@ namespace DoomLauncher
 
         public void SetLink(string text, string url)
         {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
             lnk.Text = text;
             m_url = url;
-            tblMain.RowStyles[1].Height = 32;
+            tblMain.RowStyles[1].Height = dpiScale.ScaleIntY(32);
         }
 
         public void SetMaxLength(int length)

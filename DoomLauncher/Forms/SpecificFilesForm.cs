@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -53,8 +52,9 @@ namespace DoomLauncher
 
         public void ShowPkContentsCheckBox(bool set)
         {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
             chkPkContents.Visible = set;
-            tblMain.RowStyles[0].Height = (set ? 80 : 24);
+            tblMain.RowStyles[0].Height = (set ? dpiScale.ScaleIntY(80) : dpiScale.ScaleIntY(24));
         }
 
         public void Initialize(LauncherPath gameFileDirectory, IEnumerable<IGameFile> gameFiles, string[] supportedExtensions, string[] specificFiles)

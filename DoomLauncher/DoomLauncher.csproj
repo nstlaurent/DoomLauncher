@@ -52,6 +52,12 @@
   <PropertyGroup>
     <ApplicationIcon>DoomLauncher.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Equin.ApplicationFramework.BindingListView, Version=1.2.2446.31718, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -89,6 +95,7 @@
     <Compile Include="Controls\CRichTextBox.Designer.cs">
       <DependentUpon>CRichTextBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dpi\DpiScale.cs" />
     <Compile Include="Forms\FilterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -339,12 +346,6 @@
     </Compile>
     <Compile Include="Forms\FileSelectForm.Designer.cs">
       <DependentUpon>FileSelectForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\DownloadForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\DownloadForm.Designer.cs">
-      <DependentUpon>DownloadForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
@@ -598,9 +599,6 @@
     <EmbeddedResource Include="Controls\DownloadViewItem.resx">
       <DependentUpon>DownloadViewItem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DownloadForm.resx">
-      <DependentUpon>DownloadForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FileSelectForm.resx">
       <DependentUpon>FileSelectForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -671,6 +669,7 @@
     <EmbeddedResource Include="Forms\TxtGenerator.resx">
       <DependentUpon>TxtGenerator.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="DoomLauncher.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

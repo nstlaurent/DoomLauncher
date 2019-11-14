@@ -3,12 +3,8 @@ using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -18,9 +14,12 @@ namespace DoomLauncher
         private List<Tuple<IConfigurationData, object>> m_configValues = new List<Tuple<IConfigurationData, object>>();
         private TextBox m_gameFileDirectory, m_screenshotDirectories;
         private Label m_lblScreenshotWidth;
+        private TrackBar m_screenshotTrackBar;
 
         private readonly IDataSourceAdapter m_adapter;
         private readonly AppConfiguration m_appConfig;
+
+        private static readonly int s_textBoxWidth = 190;
 
         public SettingsForm(IDataSourceAdapter adapter, AppConfiguration appConfig)
         {
@@ -34,6 +33,7 @@ namespace DoomLauncher
 
             PopulateDefaultSettings(m_adapter);
             PopulateConfiguration();
+            UpdateScreenshotWidth(m_screenshotTrackBar);
         }
 
         public void SetToLaunchSettingsTab()
@@ -49,44 +49,54 @@ namespace DoomLauncher
 
         private void PopulateConfiguration()
         {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
             IEnumerable<IConfigurationData> configItems = m_adapter.GetConfiguration().Where(x => x.UserCanModify);
 
-            TableLayoutPanel tblMain = new TableLayoutPanel();
-            tblMain.Dock = DockStyle.Top;
-            tblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 8));
-            int height = 8;
+            TableLayoutPanel tblMain = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top
+            };
+
+            int height = dpiScale.ScaleIntY(8);
+            tblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, height));
+
+            int height32 = dpiScale.ScaleIntY(32);
 
             foreach (IConfigurationData config in configItems)
             {
-                GrowLabel lbl = new GrowLabel();
-                lbl.Anchor = AnchorStyles.Left;
-                lbl.Text = AddSpaceBetweenWords(config.Name);
+                GrowLabel lbl = new GrowLabel
+                {
+                    Anchor = AnchorStyles.Left,
+                    Text = AddSpaceBetweenWords(config.Name)
+                };
 
-                tblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, lbl.Height < 32 ? 32 : lbl.Height));
+                tblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, lbl.Height < height32 ? height32 : lbl.Height));
                 tblMain.Controls.Add(lbl, 0, tblMain.RowStyles.Count - 1);
 
                 if (!string.IsNullOrEmpty(config.AvailableValues))
                     HandleComboBox(tblMain, config);
                 else if (config.Name == "ScreenshotPreviewSize") //special case for TrackBar
-                    HandleScreenshotPreviewSize(tblMain, config);
+                    HandleScreenshotPreviewSize(tblMain, config, dpiScale);
                 else
                     HandleTextBox(tblMain, config);
 
-                height += 32;
+                height += height32;
             }
 
             tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            tblMain.Height = height;
+            tblMain.Height = height + dpiScale.ScaleIntY(8);
 
             tabControl.TabPages[0].Controls.Add(tblMain);
-            Height = height + 110;
+            Height = tblMain.Height + dpiScale.ScaleIntY(110);
         }
 
         private void HandleTextBox(TableLayoutPanel tblMain, IConfigurationData config)
         {
-            TextBox txt = new TextBox();
-            txt.Dock = DockStyle.Fill;
-            txt.Text = config.Value;
+            TextBox txt = new TextBox
+            {
+                Dock = DockStyle.Fill,
+                Text = config.Value
+            };
             m_configValues.Add(new Tuple<IConfigurationData, object>(config, txt));
 
             if (config.Name == "GameFileDirectory")
@@ -99,8 +109,10 @@ namespace DoomLauncher
 
         private void HandleComboBox(TableLayoutPanel tblMain, IConfigurationData config)
         {
-            ComboBox cmb = new ComboBox();
-            cmb.Dock = DockStyle.Fill;
+            ComboBox cmb = new ComboBox
+            {
+                Dock = DockStyle.Fill
+            };
 
             string[] items = config.AvailableValues.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             List<Tuple<string, string>> cmbDataSource = new List<Tuple<string, string>>();
@@ -117,44 +129,64 @@ namespace DoomLauncher
             m_configValues.Add(new Tuple<IConfigurationData, object>(config, cmb));
         }
 
-        private void HandleScreenshotPreviewSize(TableLayoutPanel tblMain, IConfigurationData config)
+        private void HandleScreenshotPreviewSize(TableLayoutPanel tblMain, IConfigurationData config, DpiScale dpiScale)
         {
-            m_lblScreenshotWidth = new Label();
-            m_lblScreenshotWidth.Width = 68;
-            m_lblScreenshotWidth.Height = 16;
-            m_lblScreenshotWidth.Margin = new Padding(0, 8, 0, 0);
+            m_lblScreenshotWidth = new Label
+            {
+                Width = dpiScale.ScaleIntX(68),
+                Height = dpiScale.ScaleIntY(16),
+                Margin = new Padding(0, dpiScale.ScaleIntX(8), 0, 0)
+            };
 
-            TrackBar trk = new TrackBar();
-            trk.Minimum = -8;
-            trk.Maximum = 8;
-            trk.ValueChanged += Trk_ValueChanged;
-            trk.Value = Convert.ToInt32(config.Value);
-            trk.Width = 200;
+            m_screenshotTrackBar = new TrackBar
+            {
+                Minimum = -8,
+                Maximum = 8,
+                Value = Convert.ToInt32(config.Value),
+                Width = dpiScale.ScaleIntX(200)
+            };
+            m_screenshotTrackBar.ValueChanged += Trk_ValueChanged;
 
-            FlowLayoutPanel flp = new FlowLayoutPanel();
-            flp.Dock = DockStyle.Fill;
-            flp.Controls.Add(trk);
+            FlowLayoutPanel flp = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill
+            };
+            flp.Controls.Add(m_screenshotTrackBar);
             flp.Controls.Add(m_lblScreenshotWidth);
 
             tblMain.Controls.Add(flp, 1, tblMain.RowStyles.Count - 1);
-            m_configValues.Add(new Tuple<IConfigurationData, object>(config, trk));
+            m_configValues.Add(new Tuple<IConfigurationData, object>(config, m_screenshotTrackBar));
         }
 
         private void Trk_ValueChanged(object sender, EventArgs e)
         {
-            m_lblScreenshotWidth.Text = string.Concat("Width: ", Util.GetPreviewScreenshotWidth(((TrackBar)sender).Value));
+            UpdateScreenshotWidth(((TrackBar)sender));
+        }
+
+        private void UpdateScreenshotWidth(TrackBar trackBar)
+        {
+            m_lblScreenshotWidth.Text = string.Concat("Width: ", Util.GetPreviewScreenshotWidth(trackBar.Value));
         }
 
         private void HandleScreenshotCaptureDirectories(TableLayoutPanel tblMain, TextBox txt)
         {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
             m_screenshotDirectories = txt;
-            m_screenshotDirectories.Width = 190;
+            m_screenshotDirectories.Width = dpiScale.ScaleIntX(s_textBoxWidth);
             m_screenshotDirectories.Enabled = false;
-            FlowLayoutPanel flp = new FlowLayoutPanel();
-            flp.Dock = DockStyle.Fill;
+            FlowLayoutPanel flp = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill
+            };
             flp.Controls.Add(txt);
-            Button changeButton = new Button();
-            changeButton.Text = "Change...";
+
+            Button changeButton = new Button
+            {
+                Text = "Change..."
+            };
+
+            changeButton.Width = dpiScale.ScaleIntX(changeButton.Width);
+            changeButton.Height = dpiScale.ScaleIntY(changeButton.Height);
             changeButton.Click += ChangeButton_Click;
             flp.Controls.Add(changeButton);
             tblMain.Controls.Add(flp, 1, tblMain.RowStyles.Count - 1);
@@ -162,13 +194,22 @@ namespace DoomLauncher
 
         private void HandleGameFileDirectory(TableLayoutPanel tblMain, TextBox txt)
         {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
             m_gameFileDirectory = txt;
-            m_gameFileDirectory.Width = 190;
-            FlowLayoutPanel flp = new FlowLayoutPanel();
-            flp.Dock = DockStyle.Fill;
+            m_gameFileDirectory.Width = dpiScale.ScaleIntX(s_textBoxWidth);
+            FlowLayoutPanel flp = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill
+            };
             flp.Controls.Add(m_gameFileDirectory);
-            Button browseButton = new Button();
-            browseButton.Text = "Browse...";
+
+            Button browseButton = new Button
+            {
+                Text = "Browse..."
+            };
+
+            browseButton.Width = dpiScale.ScaleIntX(browseButton.Width);
+            browseButton.Height = dpiScale.ScaleIntY(browseButton.Height);
             browseButton.Click += browseButton_Click;
             flp.Controls.Add(browseButton);
             tblMain.Controls.Add(flp, 1, tblMain.RowStyles.Count - 1);
@@ -177,9 +218,11 @@ namespace DoomLauncher
         void browseButton_Click(object sender, EventArgs e)
         {
             LauncherPath path = new LauncherPath(m_gameFileDirectory.Text);
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.SelectedPath = path.GetFullPath();
-            
+            FolderBrowserDialog dialog = new FolderBrowserDialog
+            {
+                SelectedPath = path.GetFullPath()
+            };
+
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 path = new LauncherPath(dialog.SelectedPath);
@@ -232,7 +275,7 @@ namespace DoomLauncher
             { 
                 cmbSourcePorts.SelectedItem == null ? null : ((ISourcePortData)cmbSourcePorts.SelectedItem).SourcePortID.ToString(),
                 cmbIwad.SelectedItem == null ? null : ((IIWadData)cmbIwad.SelectedItem).IWadID.ToString(),
-                cmbSkill.SelectedItem == null ? null : cmbSkill.SelectedItem.ToString()
+                cmbSkill.SelectedItem?.ToString()
             };
 
             IEnumerable<IConfigurationData> configuration = m_adapter.GetConfiguration().Where(x => configNames.Contains(x.Name));
@@ -261,19 +304,20 @@ namespace DoomLauncher
 
         private static IConfigurationData CreateConfig(string configName, string configValue)
         {
-            ConfigurationData config = new ConfigurationData();
-            config.Name = configName;
-            config.Value = configValue;
-            config.UserCanModify = false;
-            config.AvailableValues = string.Empty;
-            return config;
+            return new ConfigurationData
+            {
+                Name = configName,
+                Value = configValue,
+                UserCanModify = false,
+                AvailableValues = string.Empty
+            };
         }
 
         private string GetValue(IConfigurationData config, object value)
         {
             if (value is ComboBox && !string.IsNullOrEmpty(config.AvailableValues))
             {
-                 ComboBox cmb = value as ComboBox;
+                ComboBox cmb = value as ComboBox;
 
                 if (cmb != null && cmb.SelectedItem != null)
                 {
