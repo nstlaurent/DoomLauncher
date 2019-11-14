@@ -13,12 +13,12 @@ namespace DoomLauncher
         public StatsControl()
         {
             InitializeComponent();
-            SetImage(pbMaps, Properties.Resources.map, 0.7f);
-            SetImage(pbKills, Properties.Resources.kill, 0.7f);
-            SetImage(pbItems, Properties.Resources.bon2b, 0.8f);
-            SetImage(pbSecrets, Properties.Resources.secret, 0.8f);
-
             DpiScale dpiScale = new DpiScale(CreateGraphics());
+
+            SetImage(pbMaps, Properties.Resources.map, 0.7f * dpiScale.DpiScaleY);
+            SetImage(pbKills, Properties.Resources.kill, 0.7f * dpiScale.DpiScaleY);
+            SetImage(pbItems, Properties.Resources.bon2b, 0.8f * dpiScale.DpiScaleY);
+            SetImage(pbSecrets, Properties.Resources.secret, 0.8f * dpiScale.DpiScaleY);
 
             SetStatBarDpi(ctrlStatsMaps, dpiScale);
             SetStatBarDpi(ctrlStatsKills, dpiScale);
@@ -28,7 +28,7 @@ namespace DoomLauncher
 
         private void SetStatBarDpi(StatBar statBar, DpiScale dpiScale)
         {
-            statBar.MaximumSize = new Size(statBar.MaximumSize.Width, dpiScale.ScaleIntY(ctrlStatsMaps.Height));
+            statBar.MaximumSize = new Size(statBar.MaximumSize.Width, dpiScale.ScaleIntY(statBar.MaximumSize.Height));
             statBar.SetMaxHeight(statBar.MaximumSize.Height);
             statBar.Size = MaximumSize;
         }

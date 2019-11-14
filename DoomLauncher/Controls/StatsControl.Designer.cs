@@ -36,12 +36,12 @@
             this.pbKills = new System.Windows.Forms.PictureBox();
             this.pbSecrets = new System.Windows.Forms.PictureBox();
             this.pbItems = new System.Windows.Forms.PictureBox();
-            this.lblMaps = new System.Windows.Forms.Label();
-            this.pbMaps = new System.Windows.Forms.PictureBox();
             this.ctrlStatsSecrets = new DoomLauncher.StatBar();
             this.ctrlStatsItems = new DoomLauncher.StatBar();
             this.ctrlStatsKills = new DoomLauncher.StatBar();
+            this.lblMaps = new System.Windows.Forms.Label();
             this.ctrlStatsMaps = new DoomLauncher.StatBar();
+            this.pbMaps = new System.Windows.Forms.PictureBox();
             this.tblStats.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbKills)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbSecrets)).BeginInit();
@@ -147,6 +147,36 @@
             this.pbItems.TabIndex = 8;
             this.pbItems.TabStop = false;
             // 
+            // ctrlStatsSecrets
+            // 
+            this.ctrlStatsSecrets.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlStatsSecrets.Location = new System.Drawing.Point(104, 50);
+            this.ctrlStatsSecrets.Margin = new System.Windows.Forms.Padding(0, 2, 4, 2);
+            this.ctrlStatsSecrets.MaximumSize = new System.Drawing.Size(0, 21);
+            this.ctrlStatsSecrets.Name = "ctrlStatsSecrets";
+            this.ctrlStatsSecrets.Size = new System.Drawing.Size(198, 19);
+            this.ctrlStatsSecrets.TabIndex = 10;
+            // 
+            // ctrlStatsItems
+            // 
+            this.ctrlStatsItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlStatsItems.Location = new System.Drawing.Point(104, 73);
+            this.ctrlStatsItems.Margin = new System.Windows.Forms.Padding(0, 2, 4, 2);
+            this.ctrlStatsItems.MaximumSize = new System.Drawing.Size(0, 21);
+            this.ctrlStatsItems.Name = "ctrlStatsItems";
+            this.ctrlStatsItems.Size = new System.Drawing.Size(198, 21);
+            this.ctrlStatsItems.TabIndex = 11;
+            // 
+            // ctrlStatsKills
+            // 
+            this.ctrlStatsKills.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlStatsKills.Location = new System.Drawing.Point(104, 26);
+            this.ctrlStatsKills.Margin = new System.Windows.Forms.Padding(0, 2, 4, 2);
+            this.ctrlStatsKills.MaximumSize = new System.Drawing.Size(0, 21);
+            this.ctrlStatsKills.Name = "ctrlStatsKills";
+            this.ctrlStatsKills.Size = new System.Drawing.Size(198, 20);
+            this.ctrlStatsKills.TabIndex = 12;
+            // 
             // lblMaps
             // 
             this.lblMaps.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -156,6 +186,16 @@
             this.lblMaps.Size = new System.Drawing.Size(36, 13);
             this.lblMaps.TabIndex = 13;
             this.lblMaps.Text = "Maps:";
+            // 
+            // ctrlStatsMaps
+            // 
+            this.ctrlStatsMaps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlStatsMaps.Location = new System.Drawing.Point(104, 2);
+            this.ctrlStatsMaps.Margin = new System.Windows.Forms.Padding(0, 2, 4, 2);
+            this.ctrlStatsMaps.MaximumSize = new System.Drawing.Size(0, 21);
+            this.ctrlStatsMaps.Name = "ctrlStatsMaps";
+            this.ctrlStatsMaps.Size = new System.Drawing.Size(198, 20);
+            this.ctrlStatsMaps.TabIndex = 14;
             // 
             // pbMaps
             // 
@@ -167,46 +207,6 @@
             this.pbMaps.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbMaps.TabIndex = 15;
             this.pbMaps.TabStop = false;
-            // 
-            // ctrlStatsSecrets
-            // 
-            this.ctrlStatsSecrets.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlStatsSecrets.Location = new System.Drawing.Point(104, 48);
-            this.ctrlStatsSecrets.Margin = new System.Windows.Forms.Padding(0, 4, 4, 0);
-            this.ctrlStatsSecrets.MaximumSize = new System.Drawing.Size(0, 21);
-            this.ctrlStatsSecrets.Name = "ctrlStatsSecrets";
-            this.ctrlStatsSecrets.Size = new System.Drawing.Size(194, 21);
-            this.ctrlStatsSecrets.TabIndex = 10;
-            // 
-            // ctrlStatsItems
-            // 
-            this.ctrlStatsItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlStatsItems.Location = new System.Drawing.Point(104, 71);
-            this.ctrlStatsItems.Margin = new System.Windows.Forms.Padding(0, 4, 4, 0);
-            this.ctrlStatsItems.MaximumSize = new System.Drawing.Size(0, 21);
-            this.ctrlStatsItems.Name = "ctrlStatsItems";
-            this.ctrlStatsItems.Size = new System.Drawing.Size(194, 21);
-            this.ctrlStatsItems.TabIndex = 11;
-            // 
-            // ctrlStatsKills
-            // 
-            this.ctrlStatsKills.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlStatsKills.Location = new System.Drawing.Point(104, 24);
-            this.ctrlStatsKills.Margin = new System.Windows.Forms.Padding(0, 4, 4, 0);
-            this.ctrlStatsKills.MaximumSize = new System.Drawing.Size(0, 21);
-            this.ctrlStatsKills.Name = "ctrlStatsKills";
-            this.ctrlStatsKills.Size = new System.Drawing.Size(194, 21);
-            this.ctrlStatsKills.TabIndex = 12;
-            // 
-            // ctrlStatsMaps
-            // 
-            this.ctrlStatsMaps.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlStatsMaps.Location = new System.Drawing.Point(104, 0);
-            this.ctrlStatsMaps.Margin = new System.Windows.Forms.Padding(0, 4, 4, 0);
-            this.ctrlStatsMaps.MaximumSize = new System.Drawing.Size(0, 21);
-            this.ctrlStatsMaps.Name = "ctrlStatsMaps";
-            this.ctrlStatsMaps.Size = new System.Drawing.Size(194, 21);
-            this.ctrlStatsMaps.TabIndex = 14;
             // 
             // StatsControl
             // 
