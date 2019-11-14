@@ -84,7 +84,7 @@ namespace DoomLauncher
             }
 
             tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            tblMain.Height = height + height32;
+            tblMain.Height = height + dpiScale.ScaleIntY(8);
 
             tabControl.TabPages[0].Controls.Add(tblMain);
             Height = tblMain.Height + dpiScale.ScaleIntY(110);
