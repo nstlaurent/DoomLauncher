@@ -313,6 +313,7 @@ namespace DoomLauncher
 
         private string HandleRenameFile(IGameFile gameFile, string fileName, string error)
         {
+            string oldFileName = gameFile.FileName;
             FileInfo fi = new FileInfo(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), gameFile.FileName));
 
             if (fi.Exists)
@@ -327,6 +328,7 @@ namespace DoomLauncher
                     gameFile.FileName = fileName;
                     gameFileUpdate.FileName = fileName;
                     DataSourceAdapter.UpdateGameFile(gameFileUpdate, new GameFileFieldType[] { GameFileFieldType.Filename });
+                    UpdateAdditinalFileReferences(oldFileName, fileName);
                     HandleSelectionChange(GetCurrentViewControl());
                 }
                 else
@@ -340,6 +342,49 @@ namespace DoomLauncher
             }
 
             return error;
+        }
+
+        private void UpdateAdditinalFileReferences(string oldFileName, string newFileName)
+        {
+            GameFileFieldType[] updateFields = new GameFileFieldType[] { GameFileFieldType.SettingsFiles };
+            GameFileGetOptions options = new GameFileGetOptions(new GameFileFieldType[] { GameFileFieldType.GameFileID, GameFileFieldType.SettingsFiles });
+            var gameFiles = DataSourceAdapter.GetGameFiles(options).Where(x => x.SettingsFiles.Length > 0);
+
+            foreach (var databaseGameFile in gameFiles)
+            {
+                string[] files = Util.SplitString(databaseGameFile.SettingsFiles);
+                if (files.Contains(oldFileName))
+                {
+                    databaseGameFile.SettingsFiles = GetRenamedAdditionalFileSetting(files, oldFileName, newFileName);
+                    DataSourceAdapter.UpdateGameFile(databaseGameFile, updateFields);
+                }
+            }
+
+            var sourcePorts = DataSourceAdapter.GetSourcePorts();
+
+            foreach (var databaseSourcePort in sourcePorts)
+            {
+                string[] files = Util.SplitString(databaseSourcePort.SettingsFiles);
+                if (files.Contains(oldFileName))
+                {
+                    databaseSourcePort.SettingsFiles = GetRenamedAdditionalFileSetting(files, oldFileName, newFileName);
+                    DataSourceAdapter.UpdateSourcePort(databaseSourcePort);
+                }
+            }
+        }
+
+        private static string GetRenamedAdditionalFileSetting(string[] files, string oldFileName, string newFileName)
+        {
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i] == oldFileName)
+                {
+                    files[i] = newFileName;
+                    break;
+                }
+            }
+
+            return string.Join(";", files);
         }
 
         private static bool VerifyFileName(string fileName)

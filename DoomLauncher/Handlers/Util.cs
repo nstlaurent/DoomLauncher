@@ -233,7 +233,7 @@ namespace DoomLauncher
         public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)
         {
             if (gameFile != null && !string.IsNullOrEmpty(gameFile.SettingsFiles))
-                return GetAdditionalFiles(adapter, gameFile, gameFile.SettingsFiles);
+                return GetAdditionalFiles(adapter, gameFile.SettingsFiles);
 
             return new List<IGameFile>();
         }
@@ -241,7 +241,7 @@ namespace DoomLauncher
         public static List<IGameFile> GetIWadAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)
         {
             if (gameFile != null && !string.IsNullOrEmpty(gameFile.SettingsFilesIWAD))
-                return GetAdditionalFiles(adapter, gameFile, gameFile.SettingsFilesIWAD);
+                return GetAdditionalFiles(adapter, gameFile.SettingsFilesIWAD);
 
             return new List<IGameFile>();
         }
@@ -249,19 +249,19 @@ namespace DoomLauncher
         public static List<IGameFile> GetSourcePortAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)
         {
             if (gameFile != null && !string.IsNullOrEmpty(gameFile.SettingsFilesSourcePort))
-                return GetAdditionalFiles(adapter, gameFile, gameFile.SettingsFilesSourcePort);
+                return GetAdditionalFiles(adapter, gameFile.SettingsFilesSourcePort);
 
             return new List<IGameFile>();
         }
 
         public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, ISourcePortData sourcePort)
         {
-            return GetAdditionalFiles(adapter, null, sourcePort.SettingsFiles);
+            return GetAdditionalFiles(adapter, sourcePort.SettingsFiles);
         }
 
-        private static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile, string property)
+        private static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, string property)
         {
-            string[] fileNames = property.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] fileNames = Util.SplitString(property);
             List<IGameFile> gameFiles = new List<IGameFile>();
             Array.ForEach(fileNames, x => gameFiles.Add(adapter.GetGameFile(x)));
             return gameFiles.Where(x => x != null).ToList();
@@ -394,6 +394,14 @@ namespace DoomLauncher
                 return 200 + (40 * value);
             else
                 return 200 + (10 * value);
+        }
+
+        public static string[] SplitString(string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+                return value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            else
+                return new string[] { };
         }
     }
 }

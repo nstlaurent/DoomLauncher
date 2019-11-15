@@ -235,7 +235,7 @@ namespace DoomLauncher
                 if (!string.IsNullOrEmpty(gameFile.SettingsMap)) m_currentPlayForm.SelectedMap = gameFile.SettingsMap;
                 if (!string.IsNullOrEmpty(gameFile.SettingsSkill)) m_currentPlayForm.SelectedSkill = gameFile.SettingsSkill;
                 if (!string.IsNullOrEmpty(gameFile.SettingsExtraParams)) m_currentPlayForm.ExtraParameters = gameFile.SettingsExtraParams;
-                if (!string.IsNullOrEmpty(gameFile.SettingsSpecificFiles)) m_currentPlayForm.SpecificFiles = gameFile.SettingsSpecificFiles.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                if (!string.IsNullOrEmpty(gameFile.SettingsSpecificFiles)) m_currentPlayForm.SpecificFiles = Util.SplitString(gameFile.SettingsSpecificFiles);
             }
 
             m_currentPlayForm.InitializeComplete();
