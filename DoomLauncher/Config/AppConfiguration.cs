@@ -1,11 +1,8 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -99,8 +96,8 @@ namespace DoomLauncher
                 ColumnConfig = GetValue(config, "ColumnConfig");
                 ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, "ScreenshotPreviewSize"));
 
-                DateParseFormats = SplitString(GetValue(config, "DateParseFormats"));
-                ScreenshotCaptureDirectories = SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
+                DateParseFormats = Util.SplitString(GetValue(config, "DateParseFormats"));
+                ScreenshotCaptureDirectories = Util.SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
             }
             catch(Exception)
             {
@@ -137,14 +134,6 @@ namespace DoomLauncher
         {
             IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
             ColumnConfig = GetValue(config, "ColumnConfig");
-        }
-
-        private string[] SplitString(string item)
-        {
-            if (!string.IsNullOrEmpty(item))
-                return item.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-            else
-                return new string[] { };
         }
 
         private void VerifyPaths(bool throwErrors)

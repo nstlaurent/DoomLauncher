@@ -114,7 +114,7 @@ namespace DoomLauncher
                 Dock = DockStyle.Fill
             };
 
-            string[] items = config.AvailableValues.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] items = Util.SplitString(config.AvailableValues);
             List<Tuple<string, string>> cmbDataSource = new List<Tuple<string, string>>();
 
             for (int i = 0; i < items.Length - 1; i += 2)
@@ -233,7 +233,7 @@ namespace DoomLauncher
         private void ChangeButton_Click(object sender, EventArgs e)
         {
             DirectoriesForm form = new DirectoriesForm();
-            form.SetDirectories(m_screenshotDirectories.Text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+            form.SetDirectories(Util.SplitString(m_screenshotDirectories.Text));
             form.StartPosition = FormStartPosition.CenterParent;
 
             if (form.ShowDialog(this) == DialogResult.OK)
