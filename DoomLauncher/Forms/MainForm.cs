@@ -12,6 +12,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -749,35 +750,47 @@ namespace DoomLauncher
                 bool doForAll = false;
                 bool download = true;
 
-                foreach (IGameFile dsItem in dsItems)
+                try
                 {
-                    IGameFileDownloadable dlItem = dsItem as IGameFileDownloadable;
-
-                    if (dsItem != null && dlItem != null)
+                    foreach (IGameFile dsItem in dsItems)
                     {
-                        GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
-                            ((IdGamesGameFile)dsItem).id.ToString()));
+                        IGameFileDownloadable dlItem = dsItem as IGameFileDownloadable;
 
-                        IGameFile dsItemFull = tabView.Adapter.GetGameFiles(options).FirstOrDefault();
-                        dlItem = dsItemFull as IGameFileDownloadable;
-
-                        if (!doForAll)
-                            download = PromptUserDownload(dsItems, ref showAlreadyDownloading, ref doForAll, dlItem, dsItemFull, dsItems.Length > 1);
-
-                        if (dlItem != null && download)
+                        if (dsItem != null && dlItem != null)
                         {
-                            CurrentDownloadFile = dsItemFull;
-                            dlItem.DownloadCompleted += dlItem_DownloadCompleted;
-                            m_downloadHandler.DownloadDirectory = directory;
-                            m_downloadHandler.Download(tabView.Adapter, dlItem);
-                            displayDownloads = true;
+                            GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
+                                ((IdGamesGameFile)dsItem).id.ToString()));
+
+                            IGameFile dsItemFull = tabView.Adapter.GetGameFiles(options).FirstOrDefault();
+                            dlItem = dsItemFull as IGameFileDownloadable;
+
+                            if (!doForAll)
+                                download = PromptUserDownload(dsItems, ref showAlreadyDownloading, ref doForAll, dlItem, dsItemFull, dsItems.Length > 1);
+
+                            if (dlItem != null && download)
+                            {
+                                CurrentDownloadFile = dsItemFull;
+                                dlItem.DownloadCompleted += dlItem_DownloadCompleted;
+                                m_downloadHandler.DownloadDirectory = directory;
+                                m_downloadHandler.Download(tabView.Adapter, dlItem);
+                                displayDownloads = true;
+                            }
                         }
                     }
+                }
+                catch (WebException)
+                {
+                    ShowBadConnectionError();
                 }
             }
 
             if (displayDownloads)
                 DisplayDownloads();
+        }
+
+        private void ShowBadConnectionError()
+        {
+            MessageBox.Show(this, "Unable to reach server. Lost connection?", "Bad Connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private bool PromptUserDownload(IGameFile[] dsItems, ref bool showAlreadyDownloading, ref bool doForAll,
@@ -908,13 +921,18 @@ namespace DoomLauncher
 
                 if (dsItem != null && dsItem is IdGamesGameFile)
                 {
-                    GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
-                            ((IdGamesGameFile)dsItem).id.ToString()));
-                    IdGamesGameFile dsItemFull = IdGamesDataSourceAdapter.GetGameFiles(options).FirstOrDefault() as IdGamesGameFile;
-
-                    if (dsItemFull != null)
+                    try
                     {
-                        Process.Start(string.Format("{0}?file={1}{2}", AppConfiguration.IdGamesUrl, dsItemFull.dir, dsItemFull.FileName));
+                        GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
+                                ((IdGamesGameFile)dsItem).id.ToString()));
+                        IdGamesGameFile dsItemFull = IdGamesDataSourceAdapter.GetGameFiles(options).FirstOrDefault() as IdGamesGameFile;
+
+                        if (dsItemFull != null)
+                            Process.Start(string.Format("{0}?file={1}{2}", AppConfiguration.IdGamesUrl, dsItemFull.dir, dsItemFull.FileName));
+                    }
+                    catch(WebException)
+                    {
+                        ShowBadConnectionError();
                     }
                 }
             }
