@@ -86,6 +86,7 @@ namespace DoomLauncher
             else
             {
                 m_updateWebClient.Dispose();
+                m_updateDownloadProgress.Hide();
                 m_updateDownloadProgress.Close();
 
                 ApplicationUpdater applicationUpdater = new ApplicationUpdater(GetUpdateArchive(), AppDomain.CurrentDomain.BaseDirectory);
