@@ -67,8 +67,10 @@ namespace DoomLauncher
         {
             foreach (RenameFile file in renamedFiles)
             {
-                FileInfo fileInfo = new FileInfo(file.NewName);
-                fileInfo.MoveTo(file.OriginalName);
+                if (File.Exists(file.OriginalName))
+                    File.Delete(file.OriginalName);
+
+                File.Move(file.NewName, file.OriginalName);
             }
         }
 
