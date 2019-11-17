@@ -42,6 +42,7 @@ namespace DoomLauncher
         private TabHandler m_tabHandler;
         private VersionHandler m_versionHandler;
         private SplashScreen m_splash;
+        private UpdateControl m_updateControl = new UpdateControl();
 
         private string m_launchFile;
         private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
@@ -1052,6 +1053,11 @@ namespace DoomLauncher
             DisplayDownloads();
         }
 
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            DisplayUpdate();
+        }
+
         private void HandleEditSourcePorts(bool initSetup)
         {
             SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, AppConfiguration, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.SourcePort);
@@ -1092,6 +1098,17 @@ namespace DoomLauncher
                 Height = m_downloadView.Height
             };
             popup.Show(btnDownloads);
+        }
+
+        private void DisplayUpdate()
+        {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            Popup popup = new Popup(m_updateControl)
+            {
+                Width = dpiScale.ScaleIntX(300),
+                Height = m_updateControl.Height
+            };
+            popup.Show(btnUpdate);
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)

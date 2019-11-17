@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -76,7 +77,6 @@ namespace DoomLauncher
             if (!Directory.Exists(basePath))
             {
                 Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
-                //Directory.CreateDirectory(Path.Combine(basePath, "GameWads"));
                 Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
                 Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
                 Directory.CreateDirectory(Path.Combine(basePath, "Temp"));
@@ -421,6 +421,40 @@ namespace DoomLauncher
 
             SetupSearchFilters();
             HandleTabSelectionChange();
+
+            await Task.Run(() => CheckForAppUpdate());
+        }
+
+        private async Task CheckForAppUpdate()
+        {
+            try
+            {
+                ApplicationUpdate applicationUpdate = new ApplicationUpdate(TimeSpan.FromSeconds(30));
+                ApplicationUpdateInfo info = await applicationUpdate.GetUpdateApplicationInfo(Assembly.GetExecutingAssembly().GetName().Version);
+
+                if (info != null)
+                    SetUpdateAvailable(info);
+                else
+                    ApplicationUpdater.CleanupUpdateFiles(AppDomain.CurrentDomain.BaseDirectory);
+            }
+            catch
+            {
+                // no internet connection or bad connection, try again next time
+            }
+        }
+        
+        private void SetUpdateAvailable(ApplicationUpdateInfo info)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<ApplicationUpdateInfo>(SetUpdateAvailable), new object[] { info });
+            }
+            else
+            {
+                btnUpdate.Visible = true;
+                btnUpdate.GlowOnce();
+                m_updateControl.Initialize(AppConfiguration, info);
+            }
         }
 
         private async Task CheckFirstInit()
