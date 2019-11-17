@@ -566,7 +566,6 @@
             this.btnSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
-            this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnSearch.Location = new System.Drawing.Point(280, 2);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.btnSearch.Name = "btnSearch";
