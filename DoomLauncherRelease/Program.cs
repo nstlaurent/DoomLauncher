@@ -11,20 +11,18 @@ namespace DoomLauncherRelease
         {
             try
             {
-                string outputdir = "ReleaseBuild";
+                string outputDir = "ReleaseBuild";
+                string buildDir = CreateBuildDirectory(outputDir);
 
-                if (Directory.Exists(outputdir))
-                    Directory.Delete(outputdir, true);
+                if (!Directory.Exists(Path.Combine(GetBaseDir(), outputDir)))
+                    Directory.CreateDirectory(Path.Combine(GetBaseDir(), outputDir));
 
-                if (!Directory.Exists(Path.Combine(GetBaseDir(), outputdir)))
-                    Directory.CreateDirectory(Path.Combine(GetBaseDir(), outputdir));
+                Directory.CreateDirectory(buildDir);
+                CreateFolders(buildDir);
+                CopyBuildFiles(buildDir);
 
-                Directory.CreateDirectory(outputdir);
-                CreateFolders(outputdir);
-                CopyBuildFiles(outputdir);
-
-                string zipfile = CreateZipFile(outputdir);
-                string zipfiledest = Path.Combine(GetBaseDir(), outputdir, Path.GetFileName(zipfile));
+                string zipfile = CreateZipFile(outputDir, buildDir);
+                string zipfiledest = Path.Combine(GetBaseDir(), outputDir, Path.GetFileName(zipfile));
                 File.Copy(zipfile, zipfiledest, true);
 
                 Console.WriteLine(string.Concat("Sucessfully created: ", zipfiledest));
@@ -38,6 +36,15 @@ namespace DoomLauncherRelease
             }
         }
 
+        private static string CreateBuildDirectory(string outputDir)
+        {
+            if (Directory.Exists(outputDir))
+                Directory.Delete(outputDir, true);
+
+
+            return Path.Combine(outputDir, "DoomLauncher");
+        }
+
         private static void CreateFolders(string outputdir)
         {
             string basePath = Path.Combine(outputdir, "GameFiles_");
@@ -45,30 +52,29 @@ namespace DoomLauncherRelease
             if (!Directory.Exists(basePath))
             {
                 Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
-                //Directory.CreateDirectory(Path.Combine(basePath, "GameWads"));
                 Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
                 Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
                 Directory.CreateDirectory(Path.Combine(basePath, "Temp"));
             }
         }
 
-        private static string CreateZipFile(string outputdir)
+        private static string CreateZipFile(string outputDir, string buildDir)
         {
-            string zipfile = string.Format("DoomLauncher_{0}.zip", GetVersion(outputdir));
+            string zipfile = string.Format("DoomLauncher_{0}.zip", GetVersion(buildDir));
             if (File.Exists(zipfile))
                 File.Delete(zipfile);
 
-            ZipFile.CreateFromDirectory(outputdir, zipfile);
+            ZipFile.CreateFromDirectory(outputDir, zipfile);
             return zipfile;
         }
 
-        private static string GetVersion(string outputdir)
+        private static string GetVersion(string buildDir)
         {
             string prefix = string.Empty;
 #if DEBUG
             prefix = "debug_";
 #endif
-            var v = AssemblyName.GetAssemblyName(Path.Combine(outputdir, "DoomLauncher.exe")).Version;
+            var v = AssemblyName.GetAssemblyName(Path.Combine(buildDir, "DoomLauncher.exe")).Version;
             return prefix + v.ToString();
         }
 
@@ -105,7 +111,9 @@ namespace DoomLauncherRelease
                 "Newtonsoft.Json.dll",
                 "Newtonsoft.Json.xml",
                 "System.Data.SQLite.dll",
-                "WadReader.dll"
+                "WadReader.dll",
+                "Octokit.dll",
+                "Octokit.xml"
             };
         }
 

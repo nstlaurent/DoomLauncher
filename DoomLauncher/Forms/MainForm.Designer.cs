@@ -88,6 +88,7 @@
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnDownloads = new System.Windows.Forms.Button();
+            this.btnUpdate = new DoomLauncher.GlowButton();
             this.tblDataView = new System.Windows.Forms.TableLayoutPanel();
             this.splitLeftRight = new System.Windows.Forms.SplitContainer();
             this.splitTopBottom = new System.Windows.Forms.SplitContainer();
@@ -322,18 +323,20 @@
             // 
             // tblTop
             // 
-            this.tblTop.ColumnCount = 2;
+            this.tblTop.ColumnCount = 4;
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tblTop.Controls.Add(this.flpSearch, 0, 0);
-            this.tblTop.Controls.Add(this.btnDownloads, 1, 0);
+            this.tblTop.Controls.Add(this.btnDownloads, 3, 0);
+            this.tblTop.Controls.Add(this.btnUpdate, 2, 0);
             this.tblTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblTop.Location = new System.Drawing.Point(0, 0);
             this.tblTop.Margin = new System.Windows.Forms.Padding(0);
             this.tblTop.Name = "tblTop";
             this.tblTop.RowCount = 1;
             this.tblTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblTop.Size = new System.Drawing.Size(1008, 32);
             this.tblTop.TabIndex = 1;
             // 
@@ -349,7 +352,7 @@
             this.flpSearch.Location = new System.Drawing.Point(0, 0);
             this.flpSearch.Margin = new System.Windows.Forms.Padding(0);
             this.flpSearch.Name = "flpSearch";
-            this.flpSearch.Size = new System.Drawing.Size(504, 32);
+            this.flpSearch.Size = new System.Drawing.Size(384, 32);
             this.flpSearch.TabIndex = 0;
             // 
             // toolStrip1
@@ -563,7 +566,6 @@
             this.btnSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
-            this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnSearch.Location = new System.Drawing.Point(280, 2);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.btnSearch.Name = "btnSearch";
@@ -581,7 +583,7 @@
             this.btnPlay.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPlay.Image = ((System.Drawing.Image)(resources.GetObject("btnPlay.Image")));
-            this.btnPlay.Location = new System.Drawing.Point(366, 2);
+            this.btnPlay.Location = new System.Drawing.Point(3, 31);
             this.btnPlay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(75, 24);
@@ -607,6 +609,26 @@
             this.btnDownloads.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.btnDownloads.UseVisualStyleBackColor = true;
             this.btnDownloads.Click += new System.EventHandler(this.btnDownloads_Click);
+            // 
+            // btnUpdate
+            // 
+            this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUpdate.BackGroundGlowColor = System.Drawing.Color.Blue;
+            this.btnUpdate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnUpdate.FlatAppearance.BorderSize = 0;
+            this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUpdate.Image = global::DoomLauncher.Properties.Resources.bon2b;
+            this.btnUpdate.Location = new System.Drawing.Point(787, 2);
+            this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(120, 22);
+            this.btnUpdate.TabIndex = 2;
+            this.btnUpdate.Text = "Update Available";
+            this.btnUpdate.TextGlowColor = System.Drawing.Color.White;
+            this.btnUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Visible = false;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
             // tblDataView
             // 
@@ -822,6 +844,7 @@
         private System.Windows.Forms.ToolStripMenuItem unplayedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unratedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createZipToolStripMenuItem;
+        private DoomLauncher.GlowButton btnUpdate;
     }
 }
 

@@ -84,6 +84,7 @@
     <Compile Include="Tests\TestDsgSave.cs" />
     <Compile Include="Tests\TestStats.cs" />
     <Compile Include="Tests\TestChocolateDoomStats.cs" />
+    <Compile Include="Tests\TestUpdateInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DoomLauncher\DoomLauncher.csproj">
