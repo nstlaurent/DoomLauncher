@@ -1,6 +1,9 @@
 version: '{build}'
 configuration: Release
 platform: Any CPU
+before_build:
+- cmd: nuget restore
+
 build:
   project: DoomLauncher.sln
   verbosity: minimal
