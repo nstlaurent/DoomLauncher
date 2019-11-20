@@ -315,24 +315,17 @@ namespace DoomLauncher
 
         private string GetValue(IConfigurationData config, object value)
         {
-            if (value is ComboBox && !string.IsNullOrEmpty(config.AvailableValues))
+            if (!string.IsNullOrEmpty(config.AvailableValues) && value is ComboBox cmb && cmb.SelectedItem != null)
             {
-                ComboBox cmb = value as ComboBox;
-
-                if (cmb != null && cmb.SelectedItem != null)
-                {
-                    Tuple<string, string> item = cmb.SelectedItem as Tuple<string, string>;
-                    return item.Item2;
-                }
+                Tuple<string, string> item = cmb.SelectedItem as Tuple<string, string>;
+                return item.Item2;
             }
-            else if (value is TrackBar)
+            else if (value is TrackBar trk)
             {
-                TrackBar trk = value as TrackBar;
                 return trk.Value.ToString();
             }
-            else if (value is TextBox)
+            else if (value is TextBox txt)
             {
-                TextBox txt = value as TextBox;
                 return txt.Text;
             }
 
