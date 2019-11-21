@@ -57,6 +57,7 @@ namespace DoomLauncher
             m_splash.Invalidate();
 
             InitializeComponent();
+            ClearSummary();
 
             m_workingDirectory = Directory.GetCurrentDirectory();
             bool success = false;
