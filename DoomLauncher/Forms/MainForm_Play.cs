@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Forms;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -21,12 +21,11 @@ namespace DoomLauncher
 
         private bool AssertFile(string file)
         {
-            FileInfo fi = new FileInfo(file);
-
-            if (!fi.Exists)
+            bool exists = File.Exists(file);
+            if (!exists)
                 MessageBox.Show(this, string.Format("The file {0} does not exist.", file), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-            return fi.Exists;
+            return exists;
         }
 
         private void HandlePlay(IEnumerable<IGameFile> gameFiles)
@@ -59,7 +58,7 @@ namespace DoomLauncher
                     {
                         try
                         {
-                            HandlePlaySettings(m_currentPlayForm, launchData.GameFile);
+                            HandlePlaySettings(m_currentPlayForm, m_currentPlayForm.SelectedGameProfile);
                             if (m_currentPlayForm.SelectedSourcePort != null)
                                 m_playInProgress = StartPlay(launchData.GameFile, m_currentPlayForm.SelectedSourcePort, m_currentPlayForm.ScreenFilter);
                         }
@@ -89,8 +88,7 @@ namespace DoomLauncher
             {
                 if (gameFiles.Count() > 1)
                 {
-                    bool accepted;
-                    gameFile = PromptUserMainFile(gameFiles, out accepted);  //ask user which file to tie all stats to
+                    gameFile = PromptUserMainFile(gameFiles, out bool accepted);  //ask user which file to tie all stats to
                     if (!accepted)
                         return new LaunchData(string.Empty, string.Empty);
                 }
@@ -112,20 +110,19 @@ namespace DoomLauncher
             if (gameFile != null && GetCurrentViewControl() != null)
             {
                 ITabView tabView = m_tabHandler.TabViewForControl(GetCurrentViewControl());
-                if (tabView != null) //there's a reason for doing this that I can't remember...
-                    gameFile = DataSourceAdapter.GetGameFile(gameFile.FileName); //need to retrieve all the data for the file
+                if (tabView != null)
+                    gameFile = DataSourceAdapter.GetGameFile(gameFile.FileName); //this file came from the grid, which does not have all info populated to save performance
 
                 if (gameFiles.Count() > 1) //for when the user selected more than one file
                 {
                     HandleMultiSelectPlay(gameFile, gameFiles.Except(new IGameFile[] { gameFile })); //sets SettingsFiles with all the other game files
-                    List<IGameFile> gameFilesList = new List<IGameFile>();
-                    gameFilesList.Add(gameFile);
+                    List<IGameFile> gameFilesList = new List<IGameFile>() { gameFile };
                     Array.ForEach(gameFiles.Skip(1).ToArray(), x => gameFilesList.Add(x));
                     gameFiles = gameFilesList;
                 }
             }
 
-            return new LaunchData(gameFile, gameFiles);
+            return new LaunchData(gameFile, (GameFile)gameFile, gameFiles);
         }
 
         private IGameFile PromptUserMainFile(IEnumerable<IGameFile> gameFiles, out bool accepted)
@@ -165,38 +162,25 @@ namespace DoomLauncher
             firstGameFile.SettingsFiles = sbAdditionalFiles.ToString();
         }
 
-        private void HandlePlaySettings(PlayForm form, IGameFile gameFile)
+        private void HandlePlaySettings(PlayForm form, IGameProfile gameProfile)
         {
-            if (form.RememberSettings && gameFile != null)
+            if (form.RememberSettings && gameProfile != null)
             {
-                gameFile.SourcePortID = gameFile.IWadID = null;
+                form.UpdateGameProfile(gameProfile);
 
-                if (form.SelectedSourcePort != null) gameFile.SourcePortID = form.SelectedSourcePort.SourcePortID;
-                if (form.SelectedIWad != null) gameFile.IWadID = form.SelectedIWad.IWadID;
+                form.GameFile.SettingsGameProfileID = form.SelectedGameProfile.GameProfileID;
+                DataSourceAdapter.UpdateGameFile(form.GameFile, new GameFileFieldType[] { GameFileFieldType.SettingsGameProfileID });
 
-                if (form.SelectedMap != null) gameFile.SettingsMap = form.SelectedMap;
-                else gameFile.SettingsMap = string.Empty; //this setting can be turned off
-
-                if (form.SelectedSkill != null) gameFile.SettingsSkill = form.SelectedSkill;
-                if (form.ExtraParameters != null) gameFile.SettingsExtraParams = form.ExtraParameters;
-
-                gameFile.SettingsStat = form.SaveStatistics;
-
-                if (form.ShouldSaveAdditionalFiles())
+                if (gameProfile is IGameFile gameFile)
                 {
-                    gameFile.SettingsFiles = string.Join(";", form.GetAdditionalFiles().Select(x => x.FileName).ToArray());
-                    gameFile.SettingsFilesIWAD = string.Join(";", form.GetIWadAdditionalFiles().Select(x => x.FileName).ToArray());
-                    gameFile.SettingsFilesSourcePort = string.Join(";", form.GetSourcePortAdditionalFiles().Select(x => x.FileName).ToArray());
-
-                    if (form.SpecificFiles != null)
-                        gameFile.SettingsSpecificFiles = string.Join(";", form.SpecificFiles);
-                    else
-                        gameFile.SettingsSpecificFiles = string.Empty; //this setting can be turned off
-                }
-
-                DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap, 
+                    DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap,
                     GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
-                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort });
+                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved });
+                }
+                else
+                {
+                    DataSourceAdapter.UpdateGameProfile(gameProfile);
+                }
             }
         }
 
@@ -207,46 +191,27 @@ namespace DoomLauncher
             m_currentPlayForm.OnPreviewLaunchParameters += m_currentPlayForm_OnPreviewLaunchParameters;
             m_currentPlayForm.StartPosition = FormStartPosition.CenterParent;
 
-            List<ITabView> views = GetAdditionalTabViews();
+            m_currentPlayForm.Initialize(GetAdditionalTabViews(), gameFile);
+            m_currentPlayForm.SetGameProfile(GetGameProfile(gameFile));
+        }
 
-            if (gameFile != null)
-                gameFile = DataSourceAdapter.GetGameFile(gameFile.FileName); //this file came from the grid, which does not have all info populated to save perfomance
-
-            m_currentPlayForm.Initialize(views, gameFile);
-
-            SetDefaultSelections();
-
-            if (gameFile != null)
+        private IGameProfile GetGameProfile(IGameFile gameFile)
+        {
+            if (gameFile.SettingsGameProfileID.HasValue)
             {
-                IIWadData iwad = DataSourceAdapter.GetIWad(gameFile.GameFileID.Value);
-
-                if (iwad != null)
-                    m_currentPlayForm.SelectedIWad = gameFile;
-
-                if (gameFile.SourcePortID.HasValue)
-                    m_currentPlayForm.SelectedSourcePort = DataSourceAdapter.GetSourcePort(gameFile.SourcePortID.Value);
-
-                if (gameFile.IWadID.HasValue)
-                {
-                    m_currentPlayForm.SelectedIWad = gameFile;
-                    m_currentPlayForm.SelectedIWad = DataSourceAdapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == gameFile.IWadID);
-                }
-
-                if (!string.IsNullOrEmpty(gameFile.SettingsMap)) m_currentPlayForm.SelectedMap = gameFile.SettingsMap;
-                if (!string.IsNullOrEmpty(gameFile.SettingsSkill)) m_currentPlayForm.SelectedSkill = gameFile.SettingsSkill;
-                if (!string.IsNullOrEmpty(gameFile.SettingsExtraParams)) m_currentPlayForm.ExtraParameters = gameFile.SettingsExtraParams;
-                if (!string.IsNullOrEmpty(gameFile.SettingsSpecificFiles)) m_currentPlayForm.SpecificFiles = Util.SplitString(gameFile.SettingsSpecificFiles);
+                var profile = DataSourceAdapter.GetGameProfiles(gameFile.GameFileID.Value).FirstOrDefault(x => x.GameProfileID == gameFile.SettingsGameProfileID.Value);
+                if (profile != null)
+                    return profile;
             }
 
-            m_currentPlayForm.InitializeComplete();
+            return (GameFile)gameFile;
         }
 
         private void m_currentPlayForm_OnPreviewLaunchParameters(object sender, EventArgs e)
         {
             GameFilePlayAdapter playAdapter = CreatePlayAdapter(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
             playAdapter.ExtractFiles = false;
-            string err;
-            if (m_currentPlayForm.SettingsValid(out err))
+            if (m_currentPlayForm.SettingsValid(out string err))
                 ShowLaunchParameters(playAdapter, m_currentPlayForm.GameFile, m_currentPlayForm.SelectedSourcePort);
             else
                 MessageBox.Show(this, err, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -254,7 +219,7 @@ namespace DoomLauncher
 
         void m_currentPlayForm_SaveSettings(object sender, EventArgs e)
         {
-            HandlePlaySettings(m_currentPlayForm, m_currentPlayForm.GameFile);
+            HandlePlaySettings(m_currentPlayForm, m_currentPlayForm.SelectedGameProfile);
         }
 
         private List<ITabView> GetAdditionalTabViews()
@@ -263,29 +228,6 @@ namespace DoomLauncher
             views.AddRange(m_tabHandler.TabViews.Where(x => x.Title == s_localKey));
             views.AddRange(m_tabHandler.TabViews.Where(x => x is TagTabView));
             return views;
-        }
-
-        private void SetDefaultSelections()
-        {
-            int port = (int)AppConfiguration.GetTypedConfigValue(ConfigType.DefaultSourcePort, typeof(int));
-            int iwad = (int)AppConfiguration.GetTypedConfigValue(ConfigType.DefaultIWad, typeof(int));
-            string skill = (string)AppConfiguration.GetTypedConfigValue(ConfigType.DefaultSkill, typeof(string));
-
-            ISourcePortData sourcePort = DataSourceAdapter.GetSourcePorts().FirstOrDefault(x => x.SourcePortID == port);
-            if (sourcePort != null) 
-                m_currentPlayForm.SelectedSourcePort = sourcePort;
-
-            IIWadData iwadSource =  DataSourceAdapter.GetIWads().FirstOrDefault(x => x.IWadID == Convert.ToInt32(iwad));
-            if (iwadSource != null)
-            {
-                GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID, iwadSource.GameFileID.Value.ToString()));
-                IEnumerable<IGameFile> gameFileIwad = DataSourceAdapter.GetGameFiles(options);
-                if (gameFileIwad.Any())
-                    m_currentPlayForm.SelectedIWad = gameFileIwad.First();
-            }
-
-            if (skill != null) 
-                m_currentPlayForm.SelectedSkill = skill;
         }
 
         private DateTime m_dtStartPlay;

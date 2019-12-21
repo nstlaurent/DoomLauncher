@@ -156,7 +156,7 @@ namespace DoomLauncher
                     if (item.Object.Equals(gameFile))
                     {
                         IGameFile dsSet = item.Object as IGameFile;
-                        Array.ForEach(dsSet.GetType().GetProperties(), x => x.SetValue(dsSet, x.GetValue(gameFile)));
+                        Array.ForEach(dsSet.GetType().GetProperties().Where(x => x.SetMethod != null).ToArray(), x => x.SetValue(dsSet, x.GetValue(gameFile)));
                         ctrlView.Invalidate(true);
                         break;
                     }

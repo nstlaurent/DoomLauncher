@@ -22,13 +22,13 @@ namespace UnitTest.Tests
             CreateDatabase();
 
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var gameFiles = Util.GetAdditionalFiles(adapter, adapter.GetGameFile("COOLGAMEFILE.WAD"));
+            var gameFiles = Util.GetAdditionalFiles(adapter, (GameFile)adapter.GetGameFile("COOLGAMEFILE.WAD"));
 
             Assert.AreEqual(2, gameFiles.Count);
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "SUPERCOOLMOD.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "MOD2.WAD"));
 
-            gameFiles = Util.GetAdditionalFiles(adapter, adapter.GetGameFile("OTHERGAMEFILE.WAD"));
+            gameFiles = Util.GetAdditionalFiles(adapter, (GameFile)adapter.GetGameFile("OTHERGAMEFILE.WAD"));
             Assert.AreEqual(2, gameFiles.Count);
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "MOD3.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "MOD4.WAD"));

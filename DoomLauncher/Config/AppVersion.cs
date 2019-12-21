@@ -23,6 +23,7 @@ namespace DoomLauncher
         Version_2_6_3_1,
         Version_2_6_3_2,
         Version_2_6_4_1,
-        Version_2_6_4_1_Update1
+        Version_2_6_4_1_Update1,
+        Version_2_7_0_0
     }
 }

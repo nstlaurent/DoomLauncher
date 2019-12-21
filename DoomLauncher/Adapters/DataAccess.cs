@@ -7,7 +7,7 @@ using System.Data.Common;
 
 namespace DoomLauncher
 {
-    class DataAccess
+    public class DataAccess
     {
         public DataAccess(IDatabaseAdapter dbAdapter, string connectionString)
         {
