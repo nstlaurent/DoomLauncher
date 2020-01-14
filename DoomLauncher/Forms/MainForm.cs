@@ -538,6 +538,9 @@ namespace DoomLauncher
 
             var tagMapping = DataSourceAdapter.GetTagMappings(gameFile.GameFileID.Value);
             tagMapping.ToList().ForEach(x => DataSourceAdapter.DeleteTagMapping(x));
+
+            var profiles = DataSourceAdapter.GetGameProfiles(gameFile.GameFileID.Value);
+            profiles.ToList().ForEach(x =>DataSourceAdapter.DeleteGameProfile(x.GameProfileID));
         }
 
         private void DeleteLocalFileAssociations(IGameFile gameFIle)
