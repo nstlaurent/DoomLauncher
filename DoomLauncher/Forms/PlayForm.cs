@@ -131,11 +131,15 @@ namespace DoomLauncher
 
         private void SetDefaultSelections()
         {
-            cmbMap.SelectedIndex = 0;
+            if (cmbMap.Items.Count > 0)
+                cmbMap.SelectedIndex = 0;
+            else
+                cmbMap.SelectedIndex = -1;
+
             chkMap.Checked = false;
 
             txtParameters.Text = string.Empty;
-            SpecificFiles = new string[] { };
+            SpecificFiles = null;
 
             ctrlFiles.SetDataSource(new List<IGameFile>());
         }
