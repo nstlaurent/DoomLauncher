@@ -805,7 +805,7 @@ namespace DoomLauncher
             return true;
         }
 
-        private static TextBoxForm CreateProfileTextBoxForm(string displayText)
+        private static TextBoxForm CreateProfileTextBoxForm(string displayText, bool showCheckBox)
         {
             TextBoxForm form = new TextBoxForm(false, MessageBoxButtons.OKCancel);
             form.SetMaxLength(48);
@@ -813,7 +813,8 @@ namespace DoomLauncher
             form.StartPosition = FormStartPosition.CenterParent;
             form.Text = "Enter Profile Name";
             form.SelectDisplayText(0, form.DisplayText.Length);
-            form.SetCheckBox("Copy current profile");
+            if (showCheckBox)
+                form.SetCheckBox("Copy current profile");
             return form;
         }
 
@@ -853,7 +854,7 @@ namespace DoomLauncher
 
         private void newProfileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TextBoxForm form = CreateProfileTextBoxForm("New Profile");
+            TextBoxForm form = CreateProfileTextBoxForm("New Profile", true);
             bool success = false;
 
             while (!success && form.ShowDialog(this) == DialogResult.OK)
@@ -890,7 +891,7 @@ namespace DoomLauncher
                 return;
             }
 
-            TextBoxForm form = CreateProfileTextBoxForm(SelectedGameProfile.Name);
+            TextBoxForm form = CreateProfileTextBoxForm(SelectedGameProfile.Name, false);
             int gameProfileID = SelectedGameProfile.GameProfileID;
             bool success = false;
 
