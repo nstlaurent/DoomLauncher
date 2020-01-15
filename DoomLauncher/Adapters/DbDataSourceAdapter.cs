@@ -633,7 +633,7 @@ namespace DoomLauncher
 
         public void UpdateGameProfile(IGameProfile gameProfile)
         {
-            string query = @"update GameProfiles set Name = @Name,
+            string query = @"update GameProfiles set Name = @Name, SourcePortID = @SourcePortID, IWadID = @IWadID,
                     SettingsMap = @SettingsMap, SettingsSkill = @SettingsSkill, SettingsExtraParams = @SettingsExtraParams, SettingsFiles = @SettingsFiles,
                     SettingsFilesSourcePort = @SettingsFilesSourcePort, SettingsFilesIWAD = @SettingsFilesIWAD,
                     SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, SettingsSaved = @SettingsSaved
@@ -642,6 +642,8 @@ namespace DoomLauncher
             List<DbParameter> parameters = new List<DbParameter>
             {
                 DataAccess.DbAdapter.CreateParameter("Name", gameProfile.Name ?? (object)DBNull.Value),
+                DataAccess.DbAdapter.CreateParameter("SourcePortID", gameProfile.SourcePortID ?? (object)DBNull.Value),
+                DataAccess.DbAdapter.CreateParameter("IWadID", gameProfile.IWadID ?? (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("SettingsMap", gameProfile.SettingsMap ?? (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("SettingsSkill", gameProfile.SettingsSkill ?? (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("SettingsExtraParams", gameProfile.SettingsExtraParams ?? (object)DBNull.Value),

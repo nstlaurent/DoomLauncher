@@ -40,6 +40,8 @@ namespace UnitTest.Tests
             foreach (var profile in profiles)
             {
                 profile.Name += profile.Name;
+                profile.SourcePortID += profile.SourcePortID;
+                profile.IWadID += profile.IWadID;
                 profile.SettingsExtraParams += profile.SettingsExtraParams;
                 profile.SettingsFiles += profile.SettingsFiles;
                 profile.SettingsFilesIWAD += profile.SettingsFilesIWAD;
