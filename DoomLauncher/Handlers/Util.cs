@@ -155,7 +155,11 @@ namespace DoomLauncher
             }
         }
 
-        public static string GitHubRepository => "https://github.com/hobomaster22/DoomLauncher";
+        public static string GitHubRepository => $"https://github.com/{GitHubUser}/{GitHubRepositoryName}";
+
+        public static string GitHubUser => "nstlaurent";
+
+        public static string GitHubRepositoryName => "DoomLauncher";
 
         public static string DoomworldThread => "http://www.doomworld.com/vb/doom-general/69346-doom-launcher-doom-frontend-database/";
 

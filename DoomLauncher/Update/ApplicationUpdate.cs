@@ -16,9 +16,9 @@ namespace DoomLauncher
 
         public async Task<ApplicationUpdateInfo> GetUpdateApplicationInfo(Version currentVersion)
         {
-            var github = new GitHubClient(new ProductHeaderValue("hobomaster22.DoomLauncher"));
+            var github = new GitHubClient(new ProductHeaderValue($"{Util.GitHubUser}.{Util.GitHubRepositoryName}"));
             github.SetRequestTimeout(m_timeout);
-            var release = await github.Repository.Release.GetLatest("hobomaster22", "DoomLauncher");
+            var release = await github.Repository.Release.GetLatest(Util.GitHubUser, Util.GitHubRepositoryName);
 
             if (release != null)
             {
