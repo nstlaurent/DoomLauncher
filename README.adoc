@@ -1,6 +1,6 @@
 = Doom Launcher
 
-https://ci.appveyor.com/project/hobomaster22/doomlauncher[image:https://ci.appveyor.com/api/projects/status/github/hobomaster22/doomlauncher?svg=true[Build status]]
+https://ci.appveyor.com/project/hobomaster22/doomlauncher[image:https://ci.appveyor.com/api/projects/status/github/nstlaurent/doomlauncher?svg=true[Build status]]
 
 Doom Launcher is a _Doom_ frontend for Windows PC. Instead of being a
 simple utility to launch your files, it serves as database for all your
@@ -57,7 +57,7 @@ https://www.sonarlint.org/visualstudio/
 
 == Doom Launcher Links
 
-GitHub Repository: https://github.com/hobomaster22/DoomLauncher
+GitHub Repository: https://github.com/nstlaurent/DoomLauncher
 
 Doomworld Thread: https://www.doomworld.com/vb/doom-general/69346-doom-launcher-doom-frontend-database/
 
