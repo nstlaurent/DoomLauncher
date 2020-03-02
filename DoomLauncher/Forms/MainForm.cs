@@ -197,9 +197,10 @@ namespace DoomLauncher
 
         private void UpdateSavedTabSearch(ITabView tabView, GameFileSearchField[] searchFields)
         {
-            if (!m_savedTabSearches.ContainsKey(tabView))
-                m_savedTabSearches.Add(tabView, null);
-            m_savedTabSearches[tabView] = searchFields;
+            if (searchFields == null)
+                m_savedTabSearches.Remove(tabView);
+            else
+                m_savedTabSearches[tabView] = searchFields;
         }
 
         private void CleanTempDirectory()
