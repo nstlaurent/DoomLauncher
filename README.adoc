@@ -1,6 +1,6 @@
 = Doom Launcher
 
-https://ci.appveyor.com/project/hobomaster22/doomlauncher[image:https://ci.appveyor.com/api/projects/status/github/hobomaster22/doomlauncher?branch=development&svg=true[Build status]]
+https://ci.appveyor.com/project/hobomaster22/doomlauncher[image:https://ci.appveyor.com/api/projects/status/github/nstlaurent/doomlauncher?branch=development&svg=true[Build status]]
 
 Doom Launcher is a _Doom_ frontend that serves as a database for
 all your _Doom_ engine games, custom WADs, PK3s, and source ports. 
@@ -60,7 +60,7 @@ SonarLint. A great code analysis extension for Visual Studio. Highly recommended
 https://www.sonarlint.org/visualstudio/
 
 == Doom Launcher Links
-GitHub Repository: https://github.com/hobomaster22/DoomLauncher
+GitHub Repository: https://github.com/nstlaurent/DoomLauncher
 
 Doomworld Thread: https://www.doomworld.com/vb/doom-general/69346-doom-launcher-doom-frontend-database/
 
