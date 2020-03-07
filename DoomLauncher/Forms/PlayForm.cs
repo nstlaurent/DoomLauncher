@@ -501,14 +501,20 @@ namespace DoomLauncher
         {
             SetAdditionalFiles(resetAdditionalFiles);
 
-            if (GameFile == null && SelectedIWad != null)
-            {
-                var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID == SelectedIWad.GameFileID);
-                if (gameFileIwad != null)
-                    SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFileIwad), null, null);
-            }
+            if (GameFile == null || (GameFile != null && string.IsNullOrEmpty(GameFile.Map)))
+                SetMapsFromIwad();
 
             m_lastIwad = SelectedIWad;
+        }
+
+        private void SetMapsFromIwad()
+        {
+            if (SelectedIWad == null)
+                return;
+
+            var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID == SelectedIWad.GameFileID);
+            if (gameFileIwad != null)
+                SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFileIwad), null, null);
         }
 
         private void SetAdditionalFiles(bool reset)
