@@ -234,7 +234,7 @@ namespace DoomLauncher
             return string.Concat(time.ToString(), " ",  type, time == 1 ? string.Empty : "s");
         }
 
-        public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)
+        public static List<IGameFile> GetAdditionalFiles(IDataSourceAdapter adapter, IGameProfile gameFile)
         {
             if (gameFile != null && !string.IsNullOrEmpty(gameFile.SettingsFiles))
                 return GetAdditionalFiles(adapter, gameFile.SettingsFiles);
@@ -242,7 +242,7 @@ namespace DoomLauncher
             return new List<IGameFile>();
         }
 
-        public static List<IGameFile> GetIWadAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)
+        public static List<IGameFile> GetIWadAdditionalFiles(IDataSourceAdapter adapter, IGameProfile gameFile)
         {
             if (gameFile != null && !string.IsNullOrEmpty(gameFile.SettingsFilesIWAD))
                 return GetAdditionalFiles(adapter, gameFile.SettingsFilesIWAD);
@@ -250,7 +250,7 @@ namespace DoomLauncher
             return new List<IGameFile>();
         }
 
-        public static List<IGameFile> GetSourcePortAdditionalFiles(IDataSourceAdapter adapter, IGameFile gameFile)
+        public static List<IGameFile> GetSourcePortAdditionalFiles(IDataSourceAdapter adapter, IGameProfile gameFile)
         {
             if (gameFile != null && !string.IsNullOrEmpty(gameFile.SettingsFilesSourcePort))
                 return GetAdditionalFiles(adapter, gameFile.SettingsFilesSourcePort);

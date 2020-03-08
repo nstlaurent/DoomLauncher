@@ -1,19 +1,17 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.DataSources
 {
-    public class GameFile : IGameFile, ICloneable
+    public class GameFile : IGameFile, IGameProfile, ICloneable
     {
         public GameFile()
         {
             FileName = Title = Author = Description = Thumbnail = Comments = Map = SettingsMap = SettingsSkill = SettingsExtraParams = SettingsFiles
                 = SettingsSpecificFiles = string.Empty;
+            Name = "Default Profile";
             SettingsStat = true;
+            GameProfileID = -1;
         }
 
         public int? GameFileID { get; set; }
@@ -32,6 +30,8 @@ namespace DoomLauncher.DataSources
         public DateTime? LastPlayed { get; set; }
         public DateTime? Downloaded { get; set; }
 
+        public int GameProfileID { get; set; }
+        public string Name { get; set; }
         public string SettingsMap { get; set; }
         public string SettingsSkill { get; set; }
         public string SettingsExtraParams { get; set; }
@@ -40,6 +40,8 @@ namespace DoomLauncher.DataSources
         public string SettingsFilesIWAD { get; set; }
         public string SettingsSpecificFiles { get; set; }
         public bool SettingsStat { get; set; }
+        public bool SettingsSaved { get; set; }
+        public int? SettingsGameProfileID { get; set; }
 
         public int MinutesPlayed { get; set; }
         public virtual int FileSizeBytes { get; set; }

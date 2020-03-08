@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DoomLauncher.Interfaces;
-using System.IO;
 using DoomLauncher;
 using DoomLauncher.DataSources;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace UnitTest.Tests
     {
         private static string s_garbage = "'s like = % ";
 
-        private static GameFileFieldType[] s_fields = new GameFileFieldType[]
+        private static readonly GameFileFieldType[] s_fields = new GameFileFieldType[]
         {
             GameFileFieldType.GameFileID,
             GameFileFieldType.Filename,
@@ -36,27 +35,30 @@ namespace UnitTest.Tests
         {
             DateTime dt = DateTime.Parse("1/1/17");
 
-            DoomLauncher.DataSources.GameFile gameFile = new DoomLauncher.DataSources.GameFile();
-            gameFile.FileName = filename;
-            gameFile.Author = string.Format("Author_{0}", filename);
-            gameFile.Description = string.Format("Description_{0}", filename);
-            gameFile.Title = string.Format("Title_{0}", filename);
-            gameFile.Comments = string.Format("Comments_{0}", filename);
-            gameFile.ReleaseDate = dt;
-            gameFile.Downloaded = dt;
-            gameFile.LastPlayed = dt;
-            gameFile.IWadID = count;
-            gameFile.Rating = count;
-            gameFile.MinutesPlayed = count;
-            gameFile.MapCount = count;
-            gameFile.SourcePortID = count;
-            gameFile.SettingsExtraParams = filename;
-            gameFile.SettingsFiles = filename;
-            gameFile.SettingsFilesIWAD = filename;
-            gameFile.SettingsFilesSourcePort = filename;
-            gameFile.SettingsMap = filename;
-            gameFile.SettingsSkill = filename;
-            gameFile.SettingsSpecificFiles = filename;
+            GameFile gameFile = new GameFile
+            {
+                FileName = filename,
+                Author = string.Format("Author_{0}", filename),
+                Description = string.Format("Description_{0}", filename),
+                Title = string.Format("Title_{0}", filename),
+                Comments = string.Format("Comments_{0}", filename),
+                ReleaseDate = dt,
+                Downloaded = dt,
+                LastPlayed = dt,
+                IWadID = count,
+                Rating = count,
+                MinutesPlayed = count,
+                MapCount = count,
+                SourcePortID = count,
+                SettingsExtraParams = filename,
+                SettingsFiles = filename,
+                SettingsFilesIWAD = filename,
+                SettingsFilesSourcePort = filename,
+                SettingsMap = filename,
+                SettingsSkill = filename,
+                SettingsSpecificFiles = filename,
+                SettingsGameProfileID = count
+            };
 
             return gameFile;
         }
@@ -68,21 +70,21 @@ namespace UnitTest.Tests
 
             for (int i = 0; i < 3; i++)
             {
-                DoomLauncher.DataSources.GameFile gameFile = CreateGameFile(string.Format("Test{0}.Zip", ++count), count);
+                GameFile gameFile = CreateGameFile(string.Format("Test{0}.Zip", ++count), count);
                 gameFile.GameFileID = count;
                 files.Add(gameFile);
             }
 
             for (int i = 0; i < 3; i++)
             {
-                DoomLauncher.DataSources.GameFile gameFile = CreateGameFile(string.Format("TEST{0}.Zip", ++count), count);
+                GameFile gameFile = CreateGameFile(string.Format("TEST{0}.Zip", ++count), count);
                 gameFile.GameFileID = count;
                 files.Add(gameFile);
             }
 
             for (int i = 0; i < 3; i++)
             {
-                DoomLauncher.DataSources.GameFile gameFile = CreateGameFile(string.Format("TEST{0}{1}.Zip", s_garbage, ++count), count);
+                GameFile gameFile = CreateGameFile(string.Format("TEST{0}{1}.Zip", s_garbage, ++count), count);
                 gameFile.GameFileID = count;
                 files.Add(gameFile);
             }
@@ -423,7 +425,7 @@ namespace UnitTest.Tests
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
-            SetRandomFileValues(gameFiles, typeof(DoomLauncher.DataSources.GameFile).GetProperties());
+            SetRandomFileValues(gameFiles, typeof(GameFile).GetProperties());
 
             foreach(var gameFile in gameFiles)
             {

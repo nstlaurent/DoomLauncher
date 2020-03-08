@@ -101,6 +101,8 @@
     <Compile Include="Controls\UpdateControl.Designer.cs">
       <DependentUpon>UpdateControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataSources\GameProfile.cs" />
+    <Compile Include="Interfaces\IGameProfile.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />
