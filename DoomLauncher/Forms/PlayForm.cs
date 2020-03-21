@@ -6,7 +6,6 @@ using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +17,7 @@ namespace DoomLauncher
     public partial class PlayForm : Form
     {
         private ITabView[] m_additionalFileViews;
-        private bool m_init, m_demoChangedAdditionalFiles;
+        private bool m_demoChangedAdditionalFiles;
         private ISourcePortData m_lastSourcePort;
         private IGameFile m_lastIwad;
 
@@ -50,12 +49,9 @@ namespace DoomLauncher
 
         public void Initialize(IEnumerable<ITabView> additionalFileViews, IGameFile gameFile)
         {
-            m_init = true;
             m_additionalFileViews = additionalFileViews.ToArray();
 
             GameFile = gameFile;
-
-            m_handler = new FileLoadHandler(m_adapter, gameFile);
 
             SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePortData), "Name");
             SetAutoCompleteCustomSource(cmbIwad, Util.GetIWadsDataSource(m_adapter), typeof(IIWadData), "FileName");
@@ -65,21 +61,122 @@ namespace DoomLauncher
                 Text = "Launch - " + (string.IsNullOrEmpty(gameFile.Title) ? gameFile.FileName : gameFile.Title);
                 if (!string.IsNullOrEmpty(gameFile.Map))
                     SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
-                chkSaveStats.Checked = gameFile.SettingsStat;
             }
 
             cmbSkill.DataSource = Util.GetSkills();
             cmbSkill.SelectedItem = "3";
 
-            if (gameFile != null && IsIwad(gameFile))
+            LoadProfiles();
+        }
+
+        public void SetGameProfile(IGameProfile gameProfile)
+        {
+            SetIwadInfoLabel();
+
+            UnregisterEvents();
+            m_handler = new FileLoadHandler(m_adapter, GameFile, gameProfile);
+
+            SetDefaultSelections();
+            GameProfile.ApplyDefaultsToProfile(gameProfile, m_appConfig);
+            cmbProfiles.SelectedValue = gameProfile.GameProfileID;
+
+            if (GameFile != null)
             {
-                pbInfo.Image = DoomLauncher.Properties.Resources.bon2b;
+                chkSaveStats.Checked = gameProfile.SettingsStat;
+
+                IIWadData iwad = m_adapter.GetIWad(gameProfile.GameFileID.Value);
+
+                if (iwad != null)
+                    SelectedIWad = GameFile;
+
+                if (gameProfile.SourcePortID.HasValue)
+                    SelectedSourcePort = m_adapter.GetSourcePort(gameProfile.SourcePortID.Value);
+
+                if (gameProfile.IWadID.HasValue)
+                {
+                    SelectedIWad = GameFile;
+                    SelectedIWad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == gameProfile.IWadID);
+                }
+
+                if (!string.IsNullOrEmpty(gameProfile.SettingsMap)) SelectedMap = gameProfile.SettingsMap;
+                if (!string.IsNullOrEmpty(gameProfile.SettingsSkill)) SelectedSkill = gameProfile.SettingsSkill;
+                if (!string.IsNullOrEmpty(gameProfile.SettingsExtraParams)) ExtraParameters = gameProfile.SettingsExtraParams;
+                if (!string.IsNullOrEmpty(gameProfile.SettingsSpecificFiles)) SpecificFiles = Util.SplitString(gameProfile.SettingsSpecificFiles);
+            }
+
+            bool reset = ShouldRecalculateAdditionalFiles();
+            HandleSourcePortSelectionChange(reset);
+            HandleIwadSelectionChanged(reset);
+            HandleDemoChange();
+            RegisterEvents();
+
+            if (SelectedIWad != null && SelectedIWad.Equals(GameFile))
+                cmbIwad.Enabled = false;
+        }
+
+        private void SetIwadInfoLabel()
+        {
+            if (GameFile != null && IsIwad(GameFile) && SelectedGameProfile is GameFile)
+            {
+                DpiScale dpiScale = new DpiScale(CreateGraphics());
+                tblFiles.RowStyles[0].Height = dpiScale.ScaleFloatY(40);
+                pbInfo.Image = Properties.Resources.bon2b;
                 lblInfo.Text = string.Format("These files will automatically be added{0} when this IWAD is selected for play.", Environment.NewLine);
             }
             else
             {
                 tblFiles.RowStyles[0].Height = 0;
             }
+        }
+
+        private void SetDefaultSelections()
+        {
+            if (cmbMap.Items.Count > 0)
+                cmbMap.SelectedIndex = 0;
+            else
+                cmbMap.SelectedIndex = -1;
+
+            chkMap.Checked = false;
+
+            txtParameters.Text = string.Empty;
+            SpecificFiles = null;
+
+            ctrlFiles.SetDataSource(new List<IGameFile>());
+        }
+
+        private void RegisterEvents()
+        {
+            cmbProfiles.SelectedIndexChanged += CmbProfiles_SelectedIndexChanged;
+            cmbSourcePorts.SelectedIndexChanged += cmbSourcePorts_SelectedIndexChanged;
+            cmbIwad.SelectedIndexChanged += cmbIwad_SelectedIndexChanged;
+            cmbDemo.SelectedIndexChanged += cmbDemo_SelectedIndexChanged;
+
+            chkRecord.CheckedChanged += chkRecord_CheckedChanged;
+            chkDemo.CheckedChanged += chkDemo_CheckedChanged;
+        }
+
+        private void UnregisterEvents()
+        {
+            cmbProfiles.SelectedIndexChanged -= CmbProfiles_SelectedIndexChanged;
+            cmbSourcePorts.SelectedIndexChanged -= cmbSourcePorts_SelectedIndexChanged;
+            cmbIwad.SelectedIndexChanged -= cmbIwad_SelectedIndexChanged;
+            cmbDemo.SelectedIndexChanged -= cmbDemo_SelectedIndexChanged;
+
+            chkRecord.CheckedChanged -= chkRecord_CheckedChanged;
+            chkDemo.CheckedChanged -= chkDemo_CheckedChanged;
+        }
+
+        private List<IGameProfile> LoadProfiles()
+        {
+            if (GameFile.GameFileID.HasValue)
+            {
+                List<IGameProfile> profiles = m_adapter.GetGameProfiles(GameFile.GameFileID.Value).OrderBy(x => x.Name).ToList();
+                profiles.Insert(0, (GameFile)GameFile);
+                SetAutoCompleteCustomSource(cmbProfiles, profiles, typeof(IGameProfile), "Name");
+                return profiles;
+            }
+
+            return new List<IGameProfile>();
         }
 
         private static string[] MapSplit(IGameFile gameFile)
@@ -106,6 +203,9 @@ namespace DoomLauncher
             cmb.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             cmb.AutoCompleteCustomSource = collection;
             cmb.DropDown += Cmb_DropDown;
+
+            if (!datasource.Any())
+                cmb.Text = string.Empty;
         }
 
         private static void Cmb_DropDown(object sender, EventArgs e)
@@ -121,18 +221,6 @@ namespace DoomLauncher
                 cmb.Focus();
         }
 
-        public void InitializeComplete()
-        {
-            IGameFile gameIwad = SelectedIWad;
-            if (gameIwad != null && gameIwad.Equals(GameFile))
-                cmbIwad.Enabled = false;
-
-            ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());           
-            AddExtraAdditionalFiles();
-
-            m_init = false;
-        }
-
         private bool IsIwad(IGameFile gameFile)
         {
             if (gameFile.GameFileID.HasValue)
@@ -142,6 +230,7 @@ namespace DoomLauncher
         }
 
         public IGameFile GameFile { get; private set; }
+        public IGameProfile SelectedGameProfile => (IGameProfile)cmbProfiles.SelectedItem;
 
         public ISourcePortData SelectedSourcePort
         {
@@ -287,12 +376,17 @@ namespace DoomLauncher
 
         private void cmbSourcePorts_SelectedIndexChanged(object sender, EventArgs e)
         {
+            HandleSourcePortSelectionChange();
+        }
+
+        private void HandleSourcePortSelectionChange(bool resetAdditionalFiles = true)
+        {
             if (cmbSourcePorts.SelectedItem != null && GameFile != null)
             {
-                PopulateDemos();
                 ISourcePortData sourcePort = cmbSourcePorts.SelectedItem as ISourcePortData;
                 chkSaveStats.Enabled = SaveStatisticsSupported(sourcePort);
-                AddExtraAdditionalFiles();
+                SetAdditionalFiles(resetAdditionalFiles);
+                PopulateDemos();
             }
 
             m_lastSourcePort = SelectedSourcePort;
@@ -400,40 +494,50 @@ namespace DoomLauncher
 
         private void cmbIwad_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AddExtraAdditionalFiles();
+            HandleIwadSelectionChanged();
+        }
 
-            if (GameFile == null && SelectedIWad != null)
-            {
-                var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID == SelectedIWad.GameFileID);
-                if (gameFileIwad != null)
-                    SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFileIwad), null, null);
-            }
+        private void HandleIwadSelectionChanged(bool resetAdditionalFiles = true)
+        {
+            SetAdditionalFiles(resetAdditionalFiles);
+
+            if (GameFile == null || (GameFile != null && string.IsNullOrEmpty(GameFile.Map)))
+                SetMapsFromIwad();
 
             m_lastIwad = SelectedIWad;
         }
 
-        private void AddExtraAdditionalFiles()
+        private void SetMapsFromIwad()
         {
-            if (InitAddFilesCheck())
+            if (SelectedIWad == null)
+                return;
+
+            var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID == SelectedIWad.GameFileID);
+            if (gameFileIwad != null)
+                SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFileIwad), null, null);
+        }
+
+        private void SetAdditionalFiles(bool reset)
+        {
+            if (m_handler == null)
+                return;
+
+            if (reset && m_lastIwad != null && m_lastSourcePort != null)
             {
                 m_handler.CalculateAdditionalFiles(m_lastIwad, m_lastSourcePort);
                 m_handler.CalculateAdditionalFiles(SelectedIWad, cmbSourcePorts.SelectedItem as ISourcePortData);
                 ResetSpecificFilesSelections(m_handler.GetCurrentAdditionalNewFiles().ToArray());
-                ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());
             }
 
+            ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());
             ctrlFiles.Refresh(); //the port or iwad in () may have changed so invalidate to force update
         }
 
-        private bool InitAddFilesCheck()
+        private bool ShouldRecalculateAdditionalFiles()
         {
             //For files that have been launcned before: Selected index changed fires a lot on init, so ignore those
             //If the file has never been launched, then we need to set the additional files on init
-            //Having files in SettingsSpecificFiles indicates if the file has been launched before
-            if (m_init)
-                return GameFile != null && GameFile.SettingsSpecificFiles.Length == 0;
-
-            return true;
+            return SelectedGameProfile != null && !SelectedGameProfile.SettingsSaved;
         }
 
         private void lnkSpecific_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -466,28 +570,29 @@ namespace DoomLauncher
             if (chkRecord.Checked && string.IsNullOrEmpty(txtDescription.Text))
                 error = "Please enter a description for the demo to record.";
             else if (SelectedSourcePort == null)
-                error = "A source port must be selected";
+                error = "A source port must be selected.";
             else if (chkMap.Checked && SelectedMap == null)
                 error = "A map must be selected.";
             else if (chkMap.Checked && SelectedSkill == null)
                 error = "A skill must be selected";
             else if (chkDemo.Checked && SelectedDemo == null)
-                error = "A demo must be selected";
+                error = "A demo must be selected.";
+            else if (SelectedGameProfile == null)
+                error = "A profile must be selected.";
 
             return error == null;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            string err;
-            if (SettingsValid(out err))
+            if (SettingsValid(out string err))
             {
-                this.DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
             }
             else
             {
                 MessageBox.Show(this, err, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.DialogResult = DialogResult.None;
+                DialogResult = DialogResult.None;
             }
         }
 
@@ -495,7 +600,7 @@ namespace DoomLauncher
         {
             IGameFile gameFile = e.Item as IGameFile;
             IGameFile iwad = SelectedIWad;
-            ISourcePortData port = cmbSourcePorts.SelectedValue as ISourcePortData;
+            ISourcePortData port = SelectedSourcePort;
             if (iwad != null && m_handler.IsIWadFile(gameFile))
                 e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, Util.RemoveExtension(iwad.FileName));
             if (port != null && m_handler.IsSourcePortFile(gameFile))
@@ -504,7 +609,10 @@ namespace DoomLauncher
 
         private void btnSaveSettings_Click(object sender, EventArgs e)
         {
-            SaveSettings?.Invoke(this, new EventArgs());
+            if (SelectedGameProfile == null)
+                MessageBox.Show(this, "A profile must be selected to save.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+                SaveSettings?.Invoke(this, new EventArgs());
         }
 
         private void lnkOpenDemo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -528,7 +636,8 @@ namespace DoomLauncher
 
         private void HandleDemoChange()
         {
-            ResetAdditionalFiles();
+            m_handler.Reset();
+            SetAdditionalFiles(true);
 
             if (chkDemo.Checked && cmbDemo.SelectedItem != null)
             {
@@ -565,12 +674,6 @@ namespace DoomLauncher
             {
                 m_demoChangedAdditionalFiles = false;
             }
-        }
-
-        private void ResetAdditionalFiles()
-        {
-            m_handler.Reset();
-            InitializeComplete();
         }
 
         private void lnkPreviewLaunchParameters_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -670,6 +773,159 @@ namespace DoomLauncher
             WriteFilterSettings(m_filterSettings);
         }
 
+        private bool RenameGameProfile(int gameProfileID, string name)
+        {
+            if (!IsValidProfileName(gameProfileID, name, out string error))
+            {
+                MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            SelectedGameProfile.Name = name;
+            m_adapter.UpdateGameProfile(SelectedGameProfile);
+            cmbProfiles.SelectedIndexChanged -= CmbProfiles_SelectedIndexChanged;
+            LoadProfiles();
+            cmbProfiles.SelectedValue = gameProfileID;
+            cmbProfiles.SelectedIndexChanged += CmbProfiles_SelectedIndexChanged;
+
+            return true;
+        }
+
+        private bool IsValidProfileName(int gameProfileID, string name, out string error)
+        {
+            error = null;
+
+            if (string.IsNullOrEmpty(name))
+            {
+                error = "A name must be entered.";
+                return false;
+            }
+
+            if (m_adapter.GetGameProfiles(GameFile.GameFileID.Value).Where(x => x.GameProfileID != gameProfileID)
+                .Any(x => x.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                error = "This profile name already exists.";
+                return false;
+            }
+
+            return true;
+        }
+
+        private static TextBoxForm CreateProfileTextBoxForm(string displayText, bool showCheckBox)
+        {
+            TextBoxForm form = new TextBoxForm(false, MessageBoxButtons.OKCancel);
+            form.SetMaxLength(48);
+            form.DisplayText = displayText;
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.Text = "Enter Profile Name";
+            form.SelectDisplayText(0, form.DisplayText.Length);
+            if (showCheckBox)
+                form.SetCheckBox("Copy current profile");
+            return form;
+        }
+
+        public void UpdateGameProfile(IGameProfile gameProfile)
+        {
+            gameProfile.SettingsSaved = true;
+            gameProfile.SourcePortID = gameProfile.IWadID = null;
+
+            if (SelectedSourcePort != null) gameProfile.SourcePortID = SelectedSourcePort.SourcePortID;
+            if (SelectedIWad != null) gameProfile.IWadID = SelectedIWad.IWadID;
+
+            if (SelectedMap != null) gameProfile.SettingsMap = SelectedMap;
+            else gameProfile.SettingsMap = string.Empty; //this setting can be turned off
+
+            if (SelectedSkill != null) gameProfile.SettingsSkill = SelectedSkill;
+            if (ExtraParameters != null) gameProfile.SettingsExtraParams = ExtraParameters;
+
+            gameProfile.SettingsStat = SaveStatistics;
+
+            if (ShouldSaveAdditionalFiles())
+            {
+                gameProfile.SettingsFiles = string.Join(";", GetAdditionalFiles().Select(x => x.FileName).ToArray());
+                gameProfile.SettingsFilesIWAD = string.Join(";", GetIWadAdditionalFiles().Select(x => x.FileName).ToArray());
+                gameProfile.SettingsFilesSourcePort = string.Join(";", GetSourcePortAdditionalFiles().Select(x => x.FileName).ToArray());
+
+                if (SpecificFiles != null)
+                    gameProfile.SettingsSpecificFiles = string.Join(";", SpecificFiles);
+                else
+                    gameProfile.SettingsSpecificFiles = string.Empty; //this setting can be turned off
+            }
+        }
+
+        private void CmbProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetGameProfile(SelectedGameProfile);
+        }
+
+        private void newProfileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TextBoxForm form = CreateProfileTextBoxForm("New Profile", true);
+            bool success = false;
+
+            while (!success && form.ShowDialog(this) == DialogResult.OK)
+            {
+                success = IsValidProfileName(-1, form.DisplayText.Trim(), out string error);
+
+                if (success)
+                {
+                    GameProfile gameProfile = new GameProfile(GameFile.GameFileID.Value, form.DisplayText);
+
+                    GameProfile.ApplyDefaultsToProfile(gameProfile, m_appConfig);
+                    if (form.CheckBoxChecked)
+                        UpdateGameProfile(gameProfile);
+                    
+                    m_adapter.InsertGameProfile(gameProfile);
+
+                    cmbProfiles.SelectedIndexChanged -= CmbProfiles_SelectedIndexChanged;
+                    var profiles = LoadProfiles();
+                    cmbProfiles.SelectedIndexChanged += CmbProfiles_SelectedIndexChanged;
+                    cmbProfiles.SelectedValue = profiles.Max(x => x.GameProfileID);
+                }
+                else
+                {
+                    MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void editProfileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedGameProfile is GameFile)
+            {
+                MessageBox.Show(this, "The default profile cannot be renamed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            TextBoxForm form = CreateProfileTextBoxForm(SelectedGameProfile.Name, false);
+            int gameProfileID = SelectedGameProfile.GameProfileID;
+            bool success = false;
+
+            while (!success && form.ShowDialog(this) == DialogResult.OK)
+            {
+                success = RenameGameProfile(gameProfileID, form.DisplayText.Trim());
+            }
+        }
+
+        private void deleteProfileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedGameProfile != null)
+            {
+                if (SelectedGameProfile is GameFile)
+                {
+                    MessageBox.Show(this, "The default profile cannot be deleted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (MessageBox.Show(this, string.Format("Are you sure you want to delete {0}?", SelectedGameProfile.Name), 
+                    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    m_adapter.DeleteGameProfile(SelectedGameProfile.GameProfileID);
+                    LoadProfiles();
+                }
+            }
+        }
+
         private List<IGameFile> GetGameFiles(string[] fileNames, List<string> unavailable, List<IGameFile> iwads)
         {        
             List<IGameFile> gameFiles = new List<IGameFile>();
@@ -690,10 +946,24 @@ namespace DoomLauncher
                     else
                         gameFiles.Add(gameFile);
                 }
-
             }
 
             return gameFiles;
+        }
+
+        private void TxtParameters_Click(object sender, EventArgs e)
+        {
+            TextBoxForm form = new TextBoxForm(true, MessageBoxButtons.OKCancel)
+            {
+                Text = "Extra Parameters",
+                DisplayText = txtParameters.Text,
+                StartPosition = FormStartPosition.CenterParent,
+                AcceptButton = null
+            };
+
+            form.SelectDisplayText(0, 0);
+            if (form.ShowDialog(this) == DialogResult.OK)
+                txtParameters.Text = form.DisplayText;
         }
     }
 }

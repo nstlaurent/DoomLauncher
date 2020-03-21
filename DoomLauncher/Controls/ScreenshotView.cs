@@ -53,6 +53,8 @@ namespace DoomLauncher
 
         public override void SetData(IGameFile gameFile)
         {
+            SelectedFile = null;
+
             foreach (PictureBox pbSet in m_lookup.Keys)
                 SetSelectedStyle(pbSet, false);
 
@@ -69,6 +71,7 @@ namespace DoomLauncher
 
         public override void ClearData()
         {
+            SelectedFile = null;
             flpScreenshots.SuspendLayout();
             flpScreenshots.Controls.Clear();
             flpScreenshots.ResumeLayout();
@@ -145,12 +148,15 @@ namespace DoomLauncher
 
         private PictureBox CreatePictureBox()
         {
-            PictureBox pbScreen = new PictureBox();
-            pbScreen.WaitOnLoad = false;
-            pbScreen.BackColor = Color.Black;
-            pbScreen.Width = m_pictureWidth;
+            PictureBox pbScreen = new PictureBox
+            {
+                WaitOnLoad = false,
+                BackColor = Color.Black,
+                Width = m_pictureWidth
+            };
+
             pbScreen.Height = Convert.ToInt32(pbScreen.Width / (m_aspectWidth / m_aspectHeight));
-            pbScreen.SizeMode = PictureBoxSizeMode.StretchImage;
+            pbScreen.SizeMode = PictureBoxSizeMode.Zoom;
             pbScreen.Margin = new Padding(7);
             pbScreen.Click += pbScreen_Click;
             pbScreen.DoubleClick += PbScreen_DoubleClick;
@@ -186,13 +192,16 @@ namespace DoomLauncher
 
         public override void View()
         {
-            ScreenshotViewerForm screenshotForm = new ScreenshotViewerForm();
-            screenshotForm.StartPosition = FormStartPosition.CenterParent;
-            screenshotForm.SetImages(m_screenshots.Select(x => Path.Combine(DataDirectory.GetFullPath(), x.FileName)).ToArray());
-            if (SelectedFile != null)
-                screenshotForm.SetImage(Path.Combine(DataDirectory.GetFullPath(), SelectedFile.FileName));
-            screenshotForm.WindowState = FormWindowState.Maximized;
-            screenshotForm.ShowDialog(this);
+            if (m_screenshots.Count > 0)
+            {
+                ScreenshotViewerForm screenshotForm = new ScreenshotViewerForm();
+                screenshotForm.StartPosition = FormStartPosition.CenterParent;
+                screenshotForm.SetImages(m_screenshots.Select(x => Path.Combine(DataDirectory.GetFullPath(), x.FileName)).ToArray());
+                if (SelectedFile != null)
+                    screenshotForm.SetImage(Path.Combine(DataDirectory.GetFullPath(), SelectedFile.FileName));
+                screenshotForm.WindowState = FormWindowState.Maximized;
+                screenshotForm.ShowDialog(this);
+            }
         }
 
         private void HandleClick(object sender)
@@ -221,23 +230,18 @@ namespace DoomLauncher
                 {
                     pb.BackColor = Color.LightBlue;
                     pb.Padding = new Padding(2);
-                    pb.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+                    pb.BorderStyle = BorderStyle.Fixed3D;
                 }
                 else
                 {
+                    pb.BackColor = Color.Black;
                     pb.Padding = new Padding(0);
-                    pb.BorderStyle = System.Windows.Forms.BorderStyle.None;
+                    pb.BorderStyle = BorderStyle.None;
                 }
             }
         }
 
-        protected override IFileData[] Files
-        {
-            get
-            {
-                return m_lookup.Values.ToArray();
-            }
-        }
+        protected override IFileData[] Files => m_lookup.Values.ToArray();
 
         protected override List<IFileData> GetSelectedFiles()
         {

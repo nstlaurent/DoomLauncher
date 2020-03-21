@@ -1,17 +1,15 @@
 ﻿using DoomLauncher.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
     class LaunchData
     {
-        public LaunchData(IGameFile gameFile, IEnumerable<IGameFile> additionalGameFiles)
+        public LaunchData(IGameFile gameFile, IGameProfile gameProfile, IEnumerable<IGameFile> additionalGameFiles)
         {
             GameFile = gameFile;
+            GameProfile = gameProfile;
             if (additionalGameFiles == null)
                 AdditionalGameFiles = new List<IGameFile>();
             else
@@ -30,6 +28,7 @@ namespace DoomLauncher
         public string ErrorTitle { get; set; }
         public string ErrorDescription { get; set; }
         public IGameFile GameFile { get; set; }
+        public IGameProfile GameProfile { get; set; }
         public List<IGameFile> AdditionalGameFiles { get; set; }
     }
 }

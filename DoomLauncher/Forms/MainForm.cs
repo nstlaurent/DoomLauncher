@@ -12,6 +12,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,6 +42,7 @@ namespace DoomLauncher
         private TabHandler m_tabHandler;
         private VersionHandler m_versionHandler;
         private SplashScreen m_splash;
+        private UpdateControl m_updateControl = new UpdateControl();
 
         private string m_launchFile;
         private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
@@ -55,6 +57,7 @@ namespace DoomLauncher
             m_splash.Invalidate();
 
             InitializeComponent();
+            ClearSummary();
 
             m_workingDirectory = Directory.GetCurrentDirectory();
             bool success = false;
@@ -194,9 +197,10 @@ namespace DoomLauncher
 
         private void UpdateSavedTabSearch(ITabView tabView, GameFileSearchField[] searchFields)
         {
-            if (!m_savedTabSearches.ContainsKey(tabView))
-                m_savedTabSearches.Add(tabView, null);
-            m_savedTabSearches[tabView] = searchFields;
+            if (searchFields == null)
+                m_savedTabSearches.Remove(tabView);
+            else
+                m_savedTabSearches[tabView] = searchFields;
         }
 
         private void CleanTempDirectory()
@@ -326,6 +330,7 @@ namespace DoomLauncher
 
         private string HandleRenameFile(IGameFile gameFile, string fileName, string error)
         {
+            string oldFileName = gameFile.FileName;
             FileInfo fi = new FileInfo(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), gameFile.FileName));
 
             if (fi.Exists)
@@ -340,6 +345,7 @@ namespace DoomLauncher
                     gameFile.FileName = fileName;
                     gameFileUpdate.FileName = fileName;
                     DataSourceAdapter.UpdateGameFile(gameFileUpdate, new GameFileFieldType[] { GameFileFieldType.Filename });
+                    UpdateAdditinalFileReferences(oldFileName, fileName);
                     HandleSelectionChange(GetCurrentViewControl());
                 }
                 else
@@ -353,6 +359,49 @@ namespace DoomLauncher
             }
 
             return error;
+        }
+
+        private void UpdateAdditinalFileReferences(string oldFileName, string newFileName)
+        {
+            GameFileFieldType[] updateFields = new GameFileFieldType[] { GameFileFieldType.SettingsFiles };
+            GameFileGetOptions options = new GameFileGetOptions(new GameFileFieldType[] { GameFileFieldType.GameFileID, GameFileFieldType.SettingsFiles });
+            var gameFiles = DataSourceAdapter.GetGameFiles(options).Where(x => x.SettingsFiles.Length > 0);
+
+            foreach (var databaseGameFile in gameFiles)
+            {
+                string[] files = Util.SplitString(databaseGameFile.SettingsFiles);
+                if (files.Contains(oldFileName))
+                {
+                    databaseGameFile.SettingsFiles = GetRenamedAdditionalFileSetting(files, oldFileName, newFileName);
+                    DataSourceAdapter.UpdateGameFile(databaseGameFile, updateFields);
+                }
+            }
+
+            var sourcePorts = DataSourceAdapter.GetSourcePorts();
+
+            foreach (var databaseSourcePort in sourcePorts)
+            {
+                string[] files = Util.SplitString(databaseSourcePort.SettingsFiles);
+                if (files.Contains(oldFileName))
+                {
+                    databaseSourcePort.SettingsFiles = GetRenamedAdditionalFileSetting(files, oldFileName, newFileName);
+                    DataSourceAdapter.UpdateSourcePort(databaseSourcePort);
+                }
+            }
+        }
+
+        private static string GetRenamedAdditionalFileSetting(string[] files, string oldFileName, string newFileName)
+        {
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i] == oldFileName)
+                {
+                    files[i] = newFileName;
+                    break;
+                }
+            }
+
+            return string.Join(";", files);
         }
 
         private static bool VerifyFileName(string fileName)
@@ -503,6 +552,9 @@ namespace DoomLauncher
 
             var tagMapping = DataSourceAdapter.GetTagMappings(gameFile.GameFileID.Value);
             tagMapping.ToList().ForEach(x => DataSourceAdapter.DeleteTagMapping(x));
+
+            var profiles = DataSourceAdapter.GetGameProfiles(gameFile.GameFileID.Value);
+            profiles.ToList().ForEach(x =>DataSourceAdapter.DeleteGameProfile(x.GameProfileID));
         }
 
         private void DeleteLocalFileAssociations(IGameFile gameFIle)
@@ -568,6 +620,7 @@ namespace DoomLauncher
 
                 if (item != null)
                 {
+                    RebuildTagToolStrip();
                     ctrlSummary.Visible = false;
                     ctrlSummary.SuspendLayout();
                     SetSummary(item);
@@ -716,35 +769,47 @@ namespace DoomLauncher
                 bool doForAll = false;
                 bool download = true;
 
-                foreach (IGameFile dsItem in dsItems)
+                try
                 {
-                    IGameFileDownloadable dlItem = dsItem as IGameFileDownloadable;
-
-                    if (dsItem != null && dlItem != null)
+                    foreach (IGameFile dsItem in dsItems)
                     {
-                        GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
-                            ((IdGamesGameFile)dsItem).id.ToString()));
+                        IGameFileDownloadable dlItem = dsItem as IGameFileDownloadable;
 
-                        IGameFile dsItemFull = tabView.Adapter.GetGameFiles(options).FirstOrDefault();
-                        dlItem = dsItemFull as IGameFileDownloadable;
-
-                        if (!doForAll)
-                            download = PromptUserDownload(dsItems, ref showAlreadyDownloading, ref doForAll, dlItem, dsItemFull, dsItems.Length > 1);
-
-                        if (dlItem != null && download)
+                        if (dsItem != null && dlItem != null)
                         {
-                            CurrentDownloadFile = dsItemFull;
-                            dlItem.DownloadCompleted += dlItem_DownloadCompleted;
-                            m_downloadHandler.DownloadDirectory = directory;
-                            m_downloadHandler.Download(tabView.Adapter, dlItem);
-                            displayDownloads = true;
+                            GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
+                                ((IdGamesGameFile)dsItem).id.ToString()));
+
+                            IGameFile dsItemFull = tabView.Adapter.GetGameFiles(options).FirstOrDefault();
+                            dlItem = dsItemFull as IGameFileDownloadable;
+
+                            if (!doForAll)
+                                download = PromptUserDownload(dsItems, ref showAlreadyDownloading, ref doForAll, dlItem, dsItemFull, dsItems.Length > 1);
+
+                            if (dlItem != null && download)
+                            {
+                                CurrentDownloadFile = dsItemFull;
+                                dlItem.DownloadCompleted += dlItem_DownloadCompleted;
+                                m_downloadHandler.DownloadDirectory = directory;
+                                m_downloadHandler.Download(tabView.Adapter, dlItem);
+                                displayDownloads = true;
+                            }
                         }
                     }
+                }
+                catch (WebException)
+                {
+                    ShowBadConnectionError();
                 }
             }
 
             if (displayDownloads)
                 DisplayDownloads();
+        }
+
+        private void ShowBadConnectionError()
+        {
+            MessageBox.Show(this, "Unable to reach server. Lost connection?", "Bad Connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private bool PromptUserDownload(IGameFile[] dsItems, ref bool showAlreadyDownloading, ref bool doForAll,
@@ -875,13 +940,18 @@ namespace DoomLauncher
 
                 if (dsItem != null && dsItem is IdGamesGameFile)
                 {
-                    GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
-                            ((IdGamesGameFile)dsItem).id.ToString()));
-                    IdGamesGameFile dsItemFull = IdGamesDataSourceAdapter.GetGameFiles(options).FirstOrDefault() as IdGamesGameFile;
-
-                    if (dsItemFull != null)
+                    try
                     {
-                        Process.Start(string.Format("{0}?file={1}{2}", AppConfiguration.IdGamesUrl, dsItemFull.dir, dsItemFull.FileName));
+                        GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
+                                ((IdGamesGameFile)dsItem).id.ToString()));
+                        IdGamesGameFile dsItemFull = IdGamesDataSourceAdapter.GetGameFiles(options).FirstOrDefault() as IdGamesGameFile;
+
+                        if (dsItemFull != null)
+                            Process.Start(string.Format("{0}?file={1}{2}", AppConfiguration.IdGamesUrl, dsItemFull.dir, dsItemFull.FileName));
+                    }
+                    catch(WebException)
+                    {
+                        ShowBadConnectionError();
                     }
                 }
             }
@@ -1001,6 +1071,11 @@ namespace DoomLauncher
             DisplayDownloads();
         }
 
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            DisplayUpdate();
+        }
+
         private void HandleEditSourcePorts(bool initSetup)
         {
             SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, AppConfiguration, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.SourcePort);
@@ -1034,10 +1109,24 @@ namespace DoomLauncher
 
         private void DisplayDownloads()
         {
-            Popup popup = new Popup(m_downloadView);
-            popup.Width = 300;
-            popup.Height = m_downloadView.Height;
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            Popup popup = new Popup(m_downloadView)
+            {
+                Width = dpiScale.ScaleIntX(300),
+                Height = m_downloadView.Height
+            };
             popup.Show(btnDownloads);
+        }
+
+        private void DisplayUpdate()
+        {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            Popup popup = new Popup(m_updateControl)
+            {
+                Width = dpiScale.ScaleIntX(300),
+                Height = m_updateControl.Height
+            };
+            popup.Show(btnUpdate);
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)

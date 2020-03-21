@@ -1,6 +1,10 @@
 version: '{build}'
 configuration: Release
 platform: Any CPU
+image: Visual Studio 2019
+before_build:
+- cmd: nuget restore
+
 build:
   project: DoomLauncher.sln
   verbosity: minimal

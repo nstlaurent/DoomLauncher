@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
 {
     public partial class TextBoxForm : Form
     {
+        private static readonly int s_checkBoxRow = 1;
+        private static readonly int s_linkRow = 2;
         private string m_url;
 
         public TextBoxForm()
@@ -24,6 +19,7 @@ namespace DoomLauncher
         public TextBoxForm(bool multiline, MessageBoxButtons buttons)
         {
             InitializeComponent();
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
 
             if (buttons != MessageBoxButtons.OK && buttons != MessageBoxButtons.OKCancel)
                 throw new NotSupportedException(buttons.ToString() + " not supported");
@@ -35,18 +31,33 @@ namespace DoomLauncher
 
             if (!multiline)
             {
-                this.Height = 100;
-                this.Width = 300;
+                Height = dpiScale.ScaleIntY(100);
+                Width = dpiScale.ScaleIntX(300);
             }
 
-            tblMain.RowStyles[1].Height = 0;
+            tblMain.RowStyles[s_checkBoxRow].Height = 0;
+            tblMain.RowStyles[s_linkRow].Height = 0;
+            lnk.Visible = false;
+            chk.Visible = false;
+        }
+
+        public void SetCheckBox(string text)
+        {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            chk.Visible = true;
+            chk.Text = text;
+            tblMain.RowStyles[s_checkBoxRow].Height = dpiScale.ScaleIntY(32);
+            Height += dpiScale.ScaleIntY(32);
         }
 
         public void SetLink(string text, string url)
         {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            lnk.Visible = true;
             lnk.Text = text;
             m_url = url;
-            tblMain.RowStyles[1].Height = 32;
+            tblMain.RowStyles[s_linkRow].Height = dpiScale.ScaleIntY(32);
+            Height += dpiScale.ScaleIntY(32);
         }
 
         public void SetMaxLength(int length)
@@ -63,6 +74,12 @@ namespace DoomLauncher
         {
             get { return txtText.Text; }
             set { txtText.Text = value; }
+        }
+
+        public bool CheckBoxChecked
+        {
+            get { return chk.Checked; }
+            set { chk.Checked = value; }
         }
 
         public void AppendText(string text)

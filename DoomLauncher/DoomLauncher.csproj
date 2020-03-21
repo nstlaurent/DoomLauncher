@@ -52,6 +52,12 @@
   <PropertyGroup>
     <ApplicationIcon>DoomLauncher.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Equin.ApplicationFramework.BindingListView, Version=1.2.2446.31718, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -60,6 +66,9 @@
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Octokit, Version=0.36.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.36.0\lib\net45\Octokit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -70,6 +79,7 @@
     </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -82,6 +92,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\WadArchiveDataAdapter.cs" />
+    <Compile Include="Controls\GlowButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\UpdateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UpdateControl.Designer.cs">
+      <DependentUpon>UpdateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSources\GameProfile.cs" />
+    <Compile Include="Interfaces\IGameProfile.cs" />
+    <Compile Include="Update\ApplicationUpdater.cs" />
+    <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />
     <Compile Include="Controls\CRichTextBox.cs">
       <SubType>Component</SubType>
@@ -89,6 +112,7 @@
     <Compile Include="Controls\CRichTextBox.Designer.cs">
       <DependentUpon>CRichTextBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dpi\DpiScale.cs" />
     <Compile Include="Forms\FilterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -340,12 +364,6 @@
     <Compile Include="Forms\FileSelectForm.Designer.cs">
       <DependentUpon>FileSelectForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\DownloadForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\DownloadForm.Designer.cs">
-      <DependentUpon>DownloadForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -526,6 +544,7 @@
     <Compile Include="TabViews\UntaggedTabView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Update\ApplicationUpdate.cs" />
     <EmbeddedResource Include="Controls\FilesCtrl.resx">
       <DependentUpon>FilesCtrl.cs</DependentUpon>
     </EmbeddedResource>
@@ -598,9 +617,6 @@
     <EmbeddedResource Include="Controls\DownloadViewItem.resx">
       <DependentUpon>DownloadViewItem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DownloadForm.resx">
-      <DependentUpon>DownloadForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FileSelectForm.resx">
       <DependentUpon>FileSelectForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -671,6 +687,10 @@
     <EmbeddedResource Include="Forms\TxtGenerator.resx">
       <DependentUpon>TxtGenerator.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UpdateControl.resx">
+      <DependentUpon>UpdateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="DoomLauncher.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

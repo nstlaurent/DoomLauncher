@@ -34,10 +34,10 @@
             this.dgvAdditionalFiles = new System.Windows.Forms.DataGridView();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.btnMoveUp = new System.Windows.Forms.ToolStripButton();
-            this.btnMoveDown = new System.Windows.Forms.ToolStripButton();
             this.btnAdd = new System.Windows.Forms.ToolStripButton();
             this.btnDelete = new System.Windows.Forms.ToolStripButton();
+            this.btnMoveUp = new System.Windows.Forms.ToolStripButton();
+            this.btnMoveDown = new System.Windows.Forms.ToolStripButton();
             this.tblMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAdditionalFiles)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -90,29 +90,10 @@
             this.btnMoveDown});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.toolStrip1.Size = new System.Drawing.Size(247, 24);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
-            // 
-            // btnMoveUp
-            // 
-            this.btnMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveUp.Image")));
-            this.btnMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnMoveUp.Name = "btnMoveUp";
-            this.btnMoveUp.Size = new System.Drawing.Size(23, 21);
-            this.btnMoveUp.Text = "Move Up";
-            this.btnMoveUp.Click += new System.EventHandler(this.btnMoveUp_Click);
-            // 
-            // btnMoveDown
-            // 
-            this.btnMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveDown.Image")));
-            this.btnMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnMoveDown.Name = "btnMoveDown";
-            this.btnMoveDown.Size = new System.Drawing.Size(23, 21);
-            this.btnMoveDown.Text = "Move Up";
-            this.btnMoveDown.Click += new System.EventHandler(this.btnMoveDown_Click);
             // 
             // btnAdd
             // 
@@ -133,6 +114,26 @@
             this.btnDelete.Size = new System.Drawing.Size(23, 21);
             this.btnDelete.Text = "Remove";
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // btnMoveUp
+            // 
+            this.btnMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveUp.Image")));
+            this.btnMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveUp.Name = "btnMoveUp";
+            this.btnMoveUp.Size = new System.Drawing.Size(23, 21);
+            this.btnMoveUp.Text = "Move Up";
+            this.btnMoveUp.Click += new System.EventHandler(this.btnMoveUp_Click);
+            // 
+            // btnMoveDown
+            // 
+            this.btnMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveDown.Image")));
+            this.btnMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveDown.Name = "btnMoveDown";
+            this.btnMoveDown.Size = new System.Drawing.Size(23, 21);
+            this.btnMoveDown.Text = "Move Up";
+            this.btnMoveDown.Click += new System.EventHandler(this.btnMoveDown_Click);
             // 
             // FilesCtrl
             // 

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -76,7 +77,6 @@ namespace DoomLauncher
             if (!Directory.Exists(basePath))
             {
                 Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
-                //Directory.CreateDirectory(Path.Combine(basePath, "GameWads"));
                 Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
                 Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
                 Directory.CreateDirectory(Path.Combine(basePath, "Temp"));
@@ -288,30 +288,45 @@ namespace DoomLauncher
 
         private void RebuildTagToolStrip()
         {
-            IEnumerable<ITagData> tags = DataSourceAdapter.GetTags().OrderBy(x => x.Name);
-            Tags = tags.ToArray();
-
-            ToolStripMenuItem tagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Tag") as ToolStripMenuItem;
-            ToolStripMenuItem removeTagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Remove Tag") as ToolStripMenuItem;
-
-            if (tagToolStrip != null)
+            GameFileViewControl currentControl = GetCurrentViewControl();
+            if (currentControl != null)
             {
-                BuildTagToolStrip(tagToolStrip, tags, tagToolStripItem_Click);
-                BuildTagToolStrip(removeTagToolStrip, tags, removeTagToolStripItem_Click);
+                List<ITagData> addTags = new List<ITagData>();
+                List<ITagData> removeTags = new List<ITagData>();
+
+                Tags = DataSourceAdapter.GetTags().OrderBy(x => x.Name).ToArray();
+
+                foreach (var gameFile in SelectedItems(currentControl))
+                {
+                    if (gameFile.GameFileID.HasValue)
+                    {
+                        var gameFileTags = TagMapLookup.GetTags(gameFile);
+                        var currentRemoveTags = Tags.Where(x => gameFileTags.Any(y => y.TagID == x.TagID));
+                        var currentAddTags = Tags.Except(currentRemoveTags);
+
+                        addTags = addTags.Union(currentAddTags).ToList();
+                        removeTags = removeTags.Union(currentRemoveTags).ToList();
+                    }
+                }
+
+                ToolStripMenuItem tagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Tag") as ToolStripMenuItem;
+                ToolStripMenuItem removeTagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Remove Tag") as ToolStripMenuItem;
+
+                if (tagToolStrip != null)
+                {
+                    BuildTagToolStrip(tagToolStrip, addTags, tagToolStripItem_Click);
+                    BuildTagToolStrip(removeTagToolStrip, removeTags, removeTagToolStripItem_Click);
+                }
             }
         }
 
         private void BuildTagToolStrip(ToolStripMenuItem tagToolStrip, IEnumerable<ITagData> tags, EventHandler handler)
         {
             while (tagToolStrip.DropDownItems.Count > 2)
-            {
                 tagToolStrip.DropDownItems.RemoveAt(tagToolStrip.DropDownItems.Count - 1);
-            }
 
             foreach (ITagData tag in tags)
-            {
                 tagToolStrip.DropDownItems.Add(tag.Name, null, handler);
-            }
         }
 
         private void SetGameFileViewEvents(GameFileViewControl ctrl, bool dragDrop)
@@ -388,7 +403,6 @@ namespace DoomLauncher
 
             DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory);
             SetupTabs();
-            RebuildTagToolStrip();
             RebuildUtilityToolStrip();
 
             m_downloadView = new DownloadView();
@@ -407,6 +421,40 @@ namespace DoomLauncher
 
             SetupSearchFilters();
             HandleTabSelectionChange();
+
+            await Task.Run(() => CheckForAppUpdate());
+        }
+
+        private async Task CheckForAppUpdate()
+        {
+            try
+            {
+                ApplicationUpdate applicationUpdate = new ApplicationUpdate(TimeSpan.FromSeconds(30));
+                ApplicationUpdateInfo info = await applicationUpdate.GetUpdateApplicationInfo(Assembly.GetExecutingAssembly().GetName().Version);
+
+                if (info != null)
+                    SetUpdateAvailable(info);
+                else
+                    ApplicationUpdater.CleanupUpdateFiles(AppDomain.CurrentDomain.BaseDirectory);
+            }
+            catch
+            {
+                // no internet connection or bad connection, try again next time
+            }
+        }
+        
+        private void SetUpdateAvailable(ApplicationUpdateInfo info)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<ApplicationUpdateInfo>(SetUpdateAvailable), new object[] { info });
+            }
+            else
+            {
+                btnUpdate.Visible = true;
+                btnUpdate.GlowOnce();
+                m_updateControl.Initialize(AppConfiguration, info);
+            }
         }
 
         private async Task CheckFirstInit()

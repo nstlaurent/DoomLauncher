@@ -88,6 +88,7 @@
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnDownloads = new System.Windows.Forms.Button();
+            this.btnUpdate = new DoomLauncher.GlowButton();
             this.tblDataView = new System.Windows.Forms.TableLayoutPanel();
             this.splitLeftRight = new System.Windows.Forms.SplitContainer();
             this.splitTopBottom = new System.Windows.Forms.SplitContainer();
@@ -198,14 +199,14 @@
             // newTagToolStripMenuItem
             // 
             this.newTagToolStripMenuItem.Name = "newTagToolStripMenuItem";
-            this.newTagToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.newTagToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newTagToolStripMenuItem.Text = "Manage Tags...";
             this.newTagToolStripMenuItem.Click += new System.EventHandler(this.newTagToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(150, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
             // 
             // removeTagToolStripMenuItem
             // 
@@ -219,14 +220,14 @@
             // manageTagsToolStripMenuItem1
             // 
             this.manageTagsToolStripMenuItem1.Name = "manageTagsToolStripMenuItem1";
-            this.manageTagsToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
+            this.manageTagsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.manageTagsToolStripMenuItem1.Text = "Manage Tags...";
             this.manageTagsToolStripMenuItem1.Click += new System.EventHandler(this.manageTagsToolStripMenuItem1_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(150, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
             // 
             // utilityToolStripMenuItem
             // 
@@ -317,23 +318,25 @@
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblMain.Size = new System.Drawing.Size(1008, 730);
+            this.tblMain.Size = new System.Drawing.Size(1008, 701);
             this.tblMain.TabIndex = 1;
             // 
             // tblTop
             // 
-            this.tblTop.ColumnCount = 2;
+            this.tblTop.ColumnCount = 4;
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tblTop.Controls.Add(this.flpSearch, 0, 0);
-            this.tblTop.Controls.Add(this.btnDownloads, 1, 0);
+            this.tblTop.Controls.Add(this.btnDownloads, 3, 0);
+            this.tblTop.Controls.Add(this.btnUpdate, 2, 0);
             this.tblTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblTop.Location = new System.Drawing.Point(0, 0);
             this.tblTop.Margin = new System.Windows.Forms.Padding(0);
             this.tblTop.Name = "tblTop";
             this.tblTop.RowCount = 1;
             this.tblTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblTop.Size = new System.Drawing.Size(1008, 32);
             this.tblTop.TabIndex = 1;
             // 
@@ -349,7 +352,7 @@
             this.flpSearch.Location = new System.Drawing.Point(0, 0);
             this.flpSearch.Margin = new System.Windows.Forms.Padding(0);
             this.flpSearch.Name = "flpSearch";
-            this.flpSearch.Size = new System.Drawing.Size(504, 32);
+            this.flpSearch.Size = new System.Drawing.Size(384, 32);
             this.flpSearch.TabIndex = 0;
             // 
             // toolStrip1
@@ -359,10 +362,10 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(4, 2);
+            this.toolStrip1.Location = new System.Drawing.Point(4, 0);
             this.toolStrip1.Margin = new System.Windows.Forms.Padding(4, 0, 0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(34, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(65, 25);
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "Options";
             // 
@@ -540,7 +543,7 @@
             // ctrlSearch
             // 
             this.ctrlSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlSearch.Location = new System.Drawing.Point(41, 4);
+            this.ctrlSearch.Location = new System.Drawing.Point(72, 2);
             this.ctrlSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.ctrlSearch.Name = "ctrlSearch";
             this.ctrlSearch.SearchText = "";
@@ -551,7 +554,7 @@
             // 
             this.chkAutoSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAutoSearch.AutoSize = true;
-            this.chkAutoSearch.Location = new System.Drawing.Point(189, 6);
+            this.chkAutoSearch.Location = new System.Drawing.Point(220, 4);
             this.chkAutoSearch.Name = "chkAutoSearch";
             this.chkAutoSearch.Size = new System.Drawing.Size(85, 17);
             this.chkAutoSearch.TabIndex = 7;
@@ -563,8 +566,7 @@
             this.btnSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
-            this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnSearch.Location = new System.Drawing.Point(280, 2);
+            this.btnSearch.Location = new System.Drawing.Point(3, 27);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(80, 24);
@@ -581,7 +583,7 @@
             this.btnPlay.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPlay.Image = ((System.Drawing.Image)(resources.GetObject("btnPlay.Image")));
-            this.btnPlay.Location = new System.Drawing.Point(366, 2);
+            this.btnPlay.Location = new System.Drawing.Point(89, 27);
             this.btnPlay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(75, 24);
@@ -598,7 +600,6 @@
             this.btnDownloads.FlatAppearance.BorderSize = 0;
             this.btnDownloads.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDownloads.Image = global::DoomLauncher.Properties.Resources.th;
-            this.btnDownloads.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnDownloads.Location = new System.Drawing.Point(911, 2);
             this.btnDownloads.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
             this.btnDownloads.Name = "btnDownloads";
@@ -608,6 +609,26 @@
             this.btnDownloads.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.btnDownloads.UseVisualStyleBackColor = true;
             this.btnDownloads.Click += new System.EventHandler(this.btnDownloads_Click);
+            // 
+            // btnUpdate
+            // 
+            this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUpdate.BackGroundGlowColor = System.Drawing.Color.Blue;
+            this.btnUpdate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnUpdate.FlatAppearance.BorderSize = 0;
+            this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUpdate.Image = global::DoomLauncher.Properties.Resources.bon2b;
+            this.btnUpdate.Location = new System.Drawing.Point(787, 2);
+            this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(120, 22);
+            this.btnUpdate.TabIndex = 2;
+            this.btnUpdate.Text = "Update Available";
+            this.btnUpdate.TextGlowColor = System.Drawing.Color.White;
+            this.btnUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Visible = false;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
             // tblDataView
             // 
@@ -622,7 +643,7 @@
             this.tblDataView.Name = "tblDataView";
             this.tblDataView.RowCount = 1;
             this.tblDataView.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblDataView.Size = new System.Drawing.Size(1002, 698);
+            this.tblDataView.Size = new System.Drawing.Size(1002, 669);
             this.tblDataView.TabIndex = 4;
             // 
             // splitLeftRight
@@ -639,7 +660,7 @@
             // splitLeftRight.Panel2
             // 
             this.splitLeftRight.Panel2.Controls.Add(this.ctrlSummary);
-            this.splitLeftRight.Size = new System.Drawing.Size(996, 689);
+            this.splitLeftRight.Size = new System.Drawing.Size(996, 660);
             this.splitLeftRight.SplitterDistance = 680;
             this.splitLeftRight.TabIndex = 9;
             // 
@@ -658,8 +679,8 @@
             // splitTopBottom.Panel2
             // 
             this.splitTopBottom.Panel2.Controls.Add(this.ctrlAssociationView);
-            this.splitTopBottom.Size = new System.Drawing.Size(680, 689);
-            this.splitTopBottom.SplitterDistance = 475;
+            this.splitTopBottom.Size = new System.Drawing.Size(680, 660);
+            this.splitTopBottom.SplitterDistance = 455;
             this.splitTopBottom.TabIndex = 8;
             // 
             // tabControl
@@ -669,7 +690,7 @@
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(680, 475);
+            this.tabControl.Size = new System.Drawing.Size(680, 455);
             this.tabControl.TabIndex = 6;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
@@ -681,7 +702,7 @@
             this.ctrlAssociationView.Name = "ctrlAssociationView";
             this.ctrlAssociationView.SaveGameDirectory = null;
             this.ctrlAssociationView.ScreenshotDirectory = null;
-            this.ctrlAssociationView.Size = new System.Drawing.Size(680, 210);
+            this.ctrlAssociationView.Size = new System.Drawing.Size(680, 201);
             this.ctrlAssociationView.TabIndex = 7;
             // 
             // ctrlSummary
@@ -692,7 +713,7 @@
             this.ctrlSummary.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.ctrlSummary.Name = "ctrlSummary";
             this.ctrlSummary.Padding = new System.Windows.Forms.Padding(0, 20, 0, 0);
-            this.ctrlSummary.Size = new System.Drawing.Size(312, 689);
+            this.ctrlSummary.Size = new System.Drawing.Size(312, 660);
             this.ctrlSummary.TabIndex = 4;
             this.ctrlSummary.TagText = "Tags:";
             // 
@@ -723,7 +744,7 @@
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 730);
+            this.ClientSize = new System.Drawing.Size(1008, 701);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(800, 600);
@@ -823,6 +844,7 @@
         private System.Windows.Forms.ToolStripMenuItem unplayedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unratedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createZipToolStripMenuItem;
+        private DoomLauncher.GlowButton btnUpdate;
     }
 }
 

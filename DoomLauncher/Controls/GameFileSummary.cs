@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
 using System.IO;
-using System.Diagnostics;
 using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
@@ -30,8 +25,9 @@ namespace DoomLauncher
 
         public void SetTitle(string text)
         {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
             lblTitle.Text = text;
-            GetRowStyle(lblTitle).Height = lblTitle.Height + 6;
+            GetRowStyle(lblTitle).Height = lblTitle.Height + dpiScale.ScaleFloatY(6);
             if (GetRowStyle(lblTitle).Height < m_labelHeight)
                 GetRowStyle(lblTitle).Height = m_labelHeight;
         }
@@ -86,7 +82,10 @@ namespace DoomLauncher
                     fs = new FileStream(source, FileMode.Open, FileAccess.Read);
                     pbImage.Image = Image.FromStream(fs);
                 }
-                catch { } //failed, nothin to do
+                catch
+                {
+                    //failed, nothin to do
+                }
                 finally
                 {
                     if (fs != null) fs.Close();
@@ -114,9 +113,14 @@ namespace DoomLauncher
         private void ShowCommentsSection(bool bShow)
         {
             if (bShow)
-                GetRowStyle(txtComments).Height = 20;
+            {
+                DpiScale dpiScale = new DpiScale(CreateGraphics());
+                GetRowStyle(txtComments).Height = dpiScale.ScaleFloatY(20);
+            }
             else
+            {
                 GetRowStyle(txtComments).Height = 0;
+            }
         }
 
         public string TagText
@@ -137,8 +141,9 @@ namespace DoomLauncher
         {
             if (stats.Any())
             {
+                DpiScale dpiScale = new DpiScale(CreateGraphics());
                 ctrlStats.Visible = true;
-                GetRowStyle(ctrlStats).Height = 120;
+                GetRowStyle(ctrlStats).Height = dpiScale.ScaleFloatY(120);
 
                 ctrlStats.SetStatistics(gameFile, stats);
 

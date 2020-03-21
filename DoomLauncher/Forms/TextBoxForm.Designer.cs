@@ -36,6 +36,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.lnk = new System.Windows.Forms.LinkLabel();
+            this.chk = new System.Windows.Forms.CheckBox();
             this.tblMain.SuspendLayout();
             this.flpButtons.SuspendLayout();
             this.SuspendLayout();
@@ -44,14 +45,16 @@
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.txtText, 0, 2);
+            this.tblMain.Controls.Add(this.txtText, 0, 3);
             this.tblMain.Controls.Add(this.lblHeader, 0, 0);
-            this.tblMain.Controls.Add(this.flpButtons, 0, 3);
-            this.tblMain.Controls.Add(this.lnk, 0, 1);
+            this.tblMain.Controls.Add(this.flpButtons, 0, 4);
+            this.tblMain.Controls.Add(this.lnk, 0, 2);
+            this.tblMain.Controls.Add(this.chk, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 4;
+            this.tblMain.RowCount = 5;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -62,11 +65,11 @@
             // txtText
             // 
             this.txtText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtText.Location = new System.Drawing.Point(3, 67);
+            this.txtText.Location = new System.Drawing.Point(3, 99);
             this.txtText.Multiline = true;
             this.txtText.Name = "txtText";
             this.txtText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtText.Size = new System.Drawing.Size(338, 220);
+            this.txtText.Size = new System.Drawing.Size(338, 188);
             this.txtText.TabIndex = 0;
             // 
             // lblHeader
@@ -117,13 +120,24 @@
             // 
             this.lnk.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lnk.AutoSize = true;
-            this.lnk.Location = new System.Drawing.Point(3, 41);
+            this.lnk.Location = new System.Drawing.Point(3, 73);
             this.lnk.Name = "lnk";
             this.lnk.Size = new System.Drawing.Size(27, 13);
             this.lnk.TabIndex = 4;
             this.lnk.TabStop = true;
             this.lnk.Text = "Link";
             this.lnk.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk_LinkClicked);
+            // 
+            // chk
+            // 
+            this.chk.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chk.AutoSize = true;
+            this.chk.Location = new System.Drawing.Point(3, 39);
+            this.chk.Name = "chk";
+            this.chk.Size = new System.Drawing.Size(75, 17);
+            this.chk.TabIndex = 5;
+            this.chk.Text = "CheckBox";
+            this.chk.UseVisualStyleBackColor = true;
             // 
             // TextBoxForm
             // 
@@ -152,5 +166,6 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.LinkLabel lnk;
+        private System.Windows.Forms.CheckBox chk;
     }
 }

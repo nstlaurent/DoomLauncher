@@ -9,10 +9,6 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -75,6 +71,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_6_3_2, AppVersion.Version_2_6_3_2);
                 ExecuteUpdate(Pre_2_6_4_1, AppVersion.Version_2_6_4_1);
                 ExecuteUpdate(Pre_2_6_4_1_Update, AppVersion.Version_2_6_4_1_Update1);
+                ExecuteUpdate(Pre_2_7_0_0, AppVersion.Version_2_7_0_0);
             }
         }
 
@@ -436,7 +433,7 @@ namespace DoomLauncher
             {
                 if (!string.IsNullOrEmpty(gameFile.SettingsFiles))
                 {
-                    var files = Util.GetAdditionalFiles(adapter, gameFile).Select(x => x.FileName);
+                    var files = Util.GetAdditionalFiles(adapter, (GameFile)gameFile).Select(x => x.FileName);
                     FileLoadHandlerLegacy filehandler = new FileLoadHandlerLegacy(adapter, gameFile);
                     filehandler.CalculateAdditionalFiles(GetDictionaryData<IGameFile>(gameFile.IWadID, gameFileIwads),
                         GetDictionaryData<ISourcePortData>(gameFile.SourcePortID, ports));
@@ -482,6 +479,44 @@ namespace DoomLauncher
                     stat.SourcePortID = -1;
                     adapter.UpdateStats(stat);
                 }
+            }
+        }
+
+        private void Pre_2_7_0_0()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("select name from sqlite_master where type='table' and name='GameProfiles';").Tables[0];
+
+            if (dt.Rows.Count == 0)
+            {
+                string query = @"CREATE TABLE 'GameProfiles' (
+	                    'GameProfileID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        'GameFileID'	INTEGER NOT NULL,
+                        'SourcePortID'	INTEGER NOT NULL,
+                        'IWadID'	INTEGER NOT NULL,
+                        'Name'	TEXT NOT NULL,
+	                    'SettingsMap'	TEXT,
+	                    'SettingsSkill'	TEXT,
+	                    'SettingsExtraParams'	TEXT,
+	                    'SettingsFiles'	TEXT,
+	                    'SettingsFilesSourcePort'	TEXT,
+	                    'SettingsFilesIWAD'	TEXT,
+	                    'SettingsSpecificFiles'	TEXT,
+                        'SettingsStat'	INTEGER,
+                        'SettingsSaved' INTEGER);";
+
+                DataAccess.ExecuteNonQuery(query);
+            }
+
+            dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
+
+            if (!dt.Select("name = 'SettingsGameProfileID'").Any())
+                DataAccess.ExecuteNonQuery(@"alter table GameFiles add column 'SettingsGameProfileID' INTEGER;");
+
+            if (!dt.Select("name = 'SettingsSaved'").Any())
+            {
+                DataAccess.ExecuteNonQuery(@"alter table GameFiles add column 'SettingsSaved' INTEGER;");
+                DataAccess.ExecuteNonQuery("update GameFiles set SettingsSaved = 1 where SourcePortID is not null");
+                DataAccess.ExecuteNonQuery("update GameFiles set SettingsSaved = 0 where SourcePortID is null");
             }
         }
 

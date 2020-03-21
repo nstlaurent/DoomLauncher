@@ -36,6 +36,14 @@
             this.cmbIwad = new System.Windows.Forms.ComboBox();
             this.chkRemember = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
+            this.profileToolStrip = new System.Windows.Forms.ToolStrip();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.newProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cmbProfiles = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbMap = new System.Windows.Forms.ComboBox();
@@ -59,7 +67,6 @@
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
-            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
             this.pbInfo = new System.Windows.Forms.PictureBox();
@@ -72,7 +79,10 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.groupBox1.SuspendLayout();
+            this.tblProfile.SuspendLayout();
+            this.profileToolStrip.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -91,11 +101,10 @@
             // 
             this.cmbSourcePorts.DisplayMember = "Name";
             this.cmbSourcePorts.FormattingEnabled = true;
-            this.cmbSourcePorts.Location = new System.Drawing.Point(47, 19);
+            this.cmbSourcePorts.Location = new System.Drawing.Point(47, 43);
             this.cmbSourcePorts.Name = "cmbSourcePorts";
             this.cmbSourcePorts.Size = new System.Drawing.Size(197, 21);
             this.cmbSourcePorts.TabIndex = 0;
-            this.cmbSourcePorts.SelectedIndexChanged += new System.EventHandler(this.cmbSourcePorts_SelectedIndexChanged);
             // 
             // btnOK
             // 
@@ -122,12 +131,11 @@
             // 
             this.cmbIwad.DisplayMember = "FileName";
             this.cmbIwad.FormattingEnabled = true;
-            this.cmbIwad.Location = new System.Drawing.Point(47, 46);
+            this.cmbIwad.Location = new System.Drawing.Point(47, 70);
             this.cmbIwad.Name = "cmbIwad";
             this.cmbIwad.Size = new System.Drawing.Size(197, 21);
             this.cmbIwad.TabIndex = 3;
             this.cmbIwad.ValueMember = "GameFileID";
-            this.cmbIwad.SelectedIndexChanged += new System.EventHandler(this.cmbIwad_SelectedIndexChanged);
             // 
             // chkRemember
             // 
@@ -143,20 +151,113 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.tblProfile);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cmbSourcePorts);
             this.groupBox1.Controls.Add(this.cmbIwad);
             this.groupBox1.Location = new System.Drawing.Point(3, 7);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(256, 80);
+            this.groupBox1.Size = new System.Drawing.Size(256, 102);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
+            // 
+            // tblProfile
+            // 
+            this.tblProfile.ColumnCount = 3;
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 168F));
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblProfile.Controls.Add(this.profileToolStrip, 2, 0);
+            this.tblProfile.Controls.Add(this.label5, 0, 0);
+            this.tblProfile.Controls.Add(this.cmbProfiles, 1, 0);
+            this.tblProfile.Location = new System.Drawing.Point(0, 12);
+            this.tblProfile.Margin = new System.Windows.Forms.Padding(0);
+            this.tblProfile.Name = "tblProfile";
+            this.tblProfile.RowCount = 1;
+            this.tblProfile.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblProfile.Size = new System.Drawing.Size(244, 25);
+            this.tblProfile.TabIndex = 9;
+            // 
+            // profileToolStrip
+            // 
+            this.profileToolStrip.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.profileToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.profileToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.profileToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripDropDownButton1});
+            this.profileToolStrip.Location = new System.Drawing.Point(212, 2);
+            this.profileToolStrip.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.profileToolStrip.Name = "profileToolStrip";
+            this.profileToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.profileToolStrip.Size = new System.Drawing.Size(32, 23);
+            this.profileToolStrip.TabIndex = 12;
+            this.profileToolStrip.Text = "Options";
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newProfileToolStripMenuItem,
+            this.editProfileToolStripMenuItem,
+            this.deleteProfileToolStripMenuItem});
+            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 20);
+            this.toolStripDropDownButton1.Text = "Options";
+            // 
+            // newProfileToolStripMenuItem
+            // 
+            this.newProfileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newProfileToolStripMenuItem.Image")));
+            this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.newProfileToolStripMenuItem.Text = "New Profile...";
+            this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
+            // 
+            // editProfileToolStripMenuItem
+            // 
+            this.editProfileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("editProfileToolStripMenuItem.Image")));
+            this.editProfileToolStripMenuItem.Name = "editProfileToolStripMenuItem";
+            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.editProfileToolStripMenuItem.Text = "Rename Profile...";
+            this.editProfileToolStripMenuItem.Click += new System.EventHandler(this.editProfileToolStripMenuItem_Click);
+            // 
+            // deleteProfileToolStripMenuItem
+            // 
+            this.deleteProfileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteProfileToolStripMenuItem.Image")));
+            this.deleteProfileToolStripMenuItem.Name = "deleteProfileToolStripMenuItem";
+            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.deleteProfileToolStripMenuItem.Text = "Delete Profile";
+            this.deleteProfileToolStripMenuItem.Click += new System.EventHandler(this.deleteProfileToolStripMenuItem_Click);
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 6);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(36, 13);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "Profile";
+            // 
+            // cmbProfiles
+            // 
+            this.cmbProfiles.DisplayMember = "Name";
+            this.cmbProfiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmbProfiles.FormattingEnabled = true;
+            this.cmbProfiles.Location = new System.Drawing.Point(47, 3);
+            this.cmbProfiles.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.cmbProfiles.Name = "cmbProfiles";
+            this.cmbProfiles.Size = new System.Drawing.Size(165, 21);
+            this.cmbProfiles.TabIndex = 9;
+            this.cmbProfiles.ValueMember = "GameProfileID";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 49);
+            this.label2.Location = new System.Drawing.Point(6, 73);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(36, 13);
             this.label2.TabIndex = 8;
@@ -165,7 +266,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 22);
+            this.label1.Location = new System.Drawing.Point(6, 46);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(26, 13);
             this.label1.TabIndex = 7;
@@ -229,7 +330,6 @@
             this.cmbDemo.Size = new System.Drawing.Size(160, 21);
             this.cmbDemo.TabIndex = 14;
             this.cmbDemo.ValueMember = "FileID";
-            this.cmbDemo.SelectedIndexChanged += new System.EventHandler(this.cmbDemo_SelectedIndexChanged);
             // 
             // chkDemo
             // 
@@ -266,7 +366,7 @@
             this.groupBox2.Controls.Add(this.cmbDemo);
             this.groupBox2.Controls.Add(this.chkRecord);
             this.groupBox2.Controls.Add(this.txtDescription);
-            this.groupBox2.Location = new System.Drawing.Point(3, 93);
+            this.groupBox2.Location = new System.Drawing.Point(3, 115);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(256, 173);
             this.groupBox2.TabIndex = 17;
@@ -298,6 +398,7 @@
             this.txtParameters.Name = "txtParameters";
             this.txtParameters.Size = new System.Drawing.Size(160, 20);
             this.txtParameters.TabIndex = 17;
+            this.txtParameters.Click += new System.EventHandler(this.TxtParameters_Click);
             // 
             // chkPreview
             // 
@@ -340,7 +441,7 @@
             this.groupBox4.Controls.Add(this.chkPreview);
             this.groupBox4.Controls.Add(this.chkSaveStats);
             this.groupBox4.Controls.Add(this.lnkMore);
-            this.groupBox4.Location = new System.Drawing.Point(3, 279);
+            this.groupBox4.Location = new System.Drawing.Point(3, 301);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(256, 93);
             this.groupBox4.TabIndex = 20;
@@ -385,7 +486,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(265, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(236, 369);
+            this.groupBox3.Size = new System.Drawing.Size(236, 395);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Additional Files / Load Order";
@@ -405,16 +506,8 @@
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tblFiles.Size = new System.Drawing.Size(230, 350);
+            this.tblFiles.Size = new System.Drawing.Size(230, 376);
             this.tblFiles.TabIndex = 0;
-            // 
-            // ctrlFiles
-            // 
-            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
-            this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(224, 280);
-            this.ctrlFiles.TabIndex = 20;
             // 
             // panel1
             // 
@@ -449,7 +542,7 @@
             this.flp1.Controls.Add(this.lnkSpecific);
             this.flp1.Controls.Add(this.lnkCustomParameters);
             this.flp1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp1.Location = new System.Drawing.Point(0, 326);
+            this.flp1.Location = new System.Drawing.Point(0, 352);
             this.flp1.Margin = new System.Windows.Forms.Padding(0);
             this.flp1.Name = "flp1";
             this.flp1.Size = new System.Drawing.Size(230, 24);
@@ -492,7 +585,7 @@
             this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tblMain.Size = new System.Drawing.Size(504, 407);
+            this.tblMain.Size = new System.Drawing.Size(504, 433);
             this.tblMain.TabIndex = 21;
             // 
             // tblInner
@@ -508,7 +601,7 @@
             this.tblInner.Name = "tblInner";
             this.tblInner.RowCount = 1;
             this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblInner.Size = new System.Drawing.Size(504, 375);
+            this.tblInner.Size = new System.Drawing.Size(504, 401);
             this.tblInner.TabIndex = 0;
             // 
             // pnlLeft
@@ -520,7 +613,7 @@
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
             this.pnlLeft.Margin = new System.Windows.Forms.Padding(0);
             this.pnlLeft.Name = "pnlLeft";
-            this.pnlLeft.Size = new System.Drawing.Size(262, 375);
+            this.pnlLeft.Size = new System.Drawing.Size(262, 401);
             this.pnlLeft.TabIndex = 0;
             // 
             // pnlBottom
@@ -529,7 +622,7 @@
             this.pnlBottom.Controls.Add(this.flpButtons);
             this.pnlBottom.Controls.Add(this.chkRemember);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 375);
+            this.pnlBottom.Location = new System.Drawing.Point(0, 401);
             this.pnlBottom.Margin = new System.Windows.Forms.Padding(0);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.Size = new System.Drawing.Size(504, 32);
@@ -557,13 +650,21 @@
             this.flpButtons.Size = new System.Drawing.Size(200, 32);
             this.flpButtons.TabIndex = 5;
             // 
+            // ctrlFiles
+            // 
+            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
+            this.ctrlFiles.Name = "ctrlFiles";
+            this.ctrlFiles.Size = new System.Drawing.Size(224, 306);
+            this.ctrlFiles.TabIndex = 20;
+            // 
             // PlayForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(504, 407);
+            this.ClientSize = new System.Drawing.Size(504, 433);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PlayForm";
@@ -571,6 +672,10 @@
             this.Text = "Launch";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tblProfile.ResumeLayout(false);
+            this.tblProfile.PerformLayout();
+            this.profileToolStrip.ResumeLayout(false);
+            this.profileToolStrip.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -636,5 +741,13 @@
         private System.Windows.Forms.LinkLabel lnkCustomParameters;
         private System.Windows.Forms.CheckBox chkScreenFilter;
         private System.Windows.Forms.LinkLabel lnkFilterSettings;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox cmbProfiles;
+        private System.Windows.Forms.TableLayoutPanel tblProfile;
+        private System.Windows.Forms.ToolStrip profileToolStrip;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripMenuItem newProfileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editProfileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteProfileToolStripMenuItem;
     }
 }

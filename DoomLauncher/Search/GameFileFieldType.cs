@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DoomLauncher
+﻿namespace DoomLauncher
 {
     public enum GameFileFieldType
     {
@@ -31,6 +25,8 @@ namespace DoomLauncher
         MD5,
         SettingsStat,
         SettingsFilesIWAD,
-        SettingsFilesSourcePort
+        SettingsFilesSourcePort,
+        SettingsGameProfileID,
+        SettingsSaved
     }
 }
