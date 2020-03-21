@@ -398,6 +398,7 @@
             this.txtParameters.Name = "txtParameters";
             this.txtParameters.Size = new System.Drawing.Size(160, 20);
             this.txtParameters.TabIndex = 17;
+            this.txtParameters.Click += new System.EventHandler(this.TxtParameters_Click);
             // 
             // chkPreview
             // 
