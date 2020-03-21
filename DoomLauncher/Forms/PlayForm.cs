@@ -946,10 +946,24 @@ namespace DoomLauncher
                     else
                         gameFiles.Add(gameFile);
                 }
-
             }
 
             return gameFiles;
+        }
+
+        private void TxtParameters_Click(object sender, EventArgs e)
+        {
+            TextBoxForm form = new TextBoxForm(true, MessageBoxButtons.OKCancel)
+            {
+                Text = "Extra Parameters",
+                DisplayText = txtParameters.Text,
+                StartPosition = FormStartPosition.CenterParent,
+                AcceptButton = null
+            };
+
+            form.SelectDisplayText(0, 0);
+            if (form.ShowDialog(this) == DialogResult.OK)
+                txtParameters.Text = form.DisplayText;
         }
     }
 }

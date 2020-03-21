@@ -300,9 +300,11 @@ namespace DoomLauncher
 
         private void ShowLaunchParameters(GameFilePlayAdapter playAdapter, IGameFile gameFile, ISourcePortData sourcePort)
         {
-            TextBoxForm form = new TextBoxForm();
-            form.Text = "Launch Parameters";
-            form.StartPosition = FormStartPosition.CenterParent;
+            TextBoxForm form = new TextBoxForm
+            {
+                Text = "Launch Parameters",
+                StartPosition = FormStartPosition.CenterParent
+            };
 
             string launchParameters = playAdapter.GetLaunchParameters(AppConfiguration.GameFileDirectory,
                 AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile));
@@ -333,6 +335,7 @@ namespace DoomLauncher
                 form.DisplayText = "Failed to generate launch parameters";
             }
 
+            form.SelectDisplayText(0, 0);
             form.ShowDialog(this);
         }
 
