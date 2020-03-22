@@ -41,7 +41,15 @@ namespace DoomLauncher
             {
                 using (ZipArchive za = ZipFile.OpenRead(m_zipArchive))
                 {
-                    foreach (var entry in za.Entries.Where(x => x.Name.Length > 0 && x.FullName.StartsWith("DoomLauncher/")))
+                    var entries = za.Entries.Where(x => x.Name.Length > 0 && (x.FullName.StartsWith("DoomLauncher\\") || x.FullName.StartsWith("DoomLauncher/")));
+
+                    if (!entries.Any())
+                    {
+                        LastError = "Could not find DoomLauncher folder in archive.";
+                        return false;
+                    }
+
+                    foreach (var entry in entries)
                     {
                         string file = Path.Combine(Directory.GetCurrentDirectory(), entry.Name);
                         FileInfo fileInfo = new FileInfo(file);
