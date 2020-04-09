@@ -15,13 +15,15 @@ namespace UnitTest.Tests
             Version version = new Version("1.0.0.0");
             ApplicationUpdateInfo info = await applicationUpdate.GetUpdateApplicationInfo(version);
 
-            Assert.IsNotNull(info);
-            Assert.IsTrue(info.Version > version);
-            Assert.IsTrue(info.DownloadUrl.EndsWith(".zip"));
+            if (info != null)
+            {
+                Assert.IsTrue(info.Version > version);
+                Assert.IsTrue(info.DownloadUrl.EndsWith(".zip"));
 
-            info = await applicationUpdate.GetUpdateApplicationInfo(info.Version);
+                info = await applicationUpdate.GetUpdateApplicationInfo(info.Version);
 
-            Assert.IsNull(info);
+                Assert.IsNull(info);
+            }
         }
     }
 }
