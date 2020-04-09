@@ -423,18 +423,17 @@ namespace DoomLauncher
             if (!dt.Select("name = 'SettingsFilesIWAD'").Any())
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'SettingsFilesIWAD' TEXT;");
 
-            var adapter = DbDataSourceAdapter.CreateAdapter();
-            var gameFiles = adapter.GetGameFiles();
-            var ports = adapter.GetSourcePorts().ToDictionary(x => x.SourcePortID, x => x);
-            var iwads = adapter.GetIWads();
-            var gameFileIwads = adapter.GetGameFileIWads().ToDictionary(x => iwads.First(y => y.GameFileID == x.GameFileID.Value).IWadID, x => x);
+            var gameFiles = m_adapter.GetGameFiles();
+            var ports = m_adapter.GetSourcePorts().ToDictionary(x => x.SourcePortID, x => x);
+            var iwads = m_adapter.GetIWads();
+            var gameFileIwads = m_adapter.GetGameFileIWads().ToDictionary(x => iwads.First(y => y.GameFileID == x.GameFileID.Value).IWadID, x => x);
 
             foreach (var gameFile in gameFiles)
             {
                 if (!string.IsNullOrEmpty(gameFile.SettingsFiles))
                 {
-                    var files = Util.GetAdditionalFiles(adapter, (GameFile)gameFile).Select(x => x.FileName);
-                    FileLoadHandlerLegacy filehandler = new FileLoadHandlerLegacy(adapter, gameFile);
+                    var files = Util.GetAdditionalFiles(m_adapter, (GameFile)gameFile).Select(x => x.FileName);
+                    FileLoadHandlerLegacy filehandler = new FileLoadHandlerLegacy(m_adapter, gameFile);
                     filehandler.CalculateAdditionalFiles(GetDictionaryData<IGameFile>(gameFile.IWadID, gameFileIwads),
                         GetDictionaryData<ISourcePortData>(gameFile.SourcePortID, ports));
 
@@ -444,7 +443,7 @@ namespace DoomLauncher
                     gameFile.SettingsFilesSourcePort = string.Join(";", sourcePortFiles.ToArray());
                     gameFile.SettingsFilesIWAD = string.Join(";", iwadFiles.ToArray());     
                            
-                    adapter.UpdateGameFile(gameFile);
+                    m_adapter.UpdateGameFile(gameFile);
                 }
             }
         }
@@ -468,16 +467,15 @@ namespace DoomLauncher
 
         private void Pre_2_6_4_1_Update()
         {
-            var adapter = DbDataSourceAdapter.CreateAdapter();
-            var sourcePorts = adapter.GetSourcePorts();
-            var stats = adapter.GetStats();
+            var sourcePorts = m_adapter.GetSourcePorts();
+            var stats = m_adapter.GetStats();
 
             foreach(var stat in stats)
             {
                 if (!sourcePorts.Any(x => x.SourcePortID == stat.SourcePortID))
                 {
                     stat.SourcePortID = -1;
-                    adapter.UpdateStats(stat);
+                    m_adapter.UpdateStats(stat);
                 }
             }
         }

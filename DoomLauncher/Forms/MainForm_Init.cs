@@ -357,7 +357,7 @@ namespace DoomLauncher
             string dataSource = Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
             DataAccess access = new DataAccess(new SqliteDatabaseAdapter(), DbDataSourceAdapter.CreateConnectionString(dataSource));
 
-            m_versionHandler = new VersionHandler(access, DataSourceAdapter, AppConfiguration);
+            m_versionHandler = new VersionHandler(access, DbDataSourceAdapter.CreateAdapter(true), AppConfiguration);
 
             if (m_versionHandler.UpdateRequired())
             {

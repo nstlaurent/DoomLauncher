@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DoomLauncher
 {
@@ -15,10 +16,11 @@ namespace DoomLauncher
     {
         private static string[] s_opLookup = new string[] { "= ", "<>", "<", ">", "like" };
 
-        public DbDataSourceAdapter(IDatabaseAdapter dbAdapter, string connectionString)
+        public DbDataSourceAdapter(IDatabaseAdapter dbAdapter, string connectionString, bool outOfDateDatabase)
         {
             DbAdapter = dbAdapter;
             ConnectionString = connectionString;
+            m_outOfDateDatabase = outOfDateDatabase;
 
             DataAccess = new DataAccess(dbAdapter, connectionString);
         }
@@ -28,10 +30,12 @@ namespace DoomLauncher
             return "DoomLauncher.sqlite";
         }
 
-        public static IDataSourceAdapter CreateAdapter()
+        public static IDataSourceAdapter CreateAdapter() => CreateAdapter(false);
+
+        public static IDataSourceAdapter CreateAdapter(bool outOfDataDatabase)
         {
             string dataSource = Path.Combine(Directory.GetCurrentDirectory(), GetDatabaseFileName());
-            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), CreateConnectionString(dataSource));
+            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), CreateConnectionString(dataSource), outOfDataDatabase);
         }
 
         public static string CreateConnectionString(string dataSource)
@@ -253,6 +257,13 @@ namespace DoomLauncher
 
                 DataAccess.DbAdapter.CreateParameter("FileName", gameFile.FileName)
             };
+
+            if (m_outOfDateDatabase)
+            {
+                DataTable dt = GetTableColumns("GameFiles");
+                query = RemoveUnknownColumnsFromQuery(dt, query);
+                parameters = RemoveUnknownColumnsFromParameters(dt, parameters);
+            }
 
             DataAccess.ExecuteNonQuery(query.ToString(), parameters);
         }
@@ -708,8 +719,58 @@ namespace DoomLauncher
             return sb.ToString();
         }
 
+        private static List<DbParameter> RemoveUnknownColumnsFromParameters(DataTable dt, List<DbParameter> parameters)
+        {
+            List<DbParameter> badParameters = new List<DbParameter>();
+
+            foreach (var parameter in parameters)
+            {
+                if (!ColumnExists(dt, parameter.ParameterName))
+                    badParameters.Add(parameter);
+            }
+
+            return parameters.Except(badParameters).ToList();
+        }
+
+        private static StringBuilder RemoveUnknownColumnsFromQuery(DataTable dt, StringBuilder query)
+        {
+            Regex regex = new Regex(@"@\S+");
+            var matches = regex.Matches(query.ToString());
+
+            foreach (Match match in matches)
+            {
+                string columnName = match.Value.Replace("@", string.Empty).Replace(",", string.Empty);
+                if (!ColumnExists(dt, columnName))
+                {
+                    string replace = $"{columnName} = @{columnName}";
+                    if (match.Value.EndsWith(","))
+                        replace += ",";
+                    query.Replace(replace, string.Empty);
+                }
+            }
+
+            Regex whereFix = new Regex(@",\s+where");
+            var whereMatch = whereFix.Match(query.ToString());
+            if (whereMatch.Success)
+                query.Replace(whereMatch.Value, " where");
+
+            return query;
+        }
+
+        private static bool ColumnExists(DataTable dt, string columnName)
+        {
+            return dt.Select($"name = '{columnName}'").Any();
+        }
+
+        private DataTable GetTableColumns(string tableName)
+        {
+            return DataAccess.ExecuteSelect($"pragma table_info({tableName});").Tables[0];
+        }
+
         private DataAccess DataAccess { get; set; }
         public IDatabaseAdapter DbAdapter { get; private set; }
         public string ConnectionString { get; private set; }
+
+        private readonly bool m_outOfDateDatabase;
     }
 }
