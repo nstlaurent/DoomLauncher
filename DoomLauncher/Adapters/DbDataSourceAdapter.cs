@@ -16,6 +16,12 @@ namespace DoomLauncher
     {
         private static string[] s_opLookup = new string[] { "= ", "<>", "<", ">", "like" };
 
+        public DbDataSourceAdapter(IDatabaseAdapter dbAdapter, string connectionString)
+            : this(dbAdapter, connectionString, false)
+        {
+
+        }
+
         public DbDataSourceAdapter(IDatabaseAdapter dbAdapter, string connectionString, bool outOfDateDatabase)
         {
             DbAdapter = dbAdapter;
