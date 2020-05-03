@@ -1,10 +1,7 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -16,6 +13,16 @@ namespace DoomLauncher
         public string GetToolTipText(Font font, IGameFile item)
         {
             StringBuilder sb = new StringBuilder();
+
+            if (!string.IsNullOrEmpty(item.FileName))
+            {
+                sb.Append("File: ");
+                sb.Append(item.FileName);
+
+                sb.Append(Environment.NewLine);
+                sb.Append(Environment.NewLine);
+            }
+
             sb.Append("Title: ");
             if (item.Title != null)
                 sb.Append(item.Title);

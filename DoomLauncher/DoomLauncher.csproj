@@ -92,6 +92,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\WadArchiveDataAdapter.cs" />
+    <Compile Include="Archive\ArchiveReader.cs" />
+    <Compile Include="Archive\FileArchiveReader.cs" />
+    <Compile Include="Archive\IArchiveEntry.cs" />
+    <Compile Include="Archive\ZipArchiveReader.cs" />
+    <Compile Include="Archive\ZipArchiveReaderEntry.cs" />
     <Compile Include="Controls\GlowButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -102,6 +107,14 @@
       <DependentUpon>UpdateControl.cs</DependentUpon>
     </Compile>
     <Compile Include="DataSources\GameProfile.cs" />
+    <Compile Include="Config\FileManagement.cs" />
+    <Compile Include="Forms\FileManagementSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FileManagementSelect.Designer.cs">
+      <DependentUpon>FileManagementSelect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Archive\IArchiveReader.cs" />
     <Compile Include="Interfaces\IGameProfile.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
@@ -553,6 +566,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\StatsControl.resx">
       <DependentUpon>StatsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FileManagementSelect.resx">
+      <DependentUpon>FileManagementSelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FilterForm.resx">
       <DependentUpon>FilterForm.cs</DependentUpon>

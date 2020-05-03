@@ -3,7 +3,6 @@ using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -11,7 +10,7 @@ namespace DoomLauncher
 {
     public partial class SettingsForm : Form
     {
-        private List<Tuple<IConfigurationData, object>> m_configValues = new List<Tuple<IConfigurationData, object>>();
+        private readonly List<Tuple<IConfigurationData, object>> m_configValues = new List<Tuple<IConfigurationData, object>>();
         private TextBox m_gameFileDirectory, m_screenshotDirectories;
         private Label m_lblScreenshotWidth;
         private TrackBar m_screenshotTrackBar;
@@ -245,10 +244,12 @@ namespace DoomLauncher
             cmbSourcePorts.DataSource = adapter.GetSourcePorts();
             cmbIwad.DataSource = Util.GetIWadsDataSource(adapter);
             cmbSkill.DataSource = Util.GetSkills();
+            cmbFileManagement.DataSource = Enum.GetValues(typeof(FileManagement));
 
             cmbSourcePorts.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultSourcePort, typeof(int));
             cmbIwad.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultIWad, typeof(int));
             cmbSkill.SelectedItem = m_appConfig.GetTypedConfigValue(ConfigType.DefaultSkill, typeof(string));
+            cmbFileManagement.SelectedIndex = (int)Enum.Parse(typeof(FileManagement), (string)m_appConfig.GetTypedConfigValue(ConfigType.FileManagement, typeof(string)));
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -269,13 +270,15 @@ namespace DoomLauncher
             {  
                 ConfigType.DefaultSourcePort.ToString("g"), 
                 ConfigType.DefaultIWad.ToString("g"), 
-                ConfigType.DefaultSkill.ToString("g") 
+                ConfigType.DefaultSkill.ToString("g"),
+                ConfigType.FileManagement.ToString("g"),
             };
             string[] configValues = new string[]
-            { 
+            {
                 cmbSourcePorts.SelectedItem == null ? null : ((ISourcePortData)cmbSourcePorts.SelectedItem).SourcePortID.ToString(),
                 cmbIwad.SelectedItem == null ? null : ((IIWadData)cmbIwad.SelectedItem).IWadID.ToString(),
-                cmbSkill.SelectedItem?.ToString()
+                cmbSkill.SelectedItem?.ToString(),
+                cmbFileManagement.SelectedValue.ToString(),
             };
 
             IEnumerable<IConfigurationData> configuration = m_adapter.GetConfiguration().Where(x => configNames.Contains(x.Name));

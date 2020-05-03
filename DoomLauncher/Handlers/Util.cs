@@ -277,13 +277,13 @@ namespace DoomLauncher
             throw new Exception(msg);
         }
 
-        public static IEnumerable<ZipArchiveEntry> GetEntriesByExtension(ZipArchive za, string[] extensions)
+        public static IEnumerable<IArchiveEntry> GetEntriesByExtension(IArchiveReader reader, string[] extensions)
         {
-            List<ZipArchiveEntry> entries = new List<ZipArchiveEntry>();
+            List<IArchiveEntry> entries = new List<IArchiveEntry>();
 
             foreach (var ext in extensions)
             {
-                 entries.AddRange(za.Entries
+                 entries.AddRange(reader.Entries
                      .Where(x => x.Name.Contains('.') && Path.GetExtension(x.Name).Equals(ext, StringComparison.OrdinalIgnoreCase)));
             }
 
@@ -292,7 +292,12 @@ namespace DoomLauncher
 
         public static string[] GetPkExtenstions()
         {
-            return new string[] { ".pk3", ".pk7" };
+            return new string[] { ".pk3", ".pk7", ".zip" };
+        }
+
+        public static string[] GetReadablePkExtensions()
+        {
+            return new string[] { ".pk3", ".zip" };
         }
 
         public static string GetPkExtensionsCsv()
@@ -326,18 +331,22 @@ namespace DoomLauncher
         //Takes a file 'MAP01.wad' and makes it 'MAP01_GUID.wad'.
         //Checks if file with prefix MAP01 exists with same file length and returns that file (same file).
         //Otherwise a new file is extracted and returned.
-        public static string ExtractTempFile(string tempDirectory, ZipArchiveEntry zae)
+        public static string ExtractTempFile(string tempDirectory, IArchiveEntry entry)
         {
-            string ext = Path.GetExtension(zae.Name);
-            string file = zae.Name.Replace(ext, string.Empty) + "_";
+            // The file is a regular file and not an archive - return the FulName
+            if (!entry.ExtractRequired)
+                return entry.FullName;
+
+            string ext = Path.GetExtension(entry.Name);
+            string file = entry.Name.Replace(ext, string.Empty) + "_";
             string[] searchFiles = Directory.GetFiles(tempDirectory, file + "*");
 
-            string matchingFile = searchFiles.FirstOrDefault(x => new FileInfo(x).Length == zae.Length);
+            string matchingFile = searchFiles.FirstOrDefault(x => new FileInfo(x).Length == entry.Length);
 
             if (matchingFile == null)
             {
                 string extractFile = Path.Combine(tempDirectory, string.Concat(file, Guid.NewGuid().ToString(), ext));
-                zae.ExtractToFile(extractFile);
+                entry.ExtractToFile(extractFile);
                 return extractFile;
             }
 
@@ -347,13 +356,8 @@ namespace DoomLauncher
         public static List<IIWadData> GetIWadsDataSource(IDataSourceAdapter adapter)
         {
             List<IIWadData> iwads = adapter.GetIWads().ToList();
-            iwads.ForEach(x => x.FileName = RemoveExtension(x.FileName));
+            iwads.ForEach(x => x.FileName = Path.GetFileNameWithoutExtension(x.FileName));
             return iwads;
-        }
-
-        public static string RemoveExtension(string fileName)
-        {
-            return fileName.Replace(Path.GetExtension(fileName), string.Empty);
         }
 
         public static string CleanDescription(string description)

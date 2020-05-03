@@ -13,7 +13,7 @@ namespace DoomLauncher
     {
         private ProgressBarForm m_progressBarSync;
 
-        private async Task SyncLocalDatabase(string[] fileNames)
+        private async Task SyncLocalDatabase(string[] fileNames, FileManagement fileManagement)
         {
             if (m_progressBarSync == null)
             {
@@ -21,7 +21,7 @@ namespace DoomLauncher
                 ProgressBarStart(m_progressBarSync);
             }
 
-            SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames));
+            SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement));
 
             ProgressBarEnd(m_progressBarSync);
             m_progressBarSync = null;
@@ -59,7 +59,8 @@ namespace DoomLauncher
                 IEnumerable<IGameFile> gameFiles = DataSourceAdapter.GetGameFiles();
                 foreach (IIWadData iwad in iwads)
                 {
-                    IGameFile find = gameFiles.FirstOrDefault(x => x.FileName.ToLower() == iwad.FileName.ToLower().Replace(".wad", ".zip"));
+                    string iwadName = Path.GetFileNameWithoutExtension(iwad.FileName);
+                    IGameFile find = gameFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x.FileName).Equals(iwadName));
                     if (find != null)
                     {
                         if (!find.IWadID.HasValue) //this should mean the file was just added so we should set the pre-defined title
@@ -101,14 +102,14 @@ namespace DoomLauncher
                 sb.ToString(), true);
         }
 
-        private SyncLibraryHandler ExecuteSyncHandler(string[] files)
+        private SyncLibraryHandler ExecuteSyncHandler(string[] files, FileManagement fileManagement)
         {
             SyncLibraryHandler handler = null;
 
             try
             {
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter,
-                    AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats);
+                    AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats, fileManagement);
                 handler.SyncFileChange += syncHandler_SyncFileChange;
                 handler.GameFileDataNeeded += syncHandler_GameFileDataNeeded;
 
@@ -120,7 +121,7 @@ namespace DoomLauncher
                     m_pendingZdlFiles = null;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Util.DisplayUnexpectedException(this, ex);
             }
@@ -154,11 +155,11 @@ namespace DoomLauncher
             
         private void FillIwadData(IGameFile gameFile)
         {
-            FileInfo fi = new FileInfo(gameFile.FileName);
+            string name = Path.GetFileNameWithoutExtension(gameFile.FileName).ToUpper();
 
             if (string.IsNullOrEmpty(gameFile.Title))
             {
-                switch (gameFile.FileName.Replace(fi.Extension, string.Empty).ToUpper())
+                switch (name)
                 {
                     case "DOOM1":
                         gameFile.Title = "Doom Shareware";
@@ -206,7 +207,7 @@ namespace DoomLauncher
                         gameFile.Title = "Strife: Quest for the Sigil";
                         break;
                     default:
-                        gameFile.Title = gameFile.FileName.Replace(fi.Extension, string.Empty);
+                        gameFile.Title = name;
                         break;
                 }
 
@@ -269,7 +270,13 @@ namespace DoomLauncher
         private void SyncIWads(string[] files)
         {
             IEnumerable<string> iwads = DataSourceAdapter.GetIWads().Select(x => x.Name);
-            IEnumerable<string> iwadsToAdd = files.Except(iwads);
+            List<string> iwadsToAdd = new List<string>();
+
+            foreach (string file in files)
+            {
+                if (!iwads.Contains(Path.GetFileName(file)))
+                    iwadsToAdd.Add(file);
+            }
 
             foreach (string file in iwadsToAdd)
             {
@@ -313,7 +320,7 @@ namespace DoomLauncher
                     m_progressBarSync = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
                     ProgressBarStart(m_progressBarSync);
 
-                    SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(files.ToArray()));
+                    SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(files.ToArray(), FileManagement.Managed));
 
                     ProgressBarEnd(m_progressBarSync);
                     SyncLocalDatabaseComplete(handler);

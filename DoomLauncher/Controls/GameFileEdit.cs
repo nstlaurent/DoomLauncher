@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DoomLauncher.Interfaces;
-using System.Diagnostics;
 
 namespace DoomLauncher
 {
@@ -20,8 +14,8 @@ namespace DoomLauncher
         {
             InitializeComponent();
             chkTags.Visible = false;
-
             txtComments.WarnLinkClick = false;
+            lblFile.IsPath = true;
         }
 
         public void SetShowCheckBoxes(bool set)
@@ -91,6 +85,8 @@ namespace DoomLauncher
         {
             DataSource = gameFile;
             TagData = tags.ToArray();
+
+            lblFile.Text = gameFile.FileName;
 
             if (!string.IsNullOrEmpty(gameFile.Title)) txtTitle.Text = gameFile.Title;
             else txtTitle.Text = string.Empty;

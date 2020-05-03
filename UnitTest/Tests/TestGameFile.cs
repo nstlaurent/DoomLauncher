@@ -518,7 +518,7 @@ namespace UnitTest.Tests
         {
             int value = 0;
             //Properties we do not write to the database
-            string[] exclude = new string[] { "FileSizeBytes", "GameFileID" };
+            string[] exclude = new string[] { "FileSizeBytes", "GameFileID", "FileNameNoPath" };
 
             foreach (var gameFile in gameFiles)
             {
