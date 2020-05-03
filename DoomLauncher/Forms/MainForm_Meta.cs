@@ -84,7 +84,7 @@ namespace DoomLauncher
                 }
 
                 if (updateView)
-                    HandleSelectionChange(GetCurrentViewControl());
+                    HandleSelectionChange(GetCurrentViewControl(), true);
             }
         }
 

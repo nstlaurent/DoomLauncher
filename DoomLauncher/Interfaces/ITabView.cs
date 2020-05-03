@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.Interfaces
 {
@@ -23,6 +20,6 @@ namespace DoomLauncher.Interfaces
         string Title { get; }
         object Key { get; }
         IGameFileDataSourceAdapter Adapter { get; set; }
-        GameFileViewControl GameFileViewControl { get; }
+        IGameFileView GameFileViewControl { get; }
     }
 }

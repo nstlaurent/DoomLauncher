@@ -267,9 +267,13 @@ namespace DoomLauncher
 
             TagTabView tabView = new TagTabView(tag.TagID, name, DataSourceAdapter, DefaultGameFileSelectFields, tag);
             SetupTabBase(tabView, columnTextFields, colConfig, mnuLocal, true);
-            tabView.GameFileViewControl.SetColumnFormat("ReleaseDate", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
-            tabView.GameFileViewControl.SetColumnFormat("Downloaded", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
-            tabView.GameFileViewControl.SetColumnFormat("LastPlayed", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+
+            if (tabView.GameFileViewControl is IGameFileColumnView columnView)
+            {
+                columnView.SetColumnFormat("ReleaseDate", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+                columnView.SetColumnFormat("Downloaded", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+                columnView.SetColumnFormat("LastPlayed", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+            }
 
             return tabView;
         }
@@ -288,7 +292,7 @@ namespace DoomLauncher
 
         private void RebuildTagToolStrip()
         {
-            GameFileViewControl currentControl = GetCurrentViewControl();
+            IGameFileView currentControl = GetCurrentViewControl();
             if (currentControl != null)
             {
                 List<ITagData> addTags = new List<ITagData>();
@@ -329,18 +333,18 @@ namespace DoomLauncher
                 tagToolStrip.DropDownItems.Add(tag.Name, null, handler);
         }
 
-        private void SetGameFileViewEvents(GameFileViewControl ctrl, bool dragDrop)
+        private void SetGameFileViewEvents(IGameFileView ctrl, bool dragDrop)
         {
             ctrl.ToolTipTextNeeded += ctrlView_ToolTipTextNeeded;
-            ctrl.RowDoubleClicked += ctrlView_RowDoubleClicked;
+            ctrl.ItemDoubleClick += ctrlView_RowDoubleClicked;
             ctrl.SelectionChange += ctrlView_SelectionChange;
-            ctrl.GridKeyPress += ctrlView_GridKeyPress;
+            ctrl.ViewKeyPress += ctrlView_GridKeyPress;
 
             if (dragDrop)
             {
                 ctrl.DragDrop += ctrlView_DragDrop;
                 ctrl.DragEnter += ctrlView_DragEnter;
-                ctrl.GridKeyDown += ctrlView_GridKeyDown;
+                ctrl.ViewKeyDown += ctrlView_GridKeyDown;
             }
         }
 
