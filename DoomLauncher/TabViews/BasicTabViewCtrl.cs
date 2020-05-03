@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DoomLauncher.Interfaces;
 using DoomLauncher.DataSources;
@@ -38,37 +34,48 @@ namespace DoomLauncher
 
         protected void SetBaseCloneProperties(ITabView view)
         {
-            view.SetColumnConfig(GameFileViewControl.ColumnFields, GetColumnConfig().ToArray());
+            if (GameFileViewControl is IGameFileColumnView columnView)
+                view.SetColumnConfig(columnView.ColumnFields, GetColumnConfig().ToArray());
         }
 
         public List<ColumnConfig> GetColumnConfig()
         {
-            List<ColumnConfig> config = new List<ColumnConfig>();
-
-            foreach (string key in GameFileViewControl.GetColumnKeyOrder())
+            if (GameFileViewControl is IGameFileColumnView columnView)
             {
-                ColumnConfig col = new ColumnConfig(Title, key,
-                    GameFileViewControl.GetColumnWidth(key), GameFileViewControl.GetColumnSort(key));
-                config.Add(col);
-            }
+                List<ColumnConfig> config = new List<ColumnConfig>();
 
-            return config;
+                foreach (string key in columnView.GetColumnKeyOrder())
+                {
+                    ColumnConfig col = new ColumnConfig(Title, key,
+                        columnView.GetColumnWidth(key), columnView.GetColumnSort(key));
+                    config.Add(col);
+                }
+
+                return config;
+            }
+            else
+            {
+                throw new InvalidOperationException("GameFileViewControl is not IGameFileColumView");
+            }
         }
 
         public void SetColumnConfig(ColumnField[] columnTextFields, ColumnConfig[] colConfig)
         {
-            GameFileViewControl.SuspendLayout();
+            if (GameFileViewControl is IGameFileColumnView columnView)
+            {
+                columnView.SuspendLayout();
 
-            var sortedColumns = SortColumns(Title, columnTextFields, colConfig);
-            GameFileViewControl.SetColumnFields(sortedColumns);
-            SetSortedColumn(Title, GameFileViewControl, colConfig);
-            SetColumnWidths(Title, GameFileViewControl, colConfig);
+                var sortedColumns = SortColumns(Title, columnTextFields, colConfig);
+                columnView.SetColumnFields(sortedColumns);
+                SetSortedColumn(Title, columnView, colConfig);
+                SetColumnWidths(Title, columnView, colConfig);
 
-            GameFileViewControl.SetColumnFormat("ReleaseDate", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
-            GameFileViewControl.SetColumnFormat("Downloaded", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
-            GameFileViewControl.SetColumnFormat("LastPlayed", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+                columnView.SetColumnFormat("ReleaseDate", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+                columnView.SetColumnFormat("Downloaded", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+                columnView.SetColumnFormat("LastPlayed", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
 
-            GameFileViewControl.ResumeLayout();
+                GameFileViewControl.ResumeLayout();
+            }
         }
 
         private static ColumnField[] SortColumns(string tab, ColumnField[] items, ColumnConfig[] config)
@@ -100,7 +107,7 @@ namespace DoomLauncher
             return ret.Union(items).ToArray();
         }
 
-        private static void SetColumnWidths(string tab, GameFileViewControl ctrl, ColumnConfig[] config)
+        private static void SetColumnWidths(string tab, IGameFileColumnView ctrl, ColumnConfig[] config)
         {
             IEnumerable<ColumnConfig> configSet = config.Where(x => x.Parent == tab);
             foreach (ColumnConfig col in configSet)
@@ -109,7 +116,7 @@ namespace DoomLauncher
             }
         }
 
-        private static void SetSortedColumn(string tab, GameFileViewControl gameFileViewControl, ColumnConfig[] colConfig)
+        private static void SetSortedColumn(string tab, IGameFileColumnView gameFileViewControl, ColumnConfig[] colConfig)
         {
             ColumnConfig config = colConfig.FirstOrDefault(x => x.Parent == tab && x.Sort != SortOrder.None);
 
@@ -117,7 +124,7 @@ namespace DoomLauncher
                 gameFileViewControl.SetSortedColumn(config.Column, config.Sort);
         }
 
-        public GameFileViewControl GameFileViewControl { get { return ctrlView; } }
+        public IGameFileView GameFileViewControl { get { return ctrlView; } }
 
         public object Key { get { return m_key; } }
 
@@ -151,12 +158,12 @@ namespace DoomLauncher
         {
             if (ctrlView.DataSource != null)
             {
-                foreach (ObjectView<GameFile> item in (BindingListView<GameFile>)ctrlView.DataSource)
+                foreach (IGameFile item in ctrlView.DataSource)
                 {
-                    if (item.Object.Equals(gameFile))
+                    if (item.Equals(gameFile))
                     {
-                        IGameFile dsSet = item.Object as IGameFile;
-                        Array.ForEach(dsSet.GetType().GetProperties().Where(x => x.SetMethod != null).ToArray(), x => x.SetValue(dsSet, x.GetValue(gameFile)));
+                        //IGameFile dsSet = item.Object as IGameFile;
+                        Array.ForEach(item.GetType().GetProperties().Where(x => x.SetMethod != null).ToArray(), x => x.SetValue(item, x.GetValue(gameFile)));
                         ctrlView.Invalidate(true);
                         break;
                     }
@@ -181,7 +188,7 @@ namespace DoomLauncher
             }
             else
             {
-                ctrlView.DataSource = new BindingListView<GameFile>(gameFiles.Cast<GameFile>().ToList());
+                ctrlView.DataSource = gameFiles.Cast<GameFile>().ToList();
             }
         }
 

@@ -30,7 +30,7 @@ namespace DoomLauncher
         {
             if (e.KeyCode == Keys.Enter)
             {
-                GameFileViewControl ctrl = CurrentGameFileControl;
+                IGameFileView ctrl = CurrentGameFileControl;
                 if (ctrl != null)
                     HandleSearch(ctrl);
             }
@@ -52,7 +52,7 @@ namespace DoomLauncher
             {
                 ITabView viewAdd = (ITabView)view.Clone();
                 viewAdd.GameFileViewControl.MultiSelect = MultiSelect;
-                viewAdd.GameFileViewControl.RowDoubleClicked += GameFileViewControl_RowDoubleClicked;
+                viewAdd.GameFileViewControl.ItemDoubleClick += GameFileViewControl_RowDoubleClicked;
                 m_tabHandler.AddTab(viewAdd);
             }
         }
@@ -115,26 +115,11 @@ namespace DoomLauncher
 
         public IDataSourceAdapter DataSourceAdapter { get; set; }
 
-        public IGameFile[] SelectedFiles
-        {
-            get
-            {
-                object[] items = CurrentGameFileControl.SelectedItems;
-
-                List<IGameFile> ret = new List<IGameFile>(items.Length);
-
-                foreach (object obj in items)
-                {
-                    ret.Add(((ObjectView<GameFile>)obj).Object as IGameFile);
-                }
-
-                return ret.ToArray();
-            }
-        }
+        public IGameFile[] SelectedFiles => CurrentGameFileControl.SelectedItems;
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            GameFileViewControl ctrl = CurrentGameFileControl;
+            IGameFileView ctrl = CurrentGameFileControl;
 
             if (ctrl != null)
             {
@@ -142,7 +127,7 @@ namespace DoomLauncher
             }
         }
 
-        private void HandleSearch(GameFileViewControl ctrl)
+        private void HandleSearch(IGameFileView ctrl)
         {
             if (!m_bOverrideInit)
             {
@@ -158,13 +143,11 @@ namespace DoomLauncher
             }
         }
 
-        private GameFileViewControl CurrentGameFileControl
+        private IGameFileView CurrentGameFileControl
         {
             get
             {
-                ITabView view = tabControl.SelectedTab.Controls[0] as ITabView;
-
-                if (view != null)
+                if (tabControl.SelectedTab.Controls[0] is ITabView view)
                     return view.GameFileViewControl;
 
                 return null;

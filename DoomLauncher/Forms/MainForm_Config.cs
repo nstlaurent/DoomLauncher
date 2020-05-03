@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -31,7 +29,8 @@ namespace DoomLauncher
                     UpdateConfig(config, "WindowState", WindowState.ToString());
                 }
 
-                UpdateConfig(config, "ColumnConfig", BuildColumnConfig());
+                if (m_tabHandler.TabViews.Any(x => x.GameFileViewControl is IGameFileColumnView))
+                    UpdateConfig(config, "ColumnConfig", BuildColumnConfig());
                 UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
             }
         }
@@ -44,15 +43,16 @@ namespace DoomLauncher
 
         private void UpdateConfig(IEnumerable<IConfigurationData> config, string name, string value)
         {
-            IConfigurationData configFind = config.Where(x => x.Name == name).FirstOrDefault();
+            IConfigurationData configFind = config.FirstOrDefault(x => x.Name == name);
 
             if (configFind == null)
             {
-                configFind = new ConfigurationData();
-                configFind.Name = name;
-                configFind.Value = value;
-                configFind.UserCanModify = false;
-                DataSourceAdapter.InsertConfiguration(configFind);
+                DataSourceAdapter.InsertConfiguration(new ConfigurationData
+                {
+                    Name = name,
+                    Value = value,
+                    UserCanModify = false
+                });
             }
             else
             {
