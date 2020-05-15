@@ -220,7 +220,7 @@ namespace DoomLauncher
                         if (!string.IsNullOrEmpty(zae.Name) &&
                             supportedExtensions.Any(x => x.Equals(Path.GetExtension(zae.Name), StringComparison.OrdinalIgnoreCase)))
                         {
-                            ret.Add(zae.Name);
+                            ret.Add(zae.FullName);
                         }
                     }
                 }
