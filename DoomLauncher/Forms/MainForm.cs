@@ -2172,9 +2172,9 @@ namespace DoomLauncher
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                // TODO .wad, .deh, .bex
-                string[] extensions = Util.GetPkExtenstions().Union(new string[] {".wad",".deh",".bex" }).ToArray();
-                for (int i = 0; i < extensions.Length; i++)
+                List<string> extensions = Util.GetPkExtenstions().Union(Util.GetDehackedExtensions()).ToList();
+                extensions.Add(".wad");
+                for (int i = 0; i < extensions.Count; i++)
                     extensions[i] = "*" + extensions[i];
 
                 IEnumerable<string> files = new List<string>();

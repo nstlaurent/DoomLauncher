@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -13,8 +12,6 @@ namespace DoomLauncher
     public class GameFilePlayAdapter
     {
         public event EventHandler ProcessExited;
-
-        private static string[] s_dehExtensions = new string[] { ".deh", ".bex" }; //future - should be configurable
 
         public GameFilePlayAdapter()
         {
@@ -227,11 +224,12 @@ namespace DoomLauncher
             if (files.Count > 0)
             {
                 sb.Append(sourcePort.FileParameter(new SpData()));
+                var dehExtensions = Util.GetDehackedExtensions();
 
                 foreach (string str in files)
                 {
                     FileInfo fi = new FileInfo(str);
-                    if (!s_dehExtensions.Contains(fi.Extension.ToLower()))
+                    if (!dehExtensions.Contains(fi.Extension.ToLower()))
                         sb.Append(string.Format("\"{0}\" ", str));
                     else
                         dehFiles.Add(str);
@@ -325,10 +323,11 @@ namespace DoomLauncher
         private IEnumerable<string> SortParameters(IEnumerable<string> parameters)
         {
             List<string> dehFiles = new List<string>();
+            var dehExtensions = Util.GetDehackedExtensions();
 
-            foreach(string file in parameters)
+            foreach (string file in parameters)
             {
-                foreach (string deh in s_dehExtensions)
+                foreach (string deh in dehExtensions)
                 {
                     if (Path.GetExtension(file).Equals(deh, StringComparison.OrdinalIgnoreCase))
                         dehFiles.Add(file);

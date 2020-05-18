@@ -300,9 +300,14 @@ namespace DoomLauncher
             return new string[] { ".pk3", ".zip" };
         }
 
-        public static string GetPkExtensionsCsv()
+        public static string[] GetDehackedExtensions()
         {
-            return ".pk3,.pk7";
+            return new string[] { ".deh", ".bex" };
+        }
+
+        public static string[] GetSourcePortPkExtensions()
+        {
+            return new string[] { ".pk3", ".pk7"};
         }
 
         public static GameFileFieldType[] DefaultGameFileUpdateFields
