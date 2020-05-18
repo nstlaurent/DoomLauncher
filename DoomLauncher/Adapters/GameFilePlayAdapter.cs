@@ -7,15 +7,14 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace DoomLauncher
 {
     public class GameFilePlayAdapter
     {
         public event EventHandler ProcessExited;
+
+        private static string[] s_dehExtensions = new string[] { ".deh", ".bex" }; //future - should be configurable
 
         public GameFilePlayAdapter()
         {
@@ -88,9 +87,7 @@ namespace DoomLauncher
                 if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePortData, true)) return null;
             }
 
-            string[] extensions = sourcePortData.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            launchFiles = SortParameters(launchFiles, extensions).ToList();
-
+            launchFiles = SortParameters(launchFiles).ToList();
             BuildLaunchString(sb, sourcePort, launchFiles);
 
             if (Map != null)
@@ -225,19 +222,16 @@ namespace DoomLauncher
 
         private void BuildLaunchString(StringBuilder sb, ISourcePort sourcePort, List<string> files)
         {
-            string[] dehExt = new string[] { ".deh", ".bex" }; //future - should be configurable
             List<string> dehFiles = new List<string>();
 
             if (files.Count > 0)
             {
                 sb.Append(sourcePort.FileParameter(new SpData()));
-                //if (!string.IsNullOrEmpty(sourcePort.FileOption))
-                //    sb.Append(string.Concat(" ", sourcePort.FileOption, " ")); //" -file "
 
                 foreach (string str in files)
                 {
                     FileInfo fi = new FileInfo(str);
-                    if (!dehExt.Contains(fi.Extension.ToLower()))
+                    if (!s_dehExtensions.Contains(fi.Extension.ToLower()))
                         sb.Append(string.Format("\"{0}\" ", str));
                     else
                         dehFiles.Add(str);
@@ -327,11 +321,21 @@ namespace DoomLauncher
             ProcessExited?.Invoke(this, new EventArgs());
         }
 
-        private IEnumerable<string> SortParameters(IEnumerable<string> parameters, string[] extensionOrder)
+        // Take .deh and .bex files and put them together so they cane be put in the same parameter
+        private IEnumerable<string> SortParameters(IEnumerable<string> parameters)
         {
-            List<string> ret = new List<string>();
-            Array.ForEach(extensionOrder, x => ret.AddRange(parameters.Where(y => y.ToLower().Contains(x.ToLower()))));
-            return ret;
+            List<string> dehFiles = new List<string>();
+
+            foreach(string file in parameters)
+            {
+                foreach (string deh in s_dehExtensions)
+                {
+                    if (Path.GetExtension(file).Equals(deh, StringComparison.OrdinalIgnoreCase))
+                        dehFiles.Add(file);
+                }
+            }
+
+            return parameters.Except(dehFiles).Union(dehFiles).ToList();
         }
     }
 }

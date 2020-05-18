@@ -115,6 +115,8 @@
       <DependentUpon>FileManagementSelect.cs</DependentUpon>
     </Compile>
     <Compile Include="Archive\IArchiveReader.cs" />
+    <Compile Include="Interfaces\IGameFileColumnView.cs" />
+    <Compile Include="Interfaces\IGameFileView.cs" />
     <Compile Include="Interfaces\IGameProfile.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />

@@ -46,8 +46,11 @@ namespace DoomLauncher
         private string m_launchFile;
         private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
 
+        public static MainForm Instance { get; private set; }
+
         public MainForm(string launchFile)
         {
+            Instance = this;
             m_launchFile = launchFile;
 
             m_splash = new SplashScreen();
@@ -96,7 +99,7 @@ namespace DoomLauncher
             }
         }
 
-        private GameFileViewControl GetCurrentViewControl()
+        private IGameFileView GetCurrentViewControl()
         {
             ITabView view = GetCurrentTabView();
 
@@ -133,7 +136,7 @@ namespace DoomLauncher
 
         void ctrlView_RowDoubleClicked(object sender, EventArgs e)
         {
-            HandleRowDoubleClicked(sender as GameFileViewControl);
+            HandleRowDoubleClicked(sender as IGameFileView);
         }
 
         void ctrlView_GridKeyPress(object sender, KeyPressEventArgs e)
@@ -141,7 +144,7 @@ namespace DoomLauncher
             HandleKeyPress(e);
         }
 
-        private void HandleRowDoubleClicked(GameFileViewControl ctrl)
+        private void HandleRowDoubleClicked(IGameFileView ctrl)
         {
             if (ctrl != null)
             {
@@ -156,18 +159,13 @@ namespace DoomLauncher
 
         void ctrlView_ToolTipTextNeeded(object sender, AddingNewEventArgs e)
         {
-            GameFileViewControl ctrl = sender as GameFileViewControl;
-            object objItem = ctrl.ItemForRow(ctrl.ToolTipRowIndex);
+            IGameFileView ctrl = sender as IGameFileView;
+            IGameFile gameFile = ctrl.GameFileForIndex(ctrl.ToolTipItemIndex);
 
-            if (objItem != null)
+            if (gameFile != null)
             {
-                IGameFile item = ((ObjectView<GameFile>)objItem).Object as IGameFile;
-
-                if (item != null)
-                {
-                    ToolTipHandler toolTipHandler = new ToolTipHandler();
-                    e.NewObject = toolTipHandler.GetToolTipText(this.Font, item);
-                }
+                ToolTipHandler toolTipHandler = new ToolTipHandler();
+                e.NewObject = toolTipHandler.GetToolTipText(Font, gameFile);
             }
         }
 
@@ -332,7 +330,7 @@ namespace DoomLauncher
                     gameFileUpdate.FileName = fileName;
                     DataSourceAdapter.UpdateGameFile(gameFileUpdate, new GameFileFieldType[] { GameFileFieldType.Filename });
                     UpdateAdditinalFileReferences(oldFileName, fileName);
-                    HandleSelectionChange(GetCurrentViewControl());
+                    HandleSelectionChange(GetCurrentViewControl(), true);
                 }
                 else
                 {
@@ -521,7 +519,7 @@ namespace DoomLauncher
                 {
                     GetCurrentViewControl().SelectedItem = null;
                     UpdateLocal();
-                    HandleSelectionChange(GetCurrentViewControl());
+                    HandleSelectionChange(GetCurrentViewControl(), true);
                 }
             }
         }
@@ -578,16 +576,9 @@ namespace DoomLauncher
             }
         }
 
-        private void HandleSelectionChange(object sender)
-        {
-            HandleSelectionChange(sender, true);
-        }
-
         private void HandleSelectionChange(object sender, bool forceChange)
         {
-            GameFileViewControl ctrl = sender as GameFileViewControl;
-
-            if (ctrl != null)
+            if (sender is IGameFileView)
             {
                 IGameFile item = null;
                 IGameFile[] items = SelectedItems(GetCurrentViewControl());
@@ -637,7 +628,9 @@ namespace DoomLauncher
 
                 ctrlSummary.Visible = true;
                 ctrlSummary.ResumeLayout();
-                GetCurrentViewControl().Refresh();
+                
+                if (forceChange)
+                    GetCurrentViewControl().RefreshData();
             }
         }
 
@@ -708,30 +701,17 @@ namespace DoomLauncher
             return from tag in DataSourceAdapter.GetTags() join map in tagMapping on tag.TagID equals map.TagID select tag;
         }
 
-        private IGameFile[] SelectedItems(GameFileViewControl ctrl)
+        private IGameFile[] SelectedItems(IGameFileView ctrl)
         {
-            object[] items = ctrl.SelectedItems;
-
-            List<IGameFile> ret = new List<IGameFile>(items.Length);
-
-            foreach(object obj in items)
-            {
-                ret.Add(((ObjectView<GameFile>)obj).Object as IGameFile);
-            }
-
-            return ret.ToArray();
+            return ctrl.SelectedItems;
         }
 
-        private void SetSelectedItem(GameFileViewControl ctrl, IGameFile gameFile)
+        private void SetSelectedItem(IGameFileView ctrl, IGameFile gameFile)
         {
-            foreach (ObjectView<GameFile> item in (BindingListView<GameFile>)ctrl.DataSource)
-            {
-                if (item.Object.Equals(gameFile))
-                {
-                    ctrl.SelectedItem = item;
-                    break;
-                }
-            }
+            IGameFile ctrlItem = ctrl.DataSource.FirstOrDefault(x => x.Equals(gameFile));
+
+            if (ctrlItem != null)
+                ctrl.SelectedItem = ctrlItem;
         }
 
         private void UpdateDataSourceViews(IGameFile gameFile)
@@ -847,7 +827,7 @@ namespace DoomLauncher
 
         private void HandleEdit()
         {
-            GameFileViewControl ctrl = GetCurrentViewControl();
+            IGameFileView ctrl = GetCurrentViewControl();
 
             if (ctrl != null)
             {
@@ -884,7 +864,7 @@ namespace DoomLauncher
                         }
 
                         if (gameFiles.Any())
-                            HandleSelectionChange(ctrl);
+                            HandleSelectionChange(ctrl, true);
                     }
                 }
             }
@@ -922,7 +902,7 @@ namespace DoomLauncher
 
         private void HandleViewWebPage()
         {
-            GameFileViewControl ctrl = GetCurrentViewControl();
+            IGameFileView ctrl = GetCurrentViewControl();
 
             if (ctrl != null)
             {
@@ -1615,7 +1595,7 @@ namespace DoomLauncher
 
         private void ctrlView_DragDrop(object sender, DragEventArgs e)
         {
-            GameFileViewControl ctrl = sender as GameFileViewControl;
+            IGameFileView ctrl = sender as IGameFileView;
             string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
 
             if (ctrl != null && files != null)
@@ -1960,7 +1940,7 @@ namespace DoomLauncher
             }
         }
 
-        private bool SelectItem(GameFileViewControl ctrl, string search)
+        private bool SelectItem(IGameFileView ctrl, string search)
         {
            bool success = false, isIdGames = false;
 
@@ -1968,16 +1948,16 @@ namespace DoomLauncher
             if (tabView != null && tabView is IdGamesTabViewCtrl)
                 isIdGames = true;
 
-            foreach (ObjectView<GameFile> item in (BindingListView<GameFile>)GetCurrentViewControl().DataSource)
+            foreach (IGameFile item in GetCurrentViewControl().DataSource)
             {
                 if (isIdGames)
-                    success = item.Object.Title.ToLower().StartsWith(search);
+                    success = item.Title.ToLower().StartsWith(search);
                 else
-                    success = item.Object.FileName.ToLower().StartsWith(search);
+                    success = item.FileName.ToLower().StartsWith(search);
 
                 if (success)
                 {
-                    SetSelectedItem(GetCurrentViewControl(), item.Object);
+                    SetSelectedItem(GetCurrentViewControl(), item);
                     break;
                 }
             }
@@ -2001,12 +1981,12 @@ namespace DoomLauncher
             {
                 List<IStatsData> stats = new List<IStatsData>();
                 List<IGameFile> gameFiles = new List<IGameFile>();
-                foreach (ObjectView<GameFile> item in (BindingListView<GameFile>)GetCurrentViewControl().DataSource)
+                foreach (IGameFile item in GetCurrentViewControl().DataSource)
                 {
-                    if (item.Object.GameFileID.HasValue)
+                    if (item.GameFileID.HasValue)
                     {
-                        stats.AddRange(DataSourceAdapter.GetStats(item.Object.GameFileID.Value));
-                        gameFiles.Add(item.Object);
+                        stats.AddRange(DataSourceAdapter.GetStats(item.GameFileID.Value));
+                        gameFiles.Add(item);
                     }
                 }
 
@@ -2206,8 +2186,9 @@ namespace DoomLauncher
             }
         }
 
-        private AppConfiguration AppConfiguration { get; set; }
-        private IDataSourceAdapter DataSourceAdapter { get; set; }
+        public AppConfiguration AppConfiguration { get; set; }
+        public IDataSourceAdapter DataSourceAdapter { get; set; }
+
         private IGameFileDataSourceAdapter DirectoryDataSourceAdapter { get; set; }
         private IGameFileDataSourceAdapter IdGamesDataSourceAdapter { get; set; }
         private ITagData[] Tags { get; set; }

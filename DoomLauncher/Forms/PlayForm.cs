@@ -456,8 +456,8 @@ namespace DoomLauncher
             {
                 var tabTo = m_additionalFileViews.FirstOrDefault(x => x.Title == tabFrom.Title);
 
-                if (tabTo != null)
-                    tabTo.SetColumnConfig(tabTo.GameFileViewControl.ColumnFields, tabFrom.GetColumnConfig().ToArray());
+                if (tabTo != null && tabTo.GameFileViewControl is IGameFileColumnView columnView)
+                    tabTo.SetColumnConfig(columnView.ColumnFields, tabFrom.GetColumnConfig().ToArray());
             }
         }
 
