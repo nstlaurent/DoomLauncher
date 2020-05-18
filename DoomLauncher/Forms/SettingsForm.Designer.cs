@@ -46,24 +46,24 @@
             this.cmbSourcePorts = new System.Windows.Forms.ComboBox();
             this.cmbIwad = new System.Windows.Forms.ComboBox();
             this.tabPageFileManagement = new System.Windows.Forms.TabPage();
-            this.cmbFileManagement = new System.Windows.Forms.ComboBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tblFileOptions = new System.Windows.Forms.TableLayoutPanel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.cmbFileManagement = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tblOuter.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageDefault.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabPageFileManagement.SuspendLayout();
-            this.tblFileOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.tblFileOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblOuter
@@ -132,7 +132,7 @@
             this.tabPageConfig.Location = new System.Drawing.Point(4, 22);
             this.tabPageConfig.Name = "tabPageConfig";
             this.tabPageConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageConfig.Size = new System.Drawing.Size(395, 132);
+            this.tabPageConfig.Size = new System.Drawing.Size(395, 228);
             this.tabPageConfig.TabIndex = 0;
             this.tabPageConfig.Text = "Configuration";
             // 
@@ -242,13 +242,14 @@
             this.tabPageFileManagement.TabIndex = 2;
             this.tabPageFileManagement.Text = "File Management";
             // 
-            // cmbFileManagement
+            // pictureBox2
             // 
-            this.cmbFileManagement.FormattingEnabled = true;
-            this.cmbFileManagement.Location = new System.Drawing.Point(14, 14);
-            this.cmbFileManagement.Name = "cmbFileManagement";
-            this.cmbFileManagement.Size = new System.Drawing.Size(197, 21);
-            this.cmbFileManagement.TabIndex = 10;
+            this.pictureBox2.Image = global::DoomLauncher.Properties.Resources.bon2b;
+            this.pictureBox2.Location = new System.Drawing.Point(14, 176);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(21, 18);
+            this.pictureBox2.TabIndex = 20;
+            this.pictureBox2.TabStop = false;
             // 
             // tblFileOptions
             // 
@@ -271,6 +272,26 @@
             this.tblFileOptions.Size = new System.Drawing.Size(366, 115);
             this.tblFileOptions.TabIndex = 19;
             // 
+            // label9
+            // 
+            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(93, 73);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(212, 13);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "Prompted to choose when file(s) are added.";
+            // 
+            // label8
+            // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(93, 35);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(239, 26);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "Files are referenced by their original path and not managed b by Doom Launcher.";
+            // 
             // label3
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -289,9 +310,9 @@
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(3, 41);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(70, 13);
+            this.label5.Size = new System.Drawing.Size(74, 13);
             this.label5.TabIndex = 1;
-            this.label5.Text = "Static Path";
+            this.label5.Text = "Unmanaged";
             // 
             // label6
             // 
@@ -314,25 +335,13 @@
             this.label7.TabIndex = 3;
             this.label7.Text = "Doom Launcher manages and compresses files in the GameFiles directory for you.";
             // 
-            // label8
+            // cmbFileManagement
             // 
-            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(93, 35);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(239, 26);
-            this.label8.TabIndex = 4;
-            this.label8.Text = "Files are referenced by their original path and not managed y Doom Launcher.";
-            // 
-            // label9
-            // 
-            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(93, 73);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(212, 13);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "Prompted to choose when file(s) are added.";
+            this.cmbFileManagement.FormattingEnabled = true;
+            this.cmbFileManagement.Location = new System.Drawing.Point(14, 14);
+            this.cmbFileManagement.Name = "cmbFileManagement";
+            this.cmbFileManagement.Size = new System.Drawing.Size(197, 21);
+            this.cmbFileManagement.TabIndex = 10;
             // 
             // label10
             // 
@@ -343,15 +352,6 @@
             this.label10.Size = new System.Drawing.Size(284, 13);
             this.label10.TabIndex = 6;
             this.label10.Text = "Downloaded files are always managed by Doom Launcher.";
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Image = global::DoomLauncher.Properties.Resources.bon2b;
-            this.pictureBox2.Location = new System.Drawing.Point(14, 176);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(21, 18);
-            this.pictureBox2.TabIndex = 20;
-            this.pictureBox2.TabStop = false;
             // 
             // SettingsForm
             // 
@@ -373,9 +373,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabPageFileManagement.ResumeLayout(false);
             this.tabPageFileManagement.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tblFileOptions.ResumeLayout(false);
             this.tblFileOptions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
 
         }

@@ -51,7 +51,7 @@ namespace DoomLauncher
                 if (existing != null)
                     file = existing;
 
-                if (m_fileManagement == FileManagement.StaticPath)
+                if (m_fileManagement == FileManagement.Unmanaged)
                     file.FileName = fileName;
 
                 if (file != null)

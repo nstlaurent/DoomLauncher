@@ -3,7 +3,7 @@
     public enum FileManagement
     {
         Managed,
-        StaticPath,
+        Unmanaged,
         Prompt,
     }
 }

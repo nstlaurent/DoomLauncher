@@ -15,7 +15,7 @@ namespace DoomLauncher.Forms
             if (cmbFileManagement.SelectedIndex == 0)
                 return FileManagement.Managed;
 
-            return FileManagement.StaticPath;
+            return FileManagement.Unmanaged;
         }
 
         private void BtnOK_Click(object sender, System.EventArgs e)
