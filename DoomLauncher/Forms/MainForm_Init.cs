@@ -209,7 +209,7 @@ namespace DoomLauncher
         {
             ColumnField[] columnTextFields = new ColumnField[]
             {
-                new ColumnField("FileName", "File"),
+                new ColumnField("FileNameNoPath", "File"),
                 new ColumnField("Title", "Title"),
                 new ColumnField("LastPlayed", "Last Played")
             };
@@ -483,6 +483,8 @@ namespace DoomLauncher
             settings.SetToLaunchSettingsTab();
             settings.StartPosition = FormStartPosition.CenterParent;
             settings.ShowDialog();
+
+            AppConfiguration.Refresh();
         }
 
         private void DisplayWelcome()
@@ -594,7 +596,7 @@ namespace DoomLauncher
             {
                  return new ColumnField[]
                  {
-                    new ColumnField("FileName", "File"),
+                    new ColumnField("FileNameNoPath", "File"),
                     new ColumnField("Title", "Title"),
                     new ColumnField("Author", "Author"),
                     new ColumnField("ReleaseDate", "Release Date"),

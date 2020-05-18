@@ -69,17 +69,17 @@ namespace UnitTest.Tests
             Assert.AreEqual(2, handler.DbDataSource.GetGameFilesCount());
 
             var gameFiles = handler.DbDataSource.GetGameFiles();
-            var gameFile = gameFiles.Where(x => x.FileName == files[0]).First();
+            var gameFile = gameFiles.First(x => x.FileName == files[0]);
 
-            Assert.AreEqual(gameFile.FileName, "uroburos.zip");
-            Assert.AreEqual(gameFile.Map, "MAP01");
+            Assert.AreEqual("uroburos.zip", gameFile.FileName);
+            Assert.AreEqual("MAP01", gameFile.Map);
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Title));
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Author));
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Description));
             Assert.IsNotNull(gameFile.ReleaseDate);
             Assert.IsNotNull(gameFile.Downloaded);
 
-            gameFile = gameFiles.Where(x => x.FileName == files[1]).First();
+            gameFile = gameFiles.First(x => x.FileName == files[1]);
             Assert.AreEqual("pyrrhic.zip", gameFile.FileName);
             Assert.AreEqual("MAP01, MAP02, MAP03, MAP04, MAP05, MAP06, MAP07, MAP08, MAP09, MAP10, MAP11, MAP12, MAP13, MAP14, MAP15", gameFile.Map);
             Assert.IsFalse(string.IsNullOrEmpty(gameFile.Title));
@@ -196,7 +196,7 @@ namespace UnitTest.Tests
         private static SyncLibraryHandler CreateSyncLibraryHandler()
         {
             return new SyncLibraryHandler(TestUtil.CreateAdapter(), CreateDirectoryAdapater(), new LauncherPath(s_filedir), 
-                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" });
+                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" }, FileManagement.Managed);
         }
 
         private static DirectoryDataSourceAdapter CreateDirectoryAdapater()

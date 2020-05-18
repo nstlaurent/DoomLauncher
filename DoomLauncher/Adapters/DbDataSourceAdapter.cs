@@ -188,7 +188,7 @@ namespace DoomLauncher
 
         public void InsertGameFile(IGameFile gameFile)
         {
-            string insert = InsertStatement("GameFiles", gameFile, new string[] { "GameFileID", "FileSizeBytes", "GameProfileID", "Name" }, out List<DbParameter> parameters);
+            string insert = InsertStatement("GameFiles", gameFile, new string[] { "GameFileID", "FileSizeBytes", "GameProfileID", "Name", "FullFileName" }, out List<DbParameter> parameters);
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
 

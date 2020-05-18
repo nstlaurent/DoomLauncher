@@ -1,9 +1,7 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -116,7 +114,13 @@ namespace DoomLauncher
                 string file = Path.Combine(m_directory.GetFullPath(), gameFile.FileName);
                 if (!File.Exists(file)) continue;
 
-                using (ZipArchive za = ZipFile.OpenRead(file))
+                IArchiveReader reader;
+                if (Path.GetExtension(file).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                    reader = new ZipArchiveReader(file);
+                else
+                    reader = new FileArchiveReader(file);
+
+                using (reader)
                 {
                     if (m_ct.IsCancellationRequested)
                         break;
@@ -125,17 +129,17 @@ namespace DoomLauncher
                     {
                         if (m_specificFiles == null || m_specificFiles.Length == 0)
                         {
-                            HandleDefaultSelection(file, za);
+                            HandleDefaultSelection(file, reader);
                         }
                         else
                         {
-                            foreach (ZipArchiveEntry zae in za.Entries)
+                            foreach (IArchiveEntry entry in reader.Entries)
                             {
-                                if (!string.IsNullOrEmpty(zae.Name))
+                                if (!string.IsNullOrEmpty(entry.Name))
                                 {
                                     if (m_ct.IsCancellationRequested)
                                         break;
-                                    HandleAddItem(file, zae.FullName, zae.Name, m_specificFiles.Contains(zae.FullName));
+                                    HandleAddItem(file, entry.FullName, entry.Name, m_specificFiles.Contains(entry.FullName));
                                 }
                             }
                         }
@@ -148,32 +152,32 @@ namespace DoomLauncher
             }
         }
 
-        private void HandleDefaultSelection(string file, ZipArchive za)
+        private void HandleDefaultSelection(string file, IArchiveReader reader)
         {
-            IEnumerable<ZipArchiveEntry> filteredEntries = za.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && !x.Name.EndsWith(Path.PathSeparator.ToString()) &&
+            IEnumerable<IArchiveEntry> filteredEntries = reader.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && !x.Name.EndsWith(Path.PathSeparator.ToString()) &&
                                                     m_supportedExtensions.Any(y => y.Equals(Path.GetExtension(x.Name), StringComparison.OrdinalIgnoreCase))).OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             if (chkPkContents.Checked)
             {
-                IEnumerable<ZipArchiveEntry> pk3Entries = Util.GetEntriesByExtension(za, Util.GetPkExtenstions()); //should check for MAPINFO (e.g. joyofmapping)
+                IEnumerable<IArchiveEntry> pk3Entries = Util.GetEntriesByExtension(reader, Util.GetPkExtenstions()); //should check for MAPINFO (e.g. joyofmapping)
 
-                foreach (ZipArchiveEntry zae in pk3Entries)
+                foreach (IArchiveEntry entry in pk3Entries)
                 {
-                    string extractedFile = Util.ExtractTempFile(m_temp.GetFullPath(), zae);
-                    using (ZipArchive zaInner = ZipFile.OpenRead(extractedFile))
+                    string extractedFile = Util.ExtractTempFile(m_temp.GetFullPath(), entry);
+                    using (IArchiveReader zaInner = ArchiveReader.Create(extractedFile))
                     {
                         HandleDefaultSelection(extractedFile, zaInner);
                     }
                 }
             }
 
-            foreach (ZipArchiveEntry zae in za.Entries)
+            foreach (IArchiveEntry entry in reader.Entries)
             {
-                if (!string.IsNullOrEmpty(zae.Name))
+                if (!string.IsNullOrEmpty(entry.Name))
                 {
                     if (m_ct.IsCancellationRequested)
                         break;
-                    HandleAddItem(file, zae.FullName, zae.Name, filteredEntries.Contains(zae));
+                    HandleAddItem(file, entry.FullName, entry.Name, filteredEntries.Contains(entry));
                 }
             }
         }
@@ -213,14 +217,14 @@ namespace DoomLauncher
 
             if (File.Exists(file))
             {
-                using (ZipArchive za = ZipFile.OpenRead(file))
+                using (IArchiveReader reader = ArchiveReader.Create(file))
                 {
-                    foreach (ZipArchiveEntry zae in za.Entries)
+                    foreach (IArchiveEntry entry in reader.Entries)
                     {
-                        if (!string.IsNullOrEmpty(zae.Name) &&
-                            supportedExtensions.Any(x => x.Equals(Path.GetExtension(zae.Name), StringComparison.OrdinalIgnoreCase)))
+                        if (!string.IsNullOrEmpty(entry.Name) &&
+                            supportedExtensions.Any(x => x.Equals(Path.GetExtension(entry.Name), StringComparison.OrdinalIgnoreCase)))
                         {
-                            ret.Add(zae.FullName);
+                            ret.Add(entry.FullName);
                         }
                     }
                 }

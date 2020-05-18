@@ -95,6 +95,7 @@ namespace DoomLauncher
                 WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), GetValue(config, "WindowState"));
                 ColumnConfig = GetValue(config, "ColumnConfig");
                 ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, "ScreenshotPreviewSize"));
+                FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
 
                 DateParseFormats = Util.SplitString(GetValue(config, "DateParseFormats"));
                 ScreenshotCaptureDirectories = Util.SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
@@ -172,5 +173,6 @@ namespace DoomLauncher
         public string[] DateParseFormats { get; private set; }
         public string ColumnConfig { get; private set; }
         public int ScreenshotPreviewSize { get; private set; }
+        public FileManagement FileManagement { get; private set; }
     }
 }

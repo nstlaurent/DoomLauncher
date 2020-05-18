@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -13,8 +12,6 @@ namespace DoomLauncher
     public class GameFilePlayAdapter
     {
         public event EventHandler ProcessExited;
-
-        private static string[] s_dehExtensions = new string[] { ".deh", ".bex" }; //future - should be configurable
 
         public GameFilePlayAdapter()
         {
@@ -127,12 +124,15 @@ namespace DoomLauncher
         {
             try
             {
-                using (ZipArchive za = ZipFile.OpenRead(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
+                using (IArchiveReader reader = ArchiveReader.Create(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
                 {
-                    ZipArchiveEntry zae = za.Entries.First();
-                    string extractFile = Path.Combine(tempDirectory.GetFullPath(), zae.Name);
-                    if (ExtractFiles)
-                        zae.ExtractToFile(extractFile, true);
+                    IArchiveEntry entry = reader.Entries.First();
+                    string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
+                    if (ExtractFiles && entry.ExtractRequired)
+                        entry.ExtractToFile(extractFile, true);
+
+                    if (!entry.ExtractRequired)
+                        extractFile = entry.FullName;
 
                     sb.Append(sourcePort.IwadParameter(new SpData(extractFile, gameFile, AdditionalFiles)));
                 }
@@ -192,9 +192,9 @@ namespace DoomLauncher
                 {
                     if (File.Exists(pathFile.ExtractedFile))
                     {
-                        using (ZipArchive za = ZipFile.OpenRead(pathFile.ExtractedFile))
+                        using (IArchiveReader reader = ArchiveReader.Create(pathFile.ExtractedFile))
                         {
-                            var entry = za.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
+                            var entry = reader.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
                             if (entry != null)
                                 files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
                         }
@@ -224,11 +224,12 @@ namespace DoomLauncher
             if (files.Count > 0)
             {
                 sb.Append(sourcePort.FileParameter(new SpData()));
+                var dehExtensions = Util.GetDehackedExtensions();
 
                 foreach (string str in files)
                 {
                     FileInfo fi = new FileInfo(str);
-                    if (!s_dehExtensions.Contains(fi.Extension.ToLower()))
+                    if (!dehExtensions.Contains(fi.Extension.ToLower()))
                         sb.Append(string.Format("\"{0}\" ", str));
                     else
                         dehFiles.Add(str);
@@ -248,26 +249,33 @@ namespace DoomLauncher
         {
             List<string> files = new List<string>();
 
-            using (ZipArchive za = ZipFile.OpenRead(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
+            using (IArchiveReader reader = ArchiveReader.Create(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
             {
-                var entries = za.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains('.') &&
+                var entries = reader.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains('.') &&
                     extensions.Any(y => y.Equals(Path.GetExtension(x.Name), StringComparison.OrdinalIgnoreCase)));
 
-                foreach (ZipArchiveEntry zae in entries)
+                foreach (IArchiveEntry entry in entries)
                 {
                     bool useFile = true;
 
                     if (checkSpecific && SpecificFiles != null && SpecificFiles.Length > 0)
                     {
-                        useFile = SpecificFiles.Contains(zae.FullName);
+                        useFile = SpecificFiles.Contains(entry.FullName);
                     }
 
                     if (useFile)
                     {
-                        string extractFile = Path.Combine(tempDirectory.GetFullPath(), zae.Name);
-                        if (ExtractFiles)
-                            zae.ExtractToFile(extractFile, true);
-                        files.Add(extractFile);
+                        if (entry.ExtractRequired)
+                        {
+                            string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
+                            if (ExtractFiles)
+                                entry.ExtractToFile(extractFile, true);
+                            files.Add(extractFile);
+                        }
+                        else
+                        {
+                            files.Add(entry.FullName);
+                        }
                     }
                 }
             }
@@ -315,10 +323,11 @@ namespace DoomLauncher
         private IEnumerable<string> SortParameters(IEnumerable<string> parameters)
         {
             List<string> dehFiles = new List<string>();
+            var dehExtensions = Util.GetDehackedExtensions();
 
-            foreach(string file in parameters)
+            foreach (string file in parameters)
             {
-                foreach (string deh in s_dehExtensions)
+                foreach (string deh in dehExtensions)
                 {
                     if (Path.GetExtension(file).Equals(deh, StringComparison.OrdinalIgnoreCase))
                         dehFiles.Add(file);

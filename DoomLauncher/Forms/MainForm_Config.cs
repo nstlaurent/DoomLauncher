@@ -94,6 +94,11 @@ namespace DoomLauncher
                 StringReader text = new StringReader(AppConfiguration.ColumnConfig);
                 ColumnConfig[] ret = xml.Deserialize(text) as ColumnConfig[];
 
+                // Previous revisions of Doom Launcher use filename, most recent version uses filenamenopath - fix it here
+                var columnsToFix = ret.Where(x => x.Column.Equals("filename", StringComparison.OrdinalIgnoreCase));
+                foreach(var colFix in columnsToFix)
+                    colFix.Column = "filenamenopath";
+
                 if (ret != null)
                     return ret;
             }

@@ -33,7 +33,7 @@ namespace DoomLauncher
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
             InitializeComponent();
-            ctrlFiles.Initialize("GameFileID", "FileName");
+            ctrlFiles.Initialize("GameFileID", "FileNameNoPath");
             ctrlFiles.CellFormatting += ctrlFiles_CellFormatting;
             ctrlFiles.NewItemNeeded += ctrlFiles_NewItemNeeded;
             ctrlFiles.ItemRemoving += CtrlFiles_ItemRemoving;
@@ -602,7 +602,7 @@ namespace DoomLauncher
             IGameFile iwad = SelectedIWad;
             ISourcePortData port = SelectedSourcePort;
             if (iwad != null && m_handler.IsIWadFile(gameFile))
-                e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, Util.RemoveExtension(iwad.FileName));
+                e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, Path.GetFileNameWithoutExtension(iwad.FileName));
             if (port != null && m_handler.IsSourcePortFile(gameFile))
                 e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, port.Name);
         }

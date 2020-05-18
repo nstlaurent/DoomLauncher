@@ -81,6 +81,8 @@
             this.generateTextFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cumulativeStatisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.addFIlesRecursivelyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctrlSearch = new DoomLauncher.SearchControl();
@@ -140,7 +142,7 @@
             this.toolStripSeparator12,
             this.createShortcutToolStripMenuItem});
             this.mnuLocal.Name = "mnuGrid";
-            this.mnuLocal.Size = new System.Drawing.Size(194, 326);
+            this.mnuLocal.Size = new System.Drawing.Size(194, 348);
             // 
             // viewTextFileToolStripMenuItem
             // 
@@ -362,10 +364,10 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(4, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(4, 2);
             this.toolStrip1.Margin = new System.Windows.Forms.Padding(4, 0, 0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(65, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(34, 25);
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "Options";
             // 
@@ -389,6 +391,8 @@
             this.generateTextFileToolStripMenuItem1,
             this.cumulativeStatisticsToolStripMenuItem,
             this.toolStripSeparator10,
+            this.addFIlesRecursivelyToolStripMenuItem1,
+            this.toolStripSeparator14,
             this.aboutToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
@@ -526,6 +530,18 @@
             this.toolStripSeparator10.Name = "toolStripSeparator10";
             this.toolStripSeparator10.Size = new System.Drawing.Size(216, 6);
             // 
+            // addFIlesRecursivelyToolStripMenuItem1
+            // 
+            this.addFIlesRecursivelyToolStripMenuItem1.Name = "addFIlesRecursivelyToolStripMenuItem1";
+            this.addFIlesRecursivelyToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
+            this.addFIlesRecursivelyToolStripMenuItem1.Text = "Add FIles Recursively...";
+            this.addFIlesRecursivelyToolStripMenuItem1.Click += new System.EventHandler(this.addFIlesRecursivelyToolStripMenuItem1_Click);
+            // 
+            // toolStripSeparator14
+            // 
+            this.toolStripSeparator14.Name = "toolStripSeparator14";
+            this.toolStripSeparator14.Size = new System.Drawing.Size(216, 6);
+            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
@@ -543,7 +559,7 @@
             // ctrlSearch
             // 
             this.ctrlSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlSearch.Location = new System.Drawing.Point(72, 2);
+            this.ctrlSearch.Location = new System.Drawing.Point(41, 4);
             this.ctrlSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.ctrlSearch.Name = "ctrlSearch";
             this.ctrlSearch.SearchText = "";
@@ -554,7 +570,7 @@
             // 
             this.chkAutoSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAutoSearch.AutoSize = true;
-            this.chkAutoSearch.Location = new System.Drawing.Point(220, 4);
+            this.chkAutoSearch.Location = new System.Drawing.Point(189, 6);
             this.chkAutoSearch.Name = "chkAutoSearch";
             this.chkAutoSearch.Size = new System.Drawing.Size(85, 17);
             this.chkAutoSearch.TabIndex = 7;
@@ -566,7 +582,7 @@
             this.btnSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
-            this.btnSearch.Location = new System.Drawing.Point(3, 27);
+            this.btnSearch.Location = new System.Drawing.Point(280, 2);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(80, 24);
@@ -583,7 +599,7 @@
             this.btnPlay.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPlay.Image = ((System.Drawing.Image)(resources.GetObject("btnPlay.Image")));
-            this.btnPlay.Location = new System.Drawing.Point(89, 27);
+            this.btnPlay.Location = new System.Drawing.Point(3, 31);
             this.btnPlay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(75, 24);
@@ -845,6 +861,8 @@
         private System.Windows.Forms.ToolStripMenuItem unratedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createZipToolStripMenuItem;
         private DoomLauncher.GlowButton btnUpdate;
+        private System.Windows.Forms.ToolStripMenuItem addFIlesRecursivelyToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
     }
 }
 

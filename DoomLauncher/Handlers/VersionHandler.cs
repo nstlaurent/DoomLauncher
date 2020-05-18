@@ -72,6 +72,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_6_4_1, AppVersion.Version_2_6_4_1);
                 ExecuteUpdate(Pre_2_6_4_1_Update, AppVersion.Version_2_6_4_1_Update1);
                 ExecuteUpdate(Pre_2_7_0_0, AppVersion.Version_2_7_0_0);
+                ExecuteUpdate(Pre_2_8_0_0, AppVersion.Version_2_8_0_0);
             }
         }
 
@@ -516,6 +517,18 @@ namespace DoomLauncher
                 DataAccess.ExecuteNonQuery("update GameFiles set SettingsSaved = 1 where SourcePortID is not null");
                 DataAccess.ExecuteNonQuery("update GameFiles set SettingsSaved = 0 where SourcePortID is null");
             }
+        }
+
+        private void Pre_2_8_0_0()
+        {
+            ConfigurationData config = new ConfigurationData()
+            {
+                Name = "FileManagement",
+                Value = FileManagement.Managed.ToString(),
+                UserCanModify = false,
+            };
+
+            m_adapter.InsertConfiguration(config);
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)

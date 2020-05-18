@@ -7,45 +7,61 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace DoomLauncher
 {
     public partial class GrowLabel : Label
     {
         private bool mGrowing;
+
         public GrowLabel()
         {
-            this.AutoSize = false;
+            AutoSize = false;
+            IsPath = false;
         }
-        private void resizeLabel()
+
+        public bool IsPath { get; set; }
+
+        private void ResizeLabel()
         {
-            if (mGrowing) return;
+            if (mGrowing)
+                return;
+
             try
             {
                 mGrowing = true;
-                Size sz = new Size(this.Width, Int32.MaxValue);
-                sz = TextRenderer.MeasureText(this.Text, this.Font, sz, TextFormatFlags.WordBreak);
-                this.Height = sz.Height;
+                Size sz = new Size(Width, int.MaxValue);
+                string text = Text;
+
+                if (IsPath)
+                    text = Text.Replace(Path.DirectorySeparatorChar, ' ').Replace(Path.AltDirectorySeparatorChar, ' ');
+
+                sz = TextRenderer.MeasureText(text, Font, sz, TextFormatFlags.WordBreak);
+                Height = sz.Height;
             }
             finally
             {
                 mGrowing = false;
             }
         }
+
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
-            resizeLabel();
+            ResizeLabel();
         }
+
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);
-            resizeLabel();
+            ResizeLabel();
         }
+
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            resizeLabel();
+            ResizeLabel();
         }
     }
 }

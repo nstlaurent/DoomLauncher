@@ -127,10 +127,14 @@ namespace DoomLauncher
         {
             SourcePortEditForm editForm = new SourcePortEditForm(m_adapter, m_tabViews, m_launchType);
 
+            IEnumerable<string> extensions = new string[] { ".wad" };
+
             if (m_launchType == SourcePortLaunchType.SourcePort)
-                editForm.SetSupportedExtensions(string.Format(".wad,{0},.deh,.bex", Util.GetPkExtensionsCsv()));
+                extensions = extensions.Union(Util.GetDehackedExtensions().Union(Util.GetSourcePortPkExtensions()));
             else
-                editForm.SetSupportedExtensions(string.Format(".wad,{0}", Util.GetPkExtensionsCsv()));
+                extensions = extensions.Union(Util.GetSourcePortPkExtensions());
+
+            editForm.SetSupportedExtensions(string.Join(",", extensions));
 
             editForm.StartPosition = FormStartPosition.CenterParent;
 
