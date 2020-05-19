@@ -118,6 +118,7 @@
     <Compile Include="Interfaces\IGameFileColumnView.cs" />
     <Compile Include="Interfaces\IGameFileView.cs" />
     <Compile Include="Interfaces\IGameProfile.cs" />
+    <Compile Include="IWad\IWadInfo.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />

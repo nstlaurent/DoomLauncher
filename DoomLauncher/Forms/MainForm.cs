@@ -1266,6 +1266,9 @@ namespace DoomLauncher
 
         private async Task HandleAddGameFiles(AddFileType type, string[] files)
         {
+            if (!VerifyAddFiles(type, files))
+                return;
+
             List<string> libraryFiles = new List<string>(files);
             string[] zdlFiles = GetZdlFiles(files).ToArray();
             libraryFiles = libraryFiles.Except(zdlFiles).ToList();
@@ -1298,6 +1301,39 @@ namespace DoomLauncher
             {
                 DisplayInvalidFilesError(m_zdlInvalidFiles);
             }
+        }
+
+        private bool VerifyAddFiles(AddFileType type, string[] files)
+        {
+            List<string> warnFiles = new List<string>();
+            
+            foreach (string file in files)
+            {
+                IWadInfo info = IWadInfo.GetIWadInfo(file);
+
+                if (type == AddFileType.GameFile && info != null)
+                    warnFiles.Add(Path.GetFileName(file));
+                else if (type == AddFileType.IWad && info == null)
+                    warnFiles.Add(Path.GetFileName(file));
+            }
+
+            if (warnFiles.Count > 0)
+            {
+                StringBuilder warn = new StringBuilder();
+                if (type == AddFileType.GameFile)
+                    warn.Append("The following file(s) were detected be IWADS and are being added as game files:");
+                else
+                    warn.Append("The following files(s) were not detected to be IWADS and are being added as IWADS:");
+
+                warn.AppendLine();
+                warn.Append(string.Join(", ", warnFiles));
+                warn.Append("\n\nContinue?");
+
+                TopMost = true;
+                return MessageBox.Show(this, warn.ToString(), "File Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+            }
+
+            return true;
         }
 
         private async Task HandleAddFiles(AddFileType type, string[] extensions, string dialogTitle)
@@ -1365,6 +1401,7 @@ namespace DoomLauncher
                 {
                     StartPosition = FormStartPosition.CenterParent
                 };
+                TopMost = true;
                 select.ShowDialog(this);
                 fileManagement = select.GetSelectedFileManagement();
             }
