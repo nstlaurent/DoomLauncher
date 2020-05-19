@@ -155,64 +155,13 @@ namespace DoomLauncher
             
         private void FillIwadData(IGameFile gameFile)
         {
-            string name = Path.GetFileNameWithoutExtension(gameFile.FileName).ToUpper();
+            IWadInfo wadInfo = IWadInfo.GetIWadInfo(gameFile.FileName);
+            if (wadInfo != null)
+                gameFile.Title = wadInfo.Title;
+            else
+                gameFile.Title = Path.GetFileNameWithoutExtension(gameFile.FileName).ToUpper();
 
-            if (string.IsNullOrEmpty(gameFile.Title))
-            {
-                switch (name)
-                {
-                    case "DOOM1":
-                        gameFile.Title = "Doom Shareware";
-                        break;
-                    case "DOOM":
-                        gameFile.Title = "The Ultimate Doom";
-                        break;
-                    case "DOOM2":
-                        gameFile.Title = "Doom II: Hell on Earth";
-                        break;
-                    case "PLUTONIA":
-                        gameFile.Title = "Final Doom: The Plutonia Experiment";
-                        break;
-                    case "TNT":
-                        gameFile.Title = "Final Doom: TNT: Evilution";
-                        break;
-                    case "FREEDOOM1":
-                        gameFile.Title = "Freedoom: Phase 1";
-                        break;
-                    case "FREEDOOM2":
-                        gameFile.Title = "Freedoom: Phase 2";
-                        break;
-                    case "CHEX":
-                        gameFile.Title = "Chex Quest";
-                        break;
-                    case "CHEX3":
-                        gameFile.Title = "Chex Quest 3";
-                        break;
-                    case "HACX":
-                        gameFile.Title = "Hacx: Twitch 'n Kill";
-                        break;
-                    case "HERETIC1":
-                        gameFile.Title = "Heretic Shareware";
-                        break;
-                    case "HERETIC":
-                        gameFile.Title = "Heretic: Shadow of the Serpent Riders";
-                        break;
-                    case "HEXEN":
-                        gameFile.Title = "Hexen: Beyond Heretic";
-                        break;
-                    case "STRIFE0":
-                        gameFile.Title = "Strife Demo";
-                        break;
-                    case "STRIFE1":
-                        gameFile.Title = "Strife: Quest for the Sigil";
-                        break;
-                    default:
-                        gameFile.Title = name;
-                        break;
-                }
-
-                DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
-            }
+            DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
         }
 
         void syncHandler_SyncFileChange(object sender, EventArgs e)
