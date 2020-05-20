@@ -1330,7 +1330,9 @@ namespace DoomLauncher
                 warn.Append("\n\nContinue?");
 
                 TopMost = true;
-                return MessageBox.Show(this, warn.ToString(), "File Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+                bool ret = MessageBox.Show(this, warn.ToString(), "File Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+                TopMost = false;
+                return ret;
             }
 
             return true;
@@ -1403,6 +1405,7 @@ namespace DoomLauncher
                 };
                 TopMost = true;
                 select.ShowDialog(this);
+                TopMost = false;
                 fileManagement = select.GetSelectedFileManagement();
             }
 
