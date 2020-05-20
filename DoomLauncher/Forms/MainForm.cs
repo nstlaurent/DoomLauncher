@@ -1531,8 +1531,7 @@ namespace DoomLauncher
                         else
                         {
                             string newZipName = Path.Combine(directory, baseName + ".zip");
-                            using (ZipArchive za = ZipFile.Open(newZipName, ZipArchiveMode.Create))
-                                za.CreateEntryFromFile(file, fi.Name);
+                            AddZipEntry(file, fi.Name, newZipName);
                         }
                     }
                 }
@@ -1542,13 +1541,26 @@ namespace DoomLauncher
                 }
                 catch (Exception ex)
                 {
-                    ret.Errors.Add(new CopyError { FileName = baseName, Error = String.Concat("Unknown error: ", ex.HResult) }); //Shouldn't happen
+                    ret.Errors.Add(new CopyError { FileName = baseName, Error = string.Concat("Unknown error: ", ex.HResult) }); //Shouldn't happen
                 }
 
                 count++;
             }
 
             return ret;
+        }
+
+        private static void AddZipEntry(string file, string name, string newZipName)
+        {
+            using (ZipArchive za = ZipFile.Open(newZipName, ZipArchiveMode.Create))
+            {
+                using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    var entry = za.CreateEntry(name);
+                    using (var destStream = entry.Open())
+                        fileStream.CopyTo(destStream);
+                }
+            }
         }
 
         private void HandleNonZipReplacement(FileInfo fi, string zipName)
