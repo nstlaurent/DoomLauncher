@@ -7,7 +7,7 @@ namespace DoomLauncher.Forms
         public FileManagementSelect()
         {
             InitializeComponent();
-            cmbFileManagement.DataSource = new string[] { "Managed", "Static Path" };
+            cmbFileManagement.DataSource = new string[] { "Managed", "Unmanaged" };
         }
 
         public FileManagement GetSelectedFileManagement()
