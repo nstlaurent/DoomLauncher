@@ -93,7 +93,7 @@ namespace DoomLauncher
 
             try
             {
-                FileStream fs = File.OpenRead(file);
+                FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 WadFileReader wadReader = new WadFileReader(fs);
 
                 if (wadReader.WadType != WadType.Unknown)
