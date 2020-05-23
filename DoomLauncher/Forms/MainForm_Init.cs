@@ -335,7 +335,6 @@ namespace DoomLauncher
 
         private void SetGameFileViewEvents(IGameFileView ctrl, bool dragDrop)
         {
-            ctrl.ToolTipTextNeeded += ctrlView_ToolTipTextNeeded;
             ctrl.ItemDoubleClick += ctrlView_RowDoubleClicked;
             ctrl.SelectionChange += ctrlView_SelectionChange;
             ctrl.ViewKeyPress += ctrlView_GridKeyPress;

@@ -13,12 +13,13 @@ namespace DoomLauncher
 {
     public partial class GameFileViewControl : UserControl, IGameFileColumnView
     {
-        public event AddingNewEventHandler ToolTipTextNeeded;
         public event EventHandler ItemDoubleClick;
         public event EventHandler SelectionChange;
         public event CancelEventHandler CustomRowPaint;
         public event KeyPressEventHandler ViewKeyPress;
         public event KeyEventHandler ViewKeyDown;
+        public event GameFileEventHandler GameFileEnter;
+        public event GameFileEventHandler GameFileLeave;
 
         private readonly Label m_label = new Label();
         private readonly Dictionary<int, PropertyInfo> m_properties = new Dictionary<int, PropertyInfo>();
@@ -30,6 +31,8 @@ namespace DoomLauncher
             InitializeComponent();
 
             SetupGridView();
+
+            ToolTipDisplayHandler toolTipDisplayHandler = new ToolTipDisplayHandler(this, toolTip1);
 
             m_label.AutoSize = true;
             m_label.Visible = false;
@@ -231,11 +234,6 @@ namespace DoomLauncher
             dgvMain.VirtualMode = true;
             dgvMain.CellValueNeeded += dgvMain_CellValueNeeded;
 
-            toolTip1.AutoPopDelay = 32767; //this is the max you can leave a tooltip up
-
-            ToolTipTimer = new System.Timers.Timer(500);
-            ToolTipTimer.Elapsed += ToolTipTimer_Elapsed;
-
             dgvMain.ColumnHeaderMouseClick += dgvMain_ColumnHeaderMouseClick;
 
             dgvMain.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
@@ -328,44 +326,22 @@ namespace DoomLauncher
             }
         }
 
-        void ToolTipTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            if (ToolTipTimer.Enabled && InvokeRequired)
-            {
-                Invoke(new Action(SetToolTipText));
-                ToolTipTimer.Stop();
-            }
-        }
-
-        private void SetToolTipText()
-        {
-            if (ToolTipTextNeeded != null)
-            {
-                AddingNewEventArgs args = new AddingNewEventArgs(string.Empty);
-                ToolTipTextNeeded(this, args);
-
-                toolTip1.SetToolTip(dgvMain, args.NewObject.ToString());
-            }
-        }
+        private IGameFile m_lastEnter;
 
         private void dgvMain_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
-            ToolTipTimer.Stop();
-
-            if (e.RowIndex != ToolTipItemIndex)
+            var gameFile = GameFileForIndex(e.RowIndex);
+            if (gameFile != m_lastEnter)
             {
-                toolTip1.Hide(dgvMain);
-                ToolTipItemIndex = e.RowIndex;
-                ToolTipTimer.Interval = 500;
-                ToolTipTimer.Start();
+                m_lastEnter = gameFile;
+                GameFileEnter?.Invoke(this, new GameFileEventArgs(gameFile));
             }
         }
 
         private void dgvMain_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
         {
-            ToolTipTimer.Stop();
-            toolTip1.Hide(dgvMain);
-            ToolTipItemIndex = -1;
+            GameFileLeave?.Invoke(this, new GameFileEventArgs(m_lastEnter));
+            m_lastEnter = null;
         }
 
         private void dgvMain_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -445,8 +421,8 @@ namespace DoomLauncher
         public Color CustomRowPaintForeColor { get; set; }
 
         public object DoomLauncherParent { get; set; }
+        public Control ToolTipControl => dgvMain;
 
-        private System.Timers.Timer ToolTipTimer { get; set; }
         private Dictionary<string, DataGridViewColumn> m_orderLookup = new Dictionary<string, DataGridViewColumn>();
 
         private void dgvMain_KeyPress(object sender, KeyPressEventArgs e)

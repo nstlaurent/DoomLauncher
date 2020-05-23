@@ -99,7 +99,7 @@ namespace DoomLauncher
             }
         }
 
-        private IGameFileView GetCurrentViewControl()
+        public IGameFileView GetCurrentViewControl()
         {
             ITabView view = GetCurrentTabView();
 
@@ -154,18 +154,6 @@ namespace DoomLauncher
                     HandleDownload(AppConfiguration.TempDirectory);
                 else if (tabView != null && tabView.IsPlayAllowed)
                     HandlePlay();
-            }
-        }
-
-        void ctrlView_ToolTipTextNeeded(object sender, AddingNewEventArgs e)
-        {
-            IGameFileView ctrl = sender as IGameFileView;
-            IGameFile gameFile = ctrl.GameFileForIndex(ctrl.ToolTipItemIndex);
-
-            if (gameFile != null)
-            {
-                ToolTipHandler toolTipHandler = new ToolTipHandler();
-                e.NewObject = toolTipHandler.GetToolTipText(Font, gameFile);
             }
         }
 
