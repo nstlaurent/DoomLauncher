@@ -200,7 +200,7 @@ namespace DoomLauncher
                 }
 
                 if (e != null && e.Button == MouseButtons.Right)
-                    m_menu.Show(PointToScreen(e.Location));
+                    m_menu.Show(pb.PointToScreen(e.Location));
             }
         }
 
