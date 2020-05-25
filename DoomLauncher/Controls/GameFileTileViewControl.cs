@@ -45,7 +45,7 @@ namespace DoomLauncher
         public event GameFileEventHandler GameFileLeave;
 
         private List<IGameFile> m_gameFiles = new List<IGameFile>();
-        private List<GameFileTile> m_selectedTiles = new List<GameFileTile>();
+        private List<GameFileTileBase> m_selectedTiles = new List<GameFileTileBase>();
 
         private ContextMenuStrip m_menu;
         private bool m_visible;
@@ -53,7 +53,7 @@ namespace DoomLauncher
         private readonly System.Timers.Timer m_mouseTimer;
         private readonly PagingControl m_pagingControl;
         private int m_scrollBarPos = 0;
-        private GameFileTile m_lastHover;
+        private GameFileTileBase m_lastHover;
 
         public GameFileTileViewControl()
         {
@@ -276,27 +276,22 @@ namespace DoomLauncher
 
             for (int i = gameFiles.Count; i < GameFileTileManager.Instance.Tiles.Count; i++)
             {
-                GameFileTileManager.Instance.Tiles[i].SetPicture(string.Empty);
+                GameFileTileManager.Instance.Tiles[i].ClearData();
                 GameFileTileManager.Instance.Tiles[i].Visible = false;
             }
 
             flpMain.ResumeLayout();
         }
 
-        private static void SetTileData(IGameFile gameFile, IEnumerable<IFileData> screenshots, string screenshotPath, GameFileTile tile)
+        private static void SetTileData(IGameFile gameFile, IEnumerable<IFileData> screenshots, string screenshotPath, GameFileTileBase tile)
         {
-            tile.GameFile = gameFile;
-
-            if (string.IsNullOrEmpty(gameFile.Title))
-                tile.SetTitle(gameFile.FileNameNoPath);
-            else
-                tile.SetTitle(gameFile.Title);
+            tile.SetData(gameFile);
 
             if (gameFile.GameFileID.HasValue)
             {
                 var screenshot = screenshots.FirstOrDefault(x => x.GameFileID == gameFile.GameFileID.Value);
                 if (screenshot != null)
-                    tile.SetPicture(Path.Combine(screenshotPath, screenshot.FileName));
+                    tile.SetImageLocation(Path.Combine(screenshotPath, screenshot.FileName));
                 else
                     tile.SetImage(GameFileTileManager.Instance.DefaultImage);
             }
@@ -370,7 +365,7 @@ namespace DoomLauncher
             SelectionChange?.Invoke(this, new EventArgs());
         }
 
-        private int GameFileTileIndex(GameFileTile tile)
+        private int GameFileTileIndex(GameFileTileBase tile)
         {
             for (int i = 0; i < GameFileTileManager.Instance.Tiles.Count; i++)
             {

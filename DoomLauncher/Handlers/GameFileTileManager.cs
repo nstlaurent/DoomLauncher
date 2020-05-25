@@ -9,7 +9,7 @@ namespace DoomLauncher
         public int MaxItems = 28;
         public static GameFileTileManager Instance { get; private set; } = new GameFileTileManager();
 
-        public List<GameFileTile> Tiles = new List<GameFileTile>();
+        public List<GameFileTileBase> Tiles = new List<GameFileTileBase>();
         public FlowLayoutPanelDB FlowLayoutPanel = new FlowLayoutPanelDB();
         public Image DefaultImage { get; private set; }
 

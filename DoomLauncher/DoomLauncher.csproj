@@ -133,9 +133,13 @@
     <Compile Include="Controls\GameFileTileViewControl.Designer.cs">
       <DependentUpon>GameFileTileViewControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameFileTileBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
+    <Compile Include="IGameFileTile.cs" />
     <Compile Include="Interfaces\IGameFileColumnView.cs" />
     <Compile Include="Interfaces\IGameFileView.cs" />
     <Compile Include="Interfaces\IGameProfile.cs" />
