@@ -133,6 +133,9 @@ namespace DoomLauncher
             {
                 foreach (var tile in GameFileTileManager.Instance.Tiles)
                 {
+                    if (!tile.Visible)
+                        continue;
+
                     var rect = tile.RectangleToScreen(tile.DisplayRectangle);
                     if (rect.Contains(pt))
                     {
