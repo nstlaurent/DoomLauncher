@@ -123,7 +123,7 @@ namespace DoomLauncher
                         return false;
                 }
             }
- 
+
             return true;
         }
 
@@ -151,7 +151,7 @@ namespace DoomLauncher
             Array.ForEach(files, x => filesInfo.Add(new FileInfo(x)));
             List<FileInfo> filesInfoOrdered = filesInfo.OrderBy(x => x.CreationTime).ToList();
 
-            while(filesInfoOrdered.Count > 10)
+            while (filesInfoOrdered.Count > 10)
             {
                 filesInfoOrdered.First().Delete();
                 filesInfoOrdered.RemoveAt(0);
@@ -183,7 +183,7 @@ namespace DoomLauncher
             tabViews.Add(CreateTabViewUntagged(colConfig));
             tabViews.Add(CreateTabViewIwad(colConfig));
             tabViews.Add(CreateTabViewIdGames(colConfig));
-            tabViews.AddRange(CreateTagTabs(DefaultColumnTextFields, colConfig));
+            tabViews.AddRange(CreateTagTabs(GameFileViewFactory.DefaultColumnTextFields, colConfig));
 
             m_tabHandler = new TabHandler(tabControl);
             m_tabHandler.SetTabs(tabViews);
@@ -200,7 +200,8 @@ namespace DoomLauncher
             };
 
             IdGamesDataSourceAdapter = new IdGamesDataAdapater(AppConfiguration.IdGamesUrl, AppConfiguration.ApiPage, AppConfiguration.MirrorUrl);
-            IdGamesTabViewCtrl tabViewIdGames = new IdGamesTabViewCtrl(s_idGamesKey, s_idGamesKey, IdGamesDataSourceAdapter, DefaultGameFileSelectFields);
+            var factory = new GameFileViewFactory(GameFileViewType.GridView);
+            IdGamesTabViewCtrl tabViewIdGames = new IdGamesTabViewCtrl(s_idGamesKey, s_idGamesKey, IdGamesDataSourceAdapter, DefaultGameFileSelectFields, factory);
             SetupTabBase(tabViewIdGames, columnTextFields, colConfig, mnuIdGames, false);
             return tabViewIdGames;
         }
@@ -214,29 +215,29 @@ namespace DoomLauncher
                 new ColumnField("LastPlayed", "Last Played")
             };
 
-            IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(s_iwadKey, s_iwadKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
+            IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(s_iwadKey, s_iwadKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup, GameFileViewFactory);
             SetupTabBase(tabViewIwads, columnTextFields, colConfig, mnuLocal, true);
             return tabViewIwads;
         }
 
         private LocalTabViewCtrl CreateTabViewUntagged(ColumnConfig[] colConfig)
         {
-            LocalTabViewCtrl tabViewUntagged = new UntaggedTabView(s_untaggedKey, s_untaggedKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
-            SetupTabBase(tabViewUntagged, DefaultColumnTextFields, colConfig, mnuLocal, true);
+            LocalTabViewCtrl tabViewUntagged = new UntaggedTabView(s_untaggedKey, s_untaggedKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup, GameFileViewFactory);
+            SetupTabBase(tabViewUntagged, GameFileViewFactory.DefaultColumnTextFields, colConfig, mnuLocal, true);
             return tabViewUntagged;
         }
 
         private LocalTabViewCtrl CreateTabViewLocal(ColumnConfig[] colConfig)
         {
-            LocalTabViewCtrl tabViewLocal = new LocalTabViewCtrl(s_localKey, s_localKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
-            SetupTabBase(tabViewLocal, DefaultColumnTextFields, colConfig, mnuLocal, true);
+            LocalTabViewCtrl tabViewLocal = new LocalTabViewCtrl(s_localKey, s_localKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup, GameFileViewFactory);
+            SetupTabBase(tabViewLocal, GameFileViewFactory.DefaultColumnTextFields, colConfig, mnuLocal, true);
             return tabViewLocal;
         }
 
         private OptionsTabViewCtrl CreateTabViewRecent(ColumnConfig[] colConfig)
         {
-            OptionsTabViewCtrl tabViewRecent = new OptionsTabViewCtrl(s_recentKey, s_recentKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
-            SetupTabBase(tabViewRecent, DefaultColumnTextFields, colConfig, mnuLocal, true);
+            OptionsTabViewCtrl tabViewRecent = new OptionsTabViewCtrl(s_recentKey, s_recentKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup, GameFileViewFactory);
+            SetupTabBase(tabViewRecent, GameFileViewFactory.DefaultColumnTextFields, colConfig, mnuLocal, true);
             tabViewRecent.Options = new GameFileGetOptions();
             tabViewRecent.Options.Limit = 10;
             tabViewRecent.Options.OrderBy = OrderType.Desc;
@@ -246,11 +247,11 @@ namespace DoomLauncher
 
         private List<ITabView> CreateTagTabs(ColumnField[] columnTextFields, ColumnConfig[] colConfig)
         {
-            List<ITabView> ret = new List<ITabView>();           
+            List<ITabView> ret = new List<ITabView>();
             IEnumerable<ITagData> tags = DataSourceAdapter.GetTags().Where(x => x.HasTab).OrderBy(x => x.Name);
             Tags = tags.ToArray();
 
-            foreach(ITagData tag in tags)
+            foreach (ITagData tag in tags)
                 ret.Add(CreateTagTab(columnTextFields, colConfig, tag.Name, tag, false));
 
             return ret;
@@ -265,7 +266,7 @@ namespace DoomLauncher
                 Array.ForEach(colConfig, x => x.Parent = tag.Name);
             }
 
-            TagTabView tabView = new TagTabView(tag.TagID, name, DataSourceAdapter, DefaultGameFileSelectFields, tag);
+            TagTabView tabView = new TagTabView(tag.TagID, name, DataSourceAdapter, DefaultGameFileSelectFields, tag, GameFileViewFactory);
             SetupTabBase(tabView, columnTextFields, colConfig, mnuLocal, true);
 
             if (tabView.GameFileViewControl is IGameFileColumnView columnView)
@@ -396,7 +397,7 @@ namespace DoomLauncher
 
                 Width = AppConfiguration.AppWidth;
                 Height = AppConfiguration.AppHeight;
-                
+
                 splitTopBottom.SplitterDistance = AppConfiguration.SplitTopBottom;
                 splitLeftRight.SplitterDistance = AppConfiguration.SplitLeftRight;
 
@@ -460,7 +461,7 @@ namespace DoomLauncher
                 // no internet connection or bad connection, try again next time
             }
         }
-        
+
         private void SetUpdateAvailable(ApplicationUpdateInfo info)
         {
             if (InvokeRequired)
@@ -484,7 +485,7 @@ namespace DoomLauncher
             }
 
             if (!DataSourceAdapter.GetIWads().Any()) //If no iwads then prompt to add iwads
-            { 
+            {
                 await HandleAddIWads();
                 this.Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = 2; }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
                 DisplayInitSettings(); //give user the change set default port, iwad, skill
@@ -530,8 +531,8 @@ namespace DoomLauncher
             {
                 //Maximized goes outside the bounds to hide the border, bring the rectangle in a more than safe amount to check if the monitor is still there
                 //Windows 7 can be -4, later version are -6, could change based on DPI
-                int offs = 32; 
-                Rectangle formRectangle = new Rectangle(config.AppX + offs, config.AppY + offs, config.AppWidth - offs*2, config.AppHeight - offs*2);
+                int offs = 32;
+                Rectangle formRectangle = new Rectangle(config.AppX + offs, config.AppY + offs, config.AppWidth - offs * 2, config.AppHeight - offs * 2);
                 return Screen.AllScreens.Any(x => x.WorkingArea.Contains(formRectangle));
             }
             else if (config.WindowState != FormWindowState.Minimized)
@@ -604,25 +605,6 @@ namespace DoomLauncher
             }
         }
 
-        private ColumnField[] DefaultColumnTextFields
-        {
-            get
-            {
-                 return new ColumnField[]
-                 {
-                    new ColumnField("FileNameNoPath", "File"),
-                    new ColumnField("Title", "Title"),
-                    new ColumnField("Author", "Author"),
-                    new ColumnField("ReleaseDate", "Release Date"),
-                    new ColumnField("MapCount", "Maps"),
-                    new ColumnField("Comments", "Comments"),
-                    new ColumnField("Rating", "Rating"),
-                    new ColumnField("Downloaded", "Downloaded"),
-                    new ColumnField("LastPlayed", "Last Played")
-                 };
-            }
-        }
-
         private GameFileFieldType[] DefaultGameFileSelectFields
         {
             get
@@ -647,5 +629,7 @@ namespace DoomLauncher
         }
 
         private ITagMapLookup TagMapLookup { get; set; }
+
+        private GameFileViewFactory GameFileViewFactory { get; } = new GameFileViewFactory(GameFileViewType.TileView);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -19,6 +18,7 @@ namespace DoomLauncher
 
     public interface IGameFileView
     {
+        event EventHandler ItemClick;
         event EventHandler ItemDoubleClick;
         event EventHandler SelectionChange;
         event KeyPressEventHandler ViewKeyPress;
@@ -46,5 +46,7 @@ namespace DoomLauncher
         object DoomLauncherParent { get; set; }
 
         Control ToolTipControl { get; }
+
+        void SetVisible(bool set);
     }
 }

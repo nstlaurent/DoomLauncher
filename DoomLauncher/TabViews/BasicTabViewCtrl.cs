@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using DoomLauncher.Interfaces;
@@ -15,19 +14,36 @@ namespace DoomLauncher
         protected string m_title;
         protected object m_key;
         protected GameFileFieldType[] m_selectFields;
+        protected GameFileViewFactory m_factory;
 
-        public BasicTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields)
+        private IGameFileView m_gameFileView;
+
+        public BasicTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, GameFileViewFactory factory)
+            : this (key, title, adapter, selectFields, factory.CreateGameFileView())
+        {
+            m_factory = factory;
+        }
+
+        protected BasicTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, IGameFileView view)
         {
             InitializeComponent();
             m_key = key;
             m_title = title;
             Adapter = adapter;
             m_selectFields = selectFields.ToArray();
+
+            UserControl ctrl = (UserControl)view;
+
+            ctrl.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            ctrl.Dock = DockStyle.Fill;
+            Controls.Add(ctrl);
+            m_gameFileView = (IGameFileView)ctrl;
         }
 
         public virtual object Clone()
         {
-            BasicTabViewCtrl view = new BasicTabViewCtrl(m_key, m_title, Adapter, m_selectFields);
+            // TODO this is also dumb
+            BasicTabViewCtrl view = new BasicTabViewCtrl(m_key, m_title, Adapter, m_selectFields, m_factory.CreateGameFileViewGrid());
             SetBaseCloneProperties(view);
             return view;
         }
@@ -36,6 +52,8 @@ namespace DoomLauncher
         {
             if (GameFileViewControl is IGameFileColumnView columnView)
                 view.SetColumnConfig(columnView.ColumnFields, GetColumnConfig().ToArray());
+            else
+                view.SetColumnConfig(GameFileViewFactory.DefaultColumnTextFields, MainForm.Instance.GetColumnConfig());
         }
 
         public List<ColumnConfig> GetColumnConfig()
@@ -124,7 +142,7 @@ namespace DoomLauncher
                 gameFileViewControl.SetSortedColumn(config.Column, config.Sort);
         }
 
-        public IGameFileView GameFileViewControl { get { return ctrlView; } }
+        public IGameFileView GameFileViewControl { get { return m_gameFileView; } }
 
         public object Key { get { return m_key; } }
 
@@ -156,15 +174,15 @@ namespace DoomLauncher
 
         public virtual void UpdateDataSourceFile(IGameFile gameFile)
         {
-            if (ctrlView.DataSource != null)
+            if (m_gameFileView.DataSource != null)
             {
-                foreach (IGameFile item in ctrlView.DataSource)
+                foreach (IGameFile item in m_gameFileView.DataSource)
                 {
                     if (item.Equals(gameFile))
                     {
-                        //IGameFile dsSet = item.Object as IGameFile;
                         Array.ForEach(item.GetType().GetProperties().Where(x => x.SetMethod != null).ToArray(), x => x.SetValue(item, x.GetValue(gameFile)));
-                        ctrlView.Invalidate(true);
+                        // TODO
+                        ((UserControl)m_gameFileView).Invalidate(true);
                         break;
                     }
                 }
@@ -173,7 +191,7 @@ namespace DoomLauncher
 
         protected void SetDisplayText(string text)
         {
-            ctrlView.SetDisplayText(text);
+            m_gameFileView.SetDisplayText(text);
         }
 
         protected void SetDataSource(IEnumerable<IGameFile> gameFiles)
@@ -183,12 +201,12 @@ namespace DoomLauncher
 
             if (!gameFiles.Any())
             {
-                ctrlView.DataSource = null;
-                ctrlView.SetDisplayText("No Results Found");
+                m_gameFileView.DataSource = null;
+                m_gameFileView.SetDisplayText("No Results Found");
             }
             else
             {
-                ctrlView.DataSource = gameFiles.Cast<GameFile>().ToList();
+                m_gameFileView.DataSource = gameFiles.Cast<GameFile>().ToList();
             }
         }
 

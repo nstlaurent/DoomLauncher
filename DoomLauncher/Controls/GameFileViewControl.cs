@@ -13,6 +13,7 @@ namespace DoomLauncher
 {
     public partial class GameFileViewControl : UserControl, IGameFileColumnView
     {
+        public event EventHandler ItemClick;
         public event EventHandler ItemDoubleClick;
         public event EventHandler SelectionChange;
         public event CancelEventHandler CustomRowPaint;
@@ -32,8 +33,6 @@ namespace DoomLauncher
 
             SetupGridView();
 
-            ToolTipDisplayHandler toolTipDisplayHandler = new ToolTipDisplayHandler(this, toolTip1);
-
             m_label.AutoSize = true;
             m_label.Visible = false;
             m_label.Anchor = AnchorStyles.Top | AnchorStyles.Left;
@@ -41,6 +40,11 @@ namespace DoomLauncher
             m_label.Font = new Font(m_label.Font.FontFamily, 12.0f, FontStyle.Bold);
             Controls.Add(m_label);
             dgvMain.KeyDown += dgvMain_KeyDown;
+        }
+
+        public void SetVisible(bool set)
+        {
+
         }
 
         public bool MultiSelect
@@ -114,8 +118,17 @@ namespace DoomLauncher
         {
             get
             {
-                foreach (ObjectView<GameFile> item in m_datasource)
-                    yield return item.Object;
+                if (m_datasource != null)
+                {
+                    foreach (ObjectView<GameFile> item in m_datasource)
+                        yield return item.Object;
+                }
+                else
+                {
+                    IGameFile[] source = new IGameFile[] { };
+                    foreach (var gameFile in source)
+                        yield return gameFile;
+                }
             }
             set
             {
@@ -296,6 +309,7 @@ namespace DoomLauncher
 
         void dgvMain_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            ItemClick?.Invoke(this, EventArgs.Empty);
             HandleSelection();
         }
 

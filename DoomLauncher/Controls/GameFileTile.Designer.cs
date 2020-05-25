@@ -46,7 +46,7 @@
             // 
             // pb
             // 
-            this.pb.Location = new System.Drawing.Point(33, 32);
+            this.pb.Location = new System.Drawing.Point(0, 0);
             this.pb.Name = "pb";
             this.pb.Size = new System.Drawing.Size(100, 50);
             this.pb.TabIndex = 2;

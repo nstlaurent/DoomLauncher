@@ -985,14 +985,20 @@ namespace DoomLauncher
             HandleTabSelectionChange();
         }
 
+        private ITabView m_lastSelectedTabView;
+
         private void HandleTabSelectionChange()
         {
             if (tabControl.SelectedTab != null)
             {
+                if (m_lastSelectedTabView != null)
+                    m_lastSelectedTabView.GameFileViewControl.SetVisible(false);
+
                 ITabView tabView = GetCurrentTabView();
 
                 if (tabView != null)
                 {
+                    m_lastSelectedTabView = tabView;
                     btnSearch.Enabled = tabView.IsSearchAllowed;
                     btnPlay.Enabled = tabView.IsPlayAllowed;
                     chkAutoSearch.Enabled = tabView.IsAutoSearchAllowed;
@@ -1005,6 +1011,7 @@ namespace DoomLauncher
 
                     HandleSelectionChange(GetCurrentViewControl(), false);
                     tabView.GameFileViewControl.Focus();
+                    tabView.GameFileViewControl.SetVisible(true);
                 }
             }
         }
@@ -1744,7 +1751,7 @@ namespace DoomLauncher
                 start--;
             }
 
-            m_tabHandler.InsertTab(start+1, CreateTagTab(DefaultColumnTextFields, GetColumnConfig(), tag.Name, tag, true));
+            m_tabHandler.InsertTab(start+1, CreateTagTab(GameFileViewFactory.DefaultColumnTextFields, GetColumnConfig(), tag.Name, tag, true));
         }
 
         private void utilityToolStripItem_Click(object sender, EventArgs e)

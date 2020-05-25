@@ -63,7 +63,7 @@ namespace DoomLauncher
 
         private string BuildColumnConfig()
         {
-            if (m_tabHandler != null)
+            if (m_tabHandler != null && GameFileViewFactory.IsUsingColumnView)
             {
                 List<ColumnConfig> config = new List<ColumnConfig>();
 
@@ -86,7 +86,7 @@ namespace DoomLauncher
             return string.Empty;
         }
 
-        private ColumnConfig[] GetColumnConfig()
+        public ColumnConfig[] GetColumnConfig()
         {
             try
             {

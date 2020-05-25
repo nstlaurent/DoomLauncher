@@ -1,14 +1,6 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
-using Equin.ApplicationFramework;
+﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -17,6 +9,7 @@ namespace DoomLauncher
     {
         private TabHandler m_tabHandler;
         private bool m_bOverrideInit, m_multiSelect;
+        private IGameFileView m_lastView;
 
         public FileSelectForm()
         {
@@ -122,9 +115,7 @@ namespace DoomLauncher
             IGameFileView ctrl = CurrentGameFileControl;
 
             if (ctrl != null)
-            {
                 HandleSearch(ctrl);
-            }
         }
 
         private void HandleSearch(IGameFileView ctrl)
@@ -141,6 +132,19 @@ namespace DoomLauncher
                         view.SetGameFiles();
                 }
             }
+        }
+
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var gameFileControl = CurrentGameFileControl;
+
+            if (m_lastView != null)
+                m_lastView.SetVisible(false);
+
+            if (gameFileControl != null)
+                gameFileControl.SetVisible(true);
+
+            m_lastView = gameFileControl;
         }
 
         private IGameFileView CurrentGameFileControl

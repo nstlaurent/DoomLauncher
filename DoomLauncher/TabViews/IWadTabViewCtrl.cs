@@ -1,12 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
@@ -15,8 +8,8 @@ namespace DoomLauncher
     {
         private IDataSourceAdapter m_dsAdapter;
 
-        public IWadTabViewCtrl(object key, string title, IDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup)
-            : base(key, title, adapter, selectFields, lookup)
+        public IWadTabViewCtrl(object key, string title, IDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup, GameFileViewFactory factory)
+            : base(key, title, adapter, selectFields, lookup, factory)
         {
             InitializeComponent();
             m_dsAdapter = adapter;

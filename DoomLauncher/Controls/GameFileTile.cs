@@ -62,7 +62,15 @@ namespace DoomLauncher
 
         public void SetPicture(string file)
         {
-            pb.ImageLocation = file;
+            pb.CancelAsync();
+            if (!string.IsNullOrEmpty(file))
+                pb.LoadAsync(file);
+        }
+
+        public void SetImage(Image image)
+        {
+            pb.CancelAsync();
+            pb.Image = image;
         }
 
         public void SetTitle(string title)

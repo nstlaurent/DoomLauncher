@@ -8,8 +8,8 @@ namespace DoomLauncher
     {
         private readonly ITagMapLookup m_tagLookup;
 
-        public LocalTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup)
-            : base(key, title, adapter, selectFields)
+        public LocalTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup, GameFileViewFactory factory)
+            : base(key, title, adapter, selectFields, factory)
         {
             GameFileViewControl.DoomLauncherParent = this;
             m_tagLookup = lookup;
