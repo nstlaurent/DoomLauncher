@@ -636,9 +636,6 @@ namespace DoomLauncher
 
         private void HandleDemoChange()
         {
-            m_handler.Reset();
-            SetAdditionalFiles(true);
-
             if (chkDemo.Checked && cmbDemo.SelectedItem != null)
             {
                 var file = cmbDemo.SelectedItem as IFileData;
@@ -646,6 +643,9 @@ namespace DoomLauncher
 
                 if (parser != null)
                 {
+                    m_handler.Reset();
+                    SetAdditionalFiles(true);
+
                     string[] requiredFiles = parser.GetRequiredFiles();
                     List<string> unavailable = new List<string>();
                     List<IGameFile> iwads = new List<IGameFile>();
