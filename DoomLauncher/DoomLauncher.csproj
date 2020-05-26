@@ -133,13 +133,19 @@
     <Compile Include="Controls\GameFileTileViewControl.Designer.cs">
       <DependentUpon>GameFileTileViewControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameFileTileBase.cs">
+    <Compile Include="Controls\GameFileTileBase.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTileExpanded.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTileExpanded.Designer.cs">
+      <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
     </Compile>
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
-    <Compile Include="IGameFileTile.cs" />
+    <Compile Include="Interfaces\IGameFileTile.cs" />
     <Compile Include="Interfaces\IGameFileColumnView.cs" />
     <Compile Include="Interfaces\IGameFileView.cs" />
     <Compile Include="Interfaces\IGameProfile.cs" />
@@ -661,6 +667,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PagingControl.resx">
       <DependentUpon>PagingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GameFileTileExpanded.resx">
+      <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TabViews\BasicTabViewCtrl.resx">
       <DependentUpon>BasicTabViewCtrl.cs</DependentUpon>

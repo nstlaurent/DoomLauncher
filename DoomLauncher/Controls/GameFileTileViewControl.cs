@@ -34,7 +34,6 @@ namespace DoomLauncher
 
         public bool MultiSelect { get; set; }
         public object DoomLauncherParent { get; set; }
-        public Control ToolTipControl => flpMain;
 
         public event EventHandler ItemClick;
         public event EventHandler ItemDoubleClick;
@@ -52,8 +51,10 @@ namespace DoomLauncher
 
         private readonly System.Timers.Timer m_mouseTimer;
         private readonly PagingControl m_pagingControl;
-        private int m_scrollBarPos = 0;
+        private int m_lastScrollPos = 0;
         private GameFileTileBase m_lastHover;
+
+        private FlowLayoutPanelDB flpMain;
 
         public GameFileTileViewControl()
         {
@@ -78,25 +79,23 @@ namespace DoomLauncher
 
             if (set)
             {
-                tblMain.Controls.Remove(flpMain);
-                flpMain = GameFileTileManager.Instance.FlowLayoutPanel;
-                tblMain.Controls.Add(flpMain, 0, 1);
-
+                flpMain = GameFileTileManager.Instance.TileLayout;
                 flpMain.Anchor = AnchorStyles.Top | AnchorStyles.Left;
                 flpMain.Dock = DockStyle.Fill;
-                flpMain.AutoScroll = true;
+                tblMain.Controls.Add(flpMain, 0, 1);
+
                 flpMain.Click += GameFileTileViewControl_Click;
                 flpMain.KeyPress += GameFileTileViewControl_KeyPress;
                 flpMain.KeyDown += GameFileTileViewControl_KeyDown;
 
                 SetPageData(m_pagingControl.PageIndex, false);
-                flpMain.VerticalScroll.Value = m_scrollBarPos;
+                flpMain.VerticalScroll.Value = m_lastScrollPos;
                 flpMain.PerformLayout();
             }
             else
             {
                 m_selectedTiles.ForEach(x => x.SetSelected(false));
-                m_scrollBarPos = flpMain.VerticalScroll.Value;
+                m_lastScrollPos = flpMain.VerticalScroll.Value = 0;
                 Controls.Remove(flpMain);
             }
         }
@@ -129,7 +128,8 @@ namespace DoomLauncher
 
             // PointToClient will return null if the view is obscured at the current position
             Point pt = Cursor.Position;
-            if (GetChildAtPoint(PointToClient(pt)) != null)
+            Control test = tblMain.GetChildAtPoint(tblMain.PointToClient(pt));
+            if (test != null && test == flpMain)
             {
                 foreach (var tile in GameFileTileManager.Instance.Tiles)
                 {
@@ -185,13 +185,17 @@ namespace DoomLauncher
                 return;
 
             var screenshots = MainForm.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
+            var tagMapping = MainForm.Instance.DataSourceAdapter.GetTagMappings();
+            var tags = MainForm.Instance.DataSourceAdapter.GetTags();
             string screenshotPath = MainForm.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath();
+
             foreach (var tile in GameFileTileManager.Instance.Tiles)
             {
                 if (!tile.Visible)
                     break;
 
-                SetTileData(tile.GameFile, screenshots, screenshotPath, tile);
+                var thisTagMap = tagMapping.Where(x => x.FileID == tile.GameFile.GameFileID.Value).Select(x => x.TagID);
+                SetTileData(tile.GameFile, screenshots, tags.Where(x => thisTagMap.Contains(x.TagID)), screenshotPath, tile);
             }
         }
 
@@ -267,9 +271,14 @@ namespace DoomLauncher
             var itemsEnum = GameFileTileManager.Instance.Tiles.GetEnumerator();
             itemsEnum.MoveNext();
 
+            var tagMapping = MainForm.Instance.DataSourceAdapter.GetTagMappings();
+            var tags = MainForm.Instance.DataSourceAdapter.GetTags();
+
             foreach (var gameFile in gameFiles)
             {
-                SetTileData(gameFile, screenshots, screenshotPath, itemsEnum.Current);
+                var thisTagMap = tagMapping.Where(x => x.FileID == gameFile.GameFileID.Value).Select(x => x.TagID);              
+
+                SetTileData(gameFile, screenshots, tags.Where(x => thisTagMap.Contains(x.TagID)), screenshotPath, itemsEnum.Current);
                 itemsEnum.Current.Visible = true;
                 itemsEnum.MoveNext();
             }
@@ -283,9 +292,9 @@ namespace DoomLauncher
             flpMain.ResumeLayout();
         }
 
-        private static void SetTileData(IGameFile gameFile, IEnumerable<IFileData> screenshots, string screenshotPath, GameFileTileBase tile)
+        private static void SetTileData(IGameFile gameFile, IEnumerable<IFileData> screenshots, IEnumerable<ITagData> tags, string screenshotPath, GameFileTileBase tile)
         {
-            tile.SetData(gameFile);
+            tile.SetData(gameFile, tags);
 
             if (gameFile.GameFileID.HasValue)
             {
@@ -311,7 +320,7 @@ namespace DoomLauncher
 
         private void Tile_TileClick(object sender, MouseEventArgs e)
         {
-            GameFileTile tile = sender as GameFileTile;
+            GameFileTileBase tile = sender as GameFileTileBase;
             if (tile == null || !m_visible)
                 return;
 
@@ -335,7 +344,7 @@ namespace DoomLauncher
             }
         }
 
-        private void SelectRange(GameFileTile tile)
+        private void SelectRange(GameFileTileBase tile)
         {
             int start = GameFileTileIndex(m_selectedTiles.First());
             int end = GameFileTileIndex(m_selectedTiles.Last());
@@ -376,7 +385,7 @@ namespace DoomLauncher
             return -1;
         }
 
-        private void ToggleSelection(GameFileTile tile)
+        private void ToggleSelection(GameFileTileBase tile)
         {
             tile.SetSelected(!tile.Selected);
         }
@@ -388,7 +397,7 @@ namespace DoomLauncher
             if (gameFile == null)
                 return;
 
-            foreach (GameFileTile tile in GameFileTileManager.Instance.Tiles)
+            foreach (GameFileTileBase tile in GameFileTileManager.Instance.Tiles)
             {
                 if (tile.GameFile.Equals(gameFile))
                 {

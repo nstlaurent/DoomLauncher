@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -14,7 +15,7 @@ namespace DoomLauncher
         bool Selected { get; }
 
         void SetSelected(bool set);
-        void SetData(IGameFile gameFile);
+        void SetData(IGameFile gameFile, IEnumerable<ITagData> tags);
         void SetImageLocation(string file);
         void SetImage(Image image);
         void ClearData();

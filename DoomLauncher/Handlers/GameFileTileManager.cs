@@ -6,26 +6,27 @@ namespace DoomLauncher
 {
     class GameFileTileManager
     {
-        public int MaxItems = 28;
+        public int MaxItems = 30;
         public static GameFileTileManager Instance { get; private set; } = new GameFileTileManager();
 
         public List<GameFileTileBase> Tiles = new List<GameFileTileBase>();
-        public FlowLayoutPanelDB FlowLayoutPanel = new FlowLayoutPanelDB();
+        public FlowLayoutPanelDB TileLayout = new FlowLayoutPanelDB();
         public Image DefaultImage { get; private set; }
 
         public GameFileTileManager()
         {
+            TileLayout.AutoScroll = true;
             DefaultImage = Image.FromFile("TileImages\\DoomLauncherTile.png");
 
             for (int i = 0; i < MaxItems; i++)
             {
-                GameFileTile tile = new GameFileTile
+                GameFileTileExpanded tile = new GameFileTileExpanded
                 {
                     Margin = new Padding(8, 8, 8, 8)
                 };
 
                 Tiles.Add(tile);
-                FlowLayoutPanel.Controls.Add(tile);
+                TileLayout.Controls.Add(tile);
             }
         }
     }

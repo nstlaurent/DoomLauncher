@@ -1,6 +1,8 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -17,6 +19,8 @@ namespace DoomLauncher
         public override IGameFile GameFile { get; protected set; }
         public override bool Selected { get; protected set; }
 
+        private Color m_titleColor = Color.Black;
+
         public GameFileTile()
         {
             InitializeComponent();
@@ -30,6 +34,7 @@ namespace DoomLauncher
             pb.Height = Height - LabelHeight;
             pb.BackColor = Color.Black;
             pb.SizeMode = PictureBoxSizeMode.Zoom;
+            pb.WaitOnLoad = false;
 
             MouseClick += CtrlMouseClick;
             pb.MouseClick += CtrlMouseClick;
@@ -56,12 +61,20 @@ namespace DoomLauncher
                 BorderStyle = BorderStyle.None;
                 BackColor = SystemColors.Control;
                 pb.BackColor = Color.Black;
-                lblTitle.ForeColor = Color.Black;
+                lblTitle.ForeColor = m_titleColor;
             }
         }
 
-        public override void SetData(IGameFile gameFile)
+        public override void SetData(IGameFile gameFile, IEnumerable<ITagData> tags)
         {
+            var colorTag = tags.FirstOrDefault(x => x.HasColor);
+            if (colorTag != null)
+                m_titleColor = Color.FromArgb(colorTag.Color.Value);
+            else
+               m_titleColor = Color.Black;
+
+            lblTitle.ForeColor = m_titleColor;
+
             if (string.IsNullOrEmpty(gameFile.Title))
                 SetTitle(gameFile.FileNameNoPath);
             else

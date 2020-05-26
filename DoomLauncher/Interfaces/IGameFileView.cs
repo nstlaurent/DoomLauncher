@@ -45,8 +45,6 @@ namespace DoomLauncher
 
         object DoomLauncherParent { get; set; }
 
-        Control ToolTipControl { get; }
-
         void SetVisible(bool set);
     }
 }

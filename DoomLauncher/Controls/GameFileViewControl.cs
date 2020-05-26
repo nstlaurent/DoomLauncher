@@ -435,7 +435,6 @@ namespace DoomLauncher
         public Color CustomRowPaintForeColor { get; set; }
 
         public object DoomLauncherParent { get; set; }
-        public Control ToolTipControl => dgvMain;
 
         private Dictionary<string, DataGridViewColumn> m_orderLookup = new Dictionary<string, DataGridViewColumn>();
 
