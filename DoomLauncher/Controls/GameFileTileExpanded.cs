@@ -56,7 +56,7 @@ namespace DoomLauncher
         public override void SetData(IGameFile gameFile, IEnumerable<ITagData> tags)
         {
             gameTile.SetData(gameFile, tags);
-            lblFilename.Text = gameFile.FileName;
+            lblFilename.Text = gameFile.FileNameNoPath;
             lblTitle.Text = gameFile.Title;
             lblAuthor.Text = gameFile.Author;
             lblTags.Text = string.Join(", ", tags.Select(x => x.Name));
