@@ -11,7 +11,7 @@ namespace DoomLauncher
         public TagTabView(object key, string title, IDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagData tag, GameFileViewFactory factory)
             : this(key, title, adapter, selectFields, tag, factory.CreateGameFileView())
         {
-
+            m_factory = factory;
         }
 
         public TagTabView(object key, string title, IDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagData tag, IGameFileView view)
