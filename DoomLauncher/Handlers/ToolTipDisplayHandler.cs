@@ -17,6 +17,7 @@ namespace DoomLauncher
     {
         private readonly System.Timers.Timer m_toolTipTimer;
         private readonly ToolTip m_toolTip;
+        private readonly Form m_form;
         private IGameFile m_gameFile;
         private Point m_showPoint = new Point();
         private Point m_lastPollPoint = new Point();
@@ -25,8 +26,9 @@ namespace DoomLauncher
         private const int TimerDelay = 500;
         private const int Range = 16;
 
-        public ToolTipDisplayHandler()
+        public ToolTipDisplayHandler(Form form)
         {
+            m_form = form;
             m_toolTip = new ToolTip();
 
             m_toolTipTimer = new System.Timers.Timer(TimerDelay);
@@ -63,8 +65,8 @@ namespace DoomLauncher
             }
             else if (m_state == ToolTipState.Waiting)
             {
-                if (MouseMoveInRange(m_lastPollPoint) && MainForm.Instance.InvokeRequired)
-                    MainForm.Instance.Invoke(new Action(ShowToolTip));
+                if (MouseMoveInRange(m_lastPollPoint) && m_form.InvokeRequired)
+                    m_form.Invoke(new Action(ShowToolTip));
             }
         }
 
@@ -75,20 +77,20 @@ namespace DoomLauncher
 
             ToolTipHandler toolTipHandler = new ToolTipHandler();
             m_showPoint = GetMouseLocation();
-            m_toolTip.Show(toolTipHandler.GetToolTipText(MainForm.Instance.Font, m_gameFile), MainForm.Instance, m_showPoint.X, m_showPoint.Y, 32767);
+            m_toolTip.Show(toolTipHandler.GetToolTipText(m_form.Font, m_gameFile), m_form, m_showPoint.X, m_showPoint.Y, 32767);
             m_state = ToolTipState.Showing;
         }
 
         private Point GetMouseLocation()
         {
-            return new Point(Cursor.Position.X - MainForm.Instance.Location.X + 1, Cursor.Position.Y - MainForm.Instance.Location.Y + 16);
+            return new Point(Cursor.Position.X - m_form.Location.X + 1, Cursor.Position.Y - m_form.Location.Y + 16);
         }
 
         private void View_GameFileEnter(object sender, GameFileEventArgs e)
         {
             if (m_gameFile != e.GameFile)
             {
-                m_toolTip.Hide(MainForm.Instance);
+                m_toolTip.Hide(m_form);
                 m_gameFile = e.GameFile;
                 m_toolTipTimer.Interval = TimerDelay;
                 m_toolTipTimer.Start();
@@ -107,13 +109,13 @@ namespace DoomLauncher
 
         private void ResetToolTipAndClear()
         {
-            if (MainForm.Instance.InvokeRequired)
+            if (m_form.InvokeRequired)
             {
-                MainForm.Instance.Invoke(new Action(ResetToolTipAndClear));
+                m_form.Invoke(new Action(ResetToolTipAndClear));
             }
             else
             {
-                m_toolTip.Hide(MainForm.Instance);
+                m_toolTip.Hide(m_form);
                 m_state = ToolTipState.BeforeShow;
                 m_gameFile = null;
                 m_showPoint = new Point();

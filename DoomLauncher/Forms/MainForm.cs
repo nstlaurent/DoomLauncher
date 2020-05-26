@@ -1,7 +1,6 @@
 ﻿using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
-using Equin.ApplicationFramework;
 using PresentationControls;
 using System;
 using System.Collections.Generic;
@@ -46,11 +45,8 @@ namespace DoomLauncher
         private string m_launchFile;
         private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
 
-        public static MainForm Instance { get; private set; }
-
         public MainForm(string launchFile)
         {
-            Instance = this;
             m_launchFile = launchFile;
 
             m_splash = new SplashScreen();
@@ -68,7 +64,7 @@ namespace DoomLauncher
             {
                 string dataSource = Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
                 DataSourceAdapter = DbDataSourceAdapter.CreateAdapter();
-                AppConfiguration = new AppConfiguration(DataSourceAdapter);
+                DataCache.Instance.Init(DataSourceAdapter);
 
                 BackupDatabase(dataSource);
                 CreateSendToLink();
@@ -1694,7 +1690,7 @@ namespace DoomLauncher
             form.ShowDialog(this);
 
             RebuildTagToolStrip();
-            TagMapLookup.Refresh();
+            DataCache.Instance.TagMapLookup.Refresh();
 
             if (form.TagControl.AddedTags.Length > 0)
             {
@@ -1751,7 +1747,7 @@ namespace DoomLauncher
                 start--;
             }
 
-            m_tabHandler.InsertTab(start+1, CreateTagTab(GameFileViewFactory.DefaultColumnTextFields, GetColumnConfig(), tag.Name, tag, true));
+            m_tabHandler.InsertTab(start+1, CreateTagTab(GameFileViewFactory.DefaultColumnTextFields, DataCache.Instance.GetColumnConfig(), tag.Name, tag, true));
         }
 
         private void utilityToolStripItem_Click(object sender, EventArgs e)
@@ -1779,7 +1775,7 @@ namespace DoomLauncher
 
             if (strip != null)
             {
-                ITagData tag = Tags.FirstOrDefault(x => x.Name == strip.Text);
+                ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
 
                 if (tag != null)
                 {
@@ -1802,7 +1798,7 @@ namespace DoomLauncher
                         }
                     }
 
-                    TagMapLookup.Refresh();
+                    DataCache.Instance.TagMapLookup.Refresh();
                     UpdateTagTabData(tag.TagID);
                     HandleTabSelectionChange();
 
@@ -1827,7 +1823,7 @@ namespace DoomLauncher
 
             if (strip != null)
             {
-                ITagData tag = Tags.FirstOrDefault(x => x.Name == strip.Text);
+                ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
 
                 if (tag != null)
                 {
@@ -1840,7 +1836,7 @@ namespace DoomLauncher
                         DataSourceAdapter.DeleteTagMapping(tagMapping);
                     }
 
-                    TagMapLookup.Refresh();
+                    DataCache.Instance.TagMapLookup.Refresh();
                     UpdateTagTabData(tag.TagID);
                     HandleSelectionChange(GetCurrentViewControl(), true);
                 }
@@ -2233,11 +2229,10 @@ namespace DoomLauncher
             }
         }
 
-        public AppConfiguration AppConfiguration { get; set; }
-        public IDataSourceAdapter DataSourceAdapter { get; set; }
+        private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
+        private IDataSourceAdapter DataSourceAdapter { get; set; }
 
         private IGameFileDataSourceAdapter DirectoryDataSourceAdapter { get; set; }
         private IGameFileDataSourceAdapter IdGamesDataSourceAdapter { get; set; }
-        private ITagData[] Tags { get; set; }
     }
 }

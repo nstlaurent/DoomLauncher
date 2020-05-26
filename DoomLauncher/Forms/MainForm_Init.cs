@@ -175,8 +175,9 @@ namespace DoomLauncher
         private void SetupTabs()
         {
             List<ITabView> tabViews = new List<ITabView>();
-            ColumnConfig[] colConfig = GetColumnConfig();
-            TagMapLookup = new TagMapLookup(DataSourceAdapter);
+            ColumnConfig[] colConfig = DataCache.Instance.GetColumnConfig();
+            DataCache.Instance.Init(DataSourceAdapter);
+            GameFileViewFactory = new GameFileViewFactory(this, GameFileViewType.TileView);
 
             tabViews.Add(CreateTabViewRecent(colConfig));
             tabViews.Add(CreateTabViewLocal(colConfig));
@@ -200,7 +201,7 @@ namespace DoomLauncher
             };
 
             IdGamesDataSourceAdapter = new IdGamesDataAdapater(AppConfiguration.IdGamesUrl, AppConfiguration.ApiPage, AppConfiguration.MirrorUrl);
-            var factory = new GameFileViewFactory(GameFileViewType.GridView);
+            var factory = new GameFileViewFactory(this, GameFileViewType.GridView);
             IdGamesTabViewCtrl tabViewIdGames = new IdGamesTabViewCtrl(s_idGamesKey, s_idGamesKey, IdGamesDataSourceAdapter, DefaultGameFileSelectFields, factory);
             SetupTabBase(tabViewIdGames, columnTextFields, colConfig, mnuIdGames, false);
             return tabViewIdGames;
@@ -215,28 +216,28 @@ namespace DoomLauncher
                 new ColumnField("LastPlayed", "Last Played")
             };
 
-            IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(s_iwadKey, s_iwadKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup, GameFileViewFactory);
+            IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(s_iwadKey, s_iwadKey, DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);
             SetupTabBase(tabViewIwads, columnTextFields, colConfig, mnuLocal, true);
             return tabViewIwads;
         }
 
         private LocalTabViewCtrl CreateTabViewUntagged(ColumnConfig[] colConfig)
         {
-            LocalTabViewCtrl tabViewUntagged = new UntaggedTabView(s_untaggedKey, s_untaggedKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup, GameFileViewFactory);
+            LocalTabViewCtrl tabViewUntagged = new UntaggedTabView(s_untaggedKey, s_untaggedKey, DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);
             SetupTabBase(tabViewUntagged, GameFileViewFactory.DefaultColumnTextFields, colConfig, mnuLocal, true);
             return tabViewUntagged;
         }
 
         private LocalTabViewCtrl CreateTabViewLocal(ColumnConfig[] colConfig)
         {
-            LocalTabViewCtrl tabViewLocal = new LocalTabViewCtrl(s_localKey, s_localKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup, GameFileViewFactory);
+            LocalTabViewCtrl tabViewLocal = new LocalTabViewCtrl(s_localKey, s_localKey, DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);
             SetupTabBase(tabViewLocal, GameFileViewFactory.DefaultColumnTextFields, colConfig, mnuLocal, true);
             return tabViewLocal;
         }
 
         private OptionsTabViewCtrl CreateTabViewRecent(ColumnConfig[] colConfig)
         {
-            OptionsTabViewCtrl tabViewRecent = new OptionsTabViewCtrl(s_recentKey, s_recentKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup, GameFileViewFactory);
+            OptionsTabViewCtrl tabViewRecent = new OptionsTabViewCtrl(s_recentKey, s_recentKey, DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);
             SetupTabBase(tabViewRecent, GameFileViewFactory.DefaultColumnTextFields, colConfig, mnuLocal, true);
             tabViewRecent.Options = new GameFileGetOptions();
             tabViewRecent.Options.Limit = 10;
@@ -248,8 +249,8 @@ namespace DoomLauncher
         private List<ITabView> CreateTagTabs(ColumnField[] columnTextFields, ColumnConfig[] colConfig)
         {
             List<ITabView> ret = new List<ITabView>();
-            IEnumerable<ITagData> tags = DataSourceAdapter.GetTags().Where(x => x.HasTab).OrderBy(x => x.Name);
-            Tags = tags.ToArray();
+            DataCache.Instance.UpdateTags();
+            IEnumerable<ITagData> tags = DataCache.Instance.Tags.Where(x => x.HasTab);
 
             foreach (ITagData tag in tags)
                 ret.Add(CreateTagTab(columnTextFields, colConfig, tag.Name, tag, false));
@@ -299,15 +300,15 @@ namespace DoomLauncher
                 List<ITagData> addTags = new List<ITagData>();
                 List<ITagData> removeTags = new List<ITagData>();
 
-                Tags = DataSourceAdapter.GetTags().OrderBy(x => x.Name).ToArray();
+                DataCache.Instance.UpdateTags();
 
                 foreach (var gameFile in SelectedItems(currentControl))
                 {
                     if (gameFile.GameFileID.HasValue)
                     {
-                        var gameFileTags = TagMapLookup.GetTags(gameFile);
-                        var currentRemoveTags = Tags.Where(x => gameFileTags.Any(y => y.TagID == x.TagID));
-                        var currentAddTags = Tags.Except(currentRemoveTags);
+                        var gameFileTags = DataCache.Instance.TagMapLookup.GetTags(gameFile);
+                        var currentRemoveTags = DataCache.Instance.Tags.Where(x => gameFileTags.Any(y => y.TagID == x.TagID));
+                        var currentAddTags = DataCache.Instance.Tags.Except(currentRemoveTags);
 
                         addTags = addTags.Union(currentAddTags).ToList();
                         removeTags = removeTags.Union(currentRemoveTags).ToList();
@@ -628,8 +629,6 @@ namespace DoomLauncher
             }
         }
 
-        private ITagMapLookup TagMapLookup { get; set; }
-
-        private GameFileViewFactory GameFileViewFactory { get; } = new GameFileViewFactory(GameFileViewType.TileView);
+        private GameFileViewFactory GameFileViewFactory { get; set; }
     }
 }

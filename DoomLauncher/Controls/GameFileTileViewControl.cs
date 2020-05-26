@@ -184,18 +184,15 @@ namespace DoomLauncher
             if (!m_visible)
                 return;
 
-            var screenshots = MainForm.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
-            var tagMapping = MainForm.Instance.DataSourceAdapter.GetTagMappings();
-            var tags = MainForm.Instance.DataSourceAdapter.GetTags();
-            string screenshotPath = MainForm.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath();
+            var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
+            string screenshotPath = DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath();
 
             foreach (var tile in GameFileTileManager.Instance.Tiles)
             {
                 if (!tile.Visible)
                     break;
 
-                var thisTagMap = tagMapping.Where(x => x.FileID == tile.GameFile.GameFileID.Value).Select(x => x.TagID);
-                SetTileData(tile.GameFile, screenshots, tags.Where(x => thisTagMap.Contains(x.TagID)), screenshotPath, tile);
+                SetTileData(tile.GameFile, screenshots, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), screenshotPath, tile);
             }
         }
 
@@ -246,8 +243,8 @@ namespace DoomLauncher
         {
             GameFileTileManager.Instance.Tiles.ForEach(x => x.SetSelected(false));
 
-            var screenshots = MainForm.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
-            string screenshotPath = MainForm.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath();
+            var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
+            string screenshotPath = DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath();
 
             var gameFiles = m_gameFiles.Skip(pageIndex * GameFileTileManager.Instance.MaxItems).Take(GameFileTileManager.Instance.MaxItems).ToList();
             SetLayout(gameFiles, screenshots, screenshotPath);
@@ -271,14 +268,9 @@ namespace DoomLauncher
             var itemsEnum = GameFileTileManager.Instance.Tiles.GetEnumerator();
             itemsEnum.MoveNext();
 
-            var tagMapping = MainForm.Instance.DataSourceAdapter.GetTagMappings();
-            var tags = MainForm.Instance.DataSourceAdapter.GetTags();
-
             foreach (var gameFile in gameFiles)
             {
-                var thisTagMap = tagMapping.Where(x => x.FileID == gameFile.GameFileID.Value).Select(x => x.TagID);              
-
-                SetTileData(gameFile, screenshots, tags.Where(x => thisTagMap.Contains(x.TagID)), screenshotPath, itemsEnum.Current);
+                SetTileData(gameFile, screenshots, DataCache.Instance.TagMapLookup.GetTags(gameFile), screenshotPath, itemsEnum.Current);
                 itemsEnum.Current.Visible = true;
                 itemsEnum.MoveNext();
             }

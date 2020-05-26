@@ -53,7 +53,7 @@ namespace DoomLauncher
             if (GameFileViewControl is IGameFileColumnView columnView)
                 view.SetColumnConfig(columnView.ColumnFields, GetColumnConfig().ToArray());
             else
-                view.SetColumnConfig(GameFileViewFactory.DefaultColumnTextFields, MainForm.Instance.GetColumnConfig());
+                view.SetColumnConfig(GameFileViewFactory.DefaultColumnTextFields, DataCache.Instance.GetColumnConfig());
         }
 
         public List<ColumnConfig> GetColumnConfig()

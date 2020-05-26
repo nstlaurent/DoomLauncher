@@ -1,11 +1,19 @@
-﻿namespace DoomLauncher
+﻿using System.Windows.Forms;
+
+namespace DoomLauncher
 {
     public class GameFileViewFactory
     {
         public bool IsUsingColumnView => false;
 
         private readonly GameFileViewType m_defaultType;
-        private readonly ToolTipDisplayHandler m_toolTipDisplayHandler = new ToolTipDisplayHandler();
+        private readonly ToolTipDisplayHandler m_toolTipDisplayHandler;
+
+        public GameFileViewFactory(Form form, GameFileViewType defaultType)
+        {
+            m_defaultType = defaultType;
+            m_toolTipDisplayHandler = new ToolTipDisplayHandler(form);
+        }
 
         public static ColumnField[] DefaultColumnTextFields
         {
@@ -24,11 +32,6 @@
                     new ColumnField("LastPlayed", "Last Played")
                 };
             }
-        }
-
-        public GameFileViewFactory(GameFileViewType defaultType)
-        {
-            m_defaultType = defaultType;
         }
 
         public IGameFileView CreateGameFileView()

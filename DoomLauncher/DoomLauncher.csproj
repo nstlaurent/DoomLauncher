@@ -112,6 +112,7 @@
     <Compile Include="Controls\UpdateControl.Designer.cs">
       <DependentUpon>UpdateControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Config\DataCache.cs" />
     <Compile Include="DataSources\GameProfile.cs" />
     <Compile Include="Config\FileManagement.cs" />
     <Compile Include="Controls\FlowLayoutPanelDB.cs">
