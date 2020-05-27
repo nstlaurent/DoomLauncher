@@ -453,7 +453,7 @@ namespace DoomLauncher
 
         public IEnumerable<IFileData> GetFiles(FileType fileTypeID)
         {
-            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from (select * from Files order by GameFileID, FileOrder desc) where FileTypeID = {0} group by GameFileID", (int)fileTypeID)).Tables[0];
+            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from Files where FileTypeID = {0} order by GameFileID, FileOrder desc", (int)fileTypeID)).Tables[0];
             return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
         }
 
