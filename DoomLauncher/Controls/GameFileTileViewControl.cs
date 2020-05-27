@@ -185,14 +185,14 @@ namespace DoomLauncher
                 return;
 
             var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
-            string screenshotPath = DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath();
+            var thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Thumbnail);
 
             foreach (var tile in GameFileTileManager.Instance.Tiles)
             {
                 if (!tile.Visible)
                     break;
 
-                SetTileData(tile.GameFile, screenshots, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), screenshotPath, tile);
+                SetTileData(tile.GameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), tile);
             }
         }
 
@@ -219,7 +219,7 @@ namespace DoomLauncher
             {
                 // Basically a hack for when deleting a single item to keep the current page
                 update = (gameFiles.Count() == m_gameFiles.Count - 1 && m_gameFiles.Contains(gameFiles.First()));
-                m_gameFiles = gameFiles.OrderBy(x => x.Title).ToList();
+                m_gameFiles = gameFiles.ToList();
             }
 
             m_pagingControl.Init(m_gameFiles.Count, GameFileTileManager.Instance.MaxItems);
@@ -244,10 +244,10 @@ namespace DoomLauncher
             GameFileTileManager.Instance.Tiles.ForEach(x => x.SetSelected(false));
 
             var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
-            string screenshotPath = DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath();
+            var thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Thumbnail);
 
             var gameFiles = m_gameFiles.Skip(pageIndex * GameFileTileManager.Instance.MaxItems).Take(GameFileTileManager.Instance.MaxItems).ToList();
-            SetLayout(gameFiles, screenshots, screenshotPath);
+            SetLayout(gameFiles, screenshots, thumbnails);
 
             if (pageChange)
             {
@@ -261,7 +261,7 @@ namespace DoomLauncher
             }
         }
 
-        private void SetLayout(List<IGameFile> gameFiles, IEnumerable<IFileData> screenshots, string screenshotPath)
+        private void SetLayout(List<IGameFile> gameFiles, IEnumerable<IFileData> screenshots, IEnumerable<IFileData> thumbnails)
         {
             flpMain.SuspendLayout();
 
@@ -270,7 +270,7 @@ namespace DoomLauncher
 
             foreach (var gameFile in gameFiles)
             {
-                SetTileData(gameFile, screenshots, DataCache.Instance.TagMapLookup.GetTags(gameFile), screenshotPath, itemsEnum.Current);
+                SetTileData(gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(gameFile), itemsEnum.Current);
                 itemsEnum.Current.Visible = true;
                 itemsEnum.MoveNext();
             }
@@ -284,22 +284,22 @@ namespace DoomLauncher
             flpMain.ResumeLayout();
         }
 
-        private static void SetTileData(IGameFile gameFile, IEnumerable<IFileData> screenshots, IEnumerable<ITagData> tags, string screenshotPath, GameFileTileBase tile)
+        private static void SetTileData(IGameFile gameFile, IEnumerable<IFileData> screenshots, IEnumerable<IFileData> thumbnails, IEnumerable<ITagData> tags, GameFileTileBase tile)
         {
             tile.SetData(gameFile, tags);
 
-            if (gameFile.GameFileID.HasValue)
-            {
-                var screenshot = screenshots.FirstOrDefault(x => x.GameFileID == gameFile.GameFileID.Value);
-                if (screenshot != null)
-                    tile.SetImageLocation(Path.Combine(screenshotPath, screenshot.FileName));
-                else
-                    tile.SetImage(GameFileTileManager.Instance.DefaultImage);
-            }
-            else
+            if (!gameFile.GameFileID.HasValue)
             {
                 tile.SetImage(GameFileTileManager.Instance.DefaultImage);
+                return;
             }
+
+            IFileData thumbnail = ThumbnailManager.Instance.GetOrCreateThumbnail(gameFile, screenshots, thumbnails);
+
+            if (thumbnail != null)
+                tile.SetImageLocation(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName));
+            else
+                tile.SetImage(GameFileTileManager.Instance.DefaultImage);
         }
 
         private void Tile_TileDoubleClick(object sender, EventArgs e)
@@ -312,8 +312,7 @@ namespace DoomLauncher
 
         private void Tile_TileClick(object sender, MouseEventArgs e)
         {
-            GameFileTileBase tile = sender as GameFileTileBase;
-            if (tile == null || !m_visible)
+            if (!(sender is GameFileTileBase tile) || !m_visible)
                 return;
 
             ItemClick?.Invoke(this, EventArgs.Empty);
