@@ -7,11 +7,22 @@ using System.Windows.Forms;
 
 namespace DoomLauncher
 {
+    //public partial class GameFileTile : UserControl
+    //{
+    //    public GameFileTile()
+    //    {
+    //        InitializeComponent();
+    //    }
+    //}
+
     public partial class GameFileTile : GameFileTileBase
     {
-        private const int ImageWidth = 300;
-        private const int LabelHeight = 32;
-        private const int LabelPosition = (int)(LabelHeight * 0.75);
+        public static readonly int ImageWidth = 300;
+        public static readonly int ImageHeight = (int)(ImageWidth / (16.0 / 9.0));
+        private static readonly int LabelHeight = 32;
+        private static readonly string NewString = "New!";
+        private static readonly int NewPadX = 6;
+        private static readonly int NewPadY = 4;
 
         public override event MouseEventHandler TileClick;
         public override event EventHandler TileDoubleClick;
@@ -20,15 +31,14 @@ namespace DoomLauncher
         public override bool Selected { get; protected set; }
 
         private Color m_titleColor = Color.Black;
+        private bool m_new = false;
 
         public GameFileTile()
         {
             InitializeComponent();
 
             Width = ImageWidth;
-            Height = (int)(Width / (16.0 / 9.0) + LabelHeight);
-
-            lblTitle.Location = new Point(0, Height - LabelPosition);
+            Height = ImageHeight + LabelHeight;
 
             pb.Width = Width;
             pb.Height = Height - LabelHeight;
@@ -38,11 +48,42 @@ namespace DoomLauncher
 
             MouseClick += CtrlMouseClick;
             pb.MouseClick += CtrlMouseClick;
-            lblTitle.MouseClick += CtrlMouseClick;
 
             DoubleClick += CtrlDoubleClick;
             pb.DoubleClick += CtrlDoubleClick;
-            lblTitle.DoubleClick += CtrlDoubleClick;
+
+            pb.Paint += Screenshot_Paint;
+            Paint += GameFileTile_Paint;
+        }
+
+        private void GameFileTile_Paint(object sender, PaintEventArgs e)
+        {
+            if (GameFile == null)
+                return;
+
+            Font f = new Font(Font.FontFamily, 10, FontStyle.Bold);
+            string text = string.IsNullOrEmpty(GameFile.Title) ? GameFile.FileNameNoPath : GameFile.Title;
+            Size size = TextRenderer.MeasureText(text, f);
+            int x = Width - size.Width - (Width - size.Width) / 2;
+            int y = Height - size.Height - (LabelHeight - size.Height) / 2;
+            if (Selected)
+                e.Graphics.DrawString(text, f, Brushes.White, x, y);
+            else
+                e.Graphics.DrawString(text, f, new SolidBrush(m_titleColor), x, y);
+        }
+
+        private void Screenshot_Paint(object sender, PaintEventArgs e)
+        {
+            if (m_new)
+            {
+                Font f = new Font(Font.FontFamily, 10, FontStyle.Bold);
+                Size size = TextRenderer.MeasureText(NewString, f);
+                Rectangle rect = new Rectangle(pb.ClientRectangle.Right - size.Width - NewPadX, pb.ClientRectangle.Height - size.Height - NewPadY, 
+                    size.Width + NewPadX, size.Height + NewPadY);
+                e.Graphics.FillRectangle(Brushes.Red, rect);
+                e.Graphics.DrawRectangle(Pens.Gray, rect);
+                e.Graphics.DrawString(NewString, f, Brushes.White, new PointF(rect.Left + NewPadX, rect.Top + NewPadY / 2));
+            }
         }
 
         public override void SetSelected(bool set)
@@ -54,39 +95,35 @@ namespace DoomLauncher
                 BorderStyle = BorderStyle.FixedSingle;
                 BackColor = SystemColors.Highlight;
                 pb.BackColor = SystemColors.Highlight;
-                lblTitle.ForeColor = Color.White;
             }
             else
             {
                 BorderStyle = BorderStyle.None;
                 BackColor = SystemColors.Control;
                 pb.BackColor = Color.Black;
-                lblTitle.ForeColor = m_titleColor;
             }
         }
 
         public override void SetData(IGameFile gameFile, IEnumerable<ITagData> tags)
         {
+            if (gameFile.Equals(GameFile))
+                return;
+
+            m_new = gameFile.Downloaded.HasValue && (DateTime.Now - gameFile.Downloaded.Value).TotalHours < 24;
+
             var colorTag = tags.FirstOrDefault(x => x.HasColor);
             if (colorTag != null)
                 m_titleColor = Color.FromArgb(colorTag.Color.Value);
             else
-               m_titleColor = Color.Black;
-
-            lblTitle.ForeColor = m_titleColor;
-
-            if (string.IsNullOrEmpty(gameFile.Title))
-                SetTitle(gameFile.FileNameNoPath);
-            else
-                SetTitle(gameFile.Title);
+                m_titleColor = Color.Black;
 
             GameFile = gameFile;
+            Invalidate();
         }
 
         public override void ClearData()
         {
             GameFile = null;
-            lblTitle.Text = string.Empty;
 
             pb.CancelAsync();
 
@@ -108,14 +145,6 @@ namespace DoomLauncher
         {
             pb.CancelAsync();
             pb.Image = image;
-        }
-
-        private void SetTitle(string title)
-        {
-            lblTitle.Text = title;
-            Size size = TextRenderer.MeasureText(lblTitle.Text, lblTitle.Font);
-
-            lblTitle.Location = new Point((Width - size.Width) / 2, Height - LabelPosition);
         }
 
         private void CtrlDoubleClick(object sender, EventArgs e)
