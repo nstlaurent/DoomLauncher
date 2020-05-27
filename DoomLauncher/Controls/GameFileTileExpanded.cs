@@ -24,13 +24,45 @@ namespace DoomLauncher
         public override IGameFile GameFile { get { return gameTile.GameFile; } protected set { } }
         public override bool Selected { get { return gameTile.Selected; } protected set { } }
 
+        private string m_tags;
+        private string m_maps;
+        private string m_release;
+        private string m_played;
+
         public GameFileTileExpanded()
         {
             InitializeComponent();
-            //Height = gameTile.Height;
+
             gameTile.TileClick += GameTile_TileClick;
             gameTile.TileDoubleClick += GameTile_TileDoubleClick;
             Paint += GameFileTileExpanded_Paint;
+            pnlData.Paint += PnlData_Paint;
+        }
+
+        private void PnlData_Paint(object sender, PaintEventArgs e)
+        {
+            if (GameFile == null)
+                return;
+
+            Font f = new Font(Font.FontFamily, 10);
+
+            int xPos = gameTile.Location.X + 122;
+            int yPos = 8;
+            int offset = 22;
+
+            e.Graphics.DrawString(GameFile.FileNameNoPath, f, Brushes.Black, xPos, yPos);
+            yPos += offset;
+            e.Graphics.DrawString(GameFile.Title, f, Brushes.Black, xPos, yPos);
+            yPos += offset;
+            e.Graphics.DrawString(GameFile.Author, f, Brushes.Black, xPos, yPos);
+            yPos += offset;
+            e.Graphics.DrawString(m_release, f, Brushes.Black, xPos, yPos);
+            yPos += offset;
+            e.Graphics.DrawString(m_played, f, Brushes.Black, xPos, yPos);
+            yPos += offset;
+            e.Graphics.DrawString(m_maps, f, Brushes.Black, xPos, yPos);
+            yPos += offset;
+            e.Graphics.DrawString(m_tags, f, Brushes.Black, xPos, yPos);
         }
 
         private void GameFileTileExpanded_Paint(object sender, PaintEventArgs e)
@@ -55,23 +87,28 @@ namespace DoomLauncher
 
         public override void SetData(IGameFile gameFile, IEnumerable<ITagData> tags)
         {
+            if (gameFile.Equals(GameFile))
+                return;
+
             gameTile.SetData(gameFile, tags);
-            lblFilename.Text = gameFile.FileNameNoPath;
-            lblTitle.Text = gameFile.Title;
-            lblAuthor.Text = gameFile.Author;
-            lblTags.Text = string.Join(", ", tags.Select(x => x.Name));
+
+            m_tags = string.Join(", ", tags.Select(x => x.Name));
             if (gameFile.MapCount.HasValue)
-                lblMaps.Text = gameFile.MapCount.ToString();
+                m_maps = gameFile.MapCount.ToString();
             else
-                lblMaps.Text = "0";
+                m_maps = "0";
+
             if (gameFile.ReleaseDate.HasValue)
-                lblReleaseDate.Text = gameFile.ReleaseDate.Value.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+                m_release = gameFile.ReleaseDate.Value.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
             else
-                lblReleaseDate.Text = string.Empty;
+                m_release = string.Empty;
+
             if (gameFile.LastPlayed.HasValue)
-                lblLastPlayed.Text = gameFile.LastPlayed.Value.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+                m_played = gameFile.LastPlayed.Value.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
             else
-                lblLastPlayed.Text = string.Empty;
+                m_played = string.Empty;
+
+            pnlData.Invalidate();
         }
 
         public override void SetImageLocation(string file)
