@@ -117,7 +117,7 @@ namespace DoomLauncher
 
         private void MouseTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (InvokeRequired)
+            if (!IsDisposed && InvokeRequired)
                 Invoke(new Action(MouseMoveTimer));
         }
 
@@ -149,10 +149,7 @@ namespace DoomLauncher
                 }
             }
 
-            if (m_lastHover != null)
-                GameFileLeave?.Invoke(this, new GameFileEventArgs(m_lastHover.GameFile));
-
-            m_lastHover = null;
+            ClearHover();
         }
 
         private void GameFileTileViewControl_KeyDown(object sender, KeyEventArgs e)
@@ -208,6 +205,8 @@ namespace DoomLauncher
 
         private void SetData(IEnumerable<IGameFile> gameFiles)
         {
+            ClearHover();
+
             bool update = false;
             int saveIndex = m_pagingControl.PageIndex;
 
@@ -237,6 +236,14 @@ namespace DoomLauncher
             {
                 SetPageData(0, false);
             }
+        }
+
+        private void ClearHover()
+        {
+            if (m_lastHover != null)
+                GameFileLeave?.Invoke(this, new GameFileEventArgs(m_lastHover.GameFile));
+
+            m_lastHover = null;
         }
 
         private void SetPageData(int pageIndex, bool pageChange)
