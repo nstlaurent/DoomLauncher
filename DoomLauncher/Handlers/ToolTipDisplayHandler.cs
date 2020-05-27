@@ -100,9 +100,6 @@ namespace DoomLauncher
 
         private void View_GameFileLeave(object sender, GameFileEventArgs e)
         {
-            if (m_state == ToolTipState.Showing && MouseMoveInRange(m_showPoint))
-                return;
-
             ResetToolTipAndClear();
             m_gameFile = null;
         }
