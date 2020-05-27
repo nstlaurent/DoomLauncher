@@ -1,5 +1,4 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -42,7 +41,7 @@ namespace DoomLauncher
 
         public abstract void ClearData();
 
-        public bool Delete()
+        public virtual bool Delete()
         {
             List<IFileData> selectedFiles = GetSelectedFiles();
 
@@ -76,7 +75,7 @@ namespace DoomLauncher
 
         public IGameFile GameFile { get; set; }
 
-        public bool New()
+        public virtual bool New()
         {
             GameFile = DataSourceAdapter.GetGameFile(GameFile.FileName); //todo: refactor may have broke this, or no longer needed
             return CreateFileAssociation(this, DataSourceAdapter, DataDirectory, FileType, GameFile, null).Count > 0;
@@ -132,7 +131,7 @@ namespace DoomLauncher
             return fileData;
         }
 
-        public bool Edit()
+        public virtual bool Edit()
         {
             List<IFileData> selectedFiles = GetSelectedFiles();
 
@@ -229,17 +228,17 @@ namespace DoomLauncher
             }
         }
 
-        public bool MoveFileOrderUp()
+        public virtual bool MoveFileOrderUp()
         {
             return SetFilePriority(true);
         }
 
-        public bool MoveFileOrderDown()
+        public virtual bool MoveFileOrderDown()
         {
             return SetFilePriority(false);
         }
 
-        public bool SetFileOrderFirst()
+        public virtual bool SetFileOrderFirst()
         {
             List<IFileData> selectedFiles = GetSelectedFiles();
 

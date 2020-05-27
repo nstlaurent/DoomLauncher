@@ -72,6 +72,61 @@ namespace DoomLauncher
             m_lookup.Clear();
         }
 
+        public override bool New()
+        {
+            if (base.New())
+            {
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool Delete()
+        {
+            if (base.Delete())
+            {
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
+                return true;
+            }
+            
+            return false;
+        }
+
+        public override bool MoveFileOrderUp()
+        {
+            if (base.MoveFileOrderUp())
+            {
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool MoveFileOrderDown()
+        {
+            if (base.MoveFileOrderDown())
+            {
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool SetFileOrderFirst()
+        {
+            if (base.SetFileOrderFirst())
+            {
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
+                return true;
+            }
+
+            return false;
+        }
+
         private void InitPictureBoxes()
         {
             foreach (var pb in m_pictureBoxes)
