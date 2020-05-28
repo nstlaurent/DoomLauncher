@@ -97,7 +97,7 @@ namespace DoomLauncher
             else
             {
                 m_selectedTiles.ForEach(x => x.SetSelected(false));
-                m_lastScrollPos = flpMain.VerticalScroll.Value = 0;
+                m_lastScrollPos = flpMain.VerticalScroll.Value;
                 Controls.Remove(flpMain);
             }
         }
@@ -167,7 +167,6 @@ namespace DoomLauncher
         private void GameFileTileViewControl_Click(object sender, EventArgs e)
         {
             ClearSelection();
-            SelectionChange?.Invoke(this, EventArgs.Empty);
         }
 
         public IGameFile GameFileForIndex(int index)
@@ -218,8 +217,9 @@ namespace DoomLauncher
             }
             else
             {
+                var diff = m_gameFiles.Except(gameFiles);
                 // Basically a hack for when deleting a single item to keep the current page
-                update = (gameFiles.Count() == m_gameFiles.Count - 1 && m_gameFiles.Contains(gameFiles.First()));
+                update = diff.Count() == 1;
                 m_gameFiles = gameFiles.ToList();
             }
 
@@ -232,11 +232,11 @@ namespace DoomLauncher
             if (update)
             {
                 if (!m_pagingControl.SetPageIndex(saveIndex))
-                    SetPageData(saveIndex, true);
+                    SetPageData(saveIndex, false);
             }
             else
             {
-                SetPageData(0, false);
+                SetPageData(0, true);
             }
         }
 
@@ -248,7 +248,7 @@ namespace DoomLauncher
             m_lastHover = null;
         }
 
-        private void SetPageData(int pageIndex, bool pageChange)
+        private void SetPageData(int pageIndex, bool dataChange)
         {
             GameFileTileManager.Instance.Tiles.ForEach(x => x.SetSelected(false));
 
@@ -258,7 +258,7 @@ namespace DoomLauncher
             var gameFiles = m_gameFiles.Skip(pageIndex * GameFileTileManager.MaxItems).Take(GameFileTileManager.MaxItems).ToList();
             SetLayout(gameFiles, screenshots, thumbnails);
 
-            if (pageChange)
+            if (dataChange)
             {
                 ClearSelection();
                 flpMain.VerticalScroll.Value = 0;
@@ -363,7 +363,7 @@ namespace DoomLauncher
             if (index > end)
                 end = index;
 
-            ClearSelection();
+            ClearSelection(false);
 
             for (int i = start; i <= end; i++)
             {
@@ -392,7 +392,7 @@ namespace DoomLauncher
 
         private void SelectGameFile(IGameFile gameFile)
         {
-            ClearSelection();
+            ClearSelection(false);
 
             if (gameFile == null)
                 return;
@@ -411,10 +411,15 @@ namespace DoomLauncher
                 SelectionChange?.Invoke(this, EventArgs.Empty);
         }
 
-        private void ClearSelection()
+        private void ClearSelection(bool fireEvent = true)
         {
+            if (m_selectedTiles.Count == 0)
+                return;
+
             m_selectedTiles.ForEach(x => x.SetSelected(false));
             m_selectedTiles.Clear();
+            if (fireEvent)
+                SelectionChange?.Invoke(this, EventArgs.Empty);
         }
     }
 }
