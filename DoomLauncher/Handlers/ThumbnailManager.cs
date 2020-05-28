@@ -71,6 +71,7 @@ namespace DoomLauncher
                 };
 
                 DataCache.Instance.DataSourceAdapter.InsertFile(fileData);
+                return fileData;
             }
 
             return null;
