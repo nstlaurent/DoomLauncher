@@ -1007,9 +1007,9 @@ namespace DoomLauncher
                         m_idGamesLoaded = true;
                     }
 
-                    HandleSelectionChange(GetCurrentViewControl(), false);
                     tabView.GameFileViewControl.Focus();
                     tabView.GameFileViewControl.SetVisible(true);
+                    HandleSelectionChange(tabView.GameFileViewControl, false);
                 }
             }
         }
