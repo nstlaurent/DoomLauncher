@@ -172,6 +172,8 @@ namespace DoomLauncher
                         UpdateSavedTabSearch(tabView, searchFields);
                         tabView.SetGameFiles(searchFields);
                     }
+
+                    SetViewSort(tabView.GameFileViewControl);
                 }
             }
         }
@@ -1249,6 +1251,8 @@ namespace DoomLauncher
                         tab.SetGameFiles(m_savedTabSearches[tab]);
                     else
                         tab.SetGameFiles();
+
+                    SetViewSort(tab.GameFileViewControl);
                 }
             }
         }
@@ -1667,6 +1671,28 @@ namespace DoomLauncher
             HandleFormClosing();
         }
 
+        private void MnuLocal_Opening(object sender, CancelEventArgs e)
+        {
+            ToolStripMenuItem sortToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
+            IGameFileView view = GetCurrentViewControl();
+            sortToolStrip.Visible = view is GameFileTileViewControl;
+
+            for (int i = 0; i < GameFileViewFactory.DefaultColumnTextFields.Length; i++)
+            {
+                string text = GameFileViewFactory.DefaultColumnTextFields[i].Title;
+
+                if (m_sortValues.ContainsKey(view) && m_sortValues[view].Item1.DataKey == GameFileViewFactory.DefaultColumnTextFields[i].DataKey)
+                {
+                    if (m_sortValues[view].Item2 == SortDirection.Ascending)
+                        text += " ▲";
+                    else
+                        text += " ▼";
+                }
+
+                sortToolStrip.DropDownItems[i].Text = text;
+            }
+        }
+
         private void newTagToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HandleManageTags();
@@ -1680,6 +1706,54 @@ namespace DoomLauncher
         private void manageTagsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HandleManageTags();
+        }
+
+        private void sortToolStripItem_Click(object sender, EventArgs e)
+        {
+            ToolStripItem strip = sender as ToolStripItem;
+            ToolStripMenuItem sortToolStrip = GetSortByToolStrip();
+
+            int index = 0;
+            for (int i = 0; i < sortToolStrip.DropDownItems.Count; i++)
+            {
+                if (sortToolStrip.DropDownItems[i] == strip)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            ColumnField columnField = GameFileViewFactory.DefaultColumnTextFields[index];
+
+            if (columnField != null)
+            {
+                IGameFileView view = GetCurrentViewControl();
+
+                if (!m_sortValues.ContainsKey(view))
+                    m_sortValues.Add(view, new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Descending));
+
+                if (m_sortValues[view].Item2 == SortDirection.Ascending)
+                    m_sortValues[view] = new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Descending);
+                else
+                    m_sortValues[view] = new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Ascending);
+
+                SetViewSort(view);
+            }
+        }
+
+        private void SetViewSort(IGameFileView view)
+        {
+            if (!m_sortValues.ContainsKey(view))
+                return;
+
+            var property = typeof(IGameFile).GetProperty(m_sortValues[view].Item1.DataKey);
+            if (property != null && view.DataSource.Any())
+            {
+                if (m_sortValues[view].Item2 == SortDirection.Ascending)
+                    view.DataSource = view.DataSource.OrderBy(x => property.GetValue(x));
+                else
+                    view.DataSource = view.DataSource.OrderByDescending(x => property.GetValue(x));
+            }
         }
 
         private void HandleManageTags()
@@ -2233,6 +2307,7 @@ namespace DoomLauncher
         private IDataSourceAdapter DataSourceAdapter { get; set; }
 
         private IGameFileDataSourceAdapter DirectoryDataSourceAdapter { get; set; }
+
         private IGameFileDataSourceAdapter IdGamesDataSourceAdapter { get; set; }
     }
 }

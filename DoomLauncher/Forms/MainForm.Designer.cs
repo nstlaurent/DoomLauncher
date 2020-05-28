@@ -39,6 +39,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.updateMetadataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.sortByToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -129,6 +130,7 @@
             this.toolStripSeparator1,
             this.updateMetadataToolStripMenuItem,
             this.toolStripSeparator8,
+            this.sortByToolStripMenuItem,
             this.tagToolStripMenuItem,
             this.removeTagToolStripMenuItem,
             this.utilityToolStripMenuItem,
@@ -142,7 +144,8 @@
             this.toolStripSeparator12,
             this.createShortcutToolStripMenuItem});
             this.mnuLocal.Name = "mnuGrid";
-            this.mnuLocal.Size = new System.Drawing.Size(194, 348);
+            this.mnuLocal.Size = new System.Drawing.Size(194, 370);
+            this.mnuLocal.Opening += new System.ComponentModel.CancelEventHandler(this.MnuLocal_Opening);
             // 
             // viewTextFileToolStripMenuItem
             // 
@@ -188,6 +191,12 @@
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
             this.toolStripSeparator8.Size = new System.Drawing.Size(190, 6);
+            // 
+            // sortByToolStripMenuItem
+            // 
+            this.sortByToolStripMenuItem.Name = "sortByToolStripMenuItem";
+            this.sortByToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.sortByToolStripMenuItem.Text = "Sort By";
             // 
             // tagToolStripMenuItem
             // 
@@ -863,6 +872,7 @@
         private DoomLauncher.GlowButton btnUpdate;
         private System.Windows.Forms.ToolStripMenuItem addFIlesRecursivelyToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
+        private System.Windows.Forms.ToolStripMenuItem sortByToolStripMenuItem;
     }
 }
 

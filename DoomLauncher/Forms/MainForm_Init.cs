@@ -176,7 +176,6 @@ namespace DoomLauncher
         {
             List<ITabView> tabViews = new List<ITabView>();
             ColumnConfig[] colConfig = DataCache.Instance.GetColumnConfig();
-            DataCache.Instance.Init(DataSourceAdapter);
             GameFileViewFactory = new GameFileViewFactory(this, GameFileViewType.TileView);
 
             tabViews.Add(CreateTabViewRecent(colConfig));
@@ -422,8 +421,11 @@ namespace DoomLauncher
                 CleanTempDirectory();
 
             DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory);
+            DataCache.Instance.Init(DataSourceAdapter);
+
             SetupTabs();
             RebuildUtilityToolStrip();
+            BuildUtilityToolStrip();
 
             m_downloadView = new DownloadView();
             m_downloadView.UserPlay += DownloadView_UserPlay;
@@ -443,6 +445,21 @@ namespace DoomLauncher
             HandleTabSelectionChange();
 
             await Task.Run(() => CheckForAppUpdate());
+        }
+
+        private Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>> m_sortValues = new Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>>();
+
+        private void BuildUtilityToolStrip()
+        {
+            ToolStripMenuItem sortToolStrip = GetSortByToolStrip();
+
+            foreach (var col in GameFileViewFactory.DefaultColumnTextFields)
+                sortToolStrip.DropDownItems.Add(col.Title, null, sortToolStripItem_Click);
+        }
+
+        private ToolStripMenuItem GetSortByToolStrip()
+        {
+            return mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
         }
 
         private async Task CheckForAppUpdate()

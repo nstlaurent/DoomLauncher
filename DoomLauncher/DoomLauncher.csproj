@@ -159,6 +159,7 @@
     </Compile>
     <Compile Include="Handlers\ToolTipDisplayHandler.cs" />
     <Compile Include="Handlers\ThumbnailManager.cs" />
+    <Compile Include="SortDirection.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />
