@@ -169,7 +169,14 @@ namespace DoomLauncher
             tabView.SetColumnConfig(columnTextFields, colConfig);
             tabView.GameFileViewControl.SetContextMenuStrip(menu);
             tabView.GameFileViewControl.AllowDrop = dragDrop;
+            tabView.DataSourceChanging += TabView_DataSourceChanging;
             SetGameFileViewEvents(tabView.GameFileViewControl, dragDrop);
+        }
+
+        private void TabView_DataSourceChanging(object sender, GameFileListEventArgs e)
+        {
+            if (sender is ITabView tabView)
+                e.GameFiles = GetViewSort(tabView.GameFileViewControl, e.GameFiles);
         }
 
         private void SetupTabs()

@@ -172,8 +172,6 @@ namespace DoomLauncher
                         UpdateSavedTabSearch(tabView, searchFields);
                         tabView.SetGameFiles(searchFields);
                     }
-
-                    SetViewSort(tabView.GameFileViewControl);
                 }
             }
         }
@@ -1251,8 +1249,6 @@ namespace DoomLauncher
                         tab.SetGameFiles(m_savedTabSearches[tab]);
                     else
                         tab.SetGameFiles();
-
-                    SetViewSort(tab.GameFileViewControl);
                 }
             }
         }
@@ -1737,23 +1733,25 @@ namespace DoomLauncher
                 else
                     m_sortValues[view] = new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Ascending);
 
-                SetViewSort(view);
+                view.DataSource = GetViewSort(view, view.DataSource);
             }
         }
 
-        private void SetViewSort(IGameFileView view)
+        private IEnumerable<IGameFile> GetViewSort(IGameFileView view, IEnumerable<IGameFile> gameFiles)
         {
             if (!m_sortValues.ContainsKey(view))
-                return;
+                return gameFiles;
 
             var property = typeof(IGameFile).GetProperty(m_sortValues[view].Item1.DataKey);
             if (property != null && view.DataSource.Any())
             {
                 if (m_sortValues[view].Item2 == SortDirection.Ascending)
-                    view.DataSource = view.DataSource.OrderBy(x => property.GetValue(x));
+                    return gameFiles.OrderBy(x => property.GetValue(x));
                 else
-                    view.DataSource = view.DataSource.OrderByDescending(x => property.GetValue(x));
+                    return gameFiles.OrderByDescending(x => property.GetValue(x));
             }
+
+            return gameFiles;
         }
 
         private void HandleManageTags()

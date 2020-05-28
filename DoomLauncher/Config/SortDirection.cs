@@ -1,6 +1,6 @@
 ﻿namespace DoomLauncher
 {
-    enum SortDirection
+    public enum SortDirection
     {
         None,
         Ascending,

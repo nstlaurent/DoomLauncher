@@ -143,6 +143,7 @@
     <Compile Include="Controls\GameFileTileExpanded.Designer.cs">
       <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
     </Compile>
+    <Compile Include="Config\GameFileListEventArgs.cs" />
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
@@ -159,7 +160,7 @@
     </Compile>
     <Compile Include="Handlers\ToolTipDisplayHandler.cs" />
     <Compile Include="Handlers\ThumbnailManager.cs" />
-    <Compile Include="SortDirection.cs" />
+    <Compile Include="Config\SortDirection.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />

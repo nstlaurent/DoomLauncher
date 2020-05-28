@@ -11,6 +11,8 @@ namespace DoomLauncher
 {
     public partial class BasicTabViewCtrl : UserControl, ITabView, ICloneable
     {
+        public event EventHandler<GameFileListEventArgs> DataSourceChanging;
+
         protected string m_title;
         protected object m_key;
         protected GameFileFieldType[] m_selectFields;
@@ -198,6 +200,11 @@ namespace DoomLauncher
         {
             if (FilterIWads && !(Adapter is IdGamesDataAdapater))
                 gameFiles = gameFiles.Except(Adapter.GetGameFileIWads());
+
+            var args = new GameFileListEventArgs(gameFiles);
+            DataSourceChanging?.Invoke(this, args);
+
+            gameFiles = args.GameFiles;
 
             if (!gameFiles.Any())
             {
