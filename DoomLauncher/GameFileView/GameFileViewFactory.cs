@@ -4,7 +4,7 @@ namespace DoomLauncher
 {
     public class GameFileViewFactory
     {
-        public bool IsUsingColumnView => false;
+        public bool IsUsingColumnView => m_defaultType == GameFileViewType.GridView;
 
         private readonly GameFileViewType m_defaultType;
         private readonly ToolTipDisplayHandler m_toolTipDisplayHandler;
