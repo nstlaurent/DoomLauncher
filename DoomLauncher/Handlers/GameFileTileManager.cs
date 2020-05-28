@@ -6,7 +6,7 @@ namespace DoomLauncher
 {
     class GameFileTileManager
     {
-        public int MaxItems = 30;
+        public static readonly int MaxItems = 30;
         public static GameFileTileManager Instance { get; private set; } = new GameFileTileManager();
 
         public List<GameFileTileBase> Tiles = new List<GameFileTileBase>();

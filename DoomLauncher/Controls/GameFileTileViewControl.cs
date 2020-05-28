@@ -221,7 +221,7 @@ namespace DoomLauncher
                 m_gameFiles = gameFiles.ToList();
             }
 
-            m_pagingControl.Init(m_gameFiles.Count, GameFileTileManager.Instance.MaxItems);
+            m_pagingControl.Init(m_gameFiles.Count, GameFileTileManager.MaxItems);
             m_pagingControl.Visible = m_pagingControl.Pages > 1;
 
             if (!m_visible)
@@ -253,7 +253,7 @@ namespace DoomLauncher
             var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
             var thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Thumbnail);
 
-            var gameFiles = m_gameFiles.Skip(pageIndex * GameFileTileManager.Instance.MaxItems).Take(GameFileTileManager.Instance.MaxItems).ToList();
+            var gameFiles = m_gameFiles.Skip(pageIndex * GameFileTileManager.MaxItems).Take(GameFileTileManager.MaxItems).ToList();
             SetLayout(gameFiles, screenshots, thumbnails);
 
             if (pageChange)
