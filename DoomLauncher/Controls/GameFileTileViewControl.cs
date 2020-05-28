@@ -48,6 +48,7 @@ namespace DoomLauncher
 
         private ContextMenuStrip m_menu;
         private bool m_visible;
+        private bool m_menuShowing;
 
         private readonly System.Timers.Timer m_mouseTimer;
         private readonly PagingControl m_pagingControl;
@@ -125,7 +126,7 @@ namespace DoomLauncher
 
         private void MouseMoveTimer()
         {
-            if (!m_visible)
+            if (!m_visible || m_menuShowing)
                 return;
 
             // PointToClient will return null if the view is obscured at the current position
@@ -197,6 +198,8 @@ namespace DoomLauncher
         public void SetContextMenuStrip(ContextMenuStrip menu)
         {
             m_menu = menu;
+            m_menu.Opened += M_menu_Opened;
+            m_menu.Closed += M_menu_Closed;
         }
 
         public void SetDisplayText(string text)
@@ -309,6 +312,16 @@ namespace DoomLauncher
                 tile.SetImageLocation(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName));
             else
                 tile.SetImage(GameFileTileManager.Instance.DefaultImage);
+        }
+
+        private void M_menu_Opened(object sender, EventArgs e)
+        {
+            m_menuShowing = true;
+        }
+
+        private void M_menu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+        {
+            m_menuShowing = false;
         }
 
         private void Tile_TileDoubleClick(object sender, EventArgs e)
