@@ -60,6 +60,8 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
+            BackColor = Color.White;
+
             m_pagingControl = new PagingControl();
             m_pagingControl.Anchor = AnchorStyles.None;
             m_pagingControl.PageIndexChanged += M_pagingControl_PageIndexChanged;

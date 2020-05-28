@@ -24,10 +24,12 @@ namespace DoomLauncher
         private static readonly int NewPadX = 6;
         private static readonly int NewPadY = 4;
         private static readonly Font DisplayFont = new Font("Arial", 10, FontStyle.Bold);
+        private static readonly Pen SeparatorPen = new Pen(Color.LightGray, 1.0f);
 
         public override event MouseEventHandler TileClick;
         public override event EventHandler TileDoubleClick;
 
+        public bool DrawBorder { get; set; } = true;
         public override IGameFile GameFile { get; protected set; }
         public override bool Selected { get; protected set; }
 
@@ -70,6 +72,9 @@ namespace DoomLauncher
                 e.Graphics.DrawString(text, DisplayFont, Brushes.White, x, y);
             else
                 e.Graphics.DrawString(text, DisplayFont, new SolidBrush(m_titleColor), x, y);
+
+            if (DrawBorder)
+                e.Graphics.DrawRectangle(SeparatorPen, 0, 0, Width - 1, Height - 1);
         }
 
         private void Screenshot_Paint(object sender, PaintEventArgs e)

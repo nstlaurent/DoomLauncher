@@ -36,7 +36,11 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            Height = gameTile.Height + 1;
+            BackColor = SystemColors.Control;
+
+            Height = gameTile.Height + 2;
+            gameTile.DrawBorder = false;
+            gameTile.Margin = new Padding(1, 1, 0, 0);
             gameTile.TileClick += GameTile_TileClick;
             gameTile.TileDoubleClick += GameTile_TileDoubleClick;
             pnlData.Paint += PnlData_Paint;
@@ -45,7 +49,7 @@ namespace DoomLauncher
 
         private void FlpMain_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.DrawLine(SeparatorPen, 0, Height - 1, Width, Height - 1);
+            e.Graphics.DrawRectangle(SeparatorPen, 0, 0, Width - 1, Height - 1);
         }
 
         private void PnlData_Paint(object sender, PaintEventArgs e)
