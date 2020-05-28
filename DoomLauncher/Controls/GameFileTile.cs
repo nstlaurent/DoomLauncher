@@ -23,6 +23,7 @@ namespace DoomLauncher
         private static readonly string NewString = "New!";
         private static readonly int NewPadX = 6;
         private static readonly int NewPadY = 4;
+        private static readonly Font DisplayFont = new Font("Arial", 10, FontStyle.Bold);
 
         public override event MouseEventHandler TileClick;
         public override event EventHandler TileDoubleClick;
@@ -61,28 +62,26 @@ namespace DoomLauncher
             if (GameFile == null)
                 return;
 
-            Font f = new Font(Font.FontFamily, 10, FontStyle.Bold);
             string text = string.IsNullOrEmpty(GameFile.Title) ? GameFile.FileNameNoPath : GameFile.Title;
-            Size size = TextRenderer.MeasureText(text, f);
-            int x = Width - size.Width - (Width - size.Width) / 2;
-            int y = Height - size.Height - (LabelHeight - size.Height) / 2;
+            SizeF size = e.Graphics.MeasureString(text, DisplayFont);
+            float x = Width - size.Width - (Width - size.Width) / 2;
+            float y = Height - size.Height - (LabelHeight - size.Height) / 2;
             if (Selected)
-                e.Graphics.DrawString(text, f, Brushes.White, x, y);
+                e.Graphics.DrawString(text, DisplayFont, Brushes.White, x, y);
             else
-                e.Graphics.DrawString(text, f, new SolidBrush(m_titleColor), x, y);
+                e.Graphics.DrawString(text, DisplayFont, new SolidBrush(m_titleColor), x, y);
         }
 
         private void Screenshot_Paint(object sender, PaintEventArgs e)
         {
             if (m_new)
             {
-                Font f = new Font(Font.FontFamily, 10, FontStyle.Bold);
-                Size size = TextRenderer.MeasureText(NewString, f);
-                Rectangle rect = new Rectangle(pb.ClientRectangle.Right - size.Width - NewPadX, pb.ClientRectangle.Height - size.Height - NewPadY, 
+                SizeF size = e.Graphics.MeasureString(NewString, DisplayFont);
+                RectangleF rect = new RectangleF(pb.ClientRectangle.Right - size.Width - NewPadX - 1, pb.ClientRectangle.Height - size.Height - NewPadY -1, 
                     size.Width + NewPadX, size.Height + NewPadY);
                 e.Graphics.FillRectangle(Brushes.Red, rect);
-                e.Graphics.DrawRectangle(Pens.Gray, rect);
-                e.Graphics.DrawString(NewString, f, Brushes.White, new PointF(rect.Left + NewPadX, rect.Top + NewPadY / 2));
+                e.Graphics.DrawRectangle(Pens.Gray, rect.Left, rect.Top, rect.Width, rect.Height);
+                e.Graphics.DrawString(NewString, DisplayFont, Brushes.White, new PointF(rect.Left + NewPadX, rect.Top + NewPadY / 2));
             }
         }
 

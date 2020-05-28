@@ -38,15 +38,14 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.pnlDiv = new System.Windows.Forms.Panel();
-            this.label8 = new System.Windows.Forms.Label();
             this.flpMain.SuspendLayout();
             this.pnlData.SuspendLayout();
             this.SuspendLayout();
             // 
             // gameTile
             // 
-            this.gameTile.Location = new System.Drawing.Point(3, 3);
+            this.gameTile.Location = new System.Drawing.Point(0, 0);
+            this.gameTile.Margin = new System.Windows.Forms.Padding(0);
             this.gameTile.Name = "gameTile";
             this.gameTile.Size = new System.Drawing.Size(300, 200);
             this.gameTile.TabIndex = 0;
@@ -55,17 +54,15 @@
             // 
             this.flpMain.Controls.Add(this.gameTile);
             this.flpMain.Controls.Add(this.pnlData);
-            this.flpMain.Controls.Add(this.pnlDiv);
-            this.flpMain.Controls.Add(this.label8);
             this.flpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpMain.Location = new System.Drawing.Point(0, 0);
+            this.flpMain.Margin = new System.Windows.Forms.Padding(0);
             this.flpMain.Name = "flpMain";
-            this.flpMain.Size = new System.Drawing.Size(664, 214);
+            this.flpMain.Size = new System.Drawing.Size(660, 204);
             this.flpMain.TabIndex = 1;
             // 
             // pnlData
             // 
-            this.pnlData.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.pnlData.Controls.Add(this.label7);
             this.pnlData.Controls.Add(this.label6);
             this.pnlData.Controls.Add(this.label5);
@@ -73,7 +70,7 @@
             this.pnlData.Controls.Add(this.label3);
             this.pnlData.Controls.Add(this.label2);
             this.pnlData.Controls.Add(this.label1);
-            this.pnlData.Location = new System.Drawing.Point(309, 12);
+            this.pnlData.Location = new System.Drawing.Point(303, 3);
             this.pnlData.Name = "pnlData";
             this.pnlData.Size = new System.Drawing.Size(352, 182);
             this.pnlData.TabIndex = 4;
@@ -148,32 +145,14 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Author";
             // 
-            // pnlDiv
-            // 
-            this.pnlDiv.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlDiv.Location = new System.Drawing.Point(3, 209);
-            this.pnlDiv.Name = "pnlDiv";
-            this.pnlDiv.Size = new System.Drawing.Size(657, 1);
-            this.pnlDiv.TabIndex = 5;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 213);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(35, 13);
-            this.label8.TabIndex = 6;
-            this.label8.Text = "label8";
-            // 
             // GameFileTileExpanded
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.flpMain);
             this.Name = "GameFileTileExpanded";
-            this.Size = new System.Drawing.Size(664, 214);
+            this.Size = new System.Drawing.Size(660, 204);
             this.flpMain.ResumeLayout(false);
-            this.flpMain.PerformLayout();
             this.pnlData.ResumeLayout(false);
             this.pnlData.PerformLayout();
             this.ResumeLayout(false);
@@ -190,9 +169,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Panel pnlDiv;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
     }
 }

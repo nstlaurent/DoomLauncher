@@ -24,6 +24,9 @@ namespace DoomLauncher
         public override IGameFile GameFile { get { return gameTile.GameFile; } protected set { } }
         public override bool Selected { get { return gameTile.Selected; } protected set { } }
 
+        private static readonly Font DisplayFont = new Font("Microsof Sans Serif", 10);
+        private static readonly Pen SeparatorPen = new Pen(Color.LightGray, 1.0f);
+
         private string m_tags;
         private string m_maps;
         private string m_release;
@@ -33,10 +36,16 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
+            Height = gameTile.Height + 1;
             gameTile.TileClick += GameTile_TileClick;
             gameTile.TileDoubleClick += GameTile_TileDoubleClick;
-            Paint += GameFileTileExpanded_Paint;
             pnlData.Paint += PnlData_Paint;
+            flpMain.Paint += FlpMain_Paint;
+        }
+
+        private void FlpMain_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.DrawLine(SeparatorPen, 0, Height - 1, Width, Height - 1);
         }
 
         private void PnlData_Paint(object sender, PaintEventArgs e)
@@ -44,30 +53,23 @@ namespace DoomLauncher
             if (GameFile == null)
                 return;
 
-            Font f = new Font(Font.FontFamily, 10);
-
             int xPos = gameTile.Location.X + 122;
             int yPos = 8;
             int offset = 22;
 
-            e.Graphics.DrawString(GameFile.FileNameNoPath, f, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(GameFile.FileNameNoPath, DisplayFont, Brushes.Black, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(GameFile.Title, f, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(GameFile.Title, DisplayFont, Brushes.Black, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(GameFile.Author, f, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(GameFile.Author, DisplayFont, Brushes.Black, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(m_release, f, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(m_release, DisplayFont, Brushes.Black, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(m_played, f, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(m_played, DisplayFont, Brushes.Black, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(m_maps, f, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(m_maps, DisplayFont, Brushes.Black, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(m_tags, f, Brushes.Black, xPos, yPos);
-        }
-
-        private void GameFileTileExpanded_Paint(object sender, PaintEventArgs e)
-        {
-            //e.Graphics.DrawLine(new Pen(Color.Red, 1.0f), new Point(2, Height - 2), new Point(Width - 2, Height - 2));
+            e.Graphics.DrawString(m_tags, DisplayFont, Brushes.Black, xPos, yPos);
         }
 
         private void GameTile_TileDoubleClick(object sender, EventArgs e)
