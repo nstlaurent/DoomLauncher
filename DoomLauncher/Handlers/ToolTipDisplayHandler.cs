@@ -17,7 +17,7 @@ namespace DoomLauncher
     {
         private readonly System.Timers.Timer m_toolTipTimer;
         private readonly ToolTip m_toolTip;
-        private readonly Form m_form;
+        private readonly MainForm m_form;
         private IGameFile m_gameFile;
         private Point m_showPoint = new Point();
         private Point m_lastPollPoint = new Point();
@@ -26,7 +26,7 @@ namespace DoomLauncher
         private const int TimerDelay = 500;
         private const int Range = 16;
 
-        public ToolTipDisplayHandler(Form form)
+        public ToolTipDisplayHandler(MainForm form)
         {
             m_form = form;
             m_toolTip = new ToolTip();
@@ -65,7 +65,7 @@ namespace DoomLauncher
             }
             else if (m_state == ToolTipState.Waiting)
             {
-                if (MouseMoveInRange(m_lastPollPoint) && m_form.InvokeRequired)
+                if (MouseMoveInRange(m_lastPollPoint) && m_form.ShouldShowToolTip && m_form.InvokeRequired)
                     m_form.Invoke(new Action(ShowToolTip));
             }
         }

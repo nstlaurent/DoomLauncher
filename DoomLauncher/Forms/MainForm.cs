@@ -27,6 +27,8 @@ namespace DoomLauncher
 
         public static string[] GetBaseTabs() { return new string[] { s_recentKey, s_localKey, s_iwadKey, s_idGamesKey, s_untaggedKey }; }
 
+        public bool ShouldShowToolTip { get; private set; } = true;
+
         private string m_workingDirectory;
         private bool m_playInProgress = false, m_idGamesLoaded;
         private IGameFile m_lastSelectedItem;
@@ -232,6 +234,16 @@ namespace DoomLauncher
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HandleDelete();
+        }
+
+        private void ToolStripDropDownButton1_DropDownOpened(object sender, EventArgs e)
+        {
+            ShouldShowToolTip = false;
+        }
+
+        private void ToolStripDropDownButton1_DropDownClosed(object sender, EventArgs e)
+        {
+            ShouldShowToolTip = true;
         }
 
         private void HandleRename()

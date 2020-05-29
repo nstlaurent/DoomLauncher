@@ -12,7 +12,7 @@ namespace DoomLauncher
 
         private readonly ToolTipDisplayHandler m_toolTipDisplayHandler;
 
-        public GameFileViewFactory(Form form, GameFileViewType defaultType)
+        public GameFileViewFactory(MainForm form, GameFileViewType defaultType)
         {
             DefaultType = defaultType;
             m_toolTipDisplayHandler = new ToolTipDisplayHandler(form);
