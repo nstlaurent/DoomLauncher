@@ -1,5 +1,7 @@
 = Doom Launcher
 
+image:https://api.codacy.com/project/badge/Grade/f77deda96cfb4b90a201d09cb0014009[link="https://app.codacy.com/manual/nstlaurent/DoomLauncher?utm_source=github.com&utm_medium=referral&utm_content=nstlaurent/DoomLauncher&utm_campaign=Badge_Grade_Settings"]
+
 https://ci.appveyor.com/project/hobomaster22/doomlauncher[image:https://ci.appveyor.com/api/projects/status/github/nstlaurent/doomlauncher?svg=true[Build status]]
 
 Doom Launcher is a _Doom_ frontend for Windows PC. Instead of being a
