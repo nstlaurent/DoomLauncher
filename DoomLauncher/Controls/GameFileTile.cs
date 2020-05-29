@@ -7,14 +7,6 @@ using System.Windows.Forms;
 
 namespace DoomLauncher
 {
-    //public partial class GameFileTile : UserControl
-    //{
-    //    public GameFileTile()
-    //    {
-    //        InitializeComponent();
-    //    }
-    //}
-
     public partial class GameFileTile : GameFileTileBase
     {
         public static readonly int ImageWidth = 300;
