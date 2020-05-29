@@ -2,6 +2,8 @@
 
 https://ci.appveyor.com/project/hobomaster22/doomlauncher[image:https://ci.appveyor.com/api/projects/status/github/nstlaurent/doomlauncher?svg=true[Build status]]
 
+image:https://api.codacy.com/project/badge/Grade/f77deda96cfb4b90a201d09cb0014009[link="https://app.codacy.com/manual/nstlaurent/DoomLauncher?utm_source=github.com&utm_medium=referral&utm_content=nstlaurent/DoomLauncher&utm_campaign=Badge_Grade_Settings"]
+
 Doom Launcher is a _Doom_ frontend for Windows PC. Instead of being a
 simple utility to launch your files, it serves as database for all your
 _Doom_ engine games and mods. It can be compared to https://www.quaddicted.com/tools/quake_injector[Quake Injector],
