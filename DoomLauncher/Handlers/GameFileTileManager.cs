@@ -1,33 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace DoomLauncher
 {
     class GameFileTileManager
     {
+        public event EventHandler TilesRecreated;
+
         public static readonly int MaxItems = 30;
         public static GameFileTileManager Instance { get; private set; } = new GameFileTileManager();
 
         public List<GameFileTileBase> Tiles = new List<GameFileTileBase>();
+        public List<GameFileTileBase> OldTiles = new List<GameFileTileBase>();
         public FlowLayoutPanelDB TileLayout = new FlowLayoutPanelDB();
         public Image DefaultImage { get; private set; }
 
-        public GameFileTileManager()
+        public void Init(GameFileViewFactory factory)
         {
             TileLayout.AutoScroll = true;
             DefaultImage = Image.FromFile("TileImages\\DoomLauncherTile.png");
 
-            for (int i = 0; i < MaxItems; i++)
-            {
-                GameFileTileExpanded tile = new GameFileTileExpanded
-                {
-                    Margin = new Padding(8, 8, 8, 8)
-                };
+            OldTiles.AddRange(Tiles);
+            Tiles.Clear();
 
-                Tiles.Add(tile);
-                TileLayout.Controls.Add(tile);
+            TileLayout.SuspendLayout();
+            TileLayout.Controls.Clear();
+
+            if (factory.IsUsingTileView)
+            {
+                for (int i = 0; i < MaxItems; i++)
+                {
+                    GameFileTileBase tile = factory.CreateTile();
+                    Tiles.Add(tile);
+                    TileLayout.Controls.Add(tile);
+                }
             }
+
+            TileLayout.ResumeLayout();
+
+            TilesRecreated?.Invoke(this, EventArgs.Empty);
+            OldTiles.Clear();
         }
     }
 }

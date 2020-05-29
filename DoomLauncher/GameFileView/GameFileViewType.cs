@@ -3,6 +3,7 @@
     public enum GameFileViewType
     {
         GridView,
-        TileView
+        TileView,
+        TileViewCondensed
     }
 }

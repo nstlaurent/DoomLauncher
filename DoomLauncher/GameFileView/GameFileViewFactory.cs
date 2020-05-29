@@ -4,15 +4,33 @@ namespace DoomLauncher
 {
     public class GameFileViewFactory
     {
-        public bool IsUsingColumnView => m_defaultType == GameFileViewType.GridView;
+        public bool IsUsingColumnView => DefaultType == GameFileViewType.GridView;
+        public bool IsUsingTileView => DefaultType != GameFileViewType.GridView;
+        public GameFileViewType DefaultType { get; private set; }
 
-        private readonly GameFileViewType m_defaultType;
+        private static readonly Padding TileMargin = new Padding(8, 8, 8, 8);
+
         private readonly ToolTipDisplayHandler m_toolTipDisplayHandler;
 
         public GameFileViewFactory(Form form, GameFileViewType defaultType)
         {
-            m_defaultType = defaultType;
+            DefaultType = defaultType;
             m_toolTipDisplayHandler = new ToolTipDisplayHandler(form);
+        }
+
+        public static bool IsBaseViewTypeChange(GameFileViewType type, GameFileViewType other)
+        {
+            if (type == GameFileViewType.GridView && other != GameFileViewType.GridView)
+                return true;
+            if (other == GameFileViewType.GridView && type != GameFileViewType.GridView)
+                return true;
+
+            return false;
+        }
+
+        public void UpdateDefaultType(GameFileViewType defaultType)
+        {
+            DefaultType = defaultType;
         }
 
         public static ColumnField[] DefaultColumnTextFields
@@ -38,12 +56,13 @@ namespace DoomLauncher
         {
             IGameFileView view;
 
-            switch (m_defaultType)
+            switch (DefaultType)
             {
                 case GameFileViewType.GridView:
                     view = new GameFileViewControl();
                     break;
                 case GameFileViewType.TileView:
+                case GameFileViewType.TileViewCondensed:
                     view = new GameFileTileViewControl();
                     break;
                 default:
@@ -53,6 +72,16 @@ namespace DoomLauncher
 
             m_toolTipDisplayHandler.RegisterView(view);
             return view;
+        }
+
+        public GameFileTileBase CreateTile()
+        {
+            if (DefaultType == GameFileViewType.TileView)
+                return new GameFileTileExpanded { Margin = TileMargin };
+            else if (DefaultType == GameFileViewType.TileViewCondensed)
+                return new GameFileTile { Margin = TileMargin };
+
+            return null;
         }
 
         public IGameFileView CreateGameFileViewGrid()

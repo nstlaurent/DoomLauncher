@@ -120,7 +120,7 @@ namespace DoomLauncher
 
         public override void SetData(IGameFile gameFile, IEnumerable<ITagData> tags)
         {
-            if (gameFile.Equals(GameFile))
+            if (gameFile == null || gameFile.Equals(GameFile))
                 return;
 
             gameTile.SetData(gameFile, tags);

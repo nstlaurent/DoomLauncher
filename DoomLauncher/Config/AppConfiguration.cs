@@ -9,6 +9,8 @@ namespace DoomLauncher
 {
     public class AppConfiguration
     {
+        public event EventHandler GameFileViewTypeChanged;
+
         public AppConfiguration(IDataSourceAdapter adapter)
         {
             DataSourceAdapter = adapter;
@@ -99,6 +101,13 @@ namespace DoomLauncher
                 ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, "ScreenshotPreviewSize"));
                 FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
 
+                var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
+                if (newType != GameFileViewType)
+                {
+                    GameFileViewType = newType;
+                    GameFileViewTypeChanged?.Invoke(this, EventArgs.Empty);
+                }
+
                 DateParseFormats = Util.SplitString(GetValue(config, "DateParseFormats"));
                 ScreenshotCaptureDirectories = Util.SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
             }
@@ -182,5 +191,6 @@ namespace DoomLauncher
         public string ColumnConfig { get; private set; }
         public int ScreenshotPreviewSize { get; private set; }
         public FileManagement FileManagement { get; private set; }
+        public GameFileViewType GameFileViewType { get; private set; }
     }
 }

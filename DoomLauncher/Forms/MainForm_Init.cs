@@ -183,7 +183,8 @@ namespace DoomLauncher
         {
             List<ITabView> tabViews = new List<ITabView>();
             ColumnConfig[] colConfig = DataCache.Instance.GetColumnConfig();
-            GameFileViewFactory = new GameFileViewFactory(this, GameFileViewType.TileView);
+            GameFileViewFactory = new GameFileViewFactory(this, AppConfiguration.GameFileViewType);
+            GameFileTileManager.Instance.Init(GameFileViewFactory);
 
             tabViews.Add(CreateTabViewRecent(colConfig));
             tabViews.Add(CreateTabViewLocal(colConfig));
@@ -429,6 +430,7 @@ namespace DoomLauncher
 
             DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory);
             DataCache.Instance.Init(DataSourceAdapter);
+            DataCache.Instance.AppConfiguration.GameFileViewTypeChanged += AppConfiguration_GameFileViewTypeChanged;
 
             SetupTabs();
             RebuildUtilityToolStrip();
@@ -452,6 +454,18 @@ namespace DoomLauncher
             HandleTabSelectionChange();
 
             await Task.Run(() => CheckForAppUpdate());
+        }
+
+        private void AppConfiguration_GameFileViewTypeChanged(object sender, EventArgs e)
+        {
+            if (GameFileViewFactory.IsBaseViewTypeChange(GameFileViewFactory.DefaultType, AppConfiguration.GameFileViewType))
+            {
+                Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DoomLauncher.exe"));
+                return;
+            }
+
+            GameFileViewFactory.UpdateDefaultType(AppConfiguration.GameFileViewType);
+            GameFileTileManager.Instance.Init(GameFileViewFactory);
         }
 
         private Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>> m_sortValues = new Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>>();

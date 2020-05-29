@@ -73,6 +73,7 @@ namespace DoomLauncher
             m_mouseTimer.Elapsed += MouseTimer_Elapsed;
             m_mouseTimer.Start();
 
+            GameFileTileManager.Instance.TilesRecreated += Instance_TilesRecreated;
             InitTiles();
         }
 
@@ -107,9 +108,20 @@ namespace DoomLauncher
         {
             foreach (var tile in GameFileTileManager.Instance.Tiles)
             {
+                tile.TileClick -= Tile_TileClick;
+                tile.TileDoubleClick -= Tile_TileDoubleClick;
+            }
+
+            foreach (var tile in GameFileTileManager.Instance.Tiles)
+            {
                 tile.TileClick += Tile_TileClick;
                 tile.TileDoubleClick += Tile_TileDoubleClick;
             }
+        }
+
+        private void Instance_TilesRecreated(object sender, EventArgs e)
+        {
+            InitTiles();
         }
 
         private void M_pagingControl_PageIndexChanged(object sender, EventArgs e)
@@ -183,12 +195,18 @@ namespace DoomLauncher
             if (!m_visible)
                 return;
 
+            if (GameFileTileManager.Instance.Tiles.First().GameFile == null && m_gameFiles.Count > 0)
+            {
+                SetPageData(m_pagingControl.PageIndex, true);
+                return;
+            }
+
             var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
             var thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Thumbnail);
 
             foreach (var tile in GameFileTileManager.Instance.Tiles)
             {
-                if (!tile.Visible)
+                if (!tile.Visible || tile.GameFile == null)
                     break;
 
                 SetTileData(tile.GameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), tile);

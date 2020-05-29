@@ -56,6 +56,11 @@
             this.label7 = new System.Windows.Forms.Label();
             this.cmbFileManagement = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.tabPageView = new System.Windows.Forms.TabPage();
+            this.cmbViewType = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.pnlViewRestart = new System.Windows.Forms.Panel();
+            this.label12 = new System.Windows.Forms.Label();
             this.tblOuter.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -64,6 +69,8 @@
             this.tabPageFileManagement.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tblFileOptions.SuspendLayout();
+            this.tabPageView.SuspendLayout();
+            this.pnlViewRestart.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblOuter
@@ -119,6 +126,7 @@
             this.tabControl.Controls.Add(this.tabPageConfig);
             this.tabControl.Controls.Add(this.tabPageDefault);
             this.tabControl.Controls.Add(this.tabPageFileManagement);
+            this.tabControl.Controls.Add(this.tabPageView);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(3, 3);
             this.tabControl.Name = "tabControl";
@@ -337,6 +345,7 @@
             // 
             // cmbFileManagement
             // 
+            this.cmbFileManagement.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFileManagement.FormattingEnabled = true;
             this.cmbFileManagement.Location = new System.Drawing.Point(14, 14);
             this.cmbFileManagement.Name = "cmbFileManagement";
@@ -352,6 +361,55 @@
             this.label10.Size = new System.Drawing.Size(284, 13);
             this.label10.TabIndex = 6;
             this.label10.Text = "Downloaded files are always managed by Doom Launcher.";
+            // 
+            // tabPageView
+            // 
+            this.tabPageView.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageView.Controls.Add(this.pnlViewRestart);
+            this.tabPageView.Controls.Add(this.label11);
+            this.tabPageView.Controls.Add(this.cmbViewType);
+            this.tabPageView.Location = new System.Drawing.Point(4, 22);
+            this.tabPageView.Name = "tabPageView";
+            this.tabPageView.Size = new System.Drawing.Size(395, 228);
+            this.tabPageView.TabIndex = 3;
+            this.tabPageView.Text = "View";
+            // 
+            // cmbViewType
+            // 
+            this.cmbViewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbViewType.FormattingEnabled = true;
+            this.cmbViewType.Location = new System.Drawing.Point(88, 14);
+            this.cmbViewType.Name = "cmbViewType";
+            this.cmbViewType.Size = new System.Drawing.Size(197, 21);
+            this.cmbViewType.TabIndex = 11;
+            this.cmbViewType.SelectedIndexChanged += new System.EventHandler(this.CmbViewType_SelectedIndexChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(5, 17);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(57, 13);
+            this.label11.TabIndex = 12;
+            this.label11.Text = "View Type";
+            // 
+            // pnlViewRestart
+            // 
+            this.pnlViewRestart.Controls.Add(this.label12);
+            this.pnlViewRestart.Location = new System.Drawing.Point(0, 44);
+            this.pnlViewRestart.Name = "pnlViewRestart";
+            this.pnlViewRestart.Size = new System.Drawing.Size(376, 138);
+            this.pnlViewRestart.TabIndex = 13;
+            this.pnlViewRestart.Visible = false;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(57, 18);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(304, 13);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "Changing from tile view to grid view will restart Doom Launcher.";
             // 
             // SettingsForm
             // 
@@ -376,6 +434,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tblFileOptions.ResumeLayout(false);
             this.tblFileOptions.PerformLayout();
+            this.tabPageView.ResumeLayout(false);
+            this.tabPageView.PerformLayout();
+            this.pnlViewRestart.ResumeLayout(false);
+            this.pnlViewRestart.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -408,5 +470,10 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.TabPage tabPageView;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ComboBox cmbViewType;
+        private System.Windows.Forms.Panel pnlViewRestart;
+        private System.Windows.Forms.Label label12;
     }
 }

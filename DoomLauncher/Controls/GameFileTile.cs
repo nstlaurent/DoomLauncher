@@ -102,7 +102,7 @@ namespace DoomLauncher
 
         public override void SetData(IGameFile gameFile, IEnumerable<ITagData> tags)
         {
-            if (gameFile.Equals(GameFile))
+            if (gameFile == null || gameFile.Equals(GameFile))
                 return;
 
             m_new = gameFile.Downloaded.HasValue && (DateTime.Now - gameFile.Downloaded.Value).TotalHours < 24;

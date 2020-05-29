@@ -6,6 +6,7 @@
         DefaultIWad,
         DefaultSkill,
         AutoSearch,
-        FileManagement
+        FileManagement,
+        GameFileViewType
     }
 }
