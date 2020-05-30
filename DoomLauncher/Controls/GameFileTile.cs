@@ -65,7 +65,7 @@ namespace DoomLauncher
             else
                 e.Graphics.DrawString(text, DisplayFont, new SolidBrush(m_titleColor), x, y);
 
-            if (DrawBorder)
+            if (DrawBorder && !Selected)
                 e.Graphics.DrawRectangle(SeparatorPen, 0, 0, Width - 1, Height - 1);
         }
 
