@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace DoomLauncher
@@ -14,7 +13,6 @@ namespace DoomLauncher
         public List<GameFileTileBase> Tiles = new List<GameFileTileBase>();
         public List<GameFileTileBase> OldTiles = new List<GameFileTileBase>();
         public FlowLayoutPanelDB TileLayout = new FlowLayoutPanelDB();
-        public Image DefaultImage { get; private set; }
         public int MaxItems => DataCache.Instance.AppConfiguration.ItemsPerPage;
 
         private GameFileViewFactory m_factory;
@@ -23,7 +21,6 @@ namespace DoomLauncher
         {
             m_factory = factory;
             TileLayout.AutoScroll = true;
-            DefaultImage = Image.FromFile("TileImages\\DoomLauncherTile.png");
 
             ResetLayout();
         }

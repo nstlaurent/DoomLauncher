@@ -380,7 +380,7 @@ namespace DoomLauncher
 
             if (!gameFile.GameFileID.HasValue)
             {
-                tile.SetImage(GameFileTileManager.Instance.DefaultImage);
+                tile.SetImage(DataCache.Instance.DefaultImage);
                 return;
             }
 
@@ -389,7 +389,7 @@ namespace DoomLauncher
             if (thumbnail != null)
                 tile.SetImageLocation(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName));
             else
-                tile.SetImage(GameFileTileManager.Instance.DefaultImage);
+                tile.SetImage(DataCache.Instance.DefaultImage);
         }
 
         private void M_menu_Opened(object sender, EventArgs e)

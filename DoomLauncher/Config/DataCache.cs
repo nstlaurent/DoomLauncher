@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -14,12 +15,14 @@ namespace DoomLauncher
         public AppConfiguration AppConfiguration { get; private set; }
         public ITagMapLookup TagMapLookup { get; private set; }
         public ITagData[] Tags { get; private set; }
+        public Image DefaultImage { get; private set; }
 
         public void Init(IDataSourceAdapter adapter)
         {
             DataSourceAdapter = adapter;
             AppConfiguration = new AppConfiguration(adapter);
             TagMapLookup = new TagMapLookup(adapter);
+            DefaultImage = Image.FromFile("TileImages\\DoomLauncherTile.png");
 
             UpdateTags();
         }

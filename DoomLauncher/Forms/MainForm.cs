@@ -109,12 +109,16 @@ namespace DoomLauncher
 
         void ctrlAssociationView_FileDeleted(object sender, EventArgs e)
         {
+            IGameFileView view = GetCurrentViewControl();
+            view.UpdateGameFile(view.SelectedItem);
             HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
         void ctrlAssociationView_FileOrderChanged(object sender, EventArgs e)
         {
-            HandleSelectionChange(GetCurrentViewControl(), true);
+            IGameFileView view = GetCurrentViewControl();
+            view.UpdateGameFile(view.SelectedItem);
+            HandleSelectionChange(view, true);
         }
 
         void DownloadView_UserPlay(object sender, EventArgs e)
@@ -574,60 +578,52 @@ namespace DoomLauncher
 
         private void HandleSelectionChange(object sender, bool forceChange)
         {
-            if (sender is IGameFileView)
+            if (!(sender is IGameFileView))
+                return;
+
+            IGameFile item = null;
+            IGameFile[] items = SelectedItems(GetCurrentViewControl());
+            if (items.Length > 0)
+                item = items.First();
+
+            if (!forceChange && !AssertCurrentViewItem(item))
             {
-                IGameFile item = null;
-                IGameFile[] items = SelectedItems(GetCurrentViewControl());
-                if (items.Length > 0)
-                    item = items.First();
-
-                if (!forceChange && !AssertCurrentViewItem(item))
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        m_lastSelectedItem = null;
-                        ctrlAssociationView.ClearData();
-                        ClearSummary();
-                        btnPlay.Enabled = false;
-                    }
-                    return;
-                }
-
-                ctrlAssociationView.SetData(item);
-
-                if (item != null)
-                {
-                    RebuildTagToolStrip();
-                    ctrlSummary.Visible = false;
-                    ctrlSummary.SuspendLayout();
-                    SetSummary(item);
-
-                    IFileData imgFile = null;
-                    IEnumerable<IStatsData> stats = new IStatsData[] { };
-
-                    if (item.GameFileID.HasValue)
-                    {
-                        imgFile = DataSourceAdapter.GetFiles(item, FileType.Screenshot).FirstOrDefault();
-                        stats = DataSourceAdapter.GetStats(item.GameFileID.Value);
-                    }
-
-                    if (imgFile != null && !string.IsNullOrEmpty(imgFile.FileName))
-                        SetPreviewImage(imgFile);
-
-                    ctrlSummary.SetStatistics(item, stats);
-                }
-                else
-                {
-                    btnPlay.Enabled = false;
+                    m_lastSelectedItem = null;
                     ctrlAssociationView.ClearData();
+                    ClearSummary();
+                    btnPlay.Enabled = false;
+                }
+                return;
+            }
+
+            ctrlAssociationView.SetData(item);
+
+            if (item != null)
+            {
+                RebuildTagToolStrip();
+
+                IFileData imgFile = null;
+                IEnumerable<IStatsData> stats = new IStatsData[] { };
+
+                if (item.GameFileID.HasValue)
+                {
+                    imgFile = DataSourceAdapter.GetFiles(item, FileType.Screenshot).FirstOrDefault();
+                    stats = DataSourceAdapter.GetStats(item.GameFileID.Value);
                 }
 
-                ctrlSummary.Visible = true;
-                ctrlSummary.ResumeLayout();
-
-                if (forceChange)
-                    GetCurrentViewControl().RefreshData();
+                SetSummary(item, imgFile);
+                ctrlSummary.SetStatistics(item, stats);
             }
+            else
+            {
+                btnPlay.Enabled = false;
+                ctrlAssociationView.ClearData();
+            }
+
+            if (forceChange)
+                GetCurrentViewControl().RefreshData();
         }
 
         private bool AssertCurrentViewItem(IGameFile item)
@@ -641,16 +637,22 @@ namespace DoomLauncher
             return true;
         }
 
-        private void SetSummary(IGameFile item)
+        private void SetSummary(IGameFile item, IFileData imgFile)
         {
             ctrlSummary.SetTitle(item.Title);
             ctrlSummary.SetDescription(item.Description);
-            ctrlSummary.ClearPreviewImage();
             ctrlSummary.TagText = BuildTagText(item);
             ctrlSummary.SetTimePlayed(item.MinutesPlayed);
-            ctrlSummary.ClearComments();
+ 
             if (!string.IsNullOrEmpty(item.Comments))
                 ctrlSummary.SetComments(item.Comments);
+            else
+                ctrlSummary.ClearComments();
+
+            if (imgFile != null && !string.IsNullOrEmpty(imgFile.FileName))
+                SetPreviewImage(imgFile);
+            else
+                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
         }
 
         private void ClearSummary()
@@ -674,7 +676,7 @@ namespace DoomLauncher
             }
             catch
             {
-                ctrlSummary.ClearPreviewImage();
+                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
             }
         }
 
@@ -1165,71 +1167,9 @@ namespace DoomLauncher
 
         private void CtrlAssociationView_RequestScreenshots(object sender, RequestScreenshotsEventArgs e)
         {
-            //m_requestGuid = Guid.NewGuid();
-            //Task.Run(() => SetScreenshotsAsync(e, m_requestGuid));
-
             List<IFileData> screens = DataSourceAdapter.GetFiles(e.GameFile, FileType.Screenshot).ToList();
             ctrlAssociationView.SetScreenshots(screens);
-
-            if (screens.Count > 0)
-                SetPreviewImage(screens.First());
-            else
-                ctrlSummary.ClearPreviewImage();
         }
-
-        //private void SetScreenshotsAsync(RequestScreenshotsEventArgs e, Guid reqGuid)
-        //{
-        //    List<IFileDataSource> screens = DataSourceAdapter.GetFiles(e.GameFile, FileType.Screenshot).ToList();
-        //    WadArchiveDataAdapter secondaryAdapter = new WadArchiveDataAdapter();
-        //    IGameFileDataSource secondFile = GetSecondaryFile(e.GameFile, secondaryAdapter);
-
-        //    if (secondFile != null)
-        //        screens.AddRange(secondaryAdapter.GetFiles(secondFile, FileType.Screenshot));
-
-        //    if (InvokeRequired)
-        //        Invoke(new Action<IGameFileDataSource, List<IFileDataSource>, Guid>(SetScreenshotControls), new object[] { e.GameFile, screens, reqGuid });
-        //    else
-        //        SetScreenshotControls(e.GameFile, screens, reqGuid);
-        //}
-
-        //private void SetScreenshotControls(IGameFileDataSource gameFile, List<IFileDataSource> screens, Guid reqGuid)
-        //{
-        //    IGameFileDataSource[] selectedItems = SelectedItems(GetCurrentViewControl());
-
-        //    if (selectedItems.Length > 0 && m_requestGuid == reqGuid)
-        //    {
-        //        ctrlAssociationView.SetScreenshots(screens);
-
-        //        if (screens.Count > 0)
-        //            SetPreviewImage(screens.First());
-        //        else
-        //            ctrlSummary.ClearPreviewImage();
-        //    }
-        //}
-
-        //private IGameFileDataSource GetSecondaryFile(IGameFileDataSource gameFile, WadArchiveDataAdapter funzies)
-        //{
-        //    string file = Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), gameFile.FileName);
-        //    ZipArchive za = ZipFile.OpenRead(file);
-        //    ZipArchiveEntry zae = za.Entries.Where(x => x.Name.Contains(".wad")).FirstOrDefault();
-
-        //    if (zae != null)
-        //    {
-        //        try
-        //        {
-        //            string extractFile = Path.Combine("GameFiles", "Temp", zae.Name);
-        //            if (!File.Exists(extractFile))
-        //                zae.ExtractToFile(extractFile, true);
-
-        //            GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.MD5, extractFile));
-        //            IGameFileDataSource secondFile = funzies.GetGameFiles(options).FirstOrDefault();
-        //            return secondFile;
-        //        }
-        //        catch { }
-        //    }
-
-        //    return null;
-        //}
 
         private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {

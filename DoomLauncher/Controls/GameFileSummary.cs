@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using System.IO;
 using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
@@ -25,21 +23,37 @@ namespace DoomLauncher
 
         public void SetTitle(string text)
         {
+            if (lblTitle.Text == text)
+                return;
+
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             lblTitle.Text = text;
-            GetRowStyle(lblTitle).Height = lblTitle.Height + dpiScale.ScaleFloatY(6);
-            if (GetRowStyle(lblTitle).Height < m_labelHeight)
-                GetRowStyle(lblTitle).Height = m_labelHeight;
+
+            float height = lblTitle.Height + dpiScale.ScaleFloatY(6);
+            if (height < m_labelHeight)
+                height = m_labelHeight;
+
+            GetRowStyle(lblTitle).Height = height;
         }
 
         public void SetDescription(string text)
         {
+            string cleanedText = Util.CleanDescription(text);
+            if (txtDescription.Text == cleanedText)
+                return;
+
             txtDescription.Clear();
             txtDescription.Visible = false;
 
-            txtDescription.Text = Util.CleanDescription(text);
+            txtDescription.Text = cleanedText;
 
             txtDescription.Visible = true;
+        }
+
+        public void SetPreviewImage(Image image)
+        {
+            pbImage.Image = image;
+            ShowImageSection(true);
         }
 
         public void SetPreviewImage(string source, bool isUrl)
@@ -62,7 +76,7 @@ namespace DoomLauncher
 
         public void ClearPreviewImage()
         {
-            pbImage.Image = null;
+            pbImage.ImageLocation = string.Empty;
             ShowImageSection(false);
         }
 
@@ -74,27 +88,8 @@ namespace DoomLauncher
 
         private void SetImageFromFile(string source)
         {
-            try
-            {
-                FileStream fs = null;
-                try
-                {
-                    fs = new FileStream(source, FileMode.Open, FileAccess.Read);
-                    pbImage.Image = Image.FromStream(fs);
-                }
-                catch
-                {
-                    //failed, nothin to do
-                }
-                finally
-                {
-                    if (fs != null) fs.Close();
-                }
-            }
-            catch
-            {
-                pbImage.Image = null;
-            }
+            pbImage.CancelAsync();
+            pbImage.ImageLocation = source;
         }
 
         private RowStyle GetRowStyle(Control ctrl)
