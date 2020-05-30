@@ -158,15 +158,17 @@ namespace DoomLauncher
             VerifyPath(DemoDirectory, throwErrors);
             VerifyPath(SaveGameDirectory, throwErrors);
             VerifyPath(ThumbnailDirectory, throwErrors);
-
-            if (!Directory.Exists(ThumbnailDirectory.GetFullPath()))
-                Directory.CreateDirectory(ThumbnailDirectory.GetFullPath());
         }
 
         private void VerifyPath(LauncherPath path, bool throwErrors)
         {
-            if (throwErrors && !Directory.Exists(path.GetFullPath()))
+            bool exists = Directory.Exists(path.GetFullPath());
+
+            if (throwErrors && !exists)
                 throw new DirectoryNotFoundException(path.GetPossiblyRelativePath());
+
+            if (!exists)
+                Directory.CreateDirectory(path.GetFullPath());
         }
 
         public IDataSourceAdapter DataSourceAdapter { get; set; }
