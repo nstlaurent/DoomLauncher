@@ -9,11 +9,9 @@ using System.Linq;
 
 namespace DoomLauncher
 {
-    public class ThumbnailManager
+    public static class ThumbnailManager
     {
-        public static readonly ThumbnailManager Instance = new ThumbnailManager();
-
-        public void UpdateThumbnail(IGameFile gameFile)
+        public static void UpdateThumbnail(IGameFile gameFile)
         {
             bool delete = false;
             var screenshot = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
@@ -40,7 +38,7 @@ namespace DoomLauncher
 
         // Returns or creates a new thumbnail and inserts into database if it doesn't exist
         // Will search screenshots and thumbnails if provided, otherwise will check from database
-        public IFileData GetOrCreateThumbnail(IGameFile gameFile, IEnumerable<IFileData> screenshots = null, IEnumerable<IFileData> thumbnails = null)
+        public static IFileData GetOrCreateThumbnail(IGameFile gameFile, IEnumerable<IFileData> screenshots = null, IEnumerable<IFileData> thumbnails = null)
         {
             if (thumbnails == null)
                 thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Thumbnail);

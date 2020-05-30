@@ -9,7 +9,7 @@ namespace DoomLauncher.Forms
     public partial class ScreenshotViewerForm : Form
     {
         private string[] m_images = new string[] { };
-        private int m_index = 0;
+        private int m_index;
 
         public ScreenshotViewerForm()
         {
@@ -33,15 +33,11 @@ namespace DoomLauncher.Forms
             //this is to set the focus of the left/right buttons
             if (!msg.HWnd.Equals(this.Handle) && (keyData == Keys.Left || keyData == Keys.Right))
             {
-                switch (keyData)
-                {
-                    case Keys.Right:
-                        btnNext.Focus();
-                        break;
-                    case Keys.Left:
-                        btnPrev.Focus();
-                        break;
-                }
+                if (keyData == Keys.Right)
+                    btnNext.Focus();
+                else if (keyData == Keys.Left)
+                    btnPrev.Focus();
+
                 return true;
             }
 

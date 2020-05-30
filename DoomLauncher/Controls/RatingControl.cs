@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
 {
     public partial class RatingControl : UserControl
     {
-        private int m_columnCount = 5, m_selectedRating;
+        private readonly int ColumnCount = 5;
+        private int m_selectedRating;
 
         private List<PictureBox> m_pictures = new List<PictureBox>();
 
@@ -32,9 +27,9 @@ namespace DoomLauncher
 
             m_pictures.Clear();
 
-            for (int i = 0; i < m_columnCount; i++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PictureBox pb = null;
+                PictureBox pb;
 
                 if (i <= m_selectedRating)
                     pb = CreatePictureBox(DoomLauncher.Properties.Resources.bon2b);
@@ -47,38 +42,16 @@ namespace DoomLauncher
             }
         }
 
-        void pb_MouseEnter(object sender, EventArgs e)
-        {
-            //PictureBox pb = sender as PictureBox;
-            //Image imgSet = DoomLauncher.Properties.Resources.bon2b;
-
-            //for(int i=0; i < m_pictures.Count; i++)
-            //{
-            //    tblMain.Controls.Remove(m_pictures[i]);
-            //    m_pictures[i].Dispose();
-
-            //    PictureBox pbNew = CreatePictureBox(imgSet);
-            //    if (m_pictures[i].Equals(pb))
-            //        imgSet = DoomLauncher.Properties.Resources.bon2a;
-            //    m_pictures[i] = pbNew;
-            //    tblMain.Controls.Add(pbNew, i, 0);
-            //}
-        }
-
-        private void tblMain_MouseLeave(object sender, EventArgs e)
-        {
-            //InitPictures();
-        }
-
         private PictureBox CreatePictureBox(Image img)
         {
-            PictureBox pb = new PictureBox();
-            pb.Image = img;
-            pb.SizeMode = PictureBoxSizeMode.StretchImage;
-            pb.MouseHover += pb_MouseEnter;
+            PictureBox pb = new PictureBox
+            {
+                Image = img,
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                Margin = new Padding(2, 2, 2, 2),
+                Dock = DockStyle.Fill
+            };
             pb.MouseDown += pb_MouseDown;
-            pb.Margin = new Padding(2, 2, 2, 2);
-            pb.Dock = DockStyle.Fill;
             return pb;
         }
 
@@ -100,7 +73,7 @@ namespace DoomLauncher
 
         public int RatingCount
         {
-            get { return m_columnCount; }
+            get { return ColumnCount; }
         }
 
         public int SelectedRating

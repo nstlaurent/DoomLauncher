@@ -6,7 +6,7 @@ namespace DoomLauncher
 {
     public partial class IWadTabViewCtrl : LocalTabViewCtrl
     {
-        private IDataSourceAdapter m_dsAdapter;
+        private readonly IDataSourceAdapter m_dsAdapter;
 
         public IWadTabViewCtrl(object key, string title, IDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup, GameFileViewFactory factory)
             : base(key, title, adapter, selectFields, lookup, factory)

@@ -18,8 +18,6 @@ namespace DoomLauncher
         protected GameFileFieldType[] m_selectFields;
         protected GameFileViewFactory m_factory;
 
-        private IGameFileView m_gameFileView;
-
         public BasicTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, GameFileViewFactory factory)
             : this (key, title, adapter, selectFields, factory.CreateGameFileView())
         {
@@ -39,13 +37,13 @@ namespace DoomLauncher
             ctrl.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             ctrl.Dock = DockStyle.Fill;
             Controls.Add(ctrl);
-            m_gameFileView = (IGameFileView)ctrl;
+            GameFileView = (IGameFileView)ctrl;
         }
 
         public virtual object Clone()
         {
             // TODO this is also dumb
-            BasicTabViewCtrl view = new BasicTabViewCtrl(m_key, m_title, Adapter, m_selectFields, m_factory.CreateGameFileViewGrid());
+            BasicTabViewCtrl view = new BasicTabViewCtrl(m_key, m_title, Adapter, m_selectFields, GameFileViewFactory.CreateGameFileViewGrid());
             SetBaseCloneProperties(view);
             return view;
         }
@@ -144,7 +142,7 @@ namespace DoomLauncher
                 gameFileViewControl.SetSortedColumn(config.Column, config.Sort);
         }
 
-        public IGameFileView GameFileViewControl { get { return m_gameFileView; } }
+        public IGameFileView GameFileViewControl { get { return GameFileView; } }
 
         public object Key { get { return m_key; } }
 
@@ -176,15 +174,15 @@ namespace DoomLauncher
 
         public virtual void UpdateDataSourceFile(IGameFile gameFile)
         {
-            if (m_gameFileView.DataSource != null)
+            if (GameFileView.DataSource != null)
             {
-                foreach (IGameFile item in m_gameFileView.DataSource)
+                foreach (IGameFile item in GameFileView.DataSource)
                 {
                     if (item.Equals(gameFile))
                     {
                         Array.ForEach(item.GetType().GetProperties().Where(x => x.SetMethod != null).ToArray(), x => x.SetValue(item, x.GetValue(gameFile)));
                         // TODO
-                        ((UserControl)m_gameFileView).Invalidate(true);
+                        ((UserControl)GameFileView).Invalidate(true);
                         break;
                     }
                 }
@@ -193,7 +191,7 @@ namespace DoomLauncher
 
         protected void SetDisplayText(string text)
         {
-            m_gameFileView.SetDisplayText(text);
+            GameFileView.SetDisplayText(text);
         }
 
         protected void SetDataSource(IEnumerable<IGameFile> gameFiles)
@@ -208,12 +206,12 @@ namespace DoomLauncher
 
             if (!gameFiles.Any())
             {
-                m_gameFileView.DataSource = null;
-                m_gameFileView.SetDisplayText("No Results Found");
+                GameFileView.DataSource = null;
+                GameFileView.SetDisplayText("No Results Found");
             }
             else
             {
-                m_gameFileView.DataSource = gameFiles.Cast<GameFile>().ToList();
+                GameFileView.DataSource = gameFiles.Cast<GameFile>().ToList();
             }
         }
 
@@ -230,5 +228,6 @@ namespace DoomLauncher
         public virtual bool IsAutoSearchAllowed { get { return true; } }
         public string Title { get { return m_title; } }
         public virtual IGameFileDataSourceAdapter Adapter { get; set; }
+        public IGameFileView GameFileView { get; private set; }
     }
 }

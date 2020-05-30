@@ -36,7 +36,7 @@ namespace DoomLauncher
 
         private void btnInstall_Click(object sender, EventArgs e)
         {
-            m_updateDownloadProgress = new ProgressBarForm()
+            m_updateDownloadProgress = new ProgressBarForm
             {
                 Text = "Downloading",
                 DisplayText = "Downloading Update...",

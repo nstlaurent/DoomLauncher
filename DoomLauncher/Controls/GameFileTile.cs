@@ -26,7 +26,7 @@ namespace DoomLauncher
         public override bool Selected { get; protected set; }
 
         private Color m_titleColor = Color.Black;
-        private bool m_new = false;
+        private bool m_new;
 
         public GameFileTile()
         {

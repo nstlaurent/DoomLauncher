@@ -10,8 +10,8 @@ namespace DoomLauncher
         public event EventHandler DownloadCancelled;
         public event EventHandler UserPlay;
 
-        private Dictionary<object, DownloadViewItem> m_downloadLookup = new Dictionary<object, DownloadViewItem>();
-        private HashSet<object> m_cancelledDownloads = new HashSet<object>();
+        private readonly Dictionary<object, DownloadViewItem> m_downloadLookup = new Dictionary<object, DownloadViewItem>();
+        private readonly HashSet<object> m_cancelledDownloads = new HashSet<object>();
 
         static readonly int s_rowHeight = 64;
 

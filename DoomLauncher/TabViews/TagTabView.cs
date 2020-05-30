@@ -24,7 +24,7 @@ namespace DoomLauncher
 
         public override object Clone()
         {
-            TagTabView view = new TagTabView(m_key, m_title, m_tagAdapter, m_selectFields, TagDataSource, m_factory.CreateGameFileViewGrid());
+            TagTabView view = new TagTabView(m_key, m_title, m_tagAdapter, m_selectFields, TagDataSource, GameFileViewFactory.CreateGameFileViewGrid());
             base.SetBaseCloneProperties(view);
             return view;
         }

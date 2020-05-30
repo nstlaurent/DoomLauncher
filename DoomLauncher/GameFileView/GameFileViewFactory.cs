@@ -84,7 +84,7 @@ namespace DoomLauncher
             return null;
         }
 
-        public IGameFileView CreateGameFileViewGrid()
+        public static IGameFileView CreateGameFileViewGrid()
         {
             return new GameFileViewControl();
         }

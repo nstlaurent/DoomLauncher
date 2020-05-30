@@ -44,7 +44,7 @@ namespace DoomLauncher
         public event GameFileEventHandler GameFileLeave;
 
         private List<IGameFile> m_gameFiles = new List<IGameFile>();
-        private List<GameFileTileBase> m_selectedTiles = new List<GameFileTileBase>();
+        private readonly List<GameFileTileBase> m_selectedTiles = new List<GameFileTileBase>();
 
         private ContextMenuStrip m_menu;
         private bool m_visible;
@@ -52,7 +52,7 @@ namespace DoomLauncher
         private bool m_tilesRecreated;
 
         private readonly System.Timers.Timer m_mouseTimer;
-        private int m_lastScrollPos = 0;
+        private int m_lastScrollPos ;
         private GameFileTileBase m_lastHover;
 
         private FlowLayoutPanelDB flpMain;
@@ -339,7 +339,7 @@ namespace DoomLauncher
                 return;
             }
 
-            IFileData thumbnail = ThumbnailManager.Instance.GetOrCreateThumbnail(gameFile, screenshots, thumbnails);
+            IFileData thumbnail = ThumbnailManager.GetOrCreateThumbnail(gameFile, screenshots, thumbnails);
 
             if (thumbnail != null)
                 tile.SetImageLocation(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName));

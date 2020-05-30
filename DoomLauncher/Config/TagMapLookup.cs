@@ -2,14 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
     public class TagMapLookup : ITagMapLookup
     {
-        private IDataSourceAdapter m_adapter;
+        private readonly IDataSourceAdapter m_adapter;
 
         private Dictionary<int, ITagMapping[]> m_fileTagMapping;
         private Dictionary<int, ITagData> m_tags;

@@ -468,8 +468,6 @@ namespace DoomLauncher
             GameFileTileManager.Instance.Init(GameFileViewFactory);
         }
 
-        private Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>> m_sortValues = new Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>>();
-
         private void BuildUtilityToolStrip()
         {
             ToolStripMenuItem sortToolStrip = GetSortByToolStrip();
@@ -666,6 +664,8 @@ namespace DoomLauncher
                 };
             }
         }
+
+        private readonly Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>> m_sortValues = new Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>>();
 
         private GameFileViewFactory GameFileViewFactory { get; set; }
     }

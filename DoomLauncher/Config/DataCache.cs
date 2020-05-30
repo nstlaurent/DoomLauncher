@@ -42,12 +42,12 @@ namespace DoomLauncher
                 foreach (var colFix in columnsToFix)
                     colFix.Column = "filenamenopath";
 
-                if (ret != null)
-                    return ret;
+                return ret;
             }
-            catch { }
-
-            return new ColumnConfig[] { };
+            catch
+            {
+                return new ColumnConfig[] { };
+            }
         }
     }
 }
