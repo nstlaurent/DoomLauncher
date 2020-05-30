@@ -45,6 +45,7 @@ namespace DoomLauncher
 
         private List<IGameFile> m_gameFiles = new List<IGameFile>();
         private readonly List<GameFileTileBase> m_selectedTiles = new List<GameFileTileBase>();
+        private readonly Label m_label = new Label();
 
         private ContextMenuStrip m_menu;
         private bool m_visible;
@@ -71,6 +72,9 @@ namespace DoomLauncher
             m_mouseTimer.Elapsed += MouseTimer_Elapsed;
             m_mouseTimer.Start();
 
+            m_label.Visible = false;
+            GameFileViewControl.StyleDisplayLabel(m_label);
+
             GameFileTileManager.Instance.TilesRecreated += Instance_TilesRecreated;
             InitTiles();
         }
@@ -93,7 +97,9 @@ namespace DoomLauncher
                 flpMain = GameFileTileManager.Instance.TileLayout;
                 flpMain.Anchor = AnchorStyles.Top | AnchorStyles.Left;
                 flpMain.Dock = DockStyle.Fill;
-                tblMain.Controls.Add(flpMain, 0, 1);
+
+                if (!m_label.Visible)
+                    tblMain.Controls.Add(flpMain, 0, 1);
 
                 flpMain.Click += GameFileTileViewControl_Click;
                 flpMain.KeyPress += GameFileTileViewControl_KeyPress;
@@ -105,6 +111,10 @@ namespace DoomLauncher
             }
             else
             {
+                flpMain.Click -= GameFileTileViewControl_Click;
+                flpMain.KeyPress -= GameFileTileViewControl_KeyPress;
+                flpMain.KeyDown -= GameFileTileViewControl_KeyDown;
+
                 m_selectedTiles.ForEach(x => x.SetSelected(false));
                 m_lastScrollPos = flpMain.VerticalScroll.Value;
                 Controls.Remove(flpMain);
@@ -256,12 +266,16 @@ namespace DoomLauncher
 
         public void SetDisplayText(string text)
         {
-
+            tblMain.Controls.Remove(flpMain);
+            tblMain.Controls.Add(m_label, 0, 1);
+            m_label.Text = text;
+            m_label.Visible = true;
         }
 
         private void SetData(IEnumerable<IGameFile> gameFiles)
         {
             ClearHover();
+            ClearDisplayLabel();
 
             bool update = false;
             int saveIndex = pagingControl.PageIndex;
@@ -291,6 +305,16 @@ namespace DoomLauncher
             else
             {
                 SetPageData(0, true);
+            }
+        }
+
+        private void ClearDisplayLabel()
+        {
+            if (m_label.Visible)
+            {
+                m_label.Visible = false;
+                tblMain.Controls.Remove(m_label);
+                tblMain.Controls.Add(GameFileTileManager.Instance.TileLayout, 0, 1);
             }
         }
 

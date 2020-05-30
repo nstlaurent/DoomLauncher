@@ -33,18 +33,23 @@ namespace DoomLauncher
 
             SetupGridView();
 
-            m_label.AutoSize = true;
-            m_label.Visible = false;
-            m_label.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-            m_label.Margin = new Padding(12);
-            m_label.Font = new Font(m_label.Font.FontFamily, 12.0f, FontStyle.Bold);
+            StyleDisplayLabel(m_label);
             Controls.Add(m_label);
             dgvMain.KeyDown += dgvMain_KeyDown;
         }
 
+        public static void StyleDisplayLabel(Label label)
+        {
+            label.AutoSize = true;
+            label.Visible = false;
+            label.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            label.Margin = new Padding(12);
+            label.Font = new Font(label.Font.FontFamily, 12.0f, FontStyle.Bold);
+        }
+
         public void SetVisible(bool set)
         {
-
+            // Not required
         }
 
         public bool MultiSelect
