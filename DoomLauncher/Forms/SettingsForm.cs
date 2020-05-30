@@ -253,7 +253,7 @@ namespace DoomLauncher
             cmbIwad.DataSource = Util.GetIWadsDataSource(adapter);
             cmbSkill.DataSource = Util.GetSkills();
             cmbFileManagement.DataSource = Enum.GetValues(typeof(FileManagement));
-            cmbViewType.DataSource = Enum.GetValues(typeof(GameFileViewType));
+            cmbViewType.DataSource = new string[] { "Grid", "Tile Large", "Tile Small" };
 
             cmbSourcePorts.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultSourcePort, typeof(int));
             cmbIwad.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultIWad, typeof(int));
@@ -290,7 +290,7 @@ namespace DoomLauncher
                 cmbIwad.SelectedItem == null ? null : ((IIWadData)cmbIwad.SelectedItem).IWadID.ToString(),
                 cmbSkill.SelectedItem?.ToString(),
                 cmbFileManagement.SelectedValue.ToString(),
-                cmbViewType.SelectedValue.ToString(),
+                ((GameFileViewType)cmbViewType.SelectedIndex).ToString(),
             };
 
             IEnumerable<IConfigurationData> configuration = m_adapter.GetConfiguration().Where(x => configNames.Contains(x.Name));
