@@ -58,17 +58,19 @@
             this.tblMain.Controls.Add(this.lblPageTotal, 5, 0);
             this.tblMain.Controls.Add(this.btnFirst, 1, 0);
             this.tblMain.Controls.Add(this.btnLast, 7, 0);
-            this.tblMain.Location = new System.Drawing.Point(3, 3);
+            this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblMain.Location = new System.Drawing.Point(0, 0);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(0);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 1;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Size = new System.Drawing.Size(234, 30);
+            this.tblMain.Size = new System.Drawing.Size(240, 30);
             this.tblMain.TabIndex = 2;
             // 
             // btnPrev
             // 
             this.btnPrev.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnPrev.Location = new System.Drawing.Point(56, 3);
+            this.btnPrev.Location = new System.Drawing.Point(59, 3);
             this.btnPrev.Margin = new System.Windows.Forms.Padding(0);
             this.btnPrev.Name = "btnPrev";
             this.btnPrev.Size = new System.Drawing.Size(34, 23);
@@ -80,7 +82,7 @@
             // btnNext
             // 
             this.btnNext.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnNext.Location = new System.Drawing.Point(144, 3);
+            this.btnNext.Location = new System.Drawing.Point(147, 3);
             this.btnNext.Margin = new System.Windows.Forms.Padding(0);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(34, 23);
@@ -93,7 +95,7 @@
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(111, 8);
+            this.label1.Location = new System.Drawing.Point(114, 8);
             this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(12, 13);
@@ -104,7 +106,7 @@
             // 
             this.lblPage.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblPage.AutoSize = true;
-            this.lblPage.Location = new System.Drawing.Point(94, 8);
+            this.lblPage.Location = new System.Drawing.Point(97, 8);
             this.lblPage.Margin = new System.Windows.Forms.Padding(0);
             this.lblPage.Name = "lblPage";
             this.lblPage.Size = new System.Drawing.Size(13, 13);
@@ -115,7 +117,7 @@
             // 
             this.lblPageTotal.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblPageTotal.AutoSize = true;
-            this.lblPageTotal.Location = new System.Drawing.Point(126, 8);
+            this.lblPageTotal.Location = new System.Drawing.Point(129, 8);
             this.lblPageTotal.Margin = new System.Windows.Forms.Padding(0);
             this.lblPageTotal.Name = "lblPageTotal";
             this.lblPageTotal.Size = new System.Drawing.Size(13, 13);
@@ -125,7 +127,7 @@
             // btnFirst
             // 
             this.btnFirst.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnFirst.Location = new System.Drawing.Point(20, 3);
+            this.btnFirst.Location = new System.Drawing.Point(23, 3);
             this.btnFirst.Margin = new System.Windows.Forms.Padding(0);
             this.btnFirst.Name = "btnFirst";
             this.btnFirst.Size = new System.Drawing.Size(34, 23);
@@ -137,7 +139,7 @@
             // btnLast
             // 
             this.btnLast.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnLast.Location = new System.Drawing.Point(180, 3);
+            this.btnLast.Location = new System.Drawing.Point(183, 3);
             this.btnLast.Margin = new System.Windows.Forms.Padding(0);
             this.btnLast.Name = "btnLast";
             this.btnLast.Size = new System.Drawing.Size(34, 23);
@@ -152,7 +154,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tblMain);
             this.Name = "PagingControl";
-            this.Size = new System.Drawing.Size(240, 33);
+            this.Size = new System.Drawing.Size(240, 30);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
             this.ResumeLayout(false);

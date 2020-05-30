@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace DoomLauncher
 {
@@ -8,39 +9,85 @@ namespace DoomLauncher
     {
         public event EventHandler TilesRecreated;
 
-        public static readonly int MaxItems = 30;
         public static GameFileTileManager Instance { get; private set; } = new GameFileTileManager();
 
         public List<GameFileTileBase> Tiles = new List<GameFileTileBase>();
         public List<GameFileTileBase> OldTiles = new List<GameFileTileBase>();
         public FlowLayoutPanelDB TileLayout = new FlowLayoutPanelDB();
         public Image DefaultImage { get; private set; }
+        public int MaxItems => DataCache.Instance.AppConfiguration.ItemsPerPage;
+
+        private GameFileViewFactory m_factory;
 
         public void Init(GameFileViewFactory factory)
         {
+            m_factory = factory;
             TileLayout.AutoScroll = true;
             DefaultImage = Image.FromFile("TileImages\\DoomLauncherTile.png");
 
+            ResetLayout();
+        }
+
+        private void ResetLayout()
+        {
             OldTiles.AddRange(Tiles);
-            Tiles.Clear();
 
             TileLayout.SuspendLayout();
-            TileLayout.Controls.Clear();
 
-            if (factory.IsUsingTileView)
+            if (m_factory.IsUsingTileView)
             {
-                for (int i = 0; i < MaxItems; i++)
-                {
-                    GameFileTileBase tile = factory.CreateTile();
-                    Tiles.Add(tile);
-                    TileLayout.Controls.Add(tile);
-                }
+                GameFileTileBase testTile = m_factory.CreateTile();
+
+                if (Tiles.Count == 0 || Tiles[0].GetType() != testTile.GetType())
+                    RecreateLayout();
+                else
+                    UpdateLayout();
             }
 
             TileLayout.ResumeLayout();
 
             TilesRecreated?.Invoke(this, EventArgs.Empty);
             OldTiles.Clear();
+        }
+
+        private void UpdateLayout()
+        {
+            if (Tiles.Count > MaxItems)
+            {
+                Tiles = Tiles.Take(MaxItems).ToList();
+                
+                while (TileLayout.Controls.Count > MaxItems)
+                    TileLayout.Controls.RemoveAt(TileLayout.Controls.Count - 1);
+            }
+            else
+            {
+                int addCount = MaxItems - Tiles.Count;
+                for (int i = 0; i < addCount; i++)
+                {
+                    GameFileTileBase tile = m_factory.CreateTile();
+                    Tiles.Add(tile);
+                    TileLayout.Controls.Add(tile);
+                }
+            }
+        }
+
+        private void RecreateLayout()
+        {
+            TileLayout.Controls.Clear();
+            Tiles.Clear();
+
+            for (int i = 0; i < MaxItems; i++)
+            {
+                GameFileTileBase tile = m_factory.CreateTile();
+                Tiles.Add(tile);
+                TileLayout.Controls.Add(tile);
+            }
+        }
+
+        public void SetMaxItems(int max)
+        {
+            DataCache.Instance.AppConfiguration.ItemsPerPage = max;
+            ResetLayout();
         }
     }
 }

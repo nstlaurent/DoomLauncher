@@ -73,6 +73,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_6_4_1_Update, AppVersion.Version_2_6_4_1_Update1);
                 ExecuteUpdate(Pre_2_7_0_0, AppVersion.Version_2_7_0_0);
                 ExecuteUpdate(Pre_2_8_0_0, AppVersion.Version_2_8_0_0);
+                ExecuteUpdate(Pre_2_8_0_0_1, AppVersion.Version_2_8_0_0_1);
             }
         }
 
@@ -529,6 +530,23 @@ namespace DoomLauncher
             };
 
             m_adapter.InsertConfiguration(config);
+        }
+
+        private void Pre_2_8_0_0_1()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "GameFileViewType",
+                Value = GameFileViewType.TileView.ToString(),
+                UserCanModify = false,
+            });
+
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "ItemsPerPage",
+                Value = "30",
+                UserCanModify = false,
+            });
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)

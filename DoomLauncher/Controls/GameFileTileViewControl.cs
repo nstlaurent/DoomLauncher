@@ -49,9 +49,9 @@ namespace DoomLauncher
         private ContextMenuStrip m_menu;
         private bool m_visible;
         private bool m_menuShowing;
+        private bool m_tilesRecreated;
 
         private readonly System.Timers.Timer m_mouseTimer;
-        private readonly PagingControl m_pagingControl;
         private int m_lastScrollPos = 0;
         private GameFileTileBase m_lastHover;
 
@@ -63,10 +63,8 @@ namespace DoomLauncher
 
             BackColor = Color.White;
 
-            m_pagingControl = new PagingControl();
-            m_pagingControl.Anchor = AnchorStyles.None;
-            m_pagingControl.PageIndexChanged += M_pagingControl_PageIndexChanged;
-            tblMain.Controls.Add(m_pagingControl, 0, 0);
+            SetItemsPerPage(GameFileTileManager.Instance.MaxItems);
+            pagingControl.PageIndexChanged += M_pagingControl_PageIndexChanged;
 
             m_mouseTimer = new System.Timers.Timer();
             m_mouseTimer.Interval = 100;
@@ -75,6 +73,15 @@ namespace DoomLauncher
 
             GameFileTileManager.Instance.TilesRecreated += Instance_TilesRecreated;
             InitTiles();
+        }
+
+        private void SetItemsPerPage(int maxItems)
+        {
+            cmbMaxItemsPerPage.SelectedIndexChanged -= CmbMaxItemsPerPage_SelectedIndexChanged;
+            cmbMaxItemsPerPage.SelectedItem = maxItems.ToString();
+            if (cmbMaxItemsPerPage.SelectedIndex == -1)
+                cmbMaxItemsPerPage.SelectedIndex = 0;
+            cmbMaxItemsPerPage.SelectedIndexChanged += CmbMaxItemsPerPage_SelectedIndexChanged;
         }
 
         public void SetVisible(bool set)
@@ -92,7 +99,7 @@ namespace DoomLauncher
                 flpMain.KeyPress += GameFileTileViewControl_KeyPress;
                 flpMain.KeyDown += GameFileTileViewControl_KeyDown;
 
-                SetPageData(m_pagingControl.PageIndex, false);
+                SetPageData(pagingControl.PageIndex, false);
                 flpMain.VerticalScroll.Value = m_lastScrollPos;
                 flpMain.PerformLayout();
             }
@@ -106,7 +113,9 @@ namespace DoomLauncher
 
         private void InitTiles()
         {
-            foreach (var tile in GameFileTileManager.Instance.Tiles)
+            m_lastScrollPos = 0;
+
+            foreach (var tile in GameFileTileManager.Instance.OldTiles)
             {
                 tile.TileClick -= Tile_TileClick;
                 tile.TileDoubleClick -= Tile_TileDoubleClick;
@@ -121,13 +130,19 @@ namespace DoomLauncher
 
         private void Instance_TilesRecreated(object sender, EventArgs e)
         {
+            m_tilesRecreated = true;
+            pagingControl.Init(m_gameFiles.Count, GameFileTileManager.Instance.MaxItems);
+
+            SetItemsPerPage(GameFileTileManager.Instance.MaxItems);
+
             InitTiles();
+            RefreshData();
         }
 
         private void M_pagingControl_PageIndexChanged(object sender, EventArgs e)
         {
             ClearSelection();
-            SetPageData(m_pagingControl.PageIndex, true);
+            SetPageData(pagingControl.PageIndex, true);
         }
 
         private void MouseTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -195,9 +210,10 @@ namespace DoomLauncher
             if (!m_visible)
                 return;
 
-            if (GameFileTileManager.Instance.Tiles.First().GameFile == null && m_gameFiles.Count > 0)
+            if (m_tilesRecreated)
             {
-                SetPageData(m_pagingControl.PageIndex, true);
+                m_tilesRecreated = false;
+                SetPageData(pagingControl.PageIndex, true);
                 return;
             }
 
@@ -230,7 +246,7 @@ namespace DoomLauncher
             ClearHover();
 
             bool update = false;
-            int saveIndex = m_pagingControl.PageIndex;
+            int saveIndex = pagingControl.PageIndex;
 
             if (gameFiles == null)
             {
@@ -244,15 +260,14 @@ namespace DoomLauncher
                 m_gameFiles = gameFiles.ToList();
             }
 
-            m_pagingControl.Init(m_gameFiles.Count, GameFileTileManager.MaxItems);
-            m_pagingControl.Visible = m_pagingControl.Pages > 1;
+            pagingControl.Init(m_gameFiles.Count, GameFileTileManager.Instance.MaxItems);
 
             if (!m_visible)
                 return;
 
             if (update)
             {
-                if (!m_pagingControl.SetPageIndex(saveIndex))
+                if (!pagingControl.SetPageIndex(saveIndex))
                     SetPageData(saveIndex, false);
             }
             else
@@ -276,7 +291,7 @@ namespace DoomLauncher
             var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
             var thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Thumbnail);
 
-            var gameFiles = m_gameFiles.Skip(pageIndex * GameFileTileManager.MaxItems).Take(GameFileTileManager.MaxItems).ToList();
+            var gameFiles = m_gameFiles.Skip(pageIndex * GameFileTileManager.Instance.MaxItems).Take(GameFileTileManager.Instance.MaxItems).ToList();
             SetLayout(gameFiles, screenshots, thumbnails);
 
             if (dataChange)
@@ -340,6 +355,11 @@ namespace DoomLauncher
         private void M_menu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
         {
             m_menuShowing = false;
+        }
+
+        private void CmbMaxItemsPerPage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GameFileTileManager.Instance.SetMaxItems(Convert.ToInt32(cmbMaxItemsPerPage.SelectedItem));
         }
 
         private void Tile_TileDoubleClick(object sender, EventArgs e)

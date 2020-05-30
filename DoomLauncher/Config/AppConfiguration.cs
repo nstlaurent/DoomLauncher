@@ -100,6 +100,7 @@ namespace DoomLauncher
                 ColumnConfig = GetValue(config, "ColumnConfig");
                 ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, "ScreenshotPreviewSize"));
                 FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
+                ItemsPerPage = Convert.ToInt32(GetValue(config, "ItemsPerPage"));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
@@ -192,5 +193,6 @@ namespace DoomLauncher
         public int ScreenshotPreviewSize { get; private set; }
         public FileManagement FileManagement { get; private set; }
         public GameFileViewType GameFileViewType { get; private set; }
+        public int ItemsPerPage { get; set; }
     }
 }
