@@ -36,6 +36,7 @@ namespace DoomLauncher
         IGameFile GameFileForIndex(int index);
         void RefreshData();
         bool Focus();
+        void UpdateGameFile(IGameFile gameFile);
 
         bool MultiSelect { get; set; }
         bool AllowDrop { get; set; }

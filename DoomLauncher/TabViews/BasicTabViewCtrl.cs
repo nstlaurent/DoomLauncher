@@ -181,7 +181,7 @@ namespace DoomLauncher
                     if (item.Equals(gameFile))
                     {
                         Array.ForEach(item.GetType().GetProperties().Where(x => x.SetMethod != null).ToArray(), x => x.SetValue(item, x.GetValue(gameFile)));
-                        // TODO
+                        GameFileView.UpdateGameFile(gameFile);
                         ((UserControl)GameFileView).Invalidate(true);
                         break;
                     }

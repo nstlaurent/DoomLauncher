@@ -205,6 +205,22 @@ namespace DoomLauncher
             return m_gameFiles[index];
         }
 
+        public void UpdateGameFile(IGameFile gameFile)
+        {
+            foreach (var tile in GameFileTileManager.Instance.Tiles)
+            {
+                if (ShouldSkipTile(tile))
+                    break;
+
+                if (tile.GameFile.Equals(gameFile))
+                {
+                    var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
+                    var thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Thumbnail);
+                    SetTileData(tile, gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), true);
+                }
+            }
+        }
+
         public void RefreshData()
         {
             if (!m_visible)
@@ -222,12 +238,14 @@ namespace DoomLauncher
 
             foreach (var tile in GameFileTileManager.Instance.Tiles)
             {
-                if (!tile.Visible || tile.GameFile == null)
+                if (ShouldSkipTile(tile))
                     break;
 
-                SetTileData(tile.GameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), tile);
+                SetTileData(tile, tile.GameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), false);
             }
         }
+
+        private static bool ShouldSkipTile(GameFileTileBase tile) => !tile.Visible || tile.GameFile == null;
 
         public void SetContextMenuStrip(ContextMenuStrip menu)
         {
@@ -315,7 +333,7 @@ namespace DoomLauncher
 
             foreach (var gameFile in gameFiles)
             {
-                SetTileData(gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(gameFile), itemsEnum.Current);
+                SetTileData(itemsEnum.Current, gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(gameFile), false);
                 itemsEnum.Current.Visible = true;
                 itemsEnum.MoveNext();
             }
@@ -329,8 +347,11 @@ namespace DoomLauncher
             flpMain.ResumeLayout();
         }
 
-        private static void SetTileData(IGameFile gameFile, IEnumerable<IFileData> screenshots, IEnumerable<IFileData> thumbnails, IEnumerable<ITagData> tags, GameFileTileBase tile)
+        private static void SetTileData(GameFileTileBase tile, IGameFile gameFile, IEnumerable<IFileData> screenshots, IEnumerable<IFileData> thumbnails, IEnumerable<ITagData> tags, bool forceRefresh)
         {
+            if (gameFile == null || (!forceRefresh && gameFile.Equals(tile.GameFile)))
+                return;
+
             tile.SetData(gameFile, tags);
 
             if (!gameFile.GameFileID.HasValue)

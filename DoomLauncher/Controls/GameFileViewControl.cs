@@ -167,6 +167,11 @@ namespace DoomLauncher
             m_binding = false;
         }
 
+        public void UpdateGameFile(IGameFile gameFile)
+        {
+            // Grid view inherently supports this
+        }
+
         public IGameFile SelectedItem
         {
             get
