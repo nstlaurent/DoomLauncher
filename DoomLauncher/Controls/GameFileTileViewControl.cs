@@ -98,8 +98,16 @@ namespace DoomLauncher
                 flpMain.Anchor = AnchorStyles.Top | AnchorStyles.Left;
                 flpMain.Dock = DockStyle.Fill;
 
-                if (!m_label.Visible)
+                if (m_label.Visible)
+                {
+                    // Data in the view has changed since last displayed
+                    if (m_gameFiles.Count > 0)
+                        ClearDisplayLabel();
+                }
+                else
+                {
                     tblMain.Controls.Add(flpMain, 0, 1);
+                }
 
                 flpMain.KeyPress += GameFileTileViewControl_KeyPress;
                 flpMain.KeyDown += GameFileTileViewControl_KeyDown;
