@@ -418,5 +418,21 @@ namespace DoomLauncher
             else
                 return new string[] { };
         }
+
+        public static string GetClippedEllipsesText(Graphics g, Font f, string text, SizeF layout)
+        {
+            int charactersFitted, linesFilled;
+            g.MeasureString(text, f, layout, StringFormat.GenericDefault, out charactersFitted, out linesFilled);
+
+            if (charactersFitted != text.Length && charactersFitted > 3)
+            {
+                while (charactersFitted > 0 && text[charactersFitted] != ' ')
+                    charactersFitted--;
+
+                return text.Substring(0, charactersFitted) + "...";
+            }
+
+            return text;
+        }
     }
 }

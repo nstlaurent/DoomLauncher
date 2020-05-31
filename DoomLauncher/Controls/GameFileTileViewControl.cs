@@ -108,8 +108,7 @@ namespace DoomLauncher
                 flpMain.VerticalScroll.Value = m_lastScrollPos;
                 flpMain.PerformLayout();
 
-                if (SelectedItem == null && m_gameFiles.Count > 0)
-                    SelectGameFile(m_gameFiles[0]);
+                SetDefaultSelection();
             }
             else
             {
@@ -120,6 +119,12 @@ namespace DoomLauncher
                 m_lastScrollPos = flpMain.VerticalScroll.Value;
                 Controls.Remove(flpMain);
             }
+        }
+
+        private void SetDefaultSelection()
+        {
+            if (SelectedItem == null && m_gameFiles.Count > 0)
+                SelectGameFile(m_gameFiles[0]);
         }
 
         private void InitTiles()
@@ -148,6 +153,7 @@ namespace DoomLauncher
 
             InitTiles();
             RefreshData();
+            SetDefaultSelection();
         }
 
         private void M_pagingControl_PageIndexChanged(object sender, EventArgs e)
@@ -158,8 +164,15 @@ namespace DoomLauncher
 
         private void MouseTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (!IsDisposed && InvokeRequired)
-                Invoke(new Action(MouseMoveTimer));
+            try
+            {
+                if (!IsDisposed && InvokeRequired)
+                    Invoke(new Action(MouseMoveTimer));
+            }
+            catch (ObjectDisposedException)
+            {
+                m_mouseTimer.Stop();
+            }
         }
 
         private void MouseMoveTimer()
@@ -491,6 +504,9 @@ namespace DoomLauncher
 
             foreach (GameFileTileBase tile in GameFileTileManager.Instance.Tiles)
             {
+                if (ShouldSkipTile(tile))
+                    break;
+
                 if (tile.GameFile.Equals(gameFile))
                 {
                     tile.SetSelected(true);

@@ -32,11 +32,17 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            Width = ImageWidth;
-            Height = ImageHeight + LabelHeight;
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+
+            int imageWidth = dpiScale.ScaleIntX(ImageWidth);
+            int imageHeight = dpiScale.ScaleIntY(ImageHeight);
+            int labelHeight = dpiScale.ScaleIntY(LabelHeight);
+
+            Width = imageWidth;
+            Height = imageHeight + labelHeight;
 
             pb.Width = Width;
-            pb.Height = Height - LabelHeight;
+            pb.Height = Height - labelHeight;
             pb.BackColor = Color.Black;
             pb.SizeMode = PictureBoxSizeMode.Zoom;
             pb.WaitOnLoad = false;
@@ -56,29 +62,43 @@ namespace DoomLauncher
             if (GameFile == null)
                 return;
 
-            string text = string.IsNullOrEmpty(GameFile.Title) ? GameFile.FileNameNoPath : GameFile.Title;
+            DpiScale dpiScale = new DpiScale(e.Graphics);
+            int labelHeight = dpiScale.ScaleIntX(LabelHeight);
+            int pad = dpiScale.ScaleIntX(1);
+
+            SizeF layout = new SizeF(Width, 16);
+            string text;
+            if (!string.IsNullOrEmpty(GameFile.Title))
+                text = Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Title, layout);
+            else
+                text = GameFile.FileNameNoPath;
+
             SizeF size = e.Graphics.MeasureString(text, DisplayFont);
             float x = Width - size.Width - (Width - size.Width) / 2;
-            float y = Height - size.Height - (LabelHeight - size.Height) / 2;
+            float y = Height - size.Height - (labelHeight - size.Height) / 2;
             if (Selected)
                 e.Graphics.DrawString(text, DisplayFont, Brushes.White, x, y);
             else
                 e.Graphics.DrawString(text, DisplayFont, new SolidBrush(m_titleColor), x, y);
 
             if (DrawBorder && !Selected)
-                e.Graphics.DrawRectangle(SeparatorPen, 0, 0, Width - 1, Height - 1);
+                e.Graphics.DrawRectangle(SeparatorPen, 0, 0, Width - pad, Height - pad);
         }
 
         private void Screenshot_Paint(object sender, PaintEventArgs e)
         {
             if (m_new)
             {
+                DpiScale dpiScale = new DpiScale(e.Graphics);
+                int newPadX = dpiScale.ScaleIntX(NewPadX);
+                int newPadY = dpiScale.ScaleIntY(NewPadY);
+                int pad1 = dpiScale.ScaleIntX(1);
                 SizeF size = e.Graphics.MeasureString(NewString, DisplayFont);
-                RectangleF rect = new RectangleF(pb.ClientRectangle.Right - size.Width - NewPadX - 1, pb.ClientRectangle.Height - size.Height - NewPadY -1, 
-                    size.Width + NewPadX, size.Height + NewPadY);
+                RectangleF rect = new RectangleF(pb.ClientRectangle.Right - size.Width - newPadX - pad1, pb.ClientRectangle.Height - size.Height - newPadY - pad1, 
+                    size.Width + newPadX, size.Height + newPadY);
                 e.Graphics.FillRectangle(Brushes.Red, rect);
                 e.Graphics.DrawRectangle(Pens.Gray, rect.Left, rect.Top, rect.Width, rect.Height);
-                e.Graphics.DrawString(NewString, DisplayFont, Brushes.White, new PointF(rect.Left + NewPadX, rect.Top + NewPadY / 2));
+                e.Graphics.DrawString(NewString, DisplayFont, Brushes.White, new PointF(rect.Left + newPadX / 2 + pad1 + pad1, rect.Top + newPadY / 2 + pad1));
             }
         }
 
