@@ -32,9 +32,13 @@ namespace DoomLauncher
 
             BackColor = SystemColors.Control;
 
-            Height = gameTile.Height + 2;
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            gameTile.Width = dpiScale.ScaleIntX(GameFileTile.ImageWidth);
+
+            Height = gameTile.Height + dpiScale.ScaleIntX(2);
+            int pad = dpiScale.ScaleIntX(1);
             gameTile.DrawBorder = false;
-            gameTile.Margin = new Padding(1, 1, 0, 0);
+            gameTile.Margin = new Padding(pad, pad, 0, 0);
             gameTile.TileClick += GameTile_TileClick;
             gameTile.TileDoubleClick += GameTile_TileDoubleClick;
             pnlData.Paint += PnlData_Paint;
@@ -66,9 +70,11 @@ namespace DoomLauncher
             if (GameFile == null)
                 return;
 
-            int xPos = gameTile.Location.X + 4;
-            int yPos = 8;
-            int offset = 22;
+            DpiScale dpiScale = new DpiScale(e.Graphics);
+
+            float xPos = gameTile.Location.X + dpiScale.ScaleIntX(4);
+            int yPos = dpiScale.ScaleIntY(8);
+            int offset = dpiScale.ScaleIntY(22);
 
             e.Graphics.DrawString("Filename", DisplayBoldFont, Brushes.Black, xPos, yPos);
             yPos += offset;
@@ -85,8 +91,8 @@ namespace DoomLauncher
             e.Graphics.DrawString("Tags", DisplayBoldFont, Brushes.Black, xPos, yPos);
 
 
-            xPos = gameTile.Location.X + 122;
-            yPos = 8;
+            xPos = gameTile.Location.X + dpiScale.ScaleFloatX(122);
+            yPos = dpiScale.ScaleIntY(8);
 
             SizeF maxLabelSize = new SizeF(pnlData.ClientRectangle.Width - xPos, 16);
 
