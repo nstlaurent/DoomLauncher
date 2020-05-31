@@ -56,7 +56,13 @@ namespace DoomLauncher
             if (GameFile == null)
                 return;
 
-            string text = string.IsNullOrEmpty(GameFile.Title) ? GameFile.FileNameNoPath : GameFile.Title;
+            SizeF layout = new SizeF(Width, 16);
+            string text;
+            if (!string.IsNullOrEmpty(GameFile.Title))
+                text = Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Title, layout);
+            else
+                text = GameFile.FileNameNoPath;
+
             SizeF size = e.Graphics.MeasureString(text, DisplayFont);
             float x = Width - size.Width - (Width - size.Width) / 2;
             float y = Height - size.Height - (LabelHeight - size.Height) / 2;
