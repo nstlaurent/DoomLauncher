@@ -101,7 +101,6 @@ namespace DoomLauncher
                 if (!m_label.Visible)
                     tblMain.Controls.Add(flpMain, 0, 1);
 
-                flpMain.Click += GameFileTileViewControl_Click;
                 flpMain.KeyPress += GameFileTileViewControl_KeyPress;
                 flpMain.KeyDown += GameFileTileViewControl_KeyDown;
 
@@ -114,7 +113,6 @@ namespace DoomLauncher
             }
             else
             {
-                flpMain.Click -= GameFileTileViewControl_Click;
                 flpMain.KeyPress -= GameFileTileViewControl_KeyPress;
                 flpMain.KeyDown -= GameFileTileViewControl_KeyDown;
 
@@ -203,11 +201,6 @@ namespace DoomLauncher
         private void GameFileTileViewControl_KeyPress(object sender, KeyPressEventArgs e)
         {
             ViewKeyPress?.Invoke(this, e);
-        }
-
-        private void GameFileTileViewControl_Click(object sender, EventArgs e)
-        {
-            ClearSelection();
         }
 
         public IGameFile GameFileForIndex(int index)
