@@ -108,6 +108,9 @@ namespace DoomLauncher
                 SetPageData(pagingControl.PageIndex, false);
                 flpMain.VerticalScroll.Value = m_lastScrollPos;
                 flpMain.PerformLayout();
+
+                if (SelectedItem == null && m_gameFiles.Count > 0)
+                    SelectGameFile(m_gameFiles[0]);
             }
             else
             {
