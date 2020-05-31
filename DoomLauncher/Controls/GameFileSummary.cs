@@ -160,7 +160,7 @@ namespace DoomLauncher
             double height = width / (m_aspectWidth / m_aspectHeight);
             m_imageHeight = Convert.ToSingle(height);
 
-            if (pbImage.Image != null)
+            if (pbImage.Image != null || !string.IsNullOrEmpty(pbImage.ImageLocation))
                 ShowImageSection(true);
         }
     }
