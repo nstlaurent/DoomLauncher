@@ -571,6 +571,8 @@ namespace DoomLauncher
                     return AppConfiguration.DemoDirectory;
                 case FileType.SaveGame:
                     return AppConfiguration.SaveGameDirectory;
+                case FileType.Thumbnail:
+                    return AppConfiguration.ThumbnailDirectory;
                 default:
                     throw new NotImplementedException();
             }
