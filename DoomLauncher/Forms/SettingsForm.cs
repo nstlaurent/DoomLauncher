@@ -3,6 +3,7 @@ using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -30,9 +31,16 @@ namespace DoomLauncher
             m_adapter = adapter;
             m_appConfig = appConfig;
 
+            pnlViewRestart.Paint += PnlViewRestart_Paint;
+
             PopulateDefaultSettings(m_adapter);
             PopulateConfiguration();
             UpdateScreenshotWidth(m_screenshotTrackBar);
+        }
+
+        private void PnlViewRestart_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.DrawIcon(SystemIcons.Warning, 8, 8);
         }
 
         public void SetToLaunchSettingsTab()
@@ -245,11 +253,13 @@ namespace DoomLauncher
             cmbIwad.DataSource = Util.GetIWadsDataSource(adapter);
             cmbSkill.DataSource = Util.GetSkills();
             cmbFileManagement.DataSource = Enum.GetValues(typeof(FileManagement));
+            cmbViewType.DataSource = new string[] { "Grid", "Tile Large", "Tile Small" };
 
             cmbSourcePorts.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultSourcePort, typeof(int));
             cmbIwad.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultIWad, typeof(int));
             cmbSkill.SelectedItem = m_appConfig.GetTypedConfigValue(ConfigType.DefaultSkill, typeof(string));
             cmbFileManagement.SelectedIndex = (int)Enum.Parse(typeof(FileManagement), (string)m_appConfig.GetTypedConfigValue(ConfigType.FileManagement, typeof(string)));
+            cmbViewType.SelectedIndex = (int)Enum.Parse(typeof(GameFileViewType), (string)m_appConfig.GetTypedConfigValue(ConfigType.GameFileViewType, typeof(string)));
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -272,6 +282,7 @@ namespace DoomLauncher
                 ConfigType.DefaultIWad.ToString("g"), 
                 ConfigType.DefaultSkill.ToString("g"),
                 ConfigType.FileManagement.ToString("g"),
+                ConfigType.GameFileViewType.ToString("g"),
             };
             string[] configValues = new string[]
             {
@@ -279,6 +290,7 @@ namespace DoomLauncher
                 cmbIwad.SelectedItem == null ? null : ((IIWadData)cmbIwad.SelectedItem).IWadID.ToString(),
                 cmbSkill.SelectedItem?.ToString(),
                 cmbFileManagement.SelectedValue.ToString(),
+                ((GameFileViewType)cmbViewType.SelectedIndex).ToString(),
             };
 
             IEnumerable<IConfigurationData> configuration = m_adapter.GetConfiguration().Where(x => configNames.Contains(x.Name));
@@ -333,6 +345,11 @@ namespace DoomLauncher
             }
 
             return string.Empty;
+        }
+
+        private void CmbViewType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            pnlViewRestart.Visible = GameFileViewFactory.IsBaseViewTypeChange(m_appConfig.GameFileViewType, (GameFileViewType)cmbViewType.SelectedIndex);         
         }
 
         private static string AddSpaceBetweenWords(string item)

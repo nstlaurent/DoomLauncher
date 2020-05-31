@@ -8,8 +8,6 @@ namespace DoomLauncher
 {
     class ToolTipHandler
     {
-        public ToolTipHandler() {}
-
         public string GetToolTipText(Font font, IGameFile item)
         {
             StringBuilder sb = new StringBuilder();

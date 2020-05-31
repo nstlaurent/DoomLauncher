@@ -379,6 +379,8 @@ namespace DoomLauncher
                 sb.Append(Environment.NewLine);
             }
 
+            sb.Replace("\r\n", "\n");
+
             return sb.ToString();
         }
 

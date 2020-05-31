@@ -39,6 +39,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.updateMetadataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.sortByToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -85,23 +86,23 @@
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctrlSearch = new DoomLauncher.SearchControl();
             this.chkAutoSearch = new System.Windows.Forms.CheckBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnDownloads = new System.Windows.Forms.Button();
-            this.btnUpdate = new DoomLauncher.GlowButton();
             this.tblDataView = new System.Windows.Forms.TableLayoutPanel();
             this.splitLeftRight = new System.Windows.Forms.SplitContainer();
             this.splitTopBottom = new System.Windows.Forms.SplitContainer();
             this.tabControl = new System.Windows.Forms.TabControl();
-            this.ctrlAssociationView = new DoomLauncher.GameFileAssociationView();
-            this.ctrlSummary = new DoomLauncher.GameFileSummary();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.mnuIdGames = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewWebPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
+            this.ctrlSearch = new DoomLauncher.SearchControl();
+            this.btnUpdate = new DoomLauncher.GlowButton();
+            this.ctrlAssociationView = new DoomLauncher.GameFileAssociationView();
+            this.ctrlSummary = new DoomLauncher.GameFileSummary();
             this.mnuLocal.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblTop.SuspendLayout();
@@ -129,6 +130,7 @@
             this.toolStripSeparator1,
             this.updateMetadataToolStripMenuItem,
             this.toolStripSeparator8,
+            this.sortByToolStripMenuItem,
             this.tagToolStripMenuItem,
             this.removeTagToolStripMenuItem,
             this.utilityToolStripMenuItem,
@@ -143,6 +145,7 @@
             this.createShortcutToolStripMenuItem});
             this.mnuLocal.Name = "mnuGrid";
             this.mnuLocal.Size = new System.Drawing.Size(194, 348);
+            this.mnuLocal.Opening += new System.ComponentModel.CancelEventHandler(this.MnuLocal_Opening);
             // 
             // viewTextFileToolStripMenuItem
             // 
@@ -188,6 +191,12 @@
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
             this.toolStripSeparator8.Size = new System.Drawing.Size(190, 6);
+            // 
+            // sortByToolStripMenuItem
+            // 
+            this.sortByToolStripMenuItem.Name = "sortByToolStripMenuItem";
+            this.sortByToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.sortByToolStripMenuItem.Text = "Sort By";
             // 
             // tagToolStripMenuItem
             // 
@@ -364,10 +373,10 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(4, 2);
+            this.toolStrip1.Location = new System.Drawing.Point(4, 0);
             this.toolStrip1.Margin = new System.Windows.Forms.Padding(4, 0, 0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(34, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(65, 25);
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "Options";
             // 
@@ -401,6 +410,8 @@
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
             this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 22);
             this.toolStripDropDownButton1.Text = "Options";
+            this.toolStripDropDownButton1.DropDownClosed += new System.EventHandler(this.ToolStripDropDownButton1_DropDownClosed);
+            this.toolStripDropDownButton1.DropDownOpened += new System.EventHandler(this.ToolStripDropDownButton1_DropDownOpened);
             // 
             // addFilesToolStripMenuItem
             // 
@@ -556,21 +567,11 @@
             this.helpToolStripMenuItem.Text = "Help...";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
-            // ctrlSearch
-            // 
-            this.ctrlSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlSearch.Location = new System.Drawing.Point(41, 4);
-            this.ctrlSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
-            this.ctrlSearch.Name = "ctrlSearch";
-            this.ctrlSearch.SearchText = "";
-            this.ctrlSearch.Size = new System.Drawing.Size(142, 20);
-            this.ctrlSearch.TabIndex = 0;
-            // 
             // chkAutoSearch
             // 
             this.chkAutoSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAutoSearch.AutoSize = true;
-            this.chkAutoSearch.Location = new System.Drawing.Point(189, 6);
+            this.chkAutoSearch.Location = new System.Drawing.Point(220, 4);
             this.chkAutoSearch.Name = "chkAutoSearch";
             this.chkAutoSearch.Size = new System.Drawing.Size(85, 17);
             this.chkAutoSearch.TabIndex = 7;
@@ -582,7 +583,7 @@
             this.btnSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
-            this.btnSearch.Location = new System.Drawing.Point(280, 2);
+            this.btnSearch.Location = new System.Drawing.Point(3, 27);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(80, 24);
@@ -599,7 +600,7 @@
             this.btnPlay.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPlay.Image = ((System.Drawing.Image)(resources.GetObject("btnPlay.Image")));
-            this.btnPlay.Location = new System.Drawing.Point(3, 31);
+            this.btnPlay.Location = new System.Drawing.Point(89, 27);
             this.btnPlay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(75, 24);
@@ -625,26 +626,6 @@
             this.btnDownloads.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.btnDownloads.UseVisualStyleBackColor = true;
             this.btnDownloads.Click += new System.EventHandler(this.btnDownloads_Click);
-            // 
-            // btnUpdate
-            // 
-            this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdate.BackGroundGlowColor = System.Drawing.Color.Blue;
-            this.btnUpdate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnUpdate.FlatAppearance.BorderSize = 0;
-            this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUpdate.Image = global::DoomLauncher.Properties.Resources.bon2b;
-            this.btnUpdate.Location = new System.Drawing.Point(787, 2);
-            this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
-            this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(120, 22);
-            this.btnUpdate.TabIndex = 2;
-            this.btnUpdate.Text = "Update Available";
-            this.btnUpdate.TextGlowColor = System.Drawing.Color.White;
-            this.btnUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.btnUpdate.UseVisualStyleBackColor = true;
-            this.btnUpdate.Visible = false;
-            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
             // tblDataView
             // 
@@ -710,6 +691,58 @@
             this.tabControl.TabIndex = 6;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
+            // mnuIdGames
+            // 
+            this.mnuIdGames.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.downloadToolStripMenuItem,
+            this.viewWebPageToolStripMenuItem});
+            this.mnuIdGames.Name = "mnuIdGames";
+            this.mnuIdGames.Size = new System.Drawing.Size(165, 48);
+            // 
+            // downloadToolStripMenuItem
+            // 
+            this.downloadToolStripMenuItem.Name = "downloadToolStripMenuItem";
+            this.downloadToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.downloadToolStripMenuItem.Text = "Download...";
+            this.downloadToolStripMenuItem.Click += new System.EventHandler(this.downloadToolStripMenuItem_Click);
+            // 
+            // viewWebPageToolStripMenuItem
+            // 
+            this.viewWebPageToolStripMenuItem.Name = "viewWebPageToolStripMenuItem";
+            this.viewWebPageToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.viewWebPageToolStripMenuItem.Text = "View Web Page...";
+            this.viewWebPageToolStripMenuItem.Click += new System.EventHandler(this.viewWebPageToolStripMenuItem_Click);
+            // 
+            // ctrlSearch
+            // 
+            this.ctrlSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ctrlSearch.Location = new System.Drawing.Point(72, 2);
+            this.ctrlSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
+            this.ctrlSearch.Name = "ctrlSearch";
+            this.ctrlSearch.SearchText = "";
+            this.ctrlSearch.Size = new System.Drawing.Size(142, 20);
+            this.ctrlSearch.TabIndex = 0;
+            // 
+            // btnUpdate
+            // 
+            this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUpdate.BackGroundGlowColor = System.Drawing.Color.Blue;
+            this.btnUpdate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnUpdate.FlatAppearance.BorderSize = 0;
+            this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUpdate.Image = global::DoomLauncher.Properties.Resources.bon2b;
+            this.btnUpdate.Location = new System.Drawing.Point(787, 2);
+            this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(120, 22);
+            this.btnUpdate.TabIndex = 2;
+            this.btnUpdate.Text = "Update Available";
+            this.btnUpdate.TextGlowColor = System.Drawing.Color.White;
+            this.btnUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Visible = false;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
+            // 
             // ctrlAssociationView
             // 
             this.ctrlAssociationView.DataSourceAdapter = null;
@@ -732,28 +765,6 @@
             this.ctrlSummary.Size = new System.Drawing.Size(312, 660);
             this.ctrlSummary.TabIndex = 4;
             this.ctrlSummary.TagText = "Tags:";
-            // 
-            // mnuIdGames
-            // 
-            this.mnuIdGames.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.downloadToolStripMenuItem,
-            this.viewWebPageToolStripMenuItem});
-            this.mnuIdGames.Name = "mnuIdGames";
-            this.mnuIdGames.Size = new System.Drawing.Size(165, 48);
-            // 
-            // downloadToolStripMenuItem
-            // 
-            this.downloadToolStripMenuItem.Name = "downloadToolStripMenuItem";
-            this.downloadToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
-            this.downloadToolStripMenuItem.Text = "Download...";
-            this.downloadToolStripMenuItem.Click += new System.EventHandler(this.downloadToolStripMenuItem_Click);
-            // 
-            // viewWebPageToolStripMenuItem
-            // 
-            this.viewWebPageToolStripMenuItem.Name = "viewWebPageToolStripMenuItem";
-            this.viewWebPageToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
-            this.viewWebPageToolStripMenuItem.Text = "View Web Page...";
-            this.viewWebPageToolStripMenuItem.Click += new System.EventHandler(this.viewWebPageToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -863,6 +874,7 @@
         private DoomLauncher.GlowButton btnUpdate;
         private System.Windows.Forms.ToolStripMenuItem addFIlesRecursivelyToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
+        private System.Windows.Forms.ToolStripMenuItem sortByToolStripMenuItem;
     }
 }
 

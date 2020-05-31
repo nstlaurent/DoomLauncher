@@ -32,6 +32,7 @@ namespace DoomLauncher
                 if (m_tabHandler.TabViews.Any(x => x.GameFileViewControl is IGameFileColumnView))
                     UpdateConfig(config, "ColumnConfig", BuildColumnConfig());
                 UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
+                UpdateConfig(config, "ItemsPerPage", AppConfiguration.ItemsPerPage.ToString());
             }
         }
 
@@ -63,7 +64,7 @@ namespace DoomLauncher
 
         private string BuildColumnConfig()
         {
-            if (m_tabHandler != null)
+            if (m_tabHandler != null && GameFileViewFactory.IsUsingColumnView)
             {
                 List<ColumnConfig> config = new List<ColumnConfig>();
 
@@ -84,27 +85,6 @@ namespace DoomLauncher
             }
 
             return string.Empty;
-        }
-
-        private ColumnConfig[] GetColumnConfig()
-        {
-            try
-            {
-                XmlSerializer xml = new XmlSerializer(typeof(ColumnConfig[]));
-                StringReader text = new StringReader(AppConfiguration.ColumnConfig);
-                ColumnConfig[] ret = xml.Deserialize(text) as ColumnConfig[];
-
-                // Previous revisions of Doom Launcher use filename, most recent version uses filenamenopath - fix it here
-                var columnsToFix = ret.Where(x => x.Column.Equals("filename", StringComparison.OrdinalIgnoreCase));
-                foreach(var colFix in columnsToFix)
-                    colFix.Column = "filenamenopath";
-
-                if (ret != null)
-                    return ret;
-            }
-            catch { }
-
-            return new ColumnConfig[] { };
         }
     }
 }

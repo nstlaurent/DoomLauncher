@@ -1,7 +1,6 @@
 ﻿using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
-using Equin.ApplicationFramework;
 using PresentationControls;
 using System;
 using System.Collections.Generic;
@@ -28,6 +27,8 @@ namespace DoomLauncher
 
         public static string[] GetBaseTabs() { return new string[] { s_recentKey, s_localKey, s_iwadKey, s_idGamesKey, s_untaggedKey }; }
 
+        public bool ShouldShowToolTip { get; private set; } = true;
+
         private string m_workingDirectory;
         private bool m_playInProgress = false, m_idGamesLoaded;
         private IGameFile m_lastSelectedItem;
@@ -46,11 +47,8 @@ namespace DoomLauncher
         private string m_launchFile;
         private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
 
-        public static MainForm Instance { get; private set; }
-
         public MainForm(string launchFile)
         {
-            Instance = this;
             m_launchFile = launchFile;
 
             m_splash = new SplashScreen();
@@ -68,7 +66,7 @@ namespace DoomLauncher
             {
                 string dataSource = Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
                 DataSourceAdapter = DbDataSourceAdapter.CreateAdapter();
-                AppConfiguration = new AppConfiguration(DataSourceAdapter);
+                DataCache.Instance.Init(DataSourceAdapter);
 
                 BackupDatabase(dataSource);
                 CreateSendToLink();
@@ -99,7 +97,7 @@ namespace DoomLauncher
             }
         }
 
-        private IGameFileView GetCurrentViewControl()
+        public IGameFileView GetCurrentViewControl()
         {
             ITabView view = GetCurrentTabView();
 
@@ -111,12 +109,16 @@ namespace DoomLauncher
 
         void ctrlAssociationView_FileDeleted(object sender, EventArgs e)
         {
+            IGameFileView view = GetCurrentViewControl();
+            view.UpdateGameFile(view.SelectedItem);
             HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
         void ctrlAssociationView_FileOrderChanged(object sender, EventArgs e)
         {
-            HandleSelectionChange(GetCurrentViewControl(), true);
+            IGameFileView view = GetCurrentViewControl();
+            view.UpdateGameFile(view.SelectedItem);
+            HandleSelectionChange(view, true);
         }
 
         void DownloadView_UserPlay(object sender, EventArgs e)
@@ -154,18 +156,6 @@ namespace DoomLauncher
                     HandleDownload(AppConfiguration.TempDirectory);
                 else if (tabView != null && tabView.IsPlayAllowed)
                     HandlePlay();
-            }
-        }
-
-        void ctrlView_ToolTipTextNeeded(object sender, AddingNewEventArgs e)
-        {
-            IGameFileView ctrl = sender as IGameFileView;
-            IGameFile gameFile = ctrl.GameFileForIndex(ctrl.ToolTipItemIndex);
-
-            if (gameFile != null)
-            {
-                ToolTipHandler toolTipHandler = new ToolTipHandler();
-                e.NewObject = toolTipHandler.GetToolTipText(Font, gameFile);
             }
         }
 
@@ -248,6 +238,16 @@ namespace DoomLauncher
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HandleDelete();
+        }
+
+        private void ToolStripDropDownButton1_DropDownOpened(object sender, EventArgs e)
+        {
+            ShouldShowToolTip = false;
+        }
+
+        private void ToolStripDropDownButton1_DropDownClosed(object sender, EventArgs e)
+        {
+            ShouldShowToolTip = true;
         }
 
         private void HandleRename()
@@ -401,7 +401,7 @@ namespace DoomLauncher
 
             IGameFile[] items = SelectedItems(GetCurrentViewControl());
 
-            foreach(IGameFile item in items)
+            foreach (IGameFile item in items)
             {
                 if (item != null && AssertFile(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName)))
                 {
@@ -443,13 +443,13 @@ namespace DoomLauncher
             FileInfo fi = new FileInfo(item.FileName);
             string baseFile = fi.Name.Replace(fi.Extension, string.Empty);
 
-            var find =  entries.Select(x => x.Name).ToList();
+            var find = entries.Select(x => x.Name).ToList();
             var first = find.FirstOrDefault(x => x.StartsWith(baseFile, StringComparison.InvariantCultureIgnoreCase));
 
             if (first != null)
             {
                 find.Remove(first);
-                find.Insert(0, first);  
+                find.Insert(0, first);
             }
 
             return find;
@@ -471,7 +471,7 @@ namespace DoomLauncher
                 }
             }
         }
-  
+
         private void HandleDelete()
         {
             if (GetCurrentViewControl() != null)
@@ -485,7 +485,7 @@ namespace DoomLauncher
                 {
                     IGameFile[] items = SelectedItems(GetCurrentViewControl());
 
-                    foreach(IGameFile gameFile in items)
+                    foreach (IGameFile gameFile in items)
                     {
                         if (showDialog)
                         {
@@ -542,7 +542,7 @@ namespace DoomLauncher
             tagMapping.ToList().ForEach(x => DataSourceAdapter.DeleteTagMapping(x));
 
             var profiles = DataSourceAdapter.GetGameProfiles(gameFile.GameFileID.Value);
-            profiles.ToList().ForEach(x =>DataSourceAdapter.DeleteGameProfile(x.GameProfileID));
+            profiles.ToList().ForEach(x => DataSourceAdapter.DeleteGameProfile(x.GameProfileID));
         }
 
         private void DeleteLocalFileAssociations(IGameFile gameFIle)
@@ -563,7 +563,7 @@ namespace DoomLauncher
 
         private LauncherPath DirectoryForFileType(FileType fileTypeID)
         {
-            switch(fileTypeID)
+            switch (fileTypeID)
             {
                 case FileType.Screenshot:
                     return AppConfiguration.ScreenshotDirectory;
@@ -578,60 +578,52 @@ namespace DoomLauncher
 
         private void HandleSelectionChange(object sender, bool forceChange)
         {
-            if (sender is IGameFileView)
+            if (!(sender is IGameFileView))
+                return;
+
+            IGameFile item = null;
+            IGameFile[] items = SelectedItems(GetCurrentViewControl());
+            if (items.Length > 0)
+                item = items.First();
+
+            if (!forceChange && !AssertCurrentViewItem(item))
             {
-                IGameFile item = null;
-                IGameFile[] items = SelectedItems(GetCurrentViewControl());
-                if (items.Length > 0)
-                    item = items.First();
-
-                if (!forceChange && !AssertCurrentViewItem(item))
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        m_lastSelectedItem = null;
-                        ctrlAssociationView.ClearData();
-                        ClearSummary();
-                        btnPlay.Enabled = false;
-                    }
-                    return;
-                }
-
-                ctrlAssociationView.SetData(item);
-
-                if (item != null)
-                {
-                    RebuildTagToolStrip();
-                    ctrlSummary.Visible = false;
-                    ctrlSummary.SuspendLayout();
-                    SetSummary(item);
-
-                    IFileData imgFile = null;
-                    IEnumerable<IStatsData> stats = new IStatsData[] { };
-
-                    if (item.GameFileID.HasValue)
-                    {
-                        imgFile = DataSourceAdapter.GetFiles(item, FileType.Screenshot).FirstOrDefault();
-                        stats = DataSourceAdapter.GetStats(item.GameFileID.Value);
-                    }
-
-                    if (imgFile != null && !string.IsNullOrEmpty(imgFile.FileName))
-                        SetPreviewImage(imgFile);
-
-                    ctrlSummary.SetStatistics(item, stats);
-                }
-                else
-                {
-                    btnPlay.Enabled = false;
+                    m_lastSelectedItem = null;
                     ctrlAssociationView.ClearData();
+                    ClearSummary();
+                    btnPlay.Enabled = false;
+                }
+                return;
+            }
+
+            ctrlAssociationView.SetData(item);
+
+            if (item != null)
+            {
+                RebuildTagToolStrip();
+
+                IFileData imgFile = null;
+                IEnumerable<IStatsData> stats = new IStatsData[] { };
+
+                if (item.GameFileID.HasValue)
+                {
+                    imgFile = DataSourceAdapter.GetFiles(item, FileType.Screenshot).FirstOrDefault();
+                    stats = DataSourceAdapter.GetStats(item.GameFileID.Value);
                 }
 
-                ctrlSummary.Visible = true;
-                ctrlSummary.ResumeLayout();
-                
-                if (forceChange)
-                    GetCurrentViewControl().RefreshData();
+                SetSummary(item, imgFile);
+                ctrlSummary.SetStatistics(item, stats);
             }
+            else
+            {
+                btnPlay.Enabled = false;
+                ctrlAssociationView.ClearData();
+            }
+
+            if (forceChange)
+                GetCurrentViewControl().RefreshData();
         }
 
         private bool AssertCurrentViewItem(IGameFile item)
@@ -645,16 +637,22 @@ namespace DoomLauncher
             return true;
         }
 
-        private void SetSummary(IGameFile item)
+        private void SetSummary(IGameFile item, IFileData imgFile)
         {
             ctrlSummary.SetTitle(item.Title);
             ctrlSummary.SetDescription(item.Description);
-            ctrlSummary.ClearPreviewImage();
             ctrlSummary.TagText = BuildTagText(item);
             ctrlSummary.SetTimePlayed(item.MinutesPlayed);
-            ctrlSummary.ClearComments();
+ 
             if (!string.IsNullOrEmpty(item.Comments))
                 ctrlSummary.SetComments(item.Comments);
+            else
+                ctrlSummary.ClearComments();
+
+            if (imgFile != null && !string.IsNullOrEmpty(imgFile.FileName))
+                SetPreviewImage(imgFile);
+            else
+                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
         }
 
         private void ClearSummary()
@@ -678,7 +676,7 @@ namespace DoomLauncher
             }
             catch
             {
-                ctrlSummary.ClearPreviewImage();
+                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
             }
         }
 
@@ -716,7 +714,7 @@ namespace DoomLauncher
 
         private void UpdateDataSourceViews(IGameFile gameFile)
         {
-            foreach(ITabView tab in m_tabHandler.TabViews)
+            foreach (ITabView tab in m_tabHandler.TabViews)
                 tab.UpdateDataSourceFile(gameFile);
         }
 
@@ -878,14 +876,14 @@ namespace DoomLauncher
 
             var deletedTags = existingTagIDs.Except(newTagIDs);
             var newTags = newTagIDs.Except(existingTagIDs);
-            
-            foreach(var deletedTag in deletedTags)
+
+            foreach (var deletedTag in deletedTags)
             {
                 TagMapping tagMap = new TagMapping() { FileID = gameFile.GameFileID.Value, TagID = deletedTag };
                 DataSourceAdapter.DeleteTagMapping(tagMap);
             }
 
-            foreach(var newTag in newTags)
+            foreach (var newTag in newTags)
             {
                 TagMapping tagMap = new TagMapping() { FileID = gameFile.GameFileID.Value, TagID = newTag };
                 DataSourceAdapter.InsertTagMapping(tagMap);
@@ -919,7 +917,7 @@ namespace DoomLauncher
                         if (dsItemFull != null)
                             Process.Start(string.Format("{0}?file={1}{2}", AppConfiguration.IdGamesUrl, dsItemFull.dir, dsItemFull.FileName));
                     }
-                    catch(WebException)
+                    catch (WebException)
                     {
                         ShowBadConnectionError();
                     }
@@ -997,14 +995,20 @@ namespace DoomLauncher
             HandleTabSelectionChange();
         }
 
+        private ITabView m_lastSelectedTabView;
+
         private void HandleTabSelectionChange()
         {
             if (tabControl.SelectedTab != null)
             {
+                if (m_lastSelectedTabView != null)
+                    m_lastSelectedTabView.GameFileViewControl.SetVisible(false);
+
                 ITabView tabView = GetCurrentTabView();
 
                 if (tabView != null)
                 {
+                    m_lastSelectedTabView = tabView;
                     btnSearch.Enabled = tabView.IsSearchAllowed;
                     btnPlay.Enabled = tabView.IsPlayAllowed;
                     chkAutoSearch.Enabled = tabView.IsAutoSearchAllowed;
@@ -1015,8 +1019,9 @@ namespace DoomLauncher
                         m_idGamesLoaded = true;
                     }
 
-                    HandleSelectionChange(GetCurrentViewControl(), false);
                     tabView.GameFileViewControl.Focus();
+                    tabView.GameFileViewControl.SetVisible(true);
+                    HandleSelectionChange(tabView.GameFileViewControl, false);
                 }
             }
         }
@@ -1129,7 +1134,7 @@ namespace DoomLauncher
                 catch (DirectoryNotFoundException ex)
                 {
                     MessageBox.Show(this, string.Format("The directory {0} was not found. DoomLauncher will not operate correctly with invalid paths. " +
-                        "Make sure the directory you are setting contains all folders required (Demos, SaveGames, Screenshots, Temp)", ex.Message), 
+                        "Make sure the directory you are setting contains all folders required (Demos, SaveGames, Screenshots, Temp)", ex.Message),
                         "Invalid Directory",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -1162,71 +1167,9 @@ namespace DoomLauncher
 
         private void CtrlAssociationView_RequestScreenshots(object sender, RequestScreenshotsEventArgs e)
         {
-            //m_requestGuid = Guid.NewGuid();
-            //Task.Run(() => SetScreenshotsAsync(e, m_requestGuid));
-
             List<IFileData> screens = DataSourceAdapter.GetFiles(e.GameFile, FileType.Screenshot).ToList();
             ctrlAssociationView.SetScreenshots(screens);
-
-            if (screens.Count > 0)
-                SetPreviewImage(screens.First());
-            else
-                ctrlSummary.ClearPreviewImage();
         }
-
-        //private void SetScreenshotsAsync(RequestScreenshotsEventArgs e, Guid reqGuid)
-        //{
-        //    List<IFileDataSource> screens = DataSourceAdapter.GetFiles(e.GameFile, FileType.Screenshot).ToList();
-        //    WadArchiveDataAdapter secondaryAdapter = new WadArchiveDataAdapter();
-        //    IGameFileDataSource secondFile = GetSecondaryFile(e.GameFile, secondaryAdapter);
-                
-        //    if (secondFile != null)
-        //        screens.AddRange(secondaryAdapter.GetFiles(secondFile, FileType.Screenshot));
-
-        //    if (InvokeRequired)
-        //        Invoke(new Action<IGameFileDataSource, List<IFileDataSource>, Guid>(SetScreenshotControls), new object[] { e.GameFile, screens, reqGuid });
-        //    else
-        //        SetScreenshotControls(e.GameFile, screens, reqGuid);
-        //}
-
-        //private void SetScreenshotControls(IGameFileDataSource gameFile, List<IFileDataSource> screens, Guid reqGuid)
-        //{
-        //    IGameFileDataSource[] selectedItems = SelectedItems(GetCurrentViewControl());
-
-        //    if (selectedItems.Length > 0 && m_requestGuid == reqGuid)
-        //    {
-        //        ctrlAssociationView.SetScreenshots(screens);
-
-        //        if (screens.Count > 0)
-        //            SetPreviewImage(screens.First());
-        //        else
-        //            ctrlSummary.ClearPreviewImage();
-        //    }
-        //}
-
-        //private IGameFileDataSource GetSecondaryFile(IGameFileDataSource gameFile, WadArchiveDataAdapter funzies)
-        //{
-        //    string file = Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), gameFile.FileName);
-        //    ZipArchive za = ZipFile.OpenRead(file);
-        //    ZipArchiveEntry zae = za.Entries.Where(x => x.Name.Contains(".wad")).FirstOrDefault();
-
-        //    if (zae != null)
-        //    {
-        //        try
-        //        {
-        //            string extractFile = Path.Combine("GameFiles", "Temp", zae.Name);
-        //            if (!File.Exists(extractFile))
-        //                zae.ExtractToFile(extractFile, true);
-
-        //            GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.MD5, extractFile));
-        //            IGameFileDataSource secondFile = funzies.GetGameFiles(options).FirstOrDefault();
-        //            return secondFile;
-        //        }
-        //        catch { }
-        //    }
-
-        //    return null;
-        //}
 
         private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1245,7 +1188,7 @@ namespace DoomLauncher
 
         private async Task HandleAddIWads()
         {
-            await HandleAddFiles(AddFileType.IWad, new string[] {"WAD"}, "Select IWADs");
+            await HandleAddFiles(AddFileType.IWad, new string[] { "WAD" }, "Select IWADs");
         }
 
         private void UpdateLocal()
@@ -1288,7 +1231,7 @@ namespace DoomLauncher
             {
                 StringBuilder sb = new StringBuilder();
                 Array.ForEach(missingFiles, x => sb.Append(x + "\n"));
-                MessageBox.Show(this, "The following files were not found and will not be added:" + Environment.NewLine + Environment.NewLine + 
+                MessageBox.Show(this, "The following files were not found and will not be added:" + Environment.NewLine + Environment.NewLine +
                     sb.ToString(), "Files Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 libraryFiles = libraryFiles.Except(missingFiles).ToList();
             }
@@ -1306,7 +1249,7 @@ namespace DoomLauncher
         private bool VerifyAddFiles(AddFileType type, string[] files)
         {
             List<string> warnFiles = new List<string>();
-            
+
             foreach (string file in files)
             {
                 IWadInfo info = IWadInfo.GetIWadInfo(file);
@@ -1535,7 +1478,7 @@ namespace DoomLauncher
                         }
                     }
                 }
-                catch(IOException)
+                catch (IOException)
                 {
                     ret.Errors.Add(new CopyError { FileName = baseName, Error = "File is in use." });
                 }
@@ -1608,7 +1551,7 @@ namespace DoomLauncher
         {
             if (InvokeRequired)
             {
-                return (Tuple<bool, bool>)Invoke(new Func<string, Tuple<bool,bool>>(PromptCopyFileOverwrite), new object[] { file });
+                return (Tuple<bool, bool>)Invoke(new Func<string, Tuple<bool, bool>>(PromptCopyFileOverwrite), new object[] { file });
             }
             else
             {
@@ -1676,6 +1619,28 @@ namespace DoomLauncher
             HandleFormClosing();
         }
 
+        private void MnuLocal_Opening(object sender, CancelEventArgs e)
+        {
+            ToolStripMenuItem sortToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
+            IGameFileView view = GetCurrentViewControl();
+            sortToolStrip.Visible = view is GameFileTileViewControl;
+
+            for (int i = 0; i < GameFileViewFactory.DefaultColumnTextFields.Length; i++)
+            {
+                string text = GameFileViewFactory.DefaultColumnTextFields[i].Title;
+
+                if (m_sortValues.ContainsKey(view) && m_sortValues[view].Item1.DataKey == GameFileViewFactory.DefaultColumnTextFields[i].DataKey)
+                {
+                    if (m_sortValues[view].Item2 == SortDirection.Ascending)
+                        text += " ▲";
+                    else
+                        text += " ▼";
+                }
+
+                sortToolStrip.DropDownItems[i].Text = text;
+            }
+        }
+
         private void newTagToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HandleManageTags();
@@ -1691,6 +1656,56 @@ namespace DoomLauncher
             HandleManageTags();
         }
 
+        private void sortToolStripItem_Click(object sender, EventArgs e)
+        {
+            ToolStripItem strip = sender as ToolStripItem;
+            ToolStripMenuItem sortToolStrip = GetSortByToolStrip();
+
+            int index = 0;
+            for (int i = 0; i < sortToolStrip.DropDownItems.Count; i++)
+            {
+                if (sortToolStrip.DropDownItems[i] == strip)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            ColumnField columnField = GameFileViewFactory.DefaultColumnTextFields[index];
+
+            if (columnField != null)
+            {
+                IGameFileView view = GetCurrentViewControl();
+
+                if (!m_sortValues.ContainsKey(view))
+                    m_sortValues.Add(view, new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Descending));
+
+                if (m_sortValues[view].Item2 == SortDirection.Ascending)
+                    m_sortValues[view] = new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Descending);
+                else
+                    m_sortValues[view] = new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Ascending);
+
+                view.DataSource = GetViewSort(view, view.DataSource);
+            }
+        }
+
+        private IEnumerable<IGameFile> GetViewSort(IGameFileView view, IEnumerable<IGameFile> gameFiles)
+        {
+            if (!m_sortValues.ContainsKey(view))
+                return gameFiles;
+
+            var property = typeof(IGameFile).GetProperty(m_sortValues[view].Item1.DataKey);
+            if (property != null && view.DataSource.Any())
+            {
+                if (m_sortValues[view].Item2 == SortDirection.Ascending)
+                    return gameFiles.OrderBy(x => property.GetValue(x));
+                else
+                    return gameFiles.OrderByDescending(x => property.GetValue(x));
+            }
+
+            return gameFiles;
+        }
+
         private void HandleManageTags()
         {
             TagForm form = new TagForm();
@@ -1699,7 +1714,7 @@ namespace DoomLauncher
             form.ShowDialog(this);
 
             RebuildTagToolStrip();
-            TagMapLookup.Refresh();
+            DataCache.Instance.TagMapLookup.Refresh();
 
             if (form.TagControl.AddedTags.Length > 0)
             {
@@ -1750,13 +1765,13 @@ namespace DoomLauncher
 
             ITabView[] tabViews = m_tabHandler.TabViews;
 
-            while (start > end && tabViews[start] is TagTabView && 
+            while (start > end && tabViews[start] is TagTabView &&
                 tabViews[start].Title.CompareTo(tag.Name) > 0)
             {
                 start--;
             }
 
-            m_tabHandler.InsertTab(start+1, CreateTagTab(DefaultColumnTextFields, GetColumnConfig(), tag.Name, tag, true));
+            m_tabHandler.InsertTab(start + 1, CreateTagTab(GameFileViewFactory.DefaultColumnTextFields, DataCache.Instance.GetColumnConfig(), tag.Name, tag, true));
         }
 
         private void utilityToolStripItem_Click(object sender, EventArgs e)
@@ -1780,76 +1795,80 @@ namespace DoomLauncher
         private void tagToolStripItem_Click(object sender, EventArgs e)
         {
             ToolStripItem strip = sender as ToolStripItem;
+            if (strip == null)
+                return;
+
+            ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
+            if (tag == null)
+                return;
+
             IGameFile[] gameFiles = SelectedItems(GetCurrentViewControl());
+            StringBuilder sbError = new StringBuilder();
 
-            if (strip != null)
+            foreach (IGameFile gameFile in gameFiles)
             {
-                ITagData tag = Tags.FirstOrDefault(x => x.Name == strip.Text);
+                TagMapping tagMapping = new TagMapping();
+                tagMapping.FileID = gameFile.GameFileID.Value;
+                tagMapping.TagID = tag.TagID;
 
-                if (tag != null)
+                if (!DataSourceAdapter.GetTagMappings(tagMapping.FileID).Contains(tagMapping))
                 {
-                    StringBuilder sbError = new StringBuilder();
-
-                    foreach (IGameFile gameFile in gameFiles)
-                    {
-                        TagMapping tagMapping = new TagMapping();
-                        tagMapping.FileID = gameFile.GameFileID.Value;
-                        tagMapping.TagID = tag.TagID;
-
-                        if (!DataSourceAdapter.GetTagMappings(tagMapping.FileID).Contains(tagMapping))
-                        {
-                            DataSourceAdapter.InsertTagMapping(tagMapping);
-                        }
-                        else
-                        {
-                            sbError.Append(gameFile.FileName);
-                            sbError.Append(", ");
-                        }
-                    }
-
-                    TagMapLookup.Refresh();
-                    UpdateTagTabData(tag.TagID);
-                    HandleTabSelectionChange();
-
-                    if (sbError.Length > 0)
-                    {
-                        sbError.Remove(sbError.Length - 2, 2);
-                        sbError.Insert(0, "The file(s) ");
-                        sbError.Append(" already have the tag ");
-                        sbError.Append(tag.Name);
-                        MessageBox.Show(this, sbError.ToString(), "Already Tagged", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-
-                    HandleSelectionChange(GetCurrentViewControl(), true);
+                    DataSourceAdapter.InsertTagMapping(tagMapping);
+                }
+                else
+                {
+                    sbError.Append(gameFile.FileName);
+                    sbError.Append(", ");
                 }
             }
+
+            DataCache.Instance.TagMapLookup.Refresh();
+            UpdateTagTabData(tag.TagID);
+
+            foreach (IGameFile gameFile in gameFiles)
+                GetCurrentViewControl().UpdateGameFile(gameFile);
+
+            HandleTabSelectionChange();
+
+            if (sbError.Length > 0)
+            {
+                sbError.Remove(sbError.Length - 2, 2);
+                sbError.Insert(0, "The file(s) ");
+                sbError.Append(" already have the tag ");
+                sbError.Append(tag.Name);
+                MessageBox.Show(this, sbError.ToString(), "Already Tagged", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
         private void removeTagToolStripItem_Click(object sender, EventArgs e)
         {
             ToolStripItem strip = sender as ToolStripItem;
+            if (strip == null)
+                return;
+
+            ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
+            if (tag == null)
+                return;
+
+            TagMapping tagMapping = new TagMapping();
             IGameFile[] gameFiles = SelectedItems(GetCurrentViewControl());
 
-            if (strip != null)
+            foreach (IGameFile gameFile in gameFiles)
             {
-                ITagData tag = Tags.FirstOrDefault(x => x.Name == strip.Text);
-
-                if (tag != null)
-                {
-                    TagMapping tagMapping = new TagMapping();
-
-                    foreach (IGameFile gameFile in gameFiles)
-                    {
-                        tagMapping.TagID = tag.TagID;
-                        tagMapping.FileID = gameFile.GameFileID.Value;
-                        DataSourceAdapter.DeleteTagMapping(tagMapping);
-                    }
-
-                    TagMapLookup.Refresh();
-                    UpdateTagTabData(tag.TagID);
-                    HandleSelectionChange(GetCurrentViewControl(), true);
-                }
+                tagMapping.TagID = tag.TagID;
+                tagMapping.FileID = gameFile.GameFileID.Value;
+                DataSourceAdapter.DeleteTagMapping(tagMapping);
             }
+
+            DataCache.Instance.TagMapLookup.Refresh();
+            UpdateTagTabData(tag.TagID);
+
+            foreach (IGameFile gameFile in gameFiles)
+                GetCurrentViewControl().UpdateGameFile(gameFile);
+
+            HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
         private void anyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2238,11 +2257,11 @@ namespace DoomLauncher
             }
         }
 
-        public AppConfiguration AppConfiguration { get; set; }
-        public IDataSourceAdapter DataSourceAdapter { get; set; }
+        private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
+        private IDataSourceAdapter DataSourceAdapter { get; set; }
 
         private IGameFileDataSourceAdapter DirectoryDataSourceAdapter { get; set; }
+
         private IGameFileDataSourceAdapter IdGamesDataSourceAdapter { get; set; }
-        private ITagData[] Tags { get; set; }
     }
 }

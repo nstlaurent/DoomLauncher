@@ -97,6 +97,12 @@
     <Compile Include="Archive\IArchiveEntry.cs" />
     <Compile Include="Archive\ZipArchiveReader.cs" />
     <Compile Include="Archive\ZipArchiveReaderEntry.cs" />
+    <Compile Include="Controls\GameFileTile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTile.Designer.cs">
+      <DependentUpon>GameFileTile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GlowButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -106,8 +112,15 @@
     <Compile Include="Controls\UpdateControl.Designer.cs">
       <DependentUpon>UpdateControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Config\DataCache.cs" />
     <Compile Include="DataSources\GameProfile.cs" />
     <Compile Include="Config\FileManagement.cs" />
+    <Compile Include="Controls\FlowLayoutPanelDB.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FlowLayoutPanelDB.Designer.cs">
+      <DependentUpon>FlowLayoutPanelDB.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FileManagementSelect.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,10 +128,39 @@
       <DependentUpon>FileManagementSelect.cs</DependentUpon>
     </Compile>
     <Compile Include="Archive\IArchiveReader.cs" />
+    <Compile Include="Controls\GameFileTileViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTileViewControl.Designer.cs">
+      <DependentUpon>GameFileTileViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameFileTileBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTileExpanded.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTileExpanded.Designer.cs">
+      <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\GameFileListEventArgs.cs" />
+    <Compile Include="GameFileView\GameFileViewFactory.cs" />
+    <Compile Include="GameFileView\GameFileViewType.cs" />
+    <Compile Include="Handlers\GameFileTileManager.cs" />
+    <Compile Include="Interfaces\IGameFileTile.cs" />
     <Compile Include="Interfaces\IGameFileColumnView.cs" />
     <Compile Include="Interfaces\IGameFileView.cs" />
     <Compile Include="Interfaces\IGameProfile.cs" />
     <Compile Include="IWad\IWadInfo.cs" />
+    <Compile Include="Controls\PagingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PagingControl.Designer.cs">
+      <DependentUpon>PagingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers\ToolTipDisplayHandler.cs" />
+    <Compile Include="Handlers\ThumbnailManager.cs" />
+    <Compile Include="Config\SortDirection.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />
@@ -564,6 +606,12 @@
     <EmbeddedResource Include="Controls\FilesCtrl.resx">
       <DependentUpon>FilesCtrl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GameFileTile.resx">
+      <DependentUpon>GameFileTile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GameFileTileViewControl.resx">
+      <DependentUpon>GameFileTileViewControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\StatisticsView.resx">
       <DependentUpon>StatisticsView.cs</DependentUpon>
     </EmbeddedResource>
@@ -620,6 +668,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Welcome.resx">
       <DependentUpon>Welcome.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PagingControl.resx">
+      <DependentUpon>PagingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GameFileTileExpanded.resx">
+      <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TabViews\BasicTabViewCtrl.resx">
       <DependentUpon>BasicTabViewCtrl.cs</DependentUpon>

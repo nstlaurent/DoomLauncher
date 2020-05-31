@@ -5,6 +5,8 @@ namespace DoomLauncher.Interfaces
 {
     public interface ITabView : ICloneable
     {
+        event EventHandler<GameFileListEventArgs> DataSourceChanging;
+
         void SetGameFiles();
         void SetGameFiles(IEnumerable<GameFileSearchField> searchFields);
         void SetGameFilesData(IEnumerable<IGameFile> gameFiles);

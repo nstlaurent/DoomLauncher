@@ -149,6 +149,7 @@
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(1002, 659);
             this.tabControl.TabIndex = 3;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
             // 
             // FileSelectForm
             // 

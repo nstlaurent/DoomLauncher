@@ -1,13 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -15,8 +8,14 @@ namespace DoomLauncher
     {
         private IDataSourceAdapter m_tagAdapter;
 
-        public TagTabView(object key, string title, IDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagData tag)
-            : base(key, title, adapter, selectFields)
+        public TagTabView(object key, string title, IDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagData tag, GameFileViewFactory factory)
+            : this(key, title, adapter, selectFields, tag, factory.CreateGameFileView())
+        {
+            m_factory = factory;
+        }
+
+        public TagTabView(object key, string title, IDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagData tag, IGameFileView view)
+            : base(key, title, adapter, selectFields, view)
         {
             InitializeComponent();
             TagDataSource = tag;
@@ -25,7 +24,7 @@ namespace DoomLauncher
 
         public override object Clone()
         {
-            TagTabView view = new TagTabView(m_key, m_title, m_tagAdapter, m_selectFields, TagDataSource);
+            TagTabView view = new TagTabView(m_key, m_title, m_tagAdapter, m_selectFields, TagDataSource, GameFileViewFactory.CreateGameFileViewGrid());
             base.SetBaseCloneProperties(view);
             return view;
         }

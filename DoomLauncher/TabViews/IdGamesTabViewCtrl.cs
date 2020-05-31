@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DoomLauncher.Interfaces;
 
@@ -15,8 +11,8 @@ namespace DoomLauncher
     {
         private bool m_working;
 
-        public IdGamesTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields)
-            : base(key, title, adapter, selectFields)
+        public IdGamesTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, GameFileViewFactory factory)
+            : base(key, title, adapter, selectFields, factory)
         {
             InitializeComponent();
         }
