@@ -94,19 +94,19 @@ namespace DoomLauncher
             yPos += offset;
             e.Graphics.DrawString("Author", DisplayBoldFont, Brushes.Black, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString("Release Date", DisplayBoldFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString("Release", DisplayBoldFont, Brushes.Black, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString("Last Played", DisplayBoldFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString("Played", DisplayBoldFont, Brushes.Black, xPos, yPos);
             yPos += offset;
             e.Graphics.DrawString("Maps", DisplayBoldFont, Brushes.Black, xPos, yPos);
             yPos += offset;
             e.Graphics.DrawString("Tags", DisplayBoldFont, Brushes.Black, xPos, yPos);
 
 
-            xPos = gameTile.Location.X + dpiScale.ScaleFloatX(122);
+            xPos = gameTile.Location.X + dpiScale.ScaleFloatX(76);
             yPos = dpiScale.ScaleIntY(8);
 
-            SizeF maxLabelSize = new SizeF(pnlData.ClientRectangle.Width - xPos, 16);
+            SizeF maxLabelSize = new SizeF(pnlData.ClientRectangle.Width - xPos + dpiScale.ScaleIntX(8), 16);
 
             e.Graphics.DrawString(GameFile.FileNameNoPath, DisplayFont, Brushes.Black, xPos, yPos);
             yPos += offset;
