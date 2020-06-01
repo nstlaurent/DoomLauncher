@@ -43,13 +43,13 @@
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.flpPaging, 0, 0);
+            this.tblMain.Controls.Add(this.flpPaging, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 2;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblMain.Size = new System.Drawing.Size(478, 313);
             this.tblMain.TabIndex = 1;
@@ -61,7 +61,7 @@
             this.flpPaging.Controls.Add(this.pagingControl);
             this.flpPaging.Controls.Add(this.label1);
             this.flpPaging.Controls.Add(this.cmbMaxItemsPerPage);
-            this.flpPaging.Location = new System.Drawing.Point(58, 0);
+            this.flpPaging.Location = new System.Drawing.Point(58, 283);
             this.flpPaging.Margin = new System.Windows.Forms.Padding(0);
             this.flpPaging.Name = "flpPaging";
             this.flpPaging.Size = new System.Drawing.Size(362, 30);

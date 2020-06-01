@@ -10,31 +10,6 @@ namespace DoomLauncher
 {
     public partial class GameFileTileViewControl : UserControl, IGameFileView
     {
-        public IEnumerable<IGameFile> DataSource
-        {
-            get => m_gameFiles;
-            set => SetData(value);
-        }
-
-        public IGameFile SelectedItem
-        {
-            get
-            {
-                if (m_selectedTiles.Count > 0)
-                    return m_selectedTiles[0].GameFile;
-                return null;
-            }
-            set
-            {
-                SelectGameFile(value);
-            }
-        }
-
-        public IGameFile[] SelectedItems => m_selectedTiles.Select(x => x.GameFile).ToArray();
-
-        public bool MultiSelect { get; set; }
-        public object DoomLauncherParent { get; set; }
-
         public event EventHandler ItemClick;
         public event EventHandler ItemDoubleClick;
         public event EventHandler SelectionChange;
@@ -42,6 +17,8 @@ namespace DoomLauncher
         public event KeyEventHandler ViewKeyDown;
         public event GameFileEventHandler GameFileEnter;
         public event GameFileEventHandler GameFileLeave;
+
+        private readonly int LayoutRow = 0;
 
         private List<IGameFile> m_gameFiles = new List<IGameFile>();
         private readonly List<GameFileTileBase> m_selectedTiles = new List<GameFileTileBase>();
@@ -53,7 +30,7 @@ namespace DoomLauncher
         private bool m_tilesRecreated;
 
         private readonly System.Timers.Timer m_mouseTimer;
-        private int m_lastScrollPos ;
+        private int m_lastScrollPos;
         private GameFileTileBase m_lastHover;
 
         private FlowLayoutPanelDB flpMain;
@@ -88,6 +65,31 @@ namespace DoomLauncher
             cmbMaxItemsPerPage.SelectedIndexChanged += CmbMaxItemsPerPage_SelectedIndexChanged;
         }
 
+        public IEnumerable<IGameFile> DataSource
+        {
+            get => m_gameFiles;
+            set => SetData(value);
+        }
+
+        public IGameFile SelectedItem
+        {
+            get
+            {
+                if (m_selectedTiles.Count > 0)
+                    return m_selectedTiles[0].GameFile;
+                return null;
+            }
+            set
+            {
+                SelectGameFile(value);
+            }
+        }
+
+        public IGameFile[] SelectedItems => m_selectedTiles.Select(x => x.GameFile).ToArray();
+
+        public bool MultiSelect { get; set; }
+        public object DoomLauncherParent { get; set; }
+
         public void SetVisible(bool set)
         {
             m_visible = set;
@@ -95,6 +97,7 @@ namespace DoomLauncher
             if (set)
             {
                 flpMain = GameFileTileManager.Instance.TileLayout;
+                flpMain.TabIndex = 1;
                 flpMain.Anchor = AnchorStyles.Top | AnchorStyles.Left;
                 flpMain.Dock = DockStyle.Fill;
 
@@ -106,7 +109,7 @@ namespace DoomLauncher
                 }
                 else
                 {
-                    tblMain.Controls.Add(flpMain, 0, 1);
+                    tblMain.Controls.Add(flpMain, 0, LayoutRow);
                 }
 
                 flpMain.KeyPress += GameFileTileViewControl_KeyPress;
@@ -193,6 +196,8 @@ namespace DoomLauncher
             Control test = tblMain.GetChildAtPoint(tblMain.PointToClient(pt));
             if (test != null && test == flpMain)
             {
+                flpMain.Focus();
+
                 foreach (var tile in GameFileTileManager.Instance.Tiles)
                 {
                     if (!tile.Visible)
@@ -201,7 +206,7 @@ namespace DoomLauncher
                     var rect = tile.RectangleToScreen(tile.DisplayRectangle);
                     if (rect.Contains(pt))
                     {
-                        if (m_lastHover != tile)
+                        if (m_lastHover != tile && tile.IsVisibleAtPoint(pt))
                         {
                             m_lastHover = tile;
                             GameFileEnter?.Invoke(this, new GameFileEventArgs(tile.GameFile));
@@ -284,7 +289,7 @@ namespace DoomLauncher
         public void SetDisplayText(string text)
         {
             tblMain.Controls.Remove(flpMain);
-            tblMain.Controls.Add(m_label, 0, 1);
+            tblMain.Controls.Add(m_label, 0, LayoutRow);
             m_label.Text = text;
             m_label.Visible = true;
         }
@@ -331,7 +336,7 @@ namespace DoomLauncher
             {
                 m_label.Visible = false;
                 tblMain.Controls.Remove(m_label);
-                tblMain.Controls.Add(GameFileTileManager.Instance.TileLayout, 0, 1);
+                tblMain.Controls.Add(GameFileTileManager.Instance.TileLayout, 0, LayoutRow);
             }
         }
 
