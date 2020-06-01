@@ -440,6 +440,21 @@ namespace DoomLauncher
             return text;
         }
 
+        static public SizeF MeasureDisplayString(this Graphics graphics, string text, Font font)
+        {
+            StringFormat format = new StringFormat();
+            RectangleF rect = new RectangleF(0, 0, 1000, 1000);
+            CharacterRange[] ranges = { new CharacterRange(0, text.Length) };
+
+            format.SetMeasurableCharacterRanges(ranges);
+
+            Region[] regions = graphics.MeasureCharacterRanges(text, font, rect, format);
+            rect = regions[0].GetBounds(graphics);
+            rect.Inflate(2, 2);
+
+            return rect.Size;
+        }
+
         [DllImport("user32.dll")]
         static extern IntPtr WindowFromPoint(WinPoint Point);
 

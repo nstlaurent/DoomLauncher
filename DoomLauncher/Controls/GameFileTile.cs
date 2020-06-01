@@ -73,7 +73,7 @@ namespace DoomLauncher
             else
                 text = GameFile.FileNameNoPath;
 
-            SizeF size = e.Graphics.MeasureString(text, DisplayFont);
+            SizeF size = e.Graphics.MeasureDisplayString(text, DisplayFont);
             float x = Width - size.Width - (Width - size.Width) / 2;
             float y = Height - size.Height - (labelHeight - size.Height) / 2;
             if (Selected)
