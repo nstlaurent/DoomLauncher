@@ -221,6 +221,21 @@ namespace DoomLauncher
 
         private void GameFileTileViewControl_KeyDown(object sender, KeyEventArgs e)
         {
+            if (m_selectedTiles.Count > 0 && (e.KeyCode == Keys.Down || e.KeyCode == Keys.Up || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right))
+            {
+                int index = GameFileTileIndex(m_selectedTiles[0]);
+                if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Right)
+                    index++;
+                else
+                    index--;
+                   
+                if (index > -1 && index < m_gameFiles.Count)
+                {
+                    ClearSelection();
+                    SelectGameFile(m_gameFiles[index]);
+                }
+            }
+
             ViewKeyDown?.Invoke(this, e);
         }
 
@@ -527,7 +542,10 @@ namespace DoomLauncher
             }
 
             if (m_selectedTiles.Count > 0)
+            {
+                flpMain.ScrollControlIntoView(m_selectedTiles[0]);
                 SelectionChange?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void ClearSelection(bool fireEvent = true)

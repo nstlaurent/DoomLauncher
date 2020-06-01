@@ -21,6 +21,7 @@ namespace DoomLauncher
         {
             m_factory = factory;
             TileLayout.AutoScroll = true;
+            TileLayout.CaptureArrowKeys = true;
 
             ResetLayout();
         }
