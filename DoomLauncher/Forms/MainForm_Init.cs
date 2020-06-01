@@ -523,7 +523,7 @@ namespace DoomLauncher
             if (!DataSourceAdapter.GetIWads().Any()) //If no iwads then prompt to add iwads
             {
                 await HandleAddIWads();
-                this.Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = 2; }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
+                this.Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = 3; }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
                 DisplayInitSettings(); //give user the change set default port, iwad, skill
             }
         }
