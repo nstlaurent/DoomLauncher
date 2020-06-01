@@ -427,10 +427,14 @@ namespace DoomLauncher
 
             if (charactersFitted != text.Length && charactersFitted > 3)
             {
-                while (charactersFitted > 0 && text[charactersFitted] != ' ')
-                    charactersFitted--;
+                int wordFit = charactersFitted;
+                while (wordFit > 0 && text[wordFit] != ' ')
+                    wordFit--;
 
-                return text.Substring(0, charactersFitted) + "...";
+                if (wordFit > 0)
+                    return text.Substring(0, wordFit) + "...";
+
+                return text.Substring(0, charactersFitted);
             }
 
             return text;
