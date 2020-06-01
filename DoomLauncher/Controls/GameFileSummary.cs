@@ -38,14 +38,10 @@ namespace DoomLauncher
 
         public void SetDescription(string text)
         {
-            string cleanedText = Util.CleanDescription(text);
-            if (txtDescription.Text == cleanedText)
-                return;
-
             txtDescription.Clear();
             txtDescription.Visible = false;
 
-            txtDescription.Text = cleanedText;
+            txtDescription.Text = Util.CleanDescription(text);
 
             txtDescription.Visible = true;
         }
