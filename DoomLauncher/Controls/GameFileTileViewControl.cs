@@ -373,15 +373,13 @@ namespace DoomLauncher
         private void SetLayout(List<IGameFile> gameFiles, IEnumerable<IFileData> screenshots, IEnumerable<IFileData> thumbnails)
         {
             flpMain.SuspendLayout();
-
-            var itemsEnum = GameFileTileManager.Instance.Tiles.GetEnumerator();
-            itemsEnum.MoveNext();
+            int tileIndex = 0;
 
             foreach (var gameFile in gameFiles)
             {
-                SetTileData(itemsEnum.Current, gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(gameFile), false);
-                itemsEnum.Current.Visible = true;
-                itemsEnum.MoveNext();
+                SetTileData(GameFileTileManager.Instance.Tiles[tileIndex], gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(gameFile), false);
+                GameFileTileManager.Instance.Tiles[tileIndex].Visible = true;
+                tileIndex++;
             }
 
             for (int i = gameFiles.Count; i < GameFileTileManager.Instance.Tiles.Count; i++)

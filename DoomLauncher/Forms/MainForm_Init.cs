@@ -451,7 +451,6 @@ namespace DoomLauncher
             UpdateLocal();
 
             SetupSearchFilters();
-            HandleTabSelectionChange();
 
             await Task.Run(() => CheckForAppUpdate());
         }

@@ -49,6 +49,7 @@ namespace DoomLauncher
 
         public MainForm(string launchFile)
         {
+            Load += MainForm_Load;
             m_launchFile = launchFile;
 
             m_splash = new SplashScreen();
@@ -81,6 +82,11 @@ namespace DoomLauncher
 
             if (!success)
                 Close();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            HandleTabSelectionChange();
         }
 
         private void KillRunningApps()
