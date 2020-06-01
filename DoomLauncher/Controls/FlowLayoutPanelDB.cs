@@ -6,13 +6,17 @@ namespace DoomLauncher
     {
         public FlowLayoutPanelDB()
         {
-            InitializeComponent();
-            DoubleBuffered = true;
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
         }
 
-        protected override System.Drawing.Point ScrollToControl(Control activeControl)
+        protected override CreateParams CreateParams
         {
-            return DisplayRectangle.Location;
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_CLIPCHILDREN
+                return cp;
+            }
         }
     }
 }
