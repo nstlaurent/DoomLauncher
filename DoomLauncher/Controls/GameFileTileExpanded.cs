@@ -102,8 +102,7 @@ namespace DoomLauncher
             yPos += offset;
             e.Graphics.DrawString("Tags", DisplayBoldFont, Brushes.Black, xPos, yPos);
 
-
-            xPos = gameTile.Location.X + dpiScale.ScaleFloatX(76);
+            xPos = gameTile.Location.X + dpiScale.ScaleFloatX(82);
             yPos = dpiScale.ScaleIntY(8);
 
             SizeF maxLabelSize = new SizeF(pnlData.ClientRectangle.Width - xPos + dpiScale.ScaleIntX(8), 16);
