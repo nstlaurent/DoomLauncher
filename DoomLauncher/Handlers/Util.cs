@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -433,6 +434,38 @@ namespace DoomLauncher
             }
 
             return text;
+        }
+
+        [DllImport("user32.dll")]
+        static extern IntPtr WindowFromPoint(WinPoint Point);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct WinPoint
+        {
+            public int X;
+            public int Y;
+
+            public WinPoint(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
+        }
+
+        public static bool IsVisibleAtPoint(this Control control, Point windowPoint)
+        {
+            var hwnd = WindowFromPoint(new WinPoint(windowPoint.X, windowPoint.Y));
+            var other = Control.FromChildHandle(hwnd);
+            if (other == null)
+                return false;
+
+            Console.WriteLine(other.ToString());
+
+            if (control == other || control.Contains(other))
+                return true;
+
+            return false;
+ 
         }
     }
 }
