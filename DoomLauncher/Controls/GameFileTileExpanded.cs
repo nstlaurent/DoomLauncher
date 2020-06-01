@@ -45,6 +45,18 @@ namespace DoomLauncher
             flpMain.Paint += FlpMain_Paint;
             pnlData.MouseClick += PnlData_Click;
             pnlData.DoubleClick += PnlData_DoubleClick;
+            flpMain.MouseClick += FlpMain_MouseClick;
+            flpMain.DoubleClick += FlpMain_DoubleClick;
+        }
+
+        private void FlpMain_DoubleClick(object sender, EventArgs e)
+        {
+            TileDoubleClick?.Invoke(this, e);
+        }
+
+        private void FlpMain_MouseClick(object sender, MouseEventArgs e)
+        {
+            TileClick?.Invoke(this, e);
         }
 
         private void PnlData_DoubleClick(object sender, EventArgs e)
