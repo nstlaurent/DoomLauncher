@@ -2169,7 +2169,7 @@ namespace DoomLauncher
                     IWshRuntimeLibrary.WshShell wsh = new IWshRuntimeLibrary.WshShell();
                     IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(filePath) as IWshRuntimeLibrary.IWshShortcut;
                     shortcut.Arguments = gameFile.FileName;
-                    shortcut.TargetPath = string.Format(Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.exe"));
+                    shortcut.TargetPath = string.Format(Path.Combine(Directory.GetCurrentDirectory(), Util.GetExecutableNoPath()));
                     shortcut.WindowStyle = 1;
                     shortcut.Description = string.Concat("Doom Launcher - ", gameFile.FileName);
                     shortcut.WorkingDirectory = Directory.GetCurrentDirectory();
