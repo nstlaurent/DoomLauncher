@@ -1724,7 +1724,7 @@ namespace DoomLauncher
             RebuildTagToolStrip();
             DataCache.Instance.TagMapLookup.Refresh();
 
-            if (form.TagControl.AddedTags.Length > 0)
+            if (form.TagControl.AddedTags.Length > 0 && GameFileViewFactory.IsUsingColumnView)
             {
                 UpdateColumnConfig(); //the ordered tab insert will use this column configuration
                 AppConfiguration.RefreshColumnConfig();
