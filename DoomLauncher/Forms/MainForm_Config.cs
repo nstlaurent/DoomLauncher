@@ -31,6 +31,9 @@ namespace DoomLauncher
 
                 if (GameFileViewFactory.IsUsingColumnView)
                     UpdateConfig(config, "ColumnConfig", BuildColumnConfig());
+                else
+                    UpdateConfig(config, "ColumnConfig", BuildTileColumnConfig());
+
                 UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
                 UpdateConfig(config, "ItemsPerPage", AppConfiguration.ItemsPerPage.ToString());
             }
@@ -62,26 +65,57 @@ namespace DoomLauncher
             }
         }
 
+        private string BuildTileColumnConfig()
+        {
+            if (m_tabHandler == null || GameFileViewFactory.IsUsingColumnView)
+                return string.Empty;
+
+            List<ColumnConfig> viewConfig = new List<ColumnConfig>();
+
+            foreach (ITabView tab in m_tabHandler.TabViews)
+                viewConfig.AddRange(tab.GetColumnConfig());
+
+            List<ColumnConfig> config = DataCache.Instance.GetColumnConfig().ToList();
+            // Tile views use IGameFileSortableView which only stores the single column that is sorted, so clear all sorting on all columns
+            config.ForEach(x => x.Sort = SortOrder.None);
+
+            foreach (ColumnConfig viewColumn in viewConfig)
+            {
+                ColumnConfig existingColumn = config.FirstOrDefault(x => x.Parent == viewColumn.Parent && x.Column == viewColumn.Column);
+                if (existingColumn != null)
+                    existingColumn.Sort = viewColumn.Sort;
+                else
+                    config.Add(viewColumn);
+            }
+
+            return SerializeColumnConfig(config);
+        }
+
         private string BuildColumnConfig()
         {
-            if (m_tabHandler != null && GameFileViewFactory.IsUsingColumnView)
+            if (m_tabHandler == null || !GameFileViewFactory.IsUsingColumnView)
+                return string.Empty;
+
+            List<ColumnConfig> config = new List<ColumnConfig>();
+
+            foreach (ITabView tab in m_tabHandler.TabViews)
+                config.AddRange(tab.GetColumnConfig());
+
+            return SerializeColumnConfig(config);
+        }
+
+        private string SerializeColumnConfig(List<ColumnConfig> config)
+        {
+            try
             {
-                List<ColumnConfig> config = new List<ColumnConfig>();
-
-                foreach (ITabView tab in m_tabHandler.TabViews)
-                    config.AddRange(tab.GetColumnConfig());
-
-                try
-                {
-                    StringWriter text = new StringWriter();
-                    XmlSerializer xml = new XmlSerializer(typeof(ColumnConfig[]));
-                    xml.Serialize(text, config.ToArray());
-                    return text.ToString();
-                }
-                catch (Exception ex)
-                {
-                    Util.DisplayUnexpectedException(this, ex);
-                }
+                StringWriter text = new StringWriter();
+                XmlSerializer xml = new XmlSerializer(typeof(ColumnConfig[]));
+                xml.Serialize(text, config.ToArray());
+                return text.ToString();
+            }
+            catch (Exception ex)
+            {
+                Util.DisplayUnexpectedException(this, ex);
             }
 
             return string.Empty;

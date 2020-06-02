@@ -63,17 +63,23 @@ namespace DoomLauncher
                 List<ColumnConfig> config = new List<ColumnConfig>();
 
                 foreach (string key in columnView.GetColumnKeyOrder())
-                {
-                    ColumnConfig col = new ColumnConfig(Title, key,
-                        columnView.GetColumnWidth(key), columnView.GetColumnSort(key));
-                    config.Add(col);
-                }
+                    config.Add(new ColumnConfig(Title, key, columnView.GetColumnWidth(key), columnView.GetColumnSort(key)));
+
+                return config;
+            }
+            else if (GameFileViewControl is IGameFileSortableView sortableView)
+            {
+                List<ColumnConfig> config = new List<ColumnConfig>();
+                string key = sortableView.GetSortedColumnKey();
+
+                if (!string.IsNullOrEmpty(key) && sortableView.GetColumnSort(key) != SortOrder.None)
+                    config.Add(new ColumnConfig(Title, key, 0, sortableView.GetColumnSort(key)));
 
                 return config;
             }
             else
             {
-                throw new InvalidOperationException("GameFileViewControl is not IGameFileColumView");
+                throw new InvalidOperationException("GameFileViewControl is not IGameFileSortableView");
             }
         }
 
@@ -93,6 +99,19 @@ namespace DoomLauncher
                 columnView.SetColumnFormat("LastPlayed", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
 
                 GameFileViewControl.ResumeLayout();
+            }
+            else if (GameFileViewControl is IGameFileSortableView sortableView)
+            {
+                var sortedColumns = SortColumns(Title, columnTextFields, colConfig);
+                foreach (var sortColumn in sortedColumns)
+                {
+                    ColumnConfig config = colConfig.FirstOrDefault(x => x.Sort != SortOrder.None && x.Parent == Title && sortColumn.DataKey.Equals(x.Column, StringComparison.InvariantCultureIgnoreCase));
+                    if (config != null)
+                    {
+                        sortableView.SetSortedColumn(config.Column, config.Sort);
+                        break;
+                    }
+                }
             }
         }
 

@@ -375,6 +375,9 @@ namespace DoomLauncher
 
         public void SetColumnWidth(string key, int width)
         {
+            if (width <= 0)
+                return;
+
             key = key.ToLower();
             m_orderLookup[key].Width = width;
         }
@@ -393,6 +396,17 @@ namespace DoomLauncher
                     return column.HeaderCell.SortGlyphDirection;
             }
             return SortOrder.None;
+        }
+
+        public string GetSortedColumnKey()
+        {
+            foreach (DataGridViewColumn column in dgvMain.Columns)
+            {
+                if (column.HeaderCell.SortGlyphDirection != SortOrder.None)
+                    return column.Name;
+            }
+
+            return string.Empty;
         }
 
         public string[] GetColumnKeyOrder()
