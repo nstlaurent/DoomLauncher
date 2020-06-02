@@ -86,7 +86,7 @@ namespace DoomLauncher
 
         private string GetRelativeDirectory(string file)
         {
-            string current = Directory.GetCurrentDirectory();
+            string current = LauncherPath.GetDataDirectory();
 
             if (file.Contains(current))
             {

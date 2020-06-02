@@ -168,7 +168,7 @@ namespace DoomLauncher
 
                 DataAccess.ExecuteNonQuery(query);
 
-                DirectoryInfo di = new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(),  ConfigurationManager.AppSettings["GameFileDirectory"], "SaveGames"));
+                DirectoryInfo di = new DirectoryInfo(Path.Combine(LauncherPath.GetDataDirectory(),  ConfigurationManager.AppSettings["GameFileDirectory"], "SaveGames"));
                 if (!di.Exists)
                     di.Create();
             }

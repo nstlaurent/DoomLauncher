@@ -35,6 +35,8 @@ namespace DoomLauncher
 
         public bool Execute()
         {
+            // TODO if this installed this won't work
+
             List<RenameFile> renamedFiles = new List<RenameFile>();
 
             try

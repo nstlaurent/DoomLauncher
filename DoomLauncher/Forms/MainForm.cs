@@ -60,12 +60,12 @@ namespace DoomLauncher
             InitializeComponent();
             ClearSummary();
 
-            m_workingDirectory = Directory.GetCurrentDirectory();
+            m_workingDirectory = LauncherPath.GetDataDirectory();
             bool success = false;
 
             if (VerifyDatabase())
             {
-                string dataSource = Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
+                string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
                 DataSourceAdapter = DbDataSourceAdapter.CreateAdapter();
                 DataCache.Instance.Init(DataSourceAdapter);
 
@@ -95,7 +95,7 @@ namespace DoomLauncher
             {
                 Process currentProc = Process.GetCurrentProcess();
                 foreach (Process proc in Process.GetProcessesByName("DoomLauncher").Where(x => x.Id != currentProc.Id))
-                    proc.Kill();
+                    proc.CloseMainWindow();
             }
             catch
             {

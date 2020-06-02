@@ -112,11 +112,12 @@ namespace DoomLauncher
                 DateParseFormats = Util.SplitString(GetValue(config, "DateParseFormats"));
                 ScreenshotCaptureDirectories = Util.SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
             }
-            catch(Exception)
+            catch
             {
                 if (throwErrors)
                     throw;
             }
+
             VerifyPaths(throwErrors);
         }
 
@@ -128,12 +129,31 @@ namespace DoomLauncher
         private void SetChildDirectories(IEnumerable<IConfigurationData> config)
         {
             string gameFileDir = GetValue(config, "GameFileDirectory");
+            GameFileDirectory = GetGameFileDir(gameFileDir);
+            gameFileDir = GameFileDirectory.GetFullPath();
+
             ScreenshotDirectory = SetChildDirectory(gameFileDir, "Screenshots");
             TempDirectory = SetChildDirectory(gameFileDir, "Temp");
             DemoDirectory = SetChildDirectory(gameFileDir, "Demos");
             SaveGameDirectory = SetChildDirectory(gameFileDir, "SaveGames");
             ThumbnailDirectory = SetChildDirectory(gameFileDir, "Thumbnails");
-            GameFileDirectory = new LauncherPath(gameFileDir);
+        }
+
+        private static LauncherPath GetGameFileDir(string gameFileDir)
+        {
+            if (gameFileDir == "GameFiles\\")
+            {
+                string dataDir = LauncherPath.GetDataDirectory();
+                if (!Directory.Exists(dataDir))
+                {
+                    Directory.CreateDirectory(dataDir);
+                    Directory.CreateDirectory(Path.Combine(dataDir, gameFileDir));
+                }
+
+                return new LauncherPath(Path.Combine(dataDir, gameFileDir));
+            }
+
+            return new LauncherPath(gameFileDir);
         }
 
         private LauncherPath SetChildDirectory(string gameFileDirectory, string childDirectory)
