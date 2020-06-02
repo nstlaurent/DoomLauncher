@@ -29,7 +29,7 @@ namespace DoomLauncher
                     UpdateConfig(config, "WindowState", WindowState.ToString());
                 }
 
-                if (m_tabHandler.TabViews.Any(x => x.GameFileViewControl is IGameFileColumnView))
+                if (GameFileViewFactory.IsUsingColumnView)
                     UpdateConfig(config, "ColumnConfig", BuildColumnConfig());
                 UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
                 UpdateConfig(config, "ItemsPerPage", AppConfiguration.ItemsPerPage.ToString());
