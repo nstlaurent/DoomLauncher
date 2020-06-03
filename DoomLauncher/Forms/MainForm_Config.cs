@@ -19,30 +19,30 @@ namespace DoomLauncher
 
                 if (WindowState != FormWindowState.Minimized) //too many problems when the form is minimized, not supported
                 {
-                    UpdateConfig(config, "SplitTopBottom", splitTopBottom.SplitterDistance.ToString());
-                    UpdateConfig(config, "SplitLeftRight", splitLeftRight.SplitterDistance.ToString());
+                    UpdateConfig(config, AppConfiguration.SplitTopBottomName, splitTopBottom.SplitterDistance.ToString());
+                    UpdateConfig(config, AppConfiguration.SplitLeftRightName, splitLeftRight.SplitterDistance.ToString());
 
-                    UpdateConfig(config, "AppWidth", Size.Width.ToString());
-                    UpdateConfig(config, "AppHeight", Size.Height.ToString());
-                    UpdateConfig(config, "AppX", Location.X.ToString());
-                    UpdateConfig(config, "AppY", Location.Y.ToString());
-                    UpdateConfig(config, "WindowState", WindowState.ToString());
+                    UpdateConfig(config, AppConfiguration.AppWidthName, Size.Width.ToString());
+                    UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
+                    UpdateConfig(config, AppConfiguration.AppXName, Location.X.ToString());
+                    UpdateConfig(config, AppConfiguration.AppYName, Location.Y.ToString());
+                    UpdateConfig(config, AppConfiguration.WindowStateName, WindowState.ToString());
                 }
 
                 if (GameFileViewFactory.IsUsingColumnView)
-                    UpdateConfig(config, "ColumnConfig", BuildColumnConfig());
+                    UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
                 else
-                    UpdateConfig(config, "ColumnConfig", BuildTileColumnConfig());
+                    UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildTileColumnConfig());
 
                 UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
-                UpdateConfig(config, "ItemsPerPage", AppConfiguration.ItemsPerPage.ToString());
+                UpdateConfig(config, AppConfiguration.ItemsPerPageName, AppConfiguration.ItemsPerPage.ToString());
             }
         }
 
         private void UpdateColumnConfig()
         {
             IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
-            UpdateConfig(config, "ColumnConfig", BuildColumnConfig());
+            UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
         }
 
         private void UpdateConfig(IEnumerable<IConfigurationData> config, string name, string value)
