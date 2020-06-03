@@ -1688,12 +1688,12 @@ namespace DoomLauncher
             }
 
             ColumnField columnField = GameFileViewFactory.DefaultColumnTextFields[index];
-            SortOrder sortOrder = SortOrder.Descending;
+            SortOrder sortOrder;
 
             if (sortableView.GetColumnSort(columnField.DataKey) == SortOrder.Descending)
                 sortOrder = SortOrder.Ascending;
-            else if (sortableView.GetColumnSort(columnField.DataKey) == SortOrder.Ascending)
-                sortOrder = SortOrder.None;
+            else
+                sortOrder = SortOrder.Descending;
 
             sortableView.SetSortedColumn(columnField.DataKey, sortOrder);
             view.DataSource = GetViewSort(view, view.DataSource);
