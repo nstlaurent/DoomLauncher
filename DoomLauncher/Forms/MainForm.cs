@@ -1752,7 +1752,6 @@ namespace DoomLauncher
                         m_tabHandler.UpdateTabTitle(tabView, tag.Name);
                     else
                         m_tabHandler.RemoveTab(tabView);
-
                 }
                 else
                 {
@@ -1760,6 +1759,8 @@ namespace DoomLauncher
                         OrderedTagTabInsert(tag);
                 }
             }
+
+            UpdateTagColumnConfig(form.TagControl.EditedTags);
 
             foreach (ITagData tag in form.TagControl.DeletedTags)
             {
@@ -1770,6 +1771,26 @@ namespace DoomLauncher
             }
 
             HandleSelectionChange(GetCurrentViewControl(), false);
+        }
+
+        private void UpdateTagColumnConfig(ITagData[] editedTags)
+        {
+            ColumnConfig[] columnConfig = DataCache.Instance.GetColumnConfig();
+
+            foreach (ITagData tag in editedTags)
+            {
+                ITagData previousRevision = DataCache.Instance.PreviousTags.FirstOrDefault(x => x.TagID == tag.TagID);
+                if (previousRevision == null)
+                    continue;
+
+                var updateColumns = columnConfig.Where(x => x.Parent == previousRevision.Name);
+                foreach (var col in updateColumns)
+                    col.Parent = tag.Name;
+            }
+
+            IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
+            UpdateConfig(config, AppConfiguration.ColumnConfigName, SerializeColumnConfig(columnConfig.ToList()));
+            AppConfiguration.RefreshColumnConfig();
         }
 
         private void OrderedTagTabInsert(ITagData tag)
