@@ -364,6 +364,7 @@ namespace DoomLauncher
             else
             {
                 SetPageData(0, true);
+                SetDefaultSelection();
             }
         }
 
