@@ -131,13 +131,12 @@ namespace DoomLauncher
 
         private string TruncateLine(Font font, string line, int maxWidth)
         {
-            for(int i = 1; i < line.Length; i++)
+            for (int i = 1; i < line.Length; i++)
             {
                 int test = TextRenderer.MeasureText(line.Substring(0, i), font).Width;
 
                 if (test > maxWidth)
                 {
-                    int start = i;
                     while (i > 0 && line[i] != ' ') i--;
                     if (i == 0) return line.Substring(0, i);
                     return line.Substring(0, i);

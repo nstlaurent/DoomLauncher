@@ -8,7 +8,7 @@ using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
 {
-    public partial class GameFileTileViewControl : UserControl, IGameFileView
+    public partial class GameFileTileViewControl : UserControl, IGameFileView, IGameFileSortableView
     {
         public event EventHandler ItemClick;
         public event EventHandler ItemDoubleClick;
@@ -32,6 +32,9 @@ namespace DoomLauncher
         private readonly System.Timers.Timer m_mouseTimer;
         private int m_lastScrollPos;
         private GameFileTileBase m_lastHover;
+
+        private string m_sortedColumn;
+        private SortOrder m_sortedColumnOrder;
 
         private FlowLayoutPanelDB flpMain;
 
@@ -130,6 +133,25 @@ namespace DoomLauncher
                 m_lastScrollPos = flpMain.VerticalScroll.Value;
                 Controls.Remove(flpMain);
             }
+        }
+
+        public string GetSortedColumnKey()
+        {
+            return m_sortedColumn;
+        }
+
+        public SortOrder GetColumnSort(string key)
+        {
+            if (m_sortedColumn == key)
+                return m_sortedColumnOrder;
+
+            return SortOrder.None;
+        }
+
+        public void SetSortedColumn(string key, SortOrder sort)
+        {
+            m_sortedColumn = key;
+            m_sortedColumnOrder = sort;
         }
 
         private void SetDefaultSelection()
@@ -342,6 +364,7 @@ namespace DoomLauncher
             else
             {
                 SetPageData(0, true);
+                SetDefaultSelection();
             }
         }
 

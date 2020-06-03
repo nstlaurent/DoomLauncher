@@ -1629,17 +1629,21 @@ namespace DoomLauncher
 
         private void MnuLocal_Opening(object sender, CancelEventArgs e)
         {
+            if (!(GetCurrentViewControl() is IGameFileSortableView sortableView))
+                return;
+
             ToolStripMenuItem sortToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
             IGameFileView view = GetCurrentViewControl();
             sortToolStrip.Visible = view is GameFileTileViewControl;
 
             for (int i = 0; i < GameFileViewFactory.DefaultColumnTextFields.Length; i++)
             {
-                string text = GameFileViewFactory.DefaultColumnTextFields[i].Title;
+                ColumnField columnField = GameFileViewFactory.DefaultColumnTextFields[i];
+                string text = columnField.Title;
 
-                if (m_sortValues.ContainsKey(view) && m_sortValues[view].Item1.DataKey == GameFileViewFactory.DefaultColumnTextFields[i].DataKey)
+                if (columnField.DataKey.Equals(sortableView.GetSortedColumnKey(), StringComparison.InvariantCultureIgnoreCase) && sortableView.GetColumnSort(sortableView.GetSortedColumnKey()) != SortOrder.None)
                 {
-                    if (m_sortValues[view].Item2 == SortDirection.Ascending)
+                    if (sortableView.GetColumnSort(sortableView.GetSortedColumnKey()) == SortOrder.Ascending)
                         text += " ▲";
                     else
                         text += " ▼";
@@ -1666,6 +1670,10 @@ namespace DoomLauncher
 
         private void sortToolStripItem_Click(object sender, EventArgs e)
         {
+            if (!(GetCurrentViewControl() is IGameFileSortableView sortableView))
+                return;
+
+            IGameFileView view = GetCurrentViewControl();
             ToolStripItem strip = sender as ToolStripItem;
             ToolStripMenuItem sortToolStrip = GetSortByToolStrip();
 
@@ -1680,34 +1688,32 @@ namespace DoomLauncher
             }
 
             ColumnField columnField = GameFileViewFactory.DefaultColumnTextFields[index];
+            SortOrder sortOrder;
 
-            if (columnField != null)
-            {
-                IGameFileView view = GetCurrentViewControl();
+            if (sortableView.GetColumnSort(columnField.DataKey) == SortOrder.Descending)
+                sortOrder = SortOrder.Ascending;
+            else
+                sortOrder = SortOrder.Descending;
 
-                if (!m_sortValues.ContainsKey(view))
-                    m_sortValues.Add(view, new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Descending));
-
-                if (m_sortValues[view].Item2 == SortDirection.Ascending)
-                    m_sortValues[view] = new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Descending);
-                else
-                    m_sortValues[view] = new Tuple<ColumnField, SortDirection>(columnField, SortDirection.Ascending);
-
-                view.DataSource = GetViewSort(view, view.DataSource);
-            }
+            sortableView.SetSortedColumn(columnField.DataKey, sortOrder);
+            view.DataSource = GetViewSort(view, view.DataSource);
         }
 
         private IEnumerable<IGameFile> GetViewSort(IGameFileView view, IEnumerable<IGameFile> gameFiles)
         {
-            if (!m_sortValues.ContainsKey(view))
+            if (!(view is IGameFileSortableView sortableView) || string.IsNullOrEmpty(sortableView.GetSortedColumnKey()))
                 return gameFiles;
 
-            var property = typeof(IGameFile).GetProperty(m_sortValues[view].Item1.DataKey);
-            if (property != null && view.DataSource.Any())
+            ColumnField columnField = GameFileViewFactory.DefaultColumnTextFields.FirstOrDefault(x => x.DataKey.Equals(sortableView.GetSortedColumnKey(), StringComparison.InvariantCultureIgnoreCase));
+
+            if (columnField != null)
             {
-                if (m_sortValues[view].Item2 == SortDirection.Ascending)
+                var property = typeof(IGameFile).GetProperty(columnField.DataKey);
+                var sort = sortableView.GetColumnSort(sortableView.GetSortedColumnKey());
+
+                if (sort == SortOrder.Ascending)
                     return gameFiles.OrderBy(x => property.GetValue(x));
-                else
+                else if (sort == SortOrder.Descending)
                     return gameFiles.OrderByDescending(x => property.GetValue(x));
             }
 
@@ -1724,7 +1730,7 @@ namespace DoomLauncher
             RebuildTagToolStrip();
             DataCache.Instance.TagMapLookup.Refresh();
 
-            if (form.TagControl.AddedTags.Length > 0)
+            if (form.TagControl.AddedTags.Length > 0 && GameFileViewFactory.IsUsingColumnView)
             {
                 UpdateColumnConfig(); //the ordered tab insert will use this column configuration
                 AppConfiguration.RefreshColumnConfig();
@@ -1746,7 +1752,6 @@ namespace DoomLauncher
                         m_tabHandler.UpdateTabTitle(tabView, tag.Name);
                     else
                         m_tabHandler.RemoveTab(tabView);
-
                 }
                 else
                 {
@@ -1754,6 +1759,8 @@ namespace DoomLauncher
                         OrderedTagTabInsert(tag);
                 }
             }
+
+            UpdateTagColumnConfig(form.TagControl.EditedTags);
 
             foreach (ITagData tag in form.TagControl.DeletedTags)
             {
@@ -1764,6 +1771,26 @@ namespace DoomLauncher
             }
 
             HandleSelectionChange(GetCurrentViewControl(), false);
+        }
+
+        private void UpdateTagColumnConfig(ITagData[] editedTags)
+        {
+            ColumnConfig[] columnConfig = DataCache.Instance.GetColumnConfig();
+
+            foreach (ITagData tag in editedTags)
+            {
+                ITagData previousRevision = DataCache.Instance.PreviousTags.FirstOrDefault(x => x.TagID == tag.TagID);
+                if (previousRevision == null)
+                    continue;
+
+                var updateColumns = columnConfig.Where(x => x.Parent == previousRevision.Name);
+                foreach (var col in updateColumns)
+                    col.Parent = tag.Name;
+            }
+
+            IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
+            UpdateConfig(config, AppConfiguration.ColumnConfigName, SerializeColumnConfig(columnConfig.ToList()));
+            AppConfiguration.RefreshColumnConfig();
         }
 
         private void OrderedTagTabInsert(ITagData tag)
@@ -2169,7 +2196,7 @@ namespace DoomLauncher
                     IWshRuntimeLibrary.WshShell wsh = new IWshRuntimeLibrary.WshShell();
                     IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(filePath) as IWshRuntimeLibrary.IWshShortcut;
                     shortcut.Arguments = gameFile.FileName;
-                    shortcut.TargetPath = string.Format(Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.exe"));
+                    shortcut.TargetPath = string.Format(Path.Combine(Directory.GetCurrentDirectory(), Util.GetExecutableNoPath()));
                     shortcut.WindowStyle = 1;
                     shortcut.Description = string.Concat("Doom Launcher - ", gameFile.FileName);
                     shortcut.WorkingDirectory = Directory.GetCurrentDirectory();

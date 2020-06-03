@@ -420,6 +420,8 @@ namespace DoomLauncher
                 return new string[] { };
         }
 
+        public static string GetExecutableNoPath() => AppDomain.CurrentDomain.FriendlyName;
+
         public static string GetClippedEllipsesText(Graphics g, Font f, string text, SizeF layout)
         {
             int charactersFitted, linesFilled;

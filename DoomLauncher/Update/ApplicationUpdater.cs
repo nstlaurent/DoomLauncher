@@ -67,7 +67,7 @@ namespace DoomLauncher
                 return false;
             }
 
-            Process.Start(Path.Combine(m_executingDirectory, "DoomLauncher.exe"));
+            Process.Start(Path.Combine(m_executingDirectory, Util.GetExecutableNoPath()));
             return true;
         }
 

@@ -11,6 +11,17 @@ namespace DoomLauncher
     {
         public event EventHandler GameFileViewTypeChanged;
 
+        public static string SplitTopBottomName => "SplitTopBottom";
+        public static string SplitLeftRightName => "SplitLeftRight";
+        public static string AppWidthName => "AppWidth";
+        public static string AppHeightName => "AppHeight";
+        public static string AppXName => "AppX";
+        public static string AppYName => "AppY";
+        public static string WindowStateName => "WindowState";
+        public static string ColumnConfigName => "ColumnConfig";
+        public static string ScreenshotPreviewSizeName => "ScreenshotPreviewSize";
+        public static string ItemsPerPageName => "ItemsPerPage";
+
         public AppConfiguration(IDataSourceAdapter adapter)
         {
             DataSourceAdapter = adapter;
@@ -90,17 +101,17 @@ namespace DoomLauncher
                 CleanTemp = Convert.ToBoolean(GetValue(config, "CleanTemp"));
 
                 SetChildDirectories(config);
-                SplitTopBottom = Convert.ToInt32(GetValue(config, "SplitTopBottom"));
-                SplitLeftRight = Convert.ToInt32(GetValue(config, "SplitLeftRight"));
-                AppWidth = Convert.ToInt32(GetValue(config, "AppWidth"));
-                AppHeight = Convert.ToInt32(GetValue(config, "AppHeight"));
-                AppX = Convert.ToInt32(GetValue(config, "AppX"));
-                AppY = Convert.ToInt32(GetValue(config, "AppY"));
-                WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), GetValue(config, "WindowState"));
-                ColumnConfig = GetValue(config, "ColumnConfig");
-                ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, "ScreenshotPreviewSize"));
+                SplitTopBottom = Convert.ToInt32(GetValue(config, SplitTopBottomName));
+                SplitLeftRight = Convert.ToInt32(GetValue(config, SplitLeftRightName));
+                AppWidth = Convert.ToInt32(GetValue(config, AppWidthName));
+                AppHeight = Convert.ToInt32(GetValue(config, AppHeightName));
+                AppX = Convert.ToInt32(GetValue(config, AppXName));
+                AppY = Convert.ToInt32(GetValue(config, AppYName));
+                WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), GetValue(config, WindowStateName));
+                ColumnConfig = GetValue(config, ColumnConfigName);
+                ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, ScreenshotPreviewSizeName));
                 FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
-                ItemsPerPage = Convert.ToInt32(GetValue(config, "ItemsPerPage"));
+                ItemsPerPage = Convert.ToInt32(GetValue(config, ItemsPerPageName));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
@@ -147,7 +158,7 @@ namespace DoomLauncher
         public void RefreshColumnConfig()
         {
             IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
-            ColumnConfig = GetValue(config, "ColumnConfig");
+            ColumnConfig = GetValue(config, ColumnConfigName);
         }
 
         private void VerifyPaths(bool throwErrors)

@@ -459,7 +459,9 @@ namespace DoomLauncher
         {
             if (GameFileViewFactory.IsBaseViewTypeChange(GameFileViewFactory.DefaultType, AppConfiguration.GameFileViewType))
             {
-                Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DoomLauncher.exe"));
+                // Write any settings the user may have changed before the application is killed
+                HandleFormClosing();
+                Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Util.GetExecutableNoPath()));
                 return;
             }
 
@@ -617,7 +619,7 @@ namespace DoomLauncher
                 var lnk = shell.CreateShortcut(Path.Combine(sendToPath, "DoomLauncher.lnk"));
                 try
                 {
-                    lnk.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.exe");
+                    lnk.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), Util.GetExecutableNoPath());
                     lnk.IconLocation = string.Format(Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.ico"));
                     lnk.Save();
                 }
@@ -663,8 +665,6 @@ namespace DoomLauncher
                 };
             }
         }
-
-        private readonly Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>> m_sortValues = new Dictionary<IGameFileView, Tuple<ColumnField, SortDirection>>();
 
         private GameFileViewFactory GameFileViewFactory { get; set; }
     }

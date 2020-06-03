@@ -147,6 +147,7 @@
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
+    <Compile Include="Interfaces\IGameFileSortableView.cs" />
     <Compile Include="Interfaces\IGameFileTile.cs" />
     <Compile Include="Interfaces\IGameFileColumnView.cs" />
     <Compile Include="Interfaces\IGameFileView.cs" />
@@ -160,7 +161,6 @@
     </Compile>
     <Compile Include="Handlers\ToolTipDisplayHandler.cs" />
     <Compile Include="Handlers\ThumbnailManager.cs" />
-    <Compile Include="Config\SortDirection.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />

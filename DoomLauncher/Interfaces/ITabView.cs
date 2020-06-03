@@ -19,7 +19,7 @@ namespace DoomLauncher.Interfaces
         bool IsSearchAllowed { get; }
         bool IsPlayAllowed { get; }
         bool IsAutoSearchAllowed { get; }
-        string Title { get; }
+        string Title { get; set; }
         object Key { get; }
         IGameFileDataSourceAdapter Adapter { get; set; }
         IGameFileView GameFileViewControl { get; }

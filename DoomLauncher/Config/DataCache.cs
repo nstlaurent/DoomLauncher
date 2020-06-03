@@ -15,6 +15,7 @@ namespace DoomLauncher
         public AppConfiguration AppConfiguration { get; private set; }
         public ITagMapLookup TagMapLookup { get; private set; }
         public ITagData[] Tags { get; private set; }
+        public ITagData[] PreviousTags { get; private set; }
         public Image DefaultImage { get; private set; }
 
         public void Init(IDataSourceAdapter adapter)
@@ -29,7 +30,12 @@ namespace DoomLauncher
 
         public void UpdateTags()
         {
+            if (Tags != null)
+                PreviousTags = Tags.ToArray();
+
             Tags = DataSourceAdapter.GetTags().OrderBy(x => x.Name).ToArray();
+            if (PreviousTags == null)
+                PreviousTags = Tags;
         }
 
         public ColumnConfig[] GetColumnConfig()

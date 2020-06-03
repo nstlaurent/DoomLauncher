@@ -82,7 +82,7 @@ namespace DoomLauncher
 
                 if (!string.IsNullOrEmpty(config.AvailableValues))
                     HandleComboBox(tblMain, config);
-                else if (config.Name == "ScreenshotPreviewSize") //special case for TrackBar
+                else if (config.Name == AppConfiguration.ScreenshotPreviewSizeName) //special case for TrackBar
                     HandleScreenshotPreviewSize(tblMain, config, dpiScale);
                 else
                     HandleTextBox(tblMain, config);
