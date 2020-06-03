@@ -70,6 +70,8 @@ namespace DoomLauncher
 
         public void UpdateTabTitle(ITabView tab, string text)
         {
+            tab.Title = text;
+
             if (m_tabLookup.ContainsKey(tab.GameFileViewControl))
             {
                 Tuple<ITabView, TabPage> item = m_tabLookup[tab.GameFileViewControl];

@@ -24,8 +24,8 @@ namespace DoomLauncher
 
         public override object Clone()
         {
-            TagTabView view = new TagTabView(m_key, m_title, m_tagAdapter, m_selectFields, TagDataSource, GameFileViewFactory.CreateGameFileViewGrid());
-            base.SetBaseCloneProperties(view);
+            TagTabView view = new TagTabView(m_key, Title, m_tagAdapter, m_selectFields, TagDataSource, GameFileViewFactory.CreateGameFileViewGrid());
+            SetBaseCloneProperties(view);
             return view;
         }
 
@@ -33,7 +33,7 @@ namespace DoomLauncher
         {
             GameFileGetOptions options = new GameFileGetOptions();
             options.SelectFields = m_selectFields;
-            base.SetDataSource(m_tagAdapter.GetGameFiles(options, TagDataSource));
+            SetDataSource(m_tagAdapter.GetGameFiles(options, TagDataSource));
         }
 
         public override void SetGameFiles(IEnumerable<GameFileSearchField> searchFields)
@@ -45,7 +45,7 @@ namespace DoomLauncher
                 items = items.Union(m_tagAdapter.GetGameFiles(new GameFileGetOptions(m_selectFields, sf), TagDataSource));
             }
 
-            base.SetDataSource(items);
+            SetDataSource(items);
         }
 
         public ITagData TagDataSource

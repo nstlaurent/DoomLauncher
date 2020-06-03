@@ -13,7 +13,6 @@ namespace DoomLauncher
     {
         public event EventHandler<GameFileListEventArgs> DataSourceChanging;
 
-        protected string m_title;
         protected object m_key;
         protected GameFileFieldType[] m_selectFields;
         protected GameFileViewFactory m_factory;
@@ -28,7 +27,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
             m_key = key;
-            m_title = title;
+            Title = title;
             Adapter = adapter;
             m_selectFields = selectFields.ToArray();
 
@@ -43,7 +42,7 @@ namespace DoomLauncher
         public virtual object Clone()
         {
             // TODO this is also dumb
-            BasicTabViewCtrl view = new BasicTabViewCtrl(m_key, m_title, Adapter, m_selectFields, GameFileViewFactory.CreateGameFileViewGrid());
+            BasicTabViewCtrl view = new BasicTabViewCtrl(m_key, Title, Adapter, m_selectFields, GameFileViewFactory.CreateGameFileViewGrid());
             SetBaseCloneProperties(view);
             return view;
         }
@@ -245,7 +244,7 @@ namespace DoomLauncher
         public virtual bool IsSearchAllowed { get { return true; } }
         public virtual bool IsPlayAllowed { get { return true; } }
         public virtual bool IsAutoSearchAllowed { get { return true; } }
-        public string Title { get { return m_title; } }
+        public string Title { get; set; }
         public virtual IGameFileDataSourceAdapter Adapter { get; set; }
         public IGameFileView GameFileView { get; private set; }
     }
