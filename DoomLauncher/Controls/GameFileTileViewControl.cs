@@ -36,7 +36,7 @@ namespace DoomLauncher
         private string m_sortedColumn;
         private SortOrder m_sortedColumnOrder;
 
-        private FlowLayoutPanelDB flpMain;
+        private FlowLayoutPanelDB flpMain = new FlowLayoutPanelDB();
 
         public GameFileTileViewControl()
         {
@@ -54,6 +54,8 @@ namespace DoomLauncher
 
             m_label.Visible = false;
             GameFileViewControl.StyleDisplayLabel(m_label);
+
+            cmbMaxItemsPerPage.KeyDown += CmbMaxItemsPerPage_KeyDown;
 
             GameFileTileManager.Instance.TilesRecreated += Instance_TilesRecreated;
             InitTiles();
@@ -185,6 +187,11 @@ namespace DoomLauncher
                 tile.TileClick += Tile_TileClick;
                 tile.TileDoubleClick += Tile_TileDoubleClick;
             }
+        }
+
+        private void CmbMaxItemsPerPage_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
         }
 
         private void Instance_TilesRecreated(object sender, EventArgs e)
