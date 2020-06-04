@@ -119,7 +119,7 @@ namespace DoomLauncher
                 flpMain.KeyDown += GameFileTileViewControl_KeyDown;
 
                 SetPageData(pagingControl.PageIndex, false);
-                flpMain.VerticalScroll.Value = m_lastScrollPos;
+                SetSavedScrollValue();
                 flpMain.PerformLayout();
 
                 SetDefaultSelection();
@@ -133,6 +133,16 @@ namespace DoomLauncher
                 m_lastScrollPos = flpMain.VerticalScroll.Value;
                 Controls.Remove(flpMain);
             }
+        }
+
+        private void SetSavedScrollValue()
+        {
+            if (m_lastScrollPos < flpMain.VerticalScroll.Minimum)
+                flpMain.VerticalScroll.Value = flpMain.VerticalScroll.Minimum;
+            else if (m_lastScrollPos > flpMain.VerticalScroll.Maximum)
+                flpMain.VerticalScroll.Value = flpMain.VerticalScroll.Maximum;
+            else
+                flpMain.VerticalScroll.Value = m_lastScrollPos;
         }
 
         public string GetSortedColumnKey()
@@ -399,7 +409,7 @@ namespace DoomLauncher
             if (dataChange)
             {
                 ClearSelection();
-                flpMain.VerticalScroll.Value = 0;
+                flpMain.VerticalScroll.Value = flpMain.VerticalScroll.Minimum;
                 flpMain.PerformLayout();
             }
             else
