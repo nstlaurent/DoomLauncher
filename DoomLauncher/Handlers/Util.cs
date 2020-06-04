@@ -428,18 +428,9 @@ namespace DoomLauncher
             g.MeasureString(text, f, layout, StringFormat.GenericDefault, out charactersFitted, out linesFilled);
 
             if (charactersFitted != text.Length && charactersFitted > 3)
-            {
-                int wordFit = charactersFitted;
-                while (wordFit > 0 && text[wordFit] != ' ')
-                    wordFit--;
+                return text.Substring(0, charactersFitted - 3) + "...";
 
-                if (wordFit > 0)
-                    return text.Substring(0, wordFit) + "...";
-
-                return text.Substring(0, charactersFitted);
-            }
-
-            return text;
+            return text.Substring(0, charactersFitted);
         }
 
         static public SizeF MeasureDisplayString(this Graphics graphics, string text, Font font)
