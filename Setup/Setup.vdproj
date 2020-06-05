@@ -256,6 +256,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -754,15 +762,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Doom Launcher"
-        "ProductCode" = "8:{0A87DE16-9B4B-4CEE-81BD-A949F5807348}"
-        "PackageCode" = "8:{68EA83A0-2A47-44AD-8485-2CC7A8A196E7}"
+        "ProductCode" = "8:{2D2A70CA-A2B6-419E-A15C-58B4F6B9338B}"
+        "PackageCode" = "8:{26EDBC84-3DD6-49D6-A8A8-5C6EDF508AB2}"
         "UpgradeCode" = "8:{CAFDF197-4B50-4AFE-BCFE-0432710657F1}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.7.0"
+        "ProductVersion" = "8:3.0"
         "Manufacturer" = "8:Doom Launcher"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/nstlaurent/DoomLauncher"
