@@ -33,13 +33,13 @@ namespace DoomLauncher
 
         public static string GetDataDirectory()
         {
-            string currentDirectory = Directory.GetCurrentDirectory();
-
-            if (!File.Exists(Path.Combine(currentDirectory, DbDataSourceAdapter.GetDatabaseFileName())))
+            if (IsInstalled())
                 return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DoomLauncher");
 
-            return currentDirectory;
+            return Directory.GetCurrentDirectory();
         }
+
+        public static bool IsInstalled() => !File.Exists(Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName()));
 
         public string GetFullPath()
         {
