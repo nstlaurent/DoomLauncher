@@ -169,6 +169,8 @@ namespace DoomLauncher
                 BorderStyle = BorderStyle.None;
             }
 
+            Refresh();
+
             m_binding = false;
         }
 
