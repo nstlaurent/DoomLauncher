@@ -1312,7 +1312,7 @@ namespace DoomLauncher
             ProgressBarStart(progressBar);
 
             FileAddResults fileAddResults = new FileAddResults();
-            FileManagement fileManagement = GetUserSelectedFileMangaement();
+            FileManagement fileManagement = GetUserSelectedFileManagement();
 
             if (fileManagement == FileManagement.Managed)
                 await Task.Run(() => fileAddResults = CopyFiles(fileNames, AppConfiguration.GameFileDirectory.GetFullPath(), progressBar));
@@ -1380,7 +1380,7 @@ namespace DoomLauncher
             return results;
         }
 
-        private FileManagement GetUserSelectedFileMangaement()
+        private FileManagement GetUserSelectedFileManagement()
         {
             FileManagement fileManagement = AppConfiguration.FileManagement;
 
