@@ -195,7 +195,7 @@
     <Compile Include="Forms\Welcome.Designer.cs">
       <DependentUpon>Welcome.cs</DependentUpon>
     </Compile>
-    <Compile Include="Handlers\CopyResults.cs" />
+    <Compile Include="Handlers\FIleAddResults.cs" />
     <Compile Include="DataSources\CustomParam.cs" />
     <Compile Include="Demo\CldDemoParser.cs" />
     <Compile Include="Demo\DemoUtil.cs" />

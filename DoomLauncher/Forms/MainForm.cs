@@ -1202,15 +1202,18 @@ namespace DoomLauncher
         private void UpdateLocal()
         {
             foreach (ITabView tab in m_tabHandler.TabViews)
-            {
-                if (tab.IsLocal)
-                {
-                    if (m_savedTabSearches.ContainsKey(tab))
-                        tab.SetGameFiles(m_savedTabSearches[tab]);
-                    else
-                        tab.SetGameFiles();
-                }
-            }
+                UpdateLocalTabData(tab);
+        }
+
+        private void UpdateLocalTabData(ITabView tab)
+        {
+            if (!tab.IsLocal)
+                return;
+            
+            if (m_savedTabSearches.ContainsKey(tab))
+                tab.SetGameFiles(m_savedTabSearches[tab]);
+            else
+                tab.SetGameFiles();
         }
 
         private IGameFile[] m_pendingZdlFiles;
@@ -1307,17 +1310,16 @@ namespace DoomLauncher
             progressBar.Cancelled += m_progressBarFormCopy_Cancelled;
 
             ProgressBarStart(progressBar);
-            CopyResults copyResults = new CopyResults();
 
-            string[] files = fileNames;
-
-            FileManagement fileManagement = GetUserSelectedFileMangaement();
+            FileAddResults fileAddResults = new FileAddResults();
+            FileManagement fileManagement = GetUserSelectedFileManagement();
 
             if (fileManagement == FileManagement.Managed)
-            {
-                await Task.Run(() => copyResults = CopyFiles(fileNames, AppConfiguration.GameFileDirectory.GetFullPath(), progressBar));
-                files = copyResults.ReplacedFiles.Union(copyResults.NewFiles).ToArray();
-            }
+                await Task.Run(() => fileAddResults = CopyFiles(fileNames, AppConfiguration.GameFileDirectory.GetFullPath(), progressBar));
+            else
+                fileAddResults = UnmanagedAddCheck(fileNames, AppConfiguration.GameFileDirectory.GetFullPath());
+
+            string[] files = fileAddResults.ReplacedFiles.Union(fileAddResults.NewFiles).ToArray();
 
             ProgressBarEnd(progressBar);
 
@@ -1327,24 +1329,58 @@ namespace DoomLauncher
                     await SyncLocalDatabase(files, fileManagement);
                     break;
                 case AddFileType.IWad:
-                    SyncIWads(fileNames);
                     await SyncLocalDatabase(files, fileManagement);
+                    SyncIWads(fileAddResults);
                     break;
                 default:
                     break;
             }
 
-            if (copyResults.Errors.Count > 0)
+            if (fileAddResults.Errors.Count > 0)
             {
-                string start = copyResults.Errors.Count > 1 ? string.Concat("Errors:", Environment.NewLine) : string.Empty;
-                string tab = copyResults.Errors.Count > 1 ? "\t" : string.Empty;
+                string start = fileAddResults.Errors.Count > 1 ? string.Concat("Errors:", Environment.NewLine) : string.Empty;
+                string tab = fileAddResults.Errors.Count > 1 ? "\t" : string.Empty;
                 StringBuilder sb = new StringBuilder(start);
-                copyResults.Errors.ForEach(x => sb.Append(string.Concat(tab, x.FileName, ": ", x.Error, Environment.NewLine)));
-                MessageBox.Show(this, sb.ToString(), "Failed to Copy", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                fileAddResults.Errors.ForEach(x => sb.Append(string.Concat(tab, x.FileName, ": ", x.Error, Environment.NewLine)));
+                MessageBox.Show(this, sb.ToString(), "Failed to Add", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private FileManagement GetUserSelectedFileMangaement()
+        private FileAddResults UnmanagedAddCheck(string[] fileNames, string directory)
+        {
+            FileAddResults results = new FileAddResults();
+
+            string managedError = "File already exists as a managed file.";
+            string unmanagedError = "File already exists as an unmanaged file.";
+
+            foreach (string fileName in fileNames)
+            {
+                string zipName = Path.Combine(directory, Path.GetFileNameWithoutExtension(fileName) + ".zip");
+                IGameFile existingGameFile = DataSourceAdapter.GetGameFile(fileName);
+
+                if (File.Exists(zipName))
+                {
+                    results.Errors.Add(new FileError { FileName = fileName, Error = managedError  });
+                }
+                else if (existingGameFile != null)
+                {
+                    if (Path.IsPathRooted(existingGameFile.FileName))
+                        results.Errors.Add(new FileError { FileName = fileName, Error = unmanagedError });
+                    else
+                        results.NewFiles.Add(fileName);
+                    //else
+                    //    results.Errors.Add(new FileError { FileName = fileName, Error = managedError });
+                }
+                else
+                {
+                    results.NewFiles.Add(fileName);
+                }
+            }
+
+            return results;
+        }
+
+        private FileManagement GetUserSelectedFileManagement()
         {
             FileManagement fileManagement = AppConfiguration.FileManagement;
 
@@ -1421,9 +1457,9 @@ namespace DoomLauncher
             return string.Format("{0} ({1})|{1}|All Files (*.*)|*.*", name, sb.ToString());
         }
 
-        private CopyResults CopyFiles(string[] files, string directory, ProgressBarForm progressBar)
+        private FileAddResults CopyFiles(string[] files, string directory, ProgressBarForm progressBar)
         {
-            CopyResults ret = new CopyResults();
+            FileAddResults results = new FileAddResults();
             HashSet<string> addedNames = new HashSet<string>();
 
             List<string> fileNames = files.ToList();
@@ -1451,9 +1487,17 @@ namespace DoomLauncher
                 if (!isZip)
                     zipName = Path.Combine(directory, baseName + ".zip");
 
+                IEnumerable<string> existingFileNames = DataSourceAdapter.GetGameFileNames();
+
                 try
                 {
-                    if (File.Exists(zipName))
+                    string existingFile = existingFileNames.FirstOrDefault(x => Path.GetFileName(x).Equals(fi.Name));
+
+                    if (existingFile != null && Path.IsPathRooted(existingFile))
+                    {
+                        results.Errors.Add(new FileError { FileName = baseName, Error = "File already exists as an unmanaged file." });
+                    }
+                    else if (File.Exists(zipName))
                     {
                         if (promptOverwrite)
                         {
@@ -1464,7 +1508,7 @@ namespace DoomLauncher
 
                         if (overwrite)
                         {
-                            ret.ReplacedFiles.Add(baseName + ".zip");
+                            results.ReplacedFiles.Add(baseName + ".zip");
                             if (isZip)
                                 fi.CopyTo(zipName, true);
                             else
@@ -1473,7 +1517,7 @@ namespace DoomLauncher
                     }
                     else
                     {
-                        ret.NewFiles.Add(baseName + ".zip");
+                        results.NewFiles.Add(baseName + ".zip");
 
                         if (IsZipFile(fi))
                         {
@@ -1488,17 +1532,17 @@ namespace DoomLauncher
                 }
                 catch (IOException)
                 {
-                    ret.Errors.Add(new CopyError { FileName = baseName, Error = "File is in use." });
+                    results.Errors.Add(new FileError { FileName = baseName, Error = "File is in use." });
                 }
                 catch (Exception ex)
                 {
-                    ret.Errors.Add(new CopyError { FileName = baseName, Error = string.Concat("Unknown error: ", ex.HResult) }); //Shouldn't happen
+                    results.Errors.Add(new FileError { FileName = baseName, Error = string.Concat("Unknown error: ", ex.HResult) }); //Shouldn't happen
                 }
 
                 count++;
             }
 
-            return ret;
+            return results;
         }
 
         private static void AddZipEntry(string file, string name, string newZipName)
