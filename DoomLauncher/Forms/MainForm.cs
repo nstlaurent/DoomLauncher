@@ -1249,7 +1249,7 @@ namespace DoomLauncher
 
             if (libraryFiles.Count > 0)
             {
-                await HandleCopyFiles(type, libraryFiles.ToArray());
+                await HandleCopyFiles(type, libraryFiles.ToArray(), GetUserSelectedFileManagement());
             }
             else if (m_zdlInvalidFiles.Count > 0)
             {
@@ -1304,7 +1304,7 @@ namespace DoomLauncher
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Await.Warning", "CS4014:Await.Warning")]
-        private async Task HandleCopyFiles(AddFileType type, string[] fileNames)
+        private async Task HandleCopyFiles(AddFileType type, string[] fileNames, FileManagement fileManagement)
         {
             ProgressBarForm progressBar = CreateProgressBar("Copying...", ProgressBarStyle.Marquee);
             progressBar.Cancelled += m_progressBarFormCopy_Cancelled;
@@ -1312,7 +1312,6 @@ namespace DoomLauncher
             ProgressBarStart(progressBar);
 
             FileAddResults fileAddResults = new FileAddResults();
-            FileManagement fileManagement = GetUserSelectedFileManagement();
 
             if (fileManagement == FileManagement.Managed)
                 await Task.Run(() => fileAddResults = CopyFiles(fileNames, AppConfiguration.GameFileDirectory.GetFullPath(), progressBar));
