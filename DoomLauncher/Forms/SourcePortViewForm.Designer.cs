@@ -184,7 +184,6 @@
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SourcePortViewForm";
-            this.ShowIcon = false;
             this.Text = "Source Ports";
             this.tblMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSourcePorts)).EndInit();

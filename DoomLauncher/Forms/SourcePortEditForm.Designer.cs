@@ -162,7 +162,6 @@
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SourcePortEditForm";
-            this.ShowIcon = false;
             this.Text = "Source Port";
             this.tblMain.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);

@@ -160,7 +160,6 @@
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FileSelectForm";
-            this.ShowIcon = false;
             this.Text = "Select File";
             this.tblMain.ResumeLayout(false);
             this.flpButtons.ResumeLayout(false);

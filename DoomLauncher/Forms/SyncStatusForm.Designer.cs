@@ -30,18 +30,19 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SyncStatusForm));
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.btnSelectAll = new System.Windows.Forms.Button();
-            this.flpBottom = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmbOptions = new System.Windows.Forms.ComboBox();
-            this.btnContinue = new System.Windows.Forms.Button();
-            this.lblHeader = new System.Windows.Forms.Label();
             this.dgvFiles = new DoomLauncher.CDataGridView();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.btnSelectAll = new System.Windows.Forms.Button();
+            this.flpBottom = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnContinue = new System.Windows.Forms.Button();
+            this.cmbOptions = new System.Windows.Forms.ComboBox();
+            this.lblHeader = new System.Windows.Forms.Label();
             this.tblMain.SuspendLayout();
-            this.flpBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).BeginInit();
+            this.flpBottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblMain
@@ -62,60 +63,6 @@
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.Size = new System.Drawing.Size(365, 311);
             this.tblMain.TabIndex = 0;
-            // 
-            // btnSelectAll
-            // 
-            this.btnSelectAll.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnSelectAll.Location = new System.Drawing.Point(287, 251);
-            this.btnSelectAll.Name = "btnSelectAll";
-            this.btnSelectAll.Size = new System.Drawing.Size(75, 23);
-            this.btnSelectAll.TabIndex = 3;
-            this.btnSelectAll.Text = "Select All";
-            this.btnSelectAll.UseVisualStyleBackColor = true;
-            this.btnSelectAll.Click += new System.EventHandler(this.btnSelectAll_Click);
-            // 
-            // flpBottom
-            // 
-            this.flpBottom.Controls.Add(this.btnContinue);
-            this.flpBottom.Controls.Add(this.cmbOptions);
-            this.flpBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpBottom.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpBottom.Location = new System.Drawing.Point(0, 279);
-            this.flpBottom.Margin = new System.Windows.Forms.Padding(0);
-            this.flpBottom.Name = "flpBottom";
-            this.flpBottom.Size = new System.Drawing.Size(365, 32);
-            this.flpBottom.TabIndex = 4;
-            // 
-            // cmbOptions
-            // 
-            this.cmbOptions.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cmbOptions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbOptions.FormattingEnabled = true;
-            this.cmbOptions.Location = new System.Drawing.Point(157, 4);
-            this.cmbOptions.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
-            this.cmbOptions.Name = "cmbOptions";
-            this.cmbOptions.Size = new System.Drawing.Size(121, 21);
-            this.cmbOptions.TabIndex = 0;
-            // 
-            // btnContinue
-            // 
-            this.btnContinue.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnContinue.Location = new System.Drawing.Point(287, 3);
-            this.btnContinue.Name = "btnContinue";
-            this.btnContinue.Size = new System.Drawing.Size(75, 23);
-            this.btnContinue.TabIndex = 1;
-            this.btnContinue.Text = "Continue";
-            this.btnContinue.UseVisualStyleBackColor = true;
-            // 
-            // lblHeader
-            // 
-            this.lblHeader.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblHeader.AutoSize = true;
-            this.lblHeader.Location = new System.Drawing.Point(3, 9);
-            this.lblHeader.Name = "lblHeader";
-            this.lblHeader.Size = new System.Drawing.Size(13, 13);
-            this.lblHeader.TabIndex = 5;
-            this.lblHeader.Text = "  ";
             // 
             // dgvFiles
             // 
@@ -152,20 +99,74 @@
             this.Selected.HeaderText = "";
             this.Selected.Name = "Selected";
             // 
-            // SyncStatusFile
+            // btnSelectAll
+            // 
+            this.btnSelectAll.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnSelectAll.Location = new System.Drawing.Point(287, 251);
+            this.btnSelectAll.Name = "btnSelectAll";
+            this.btnSelectAll.Size = new System.Drawing.Size(75, 23);
+            this.btnSelectAll.TabIndex = 3;
+            this.btnSelectAll.Text = "Select All";
+            this.btnSelectAll.UseVisualStyleBackColor = true;
+            this.btnSelectAll.Click += new System.EventHandler(this.btnSelectAll_Click);
+            // 
+            // flpBottom
+            // 
+            this.flpBottom.Controls.Add(this.btnContinue);
+            this.flpBottom.Controls.Add(this.cmbOptions);
+            this.flpBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpBottom.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpBottom.Location = new System.Drawing.Point(0, 279);
+            this.flpBottom.Margin = new System.Windows.Forms.Padding(0);
+            this.flpBottom.Name = "flpBottom";
+            this.flpBottom.Size = new System.Drawing.Size(365, 32);
+            this.flpBottom.TabIndex = 4;
+            // 
+            // btnContinue
+            // 
+            this.btnContinue.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnContinue.Location = new System.Drawing.Point(287, 3);
+            this.btnContinue.Name = "btnContinue";
+            this.btnContinue.Size = new System.Drawing.Size(75, 23);
+            this.btnContinue.TabIndex = 1;
+            this.btnContinue.Text = "Continue";
+            this.btnContinue.UseVisualStyleBackColor = true;
+            // 
+            // cmbOptions
+            // 
+            this.cmbOptions.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cmbOptions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOptions.FormattingEnabled = true;
+            this.cmbOptions.Location = new System.Drawing.Point(157, 4);
+            this.cmbOptions.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
+            this.cmbOptions.Name = "cmbOptions";
+            this.cmbOptions.Size = new System.Drawing.Size(121, 21);
+            this.cmbOptions.TabIndex = 0;
+            // 
+            // lblHeader
+            // 
+            this.lblHeader.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblHeader.AutoSize = true;
+            this.lblHeader.Location = new System.Drawing.Point(3, 9);
+            this.lblHeader.Name = "lblHeader";
+            this.lblHeader.Size = new System.Drawing.Size(13, 13);
+            this.lblHeader.TabIndex = 5;
+            this.lblHeader.Text = "  ";
+            // 
+            // SyncStatusForm
             // 
             this.AcceptButton = this.btnContinue;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(365, 311);
             this.Controls.Add(this.tblMain);
-            this.Name = "SyncStatusFile";
-            this.ShowIcon = false;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "SyncStatusForm";
             this.Text = "SyncStatusFile";
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
-            this.flpBottom.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).EndInit();
+            this.flpBottom.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
