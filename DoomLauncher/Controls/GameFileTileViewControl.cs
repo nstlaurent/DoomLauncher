@@ -170,6 +170,8 @@ namespace DoomLauncher
         {
             if (SelectedItem == null && m_gameFiles.Count > 0)
                 SelectGameFile(m_gameFiles[0]);
+            else
+                SelectionChange?.Invoke(this, EventArgs.Empty);
         }
 
         private void InitTiles()
@@ -377,6 +379,7 @@ namespace DoomLauncher
             {
                 if (!pagingControl.SetPageIndex(saveIndex))
                     SetPageData(saveIndex, false);
+                SetDefaultSelection();
             }
             else
             {
@@ -542,7 +545,7 @@ namespace DoomLauncher
                 GameFileTileManager.Instance.Tiles[i].SetSelected(true);
             }
 
-            SelectionChange?.Invoke(this, new EventArgs());
+            SelectionChange?.Invoke(this, EventArgs.Empty);
         }
 
         private int GameFileTileIndex(GameFileTileBase tile)
