@@ -7,34 +7,32 @@ namespace DoomLauncherRelease
 {
     static class Program
     {
+        static string s_argPath;
+
         static int Main(string[] args)
         {
-            try
-            {
-                string outputDir = "ReleaseBuild";
-                string buildDir = CreateBuildDirectory(outputDir);
+            if (args.Length > 0)
+                s_argPath = args[0];
 
-                if (!Directory.Exists(Path.Combine(GetBaseDir(), outputDir)))
-                    Directory.CreateDirectory(Path.Combine(GetBaseDir(), outputDir));
+            string outputDir = "ReleaseBuild";
+            string buildDir = CreateBuildDirectory(outputDir);
 
-                Directory.CreateDirectory(buildDir);
-                CreateFolders(buildDir);
-                CopyBuildFiles(buildDir);
+            if (!Directory.Exists(Path.Combine(GetBaseDir(), outputDir)))
+                Directory.CreateDirectory(Path.Combine(GetBaseDir(), outputDir));
 
-                string zipfile = CreateZipFile(outputDir, buildDir, false);
-                string zipfiledest = Path.Combine(GetBaseDir(), outputDir, Path.GetFileName(zipfile));
-                File.Copy(zipfile, zipfiledest, true);
+            Directory.CreateDirectory(buildDir);
+            CreateFolders(buildDir);
+            CopyBuildFiles(buildDir);
 
-                zipfile = CreateZipFile(Path.Combine(GetBaseDir(), "Setup", GetBuildOutputDir()), buildDir, true);
-                zipfiledest = Path.Combine(GetBaseDir(), outputDir, Path.GetFileName(zipfile));
-                File.Copy(zipfile, zipfiledest, true);
+            string zipfile = CreateZipFile(outputDir, buildDir, false);
+            string zipfiledest = Path.Combine(GetBaseDir(), outputDir, Path.GetFileName(zipfile));
+            File.Copy(zipfile, zipfiledest, true);
 
-                return 0;
-            }
-            catch
-            {
-                return -1;
-            }
+            zipfile = CreateZipFile(Path.Combine(GetBaseDir(), "Setup", GetBuildOutputDir()), buildDir, true);
+            zipfiledest = Path.Combine(GetBaseDir(), outputDir, Path.GetFileName(zipfile));
+            File.Copy(zipfile, zipfiledest, true);
+
+            return 0;
         }
 
         private static string CreateBuildDirectory(string outputDir)
@@ -133,7 +131,10 @@ namespace DoomLauncherRelease
 
         static string GetBaseDir()
         {
-            return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\"));
+            if (string.IsNullOrEmpty(s_argPath))
+                return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\"));
+            else
+                return s_argPath;
         }
 
         static string GetBuildBinOutputDir()
