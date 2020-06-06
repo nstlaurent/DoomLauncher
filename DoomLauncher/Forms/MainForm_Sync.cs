@@ -30,8 +30,6 @@ namespace DoomLauncher
 
         void SyncLocalDatabaseComplete(SyncLibraryHandler handler)
         {
-            SetIWadGameFiles();
-
             UpdateLocal();
             HandleTabSelectionChange();
 
@@ -46,42 +44,6 @@ namespace DoomLauncher
                 m_launchFile = null;
                 if (launchFile != null)
                     HandlePlay(new IGameFile[] { launchFile });
-            }
-        }
-
-        private void SetIWadGameFiles()
-        {
-            IEnumerable<IIWadData> iwads = DataSourceAdapter.GetIWads();
-            List<IGameFile> gameFileDataUpdate = new List<IGameFile>();
-
-            if (iwads.Any())
-            {
-                IEnumerable<IGameFile> gameFiles = DataSourceAdapter.GetGameFiles();
-                foreach (IIWadData iwad in iwads)
-                {
-                    string iwadName = Path.GetFileNameWithoutExtension(iwad.FileName);
-                    IGameFile find = gameFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x.FileName).Equals(iwadName));
-                    if (find != null)
-                    {
-                        if (!find.IWadID.HasValue) //this should mean the file was just added so we should set the pre-defined title
-                        {
-                            FillIwadData(find);
-                            gameFileDataUpdate.Add(find);
-                            find.IWadID = iwad.IWadID;
-                            DataSourceAdapter.UpdateGameFile(find, new GameFileFieldType[] { GameFileFieldType.IWadID });
-                        }
-
-                        if (!iwad.GameFileID.HasValue)
-                        {
-                            iwad.GameFileID = find.GameFileID;
-                            DataSourceAdapter.UpdateIWad(iwad);
-                        }                   
-                    }
-                    else
-                    {
-                        Util.ThrowDebugException("This should not happen");
-                    }
-                }
             }
         }
 
@@ -212,30 +174,34 @@ namespace DoomLauncher
 
         void ProgressBarForm_Cancelled(object sender, EventArgs e)
         {
-            this.Enabled = true;
-            this.BringToFront();
+            Enabled = true;
+            BringToFront();
         }
 
-        private void SyncIWads(string[] files)
+        private void SyncIWads(FileAddResults fileAddResults)
         {
-            IEnumerable<string> iwads = DataSourceAdapter.GetIWads().Select(x => x.Name);
-            List<string> iwadsToAdd = new List<string>();
-
-            foreach (string file in files)
+            foreach (string file in fileAddResults.NewFiles)
             {
-                if (!iwads.Contains(Path.GetFileName(file)))
-                    iwadsToAdd.Add(file);
+                IGameFile gameFile = DataSourceAdapter.GetGameFile(file);
+
+                if (gameFile != null)
+                {
+                    DataSourceAdapter.InsertIWad(new IWadData() { GameFileID = gameFile.GameFileID.Value, FileName = file, Name = file });
+                    var iwad = DataSourceAdapter.GetIWads().OrderBy(x => x.IWadID).LastOrDefault();
+                    if (iwad != null)
+                    {
+                        gameFile.IWadID = iwad.IWadID;
+                        DataSourceAdapter.UpdateGameFile(gameFile, new[] { GameFileFieldType.IWadID });
+                    }
+                }
             }
 
-            foreach (string file in iwadsToAdd)
+            foreach (ITabView tab in m_tabHandler.TabViews)
             {
-                try
+                if (tab is IWadTabViewCtrl)
                 {
-                    DataSourceAdapter.InsertIWad(new IWadData() { FileName = file, Name = file });
-                }
-                catch (Exception ex)
-                {
-                    Util.DisplayUnexpectedException(this, ex);
+                    UpdateLocalTabData(tab);
+                    HandleSelectionChange(tab.GameFileViewControl, false);
                 }
             }
         }

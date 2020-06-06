@@ -1,5 +1,4 @@
 ﻿using DoomLauncher.Interfaces;
-using System.IO;
 
 namespace DoomLauncher
 {
