@@ -239,7 +239,7 @@ modified or included content in this file to allow further distribution.";
             }
 
             string textFile = CreateTextFile();
-            string filename = "outgen.txt";
+            string filename = Path.Combine(DataCache.Instance.AppConfiguration.TempDirectory.GetFullPath(), "outgen.txt");
             
             try
             {

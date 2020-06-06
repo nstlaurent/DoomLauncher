@@ -57,10 +57,10 @@
             this.cmbFileManagement = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.tabPageView = new System.Windows.Forms.TabPage();
-            this.cmbViewType = new System.Windows.Forms.ComboBox();
-            this.label11 = new System.Windows.Forms.Label();
             this.pnlViewRestart = new System.Windows.Forms.Panel();
             this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.cmbViewType = new System.Windows.Forms.ComboBox();
             this.tblOuter.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -374,25 +374,6 @@
             this.tabPageView.TabIndex = 3;
             this.tabPageView.Text = "View";
             // 
-            // cmbViewType
-            // 
-            this.cmbViewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbViewType.FormattingEnabled = true;
-            this.cmbViewType.Location = new System.Drawing.Point(88, 14);
-            this.cmbViewType.Name = "cmbViewType";
-            this.cmbViewType.Size = new System.Drawing.Size(197, 21);
-            this.cmbViewType.TabIndex = 11;
-            this.cmbViewType.SelectedIndexChanged += new System.EventHandler(this.CmbViewType_SelectedIndexChanged);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(5, 17);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(57, 13);
-            this.label11.TabIndex = 12;
-            this.label11.Text = "View Type";
-            // 
             // pnlViewRestart
             // 
             this.pnlViewRestart.Controls.Add(this.label12);
@@ -411,6 +392,25 @@
             this.label12.TabIndex = 0;
             this.label12.Text = "Changing from tile view to grid view will restart Doom Launcher.";
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(5, 17);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(57, 13);
+            this.label11.TabIndex = 12;
+            this.label11.Text = "View Type";
+            // 
+            // cmbViewType
+            // 
+            this.cmbViewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbViewType.FormattingEnabled = true;
+            this.cmbViewType.Location = new System.Drawing.Point(88, 14);
+            this.cmbViewType.Name = "cmbViewType";
+            this.cmbViewType.Size = new System.Drawing.Size(197, 21);
+            this.cmbViewType.TabIndex = 11;
+            this.cmbViewType.SelectedIndexChanged += new System.EventHandler(this.CmbViewType_SelectedIndexChanged);
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.btnSave;
@@ -421,7 +421,6 @@
             this.Controls.Add(this.tblOuter);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsForm";
-            this.ShowIcon = false;
             this.Text = "Settings";
             this.tblOuter.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);

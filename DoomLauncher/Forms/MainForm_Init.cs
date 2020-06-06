@@ -18,10 +18,13 @@ namespace DoomLauncher
     {
         private bool VerifyDatabase()
         {
+            if (File.Exists(Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.GetDatabaseFileName())))
+                return true;
+
             bool check = false;
             try
             {
-                check = InitFileCheck("DoomLauncher.sqlite", "DoomLauncher_.sqlite", false);
+                check = InitFileCheck(DbDataSourceAdapter.GetDatabaseFileName(), "DoomLauncher_.sqlite", false);
 
                 if (!check)
                 {
@@ -39,7 +42,11 @@ namespace DoomLauncher
 
         private bool VerifyGameFilesDirectory()
         {
+            if (Directory.Exists(AppConfiguration.GameFileDirectory.GetFullPath()))
+                return true;
+
             bool check = false;
+
             try
             {
                 InitGameFilesDebug();
@@ -72,14 +79,21 @@ namespace DoomLauncher
         [Conditional("DEBUG")]
         private void InitGameFilesDebug()
         {
-            string basePath = "GameFiles";
-
-            if (!Directory.Exists(basePath))
+            try
             {
-                Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
-                Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
-                Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
-                Directory.CreateDirectory(Path.Combine(basePath, "Temp"));
+                string basePath = "GameFiles";
+
+                if (!Directory.Exists(basePath))
+                {
+                    Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
+                    Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
+                    Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
+                    Directory.CreateDirectory(Path.Combine(basePath, "Temp"));
+                }
+            }
+            catch
+            {
+                // For local debug code only, just catch if we testing in debug outside of dev
             }
         }
 
@@ -133,7 +147,7 @@ namespace DoomLauncher
 
             if (fi.Exists)
             {
-                Directory.CreateDirectory("Backup");
+                Directory.CreateDirectory(Path.Combine(LauncherPath.GetDataDirectory(), "Backup"));
                 string backupName = GetBackupFileName(fi);
 
                 FileInfo fiBackup = new FileInfo(backupName);
@@ -146,7 +160,7 @@ namespace DoomLauncher
 
         private void CleanupBackupDirectory()
         {
-            string[] files = Directory.GetFiles("Backup", "*.sqlite");
+            string[] files = Directory.GetFiles(Path.Combine(LauncherPath.GetDataDirectory(), "Backup"), "*.sqlite");
             List<FileInfo> filesInfo = new List<FileInfo>();
             Array.ForEach(files, x => filesInfo.Add(new FileInfo(x)));
             List<FileInfo> filesInfoOrdered = filesInfo.OrderBy(x => x.CreationTime).ToList();
@@ -366,7 +380,7 @@ namespace DoomLauncher
 
         private async void Initialize()
         {
-            string dataSource = Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
+            string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
             DataAccess access = new DataAccess(new SqliteDatabaseAdapter(), DbDataSourceAdapter.CreateConnectionString(dataSource));
 
             m_versionHandler = new VersionHandler(access, DbDataSourceAdapter.CreateAdapter(true), AppConfiguration);

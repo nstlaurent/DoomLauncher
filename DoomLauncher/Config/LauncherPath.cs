@@ -31,6 +31,16 @@ namespace DoomLauncher
             }
         }
 
+        public static string GetDataDirectory()
+        {
+            if (IsInstalled())
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DoomLauncher");
+
+            return Directory.GetCurrentDirectory();
+        }
+
+        public static bool IsInstalled() => !File.Exists(Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName()));
+
         public string GetFullPath()
         {
             return m_fullPath;

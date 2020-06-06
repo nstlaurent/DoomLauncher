@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FilterSettingsForm));
             this.chkStagger = new System.Windows.Forms.CheckBox();
             this.numBlockSize = new System.Windows.Forms.NumericUpDown();
             this.numSpacingX = new System.Windows.Forms.NumericUpDown();
@@ -393,8 +394,8 @@
             this.Controls.Add(this.cmbMode);
             this.Controls.Add(this.grpScanline);
             this.Controls.Add(this.grpEllipse);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FilterSettingsForm";
-            this.ShowIcon = false;
             this.Text = "Filter Settings";
             ((System.ComponentModel.ISupportInitialize)(this.numBlockSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSpacingX)).EndInit();

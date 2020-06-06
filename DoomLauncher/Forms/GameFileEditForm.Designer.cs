@@ -31,12 +31,12 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameFileEditForm));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.gameFileEdit1 = new DoomLauncher.GameFileEdit();
             this.tblButtons = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnCopyFrom = new System.Windows.Forms.Button();
             this.btnSaveSelect = new System.Windows.Forms.Button();
-            this.gameFileEdit1 = new DoomLauncher.GameFileEdit();
+            this.btnCopyFrom = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tblButtons.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -57,6 +57,21 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(430, 544);
             this.tableLayoutPanel1.TabIndex = 1;
+            // 
+            // gameFileEdit1
+            // 
+            this.gameFileEdit1.AuthorChecked = true;
+            this.gameFileEdit1.CommentsChecked = true;
+            this.gameFileEdit1.DescriptionChecked = true;
+            this.gameFileEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gameFileEdit1.Location = new System.Drawing.Point(3, 3);
+            this.gameFileEdit1.Name = "gameFileEdit1";
+            this.gameFileEdit1.RatingChecked = true;
+            this.gameFileEdit1.ReleaseDateChecked = true;
+            this.gameFileEdit1.Size = new System.Drawing.Size(424, 474);
+            this.gameFileEdit1.TabIndex = 0;
+            this.gameFileEdit1.TagsChecked = true;
+            this.gameFileEdit1.TitleChecked = true;
             // 
             // tblButtons
             // 
@@ -96,16 +111,6 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // btnCopyFrom
-            // 
-            this.btnCopyFrom.Location = new System.Drawing.Point(3, 3);
-            this.btnCopyFrom.Name = "btnCopyFrom";
-            this.btnCopyFrom.Size = new System.Drawing.Size(111, 23);
-            this.btnCopyFrom.TabIndex = 3;
-            this.btnCopyFrom.Text = "Copy From File...";
-            this.btnCopyFrom.UseVisualStyleBackColor = true;
-            this.btnCopyFrom.Click += new System.EventHandler(this.btnCopyFrom_Click);
-            // 
             // btnSaveSelect
             // 
             this.btnSaveSelect.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -116,20 +121,15 @@
             this.btnSaveSelect.Text = "Save";
             this.btnSaveSelect.UseVisualStyleBackColor = true;
             // 
-            // gameFileEdit1
+            // btnCopyFrom
             // 
-            this.gameFileEdit1.AuthorChecked = true;
-            this.gameFileEdit1.CommentsChecked = true;
-            this.gameFileEdit1.DescriptionChecked = true;
-            this.gameFileEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gameFileEdit1.Location = new System.Drawing.Point(3, 3);
-            this.gameFileEdit1.Name = "gameFileEdit1";
-            this.gameFileEdit1.RatingChecked = true;
-            this.gameFileEdit1.ReleaseDateChecked = true;
-            this.gameFileEdit1.Size = new System.Drawing.Size(424, 474);
-            this.gameFileEdit1.TabIndex = 0;
-            this.gameFileEdit1.TagsChecked = true;
-            this.gameFileEdit1.TitleChecked = true;
+            this.btnCopyFrom.Location = new System.Drawing.Point(3, 3);
+            this.btnCopyFrom.Name = "btnCopyFrom";
+            this.btnCopyFrom.Size = new System.Drawing.Size(111, 23);
+            this.btnCopyFrom.TabIndex = 3;
+            this.btnCopyFrom.Text = "Copy From File...";
+            this.btnCopyFrom.UseVisualStyleBackColor = true;
+            this.btnCopyFrom.Click += new System.EventHandler(this.btnCopyFrom_Click);
             // 
             // GameFileEditForm
             // 
@@ -140,7 +140,6 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "GameFileEditForm";
-            this.ShowIcon = false;
             this.Text = "Edit";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tblButtons.ResumeLayout(false);

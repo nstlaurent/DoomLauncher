@@ -23,7 +23,7 @@ namespace DoomLauncher
             DataSourceAdapter = adapter;
             AppConfiguration = new AppConfiguration(adapter);
             TagMapLookup = new TagMapLookup(adapter);
-            DefaultImage = Image.FromFile("TileImages\\DoomLauncherTile.png");
+            DefaultImage = Image.FromFile(Path.Combine(LauncherPath.GetDataDirectory(), "TileImages", "DoomLauncherTile.png"));
 
             UpdateTags();
         }

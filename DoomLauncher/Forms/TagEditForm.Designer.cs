@@ -29,6 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TagEditForm));
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -92,8 +93,8 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(212, 157);
             this.Controls.Add(this.tblMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TagEditForm";
-            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Tag";
             this.tblMain.ResumeLayout(false);

@@ -29,6 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SpecificFilesForm));
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -220,9 +221,9 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(314, 361);
             this.Controls.Add(this.tblMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(300, 300);
             this.Name = "SpecificFilesForm";
-            this.ShowIcon = false;
             this.Text = "Select Files";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SpecificFilesForm_FormClosing);
             this.tblMain.ResumeLayout(false);

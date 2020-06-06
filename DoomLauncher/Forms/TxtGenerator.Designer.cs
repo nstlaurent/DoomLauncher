@@ -29,6 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TxtGenerator));
             this.btnGenerate = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
@@ -1116,8 +1117,8 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(415, 493);
             this.Controls.Add(this.tblMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TxtGenerator";
-            this.ShowIcon = false;
             this.Text = "Text File Generator";
             this.tblMain.ResumeLayout(false);
             this.flpButtons.ResumeLayout(false);

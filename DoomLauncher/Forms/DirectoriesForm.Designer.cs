@@ -129,6 +129,7 @@
             this.columnHeader1});
             this.lstDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstDirectories.FullRowSelect = true;
+            this.lstDirectories.HideSelection = false;
             this.lstDirectories.Location = new System.Drawing.Point(3, 35);
             this.lstDirectories.MultiSelect = false;
             this.lstDirectories.Name = "lstDirectories";
@@ -145,8 +146,8 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(384, 261);
             this.Controls.Add(this.tblMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DirectoriesForm";
-            this.ShowIcon = false;
             this.Text = "Directories";
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();

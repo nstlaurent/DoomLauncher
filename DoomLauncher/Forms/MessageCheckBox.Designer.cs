@@ -29,6 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageCheckBox));
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tblMessage = new System.Windows.Forms.TableLayoutPanel();
@@ -134,10 +135,10 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(400, 126);
             this.Controls.Add(this.tblMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MessageCheckBox";
-            this.ShowIcon = false;
             this.Text = "MessageCheckBox";
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();

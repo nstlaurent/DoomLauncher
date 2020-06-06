@@ -38,10 +38,10 @@ namespace DoomLauncher
 
         public static IDataSourceAdapter CreateAdapter() => CreateAdapter(false);
 
-        public static IDataSourceAdapter CreateAdapter(bool outOfDataDatabase)
+        public static IDataSourceAdapter CreateAdapter(bool outOfDateDatabase)
         {
-            string dataSource = Path.Combine(Directory.GetCurrentDirectory(), GetDatabaseFileName());
-            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), CreateConnectionString(dataSource), outOfDataDatabase);
+            string databaseFile = Path.Combine(LauncherPath.GetDataDirectory(), GetDatabaseFileName());      
+            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), CreateConnectionString(databaseFile), outOfDateDatabase);
         }
 
         public static string CreateConnectionString(string dataSource)
