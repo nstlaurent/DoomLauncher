@@ -173,7 +173,7 @@ namespace DoomLauncher
             {
                 IGameFile gameFile = DataSourceAdapter.GetGameFile(file);
 
-                if (gameFile != null)
+                if (gameFile != null && !gameFile.IWadID.HasValue)
                 {
                     DataSourceAdapter.InsertIWad(new IWadData() { GameFileID = gameFile.GameFileID.Value, FileName = file, Name = file });
                     var iwad = DataSourceAdapter.GetIWads().OrderBy(x => x.IWadID).LastOrDefault();
