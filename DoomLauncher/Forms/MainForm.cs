@@ -65,7 +65,7 @@ namespace DoomLauncher
 
             if (VerifyDatabase())
             {
-                string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
+                string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
                 DataSourceAdapter = DbDataSourceAdapter.CreateAdapter();
                 DataCache.Instance.Init(DataSourceAdapter);
 

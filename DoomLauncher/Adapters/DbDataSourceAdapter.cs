@@ -14,6 +14,9 @@ namespace DoomLauncher
 {
     public class DbDataSourceAdapter : IDataSourceAdapter
     {
+        public static readonly string DatabaseFileName = "DoomLauncher.sqlite";
+        public static readonly string InitDatabaseFileName = "DoomLauncher_.sqlite";
+
         private static string[] s_opLookup = new string[] { "= ", "<>", "<", ">", "like" };
 
         public DbDataSourceAdapter(IDatabaseAdapter dbAdapter, string connectionString)
@@ -31,16 +34,11 @@ namespace DoomLauncher
             DataAccess = new DataAccess(dbAdapter, connectionString);
         }
 
-        public static string GetDatabaseFileName()
-        {
-            return "DoomLauncher.sqlite";
-        }
-
         public static IDataSourceAdapter CreateAdapter() => CreateAdapter(false);
 
         public static IDataSourceAdapter CreateAdapter(bool outOfDateDatabase)
         {
-            string databaseFile = Path.Combine(LauncherPath.GetDataDirectory(), GetDatabaseFileName());      
+            string databaseFile = Path.Combine(LauncherPath.GetDataDirectory(), DatabaseFileName);      
             return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), CreateConnectionString(databaseFile), outOfDateDatabase);
         }
 

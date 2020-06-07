@@ -18,13 +18,13 @@ namespace DoomLauncher
     {
         private bool VerifyDatabase()
         {
-            if (File.Exists(Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.GetDatabaseFileName())))
+            if (File.Exists(Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName)))
                 return true;
 
             bool check = false;
             try
             {
-                check = InitFileCheck(DbDataSourceAdapter.GetDatabaseFileName(), "DoomLauncher_.sqlite", false);
+                check = InitFileCheck(DbDataSourceAdapter.DatabaseFileName, DbDataSourceAdapter.InitDatabaseFileName, false);
 
                 if (!check)
                 {
@@ -380,7 +380,7 @@ namespace DoomLauncher
 
         private async void Initialize()
         {
-            string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
+            string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
             DataAccess access = new DataAccess(new SqliteDatabaseAdapter(), DbDataSourceAdapter.CreateConnectionString(dataSource));
 
             m_versionHandler = new VersionHandler(access, DbDataSourceAdapter.CreateAdapter(true), AppConfiguration);
