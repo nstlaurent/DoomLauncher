@@ -169,9 +169,16 @@ namespace DoomLauncher
         private void SetDefaultSelection()
         {
             if (SelectedItem == null && m_gameFiles.Count > 0)
-                SelectGameFile(m_gameFiles[0]);
-            else
-                SelectionChange?.Invoke(this, EventArgs.Empty);
+            {
+                int index = pagingControl.PageIndex * GameFileTileManager.Instance.MaxItems;
+                if (index < m_gameFiles.Count)
+                {
+                    SelectGameFile(m_gameFiles[index]);
+                    return;
+                }
+            }
+
+            SelectionChange?.Invoke(this, EventArgs.Empty);
         }
 
         private void InitTiles()
@@ -210,8 +217,8 @@ namespace DoomLauncher
 
         private void M_pagingControl_PageIndexChanged(object sender, EventArgs e)
         {
-            ClearSelection();
             SetPageData(pagingControl.PageIndex, true);
+            SetDefaultSelection();
         }
 
         private void MouseTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -264,13 +271,14 @@ namespace DoomLauncher
         {
             if (m_selectedTiles.Count > 0 && (e.KeyCode == Keys.Down || e.KeyCode == Keys.Up || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right))
             {
-                int index = GameFileTileIndex(m_selectedTiles[0]);
+                int baseIndex = pagingControl.PageIndex * GameFileTileManager.Instance.MaxItems;
+                int index = GameFileTileIndex(m_selectedTiles[0]) + baseIndex;
                 if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Right)
                     index++;
                 else
                     index--;
                    
-                if (index > -1 && index < m_gameFiles.Count)
+                if (index >= baseIndex && index < baseIndex + GameFileTileManager.Instance.MaxItems && index < m_gameFiles.Count)
                 {
                     ClearSelection();
                     SelectGameFile(m_gameFiles[index]);
