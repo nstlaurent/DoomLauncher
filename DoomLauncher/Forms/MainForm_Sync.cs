@@ -180,7 +180,7 @@ namespace DoomLauncher
 
         private void SyncIWads(FileAddResults fileAddResults)
         {
-            foreach (string file in fileAddResults.NewFiles)
+            foreach (string file in fileAddResults.GetAllFiles())
             {
                 IGameFile gameFile = DataSourceAdapter.GetGameFile(file);
 
