@@ -114,17 +114,6 @@ namespace DoomLauncher
                 }
             }
         }
-            
-        private void FillIwadData(IGameFile gameFile)
-        {
-            IWadInfo wadInfo = IWadInfo.GetIWadInfo(gameFile.FileName);
-            if (wadInfo != null)
-                gameFile.Title = wadInfo.Title;
-            else
-                gameFile.Title = Path.GetFileNameWithoutExtension(gameFile.FileName).ToUpper();
-
-            DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
-        }
 
         void syncHandler_SyncFileChange(object sender, EventArgs e)
         {
@@ -188,6 +177,11 @@ namespace DoomLauncher
                 {
                     DataSourceAdapter.InsertIWad(new IWadData() { GameFileID = gameFile.GameFileID.Value, FileName = file, Name = file });
                     var iwad = DataSourceAdapter.GetIWads().OrderBy(x => x.IWadID).LastOrDefault();
+
+                    IWadInfo wadInfo = IWadInfo.GetIWadInfo(gameFile.FileName);
+                    gameFile.Title = wadInfo == null ? Path.GetFileNameWithoutExtension(gameFile.FileName).ToUpper() : wadInfo.Title;
+                    DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
+
                     if (iwad != null)
                     {
                         gameFile.IWadID = iwad.IWadID;
