@@ -107,6 +107,7 @@ namespace DoomLauncher
             bool reset = ShouldRecalculateAdditionalFiles();
             HandleSourcePortSelectionChange(reset);
             HandleIwadSelectionChanged(reset);
+            SetAdditionalFiles(reset);
             HandleDemoChange();
             RegisterEvents();
 
