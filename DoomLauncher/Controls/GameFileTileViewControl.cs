@@ -272,20 +272,70 @@ namespace DoomLauncher
             if (m_selectedTiles.Count > 0 && (e.KeyCode == Keys.Down || e.KeyCode == Keys.Up || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right))
             {
                 int baseIndex = pagingControl.PageIndex * GameFileTileManager.Instance.MaxItems;
-                int index = GameFileTileIndex(m_selectedTiles[0]) + baseIndex;
-                if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Right)
-                    index++;
-                else
-                    index--;
+                int originalIndex = GameFileTileIndex(m_selectedTiles[0]) + baseIndex;
+
+                int newIndex = GetNextTileIndex(originalIndex, e.KeyCode);
+                if (newIndex == originalIndex)
+                    return;
                    
-                if (index >= baseIndex && index < baseIndex + GameFileTileManager.Instance.MaxItems && index < m_gameFiles.Count)
+                if (newIndex >= baseIndex && newIndex < baseIndex + GameFileTileManager.Instance.MaxItems && newIndex < m_gameFiles.Count)
                 {
                     ClearSelection();
-                    SelectGameFile(m_gameFiles[index]);
+                    SelectGameFile(m_gameFiles[newIndex]);
                 }
             }
 
             ViewKeyDown?.Invoke(this, e);
+        }
+
+        private int GetNextTileIndex(int index, Keys keycode)
+        {
+            GameFileTileBase tile = GameFileTileManager.Instance.Tiles[index];
+            int baseIndex = pagingControl.PageIndex * GameFileTileManager.Instance.MaxItems;
+
+            int startIndex;
+            int endIndex;
+
+            if (keycode == Keys.Down || keycode == Keys.Right)
+            {
+                startIndex = index;
+                endIndex = baseIndex + GameFileTileManager.Instance.MaxItems;
+            }
+            else if (keycode == Keys.Up || keycode == Keys.Left)
+            {
+                startIndex = index;
+                endIndex = baseIndex - 1;
+            }
+            else
+            {
+                return index;
+            }
+
+            while (startIndex != endIndex)
+            {
+                GameFileTileBase nextTile = GameFileTileManager.Instance.Tiles[startIndex];
+
+                if (keycode == Keys.Down && nextTile.Location.Y > tile.Location.Y && nextTile.Location.X == tile.Location.X)
+                    return startIndex;
+                else if (keycode == Keys.Up && nextTile.Location.Y < tile.Location.Y && nextTile.Location.X == tile.Location.X)
+                    return startIndex;
+                else if (keycode == Keys.Right && nextTile.Location.X > tile.Location.X)
+                    return startIndex;
+                else if (keycode == Keys.Left && nextTile.Location.X < tile.Location.X)
+                    return startIndex;
+
+                if (keycode == Keys.Down || keycode == Keys.Right)
+                    startIndex++;
+                else
+                    startIndex--;
+            }
+
+            if (keycode == Keys.Left && index - 1 > startIndex)
+                return index - 1;
+            else if (keycode == Keys.Right && index + 1 < endIndex)
+                return index + 1;
+
+            return index;
         }
 
         private void GameFileTileViewControl_KeyPress(object sender, KeyPressEventArgs e)
@@ -426,7 +476,7 @@ namespace DoomLauncher
 
             if (dataChange)
             {
-                ClearSelection();
+                ClearSelection(false);
                 flpMain.VerticalScroll.Value = flpMain.VerticalScroll.Minimum;
                 flpMain.PerformLayout();
             }
