@@ -258,8 +258,8 @@ namespace DoomLauncher
         [Conditional("RELEASE")]
         private static void CreateDatabaseBackup()
         {
-            FileInfo fi = new FileInfo(DbDataSourceAdapter.GetDatabaseFileName());
-            fi.CopyTo(string.Format("{0}_{1}.sqlite.bak", DbDataSourceAdapter.GetDatabaseFileName(), Guid.NewGuid().ToString()));
+            FileInfo fi = new FileInfo(DbDataSourceAdapter.DatabaseFileName);
+            fi.CopyTo(string.Format("{0}_{1}.sqlite.bak", DbDataSourceAdapter.DatabaseFileName, Guid.NewGuid().ToString()));
         }
 
         private void Pre_2_1_0()
