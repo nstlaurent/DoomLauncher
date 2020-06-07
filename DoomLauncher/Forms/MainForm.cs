@@ -1318,7 +1318,7 @@ namespace DoomLauncher
             else
                 fileAddResults = UnmanagedAddCheck(fileNames, AppConfiguration.GameFileDirectory.GetFullPath());
 
-            string[] files = fileAddResults.ReplacedFiles.Union(fileAddResults.NewFiles).ToArray();
+            string[] files = fileAddResults.GetAllFiles().ToArray();
 
             ProgressBarEnd(progressBar);
 
