@@ -65,10 +65,12 @@ namespace DoomLauncher
 
         public string SourcePortName { get { return txtName.Text;  } }
         public string SourcePortExec { get { return txtExec.Text; } }
+        public LauncherPath GetSourcePortDirectory() => new LauncherPath(m_directory);
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Executable (*.exe)|*.exe|All Files (*.*)|*.*";
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
@@ -78,9 +80,7 @@ namespace DoomLauncher
                 m_directory = file.Replace(m_exec, string.Empty);
 
                 txtExec.Text = m_exec;
-
-                if (string.IsNullOrEmpty(txtName.Text))
-                    txtName.Text = Path.GetFileNameWithoutExtension(file);
+                txtName.Text = Path.GetFileNameWithoutExtension(file);
             }
         }
 
