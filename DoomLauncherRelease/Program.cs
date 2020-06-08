@@ -21,7 +21,6 @@ namespace DoomLauncherRelease
                 Directory.CreateDirectory(Path.Combine(GetBaseDir(), outputDir));
 
             Directory.CreateDirectory(buildDir);
-            CreateFolders(buildDir);
             CopyBuildFiles(buildDir);
 
             string zipfile = CreateZipFile(outputDir, buildDir, false);
@@ -41,20 +40,6 @@ namespace DoomLauncherRelease
                 Directory.Delete(outputDir, true);
 
             return Path.Combine(outputDir, "DoomLauncher");
-        }
-
-        private static void CreateFolders(string outputdir)
-        {
-            string basePath = Path.Combine(outputdir, "GameFiles_");
-
-            if (!Directory.Exists(basePath))
-            {
-                Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
-                Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
-                Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
-                Directory.CreateDirectory(Path.Combine(basePath, "Temp"));
-                Directory.CreateDirectory(Path.Combine(basePath, "Thumbnails"));
-            }
         }
 
         private static string CreateZipFile(string outputDir, string buildDir, bool installer)
