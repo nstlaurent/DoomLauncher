@@ -65,6 +65,7 @@ namespace DoomLauncher
 
         public string SourcePortName { get { return txtName.Text;  } }
         public string SourcePortExec { get { return txtExec.Text; } }
+        public LauncherPath GetSourcePortDirectory() => new LauncherPath(m_directory);
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
