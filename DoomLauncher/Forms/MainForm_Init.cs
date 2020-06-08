@@ -18,12 +18,18 @@ namespace DoomLauncher
     {
         private bool VerifyDatabase()
         {
-            if (File.Exists(Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName)))
-                return true;
-
             bool check = false;
             try
             {
+                if (File.Exists(Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName)))
+                {
+                    check = true;
+                    // Still attempt to delete the init database here for people that manually update (not installed)
+                    if (File.Exists(DbDataSourceAdapter.InitDatabaseFileName))
+                        File.Delete(DbDataSourceAdapter.InitDatabaseFileName);
+                    return check;
+                }
+
                 check = InitFileCheck(DbDataSourceAdapter.DatabaseFileName, DbDataSourceAdapter.InitDatabaseFileName, false);
 
                 if (!check)
