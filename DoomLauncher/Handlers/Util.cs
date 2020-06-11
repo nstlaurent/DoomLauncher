@@ -467,13 +467,10 @@ namespace DoomLauncher
             if (other == null)
                 return false;
 
-            Console.WriteLine(other.ToString());
-
             if (control == other || control.Contains(other))
                 return true;
 
             return false;
- 
         }
     }
 }
