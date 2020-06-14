@@ -298,7 +298,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(239, 26);
             this.label8.TabIndex = 4;
-            this.label8.Text = "Files are referenced by their original path and not managed b by Doom Launcher.";
+            this.label8.Text = "Files are referenced by their original path and not managed by Doom Launcher.";
             // 
             // label3
             // 
