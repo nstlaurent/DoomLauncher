@@ -338,7 +338,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Statistics\ChocolateDoomStatsReader.cs" />
-    <Compile Include="Statistics\CNDoomStatsReader.cs" />
     <Compile Include="Statistics\IStatisticsReader.cs" />
     <Compile Include="Statistics\MultiLineStatReader.cs" />
     <Compile Include="Statistics\NewStatisticsEventArgs.cs" />
