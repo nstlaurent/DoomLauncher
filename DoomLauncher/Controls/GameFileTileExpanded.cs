@@ -20,6 +20,7 @@ namespace DoomLauncher
         private static readonly Font DisplayBoldFont = new Font("Microsof Sans Serif", 10, FontStyle.Bold);
         private static readonly Pen SeparatorPen = new Pen(Color.LightGray, 1.0f);
         private static readonly Pen HighlightPen = new Pen(SystemColors.Highlight, 1.0f);
+        private static readonly Brush TextBrush = new SolidBrush(SystemColors.InfoText);
 
         private string m_tags;
         private string m_maps;
@@ -88,19 +89,19 @@ namespace DoomLauncher
             int yPos = dpiScale.ScaleIntY(8);
             int offset = dpiScale.ScaleIntY(22);
 
-            e.Graphics.DrawString("Filename", DisplayBoldFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString("Filename", DisplayBoldFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString("Title", DisplayBoldFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString("Title", DisplayBoldFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString("Author", DisplayBoldFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString("Author", DisplayBoldFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString("Release", DisplayBoldFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString("Release", DisplayBoldFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString("Played", DisplayBoldFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString("Played", DisplayBoldFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString("Maps", DisplayBoldFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString("Maps", DisplayBoldFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString("Tags", DisplayBoldFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString("Tags", DisplayBoldFont, TextBrush, xPos, yPos);
 
             xPos = gameTile.Location.X + dpiScale.ScaleFloatX(82);
             yPos = dpiScale.ScaleIntY(8);
@@ -109,17 +110,17 @@ namespace DoomLauncher
 
             e.Graphics.DrawString(GameFile.FileNameNoPath, DisplayFont, Brushes.Black, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Title, maxLabelSize), DisplayFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Title, maxLabelSize), DisplayFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Author, maxLabelSize), DisplayFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Author, maxLabelSize), DisplayFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(m_release, DisplayFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(m_release, DisplayFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(m_played, DisplayFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(m_played, DisplayFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(m_maps, DisplayFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(m_maps, DisplayFont, TextBrush, xPos, yPos);
             yPos += offset;
-            e.Graphics.DrawString(m_tags, DisplayFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(m_tags, DisplayFont, TextBrush, xPos, yPos);
         }
 
         private void GameTile_TileDoubleClick(object sender, EventArgs e)
