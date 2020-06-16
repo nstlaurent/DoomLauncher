@@ -25,7 +25,7 @@ namespace DoomLauncher
         public override IGameFile GameFile { get; protected set; }
         public override bool Selected { get; protected set; }
 
-        private Color m_titleColor = SystemColors.InfoText;
+        private Color m_titleColor = SystemColors.WindowText;
         private bool m_new;
 
         public GameFileTile()
@@ -128,7 +128,7 @@ namespace DoomLauncher
             if (colorTag != null)
                 m_titleColor = Color.FromArgb(colorTag.Color.Value);
             else
-                m_titleColor = SystemColors.InfoText;
+                m_titleColor = SystemColors.WindowText;
 
             GameFile = gameFile;
             Invalidate();
