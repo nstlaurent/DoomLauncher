@@ -1,7 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DoomLauncher.Statistics;
+﻿using DoomLauncher;
 using DoomLauncher.DataSources;
-using DoomLauncher;
+using DoomLauncher.Statistics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.IO;
 

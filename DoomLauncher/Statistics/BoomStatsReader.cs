@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using DoomLauncher.Statistics;
+
 namespace DoomLauncher
 {
     public class BoomStatsReader : MultiLineStatReader

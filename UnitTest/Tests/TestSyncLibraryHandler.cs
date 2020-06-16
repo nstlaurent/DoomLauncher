@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DoomLauncher;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DoomLauncher;
+using System;
 using System.IO;
 using System.Linq;
 

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using DoomLauncher;
+﻿using DoomLauncher;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Threading.Tasks;
 
 namespace UnitTest.Tests
 {

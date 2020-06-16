@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DoomLauncher.Interfaces;
+using System;
 using System.Collections.Generic;
-using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
 {

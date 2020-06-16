@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Net;
-using System.IO;
-using System.Diagnostics;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {

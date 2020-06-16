@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
-using DoomLauncher;
-using System.Linq;
+﻿using DoomLauncher;
 using DoomLauncher.DataSources;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 
 namespace UnitTest.Tests
 {

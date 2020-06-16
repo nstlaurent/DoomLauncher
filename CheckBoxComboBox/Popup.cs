@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using System.Security.Permissions;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
+using System.Windows.Forms;
 using VS = System.Windows.Forms.VisualStyles;
 
 /*

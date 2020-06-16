@@ -1,9 +1,9 @@
-﻿using System;
+﻿using DoomLauncher.Interfaces;
+using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using DoomLauncher.Interfaces;
-using System.IO;
 
 namespace DoomLauncher
 {

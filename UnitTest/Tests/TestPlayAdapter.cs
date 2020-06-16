@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DoomLauncher;
+﻿using DoomLauncher;
+using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using DoomLauncher.Interfaces;
-using DoomLauncher.DataSources;
-using System.Collections.Generic;
 using System.Linq;
-using DoomLauncher.SourcePort;
 
 namespace UnitTest.Tests
 {

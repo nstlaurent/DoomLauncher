@@ -1,11 +1,9 @@
 ﻿using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
-using System.Linq;
-using System.IO.Compression;
-using DoomLauncher.SourcePort;
 
 namespace DoomLauncher
 {

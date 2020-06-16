@@ -1,11 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DoomLauncher;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher;
 using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace UnitTest.Tests
 {

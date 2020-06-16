@@ -1,10 +1,10 @@
-﻿using System;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using DoomLauncher.Interfaces;
-using DoomLauncher.DataSources;
 
 namespace DoomLauncher
 {

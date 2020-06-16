@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -78,7 +76,7 @@ namespace DoomLauncher
                         this.Enabled = true;
                         progress.Hide();
 
-                        MessageBox.Show(this, "Failed to fetch metadeta from the id games mirror.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(this, "Failed to fetch metadata from the id games mirror.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break; //not expected, break from loop
                     }
                 }
@@ -162,7 +160,7 @@ namespace DoomLauncher
         private bool HandleMetaError(IGameFile localFile)
         {
             MessageCheckBox errorForm = new MessageCheckBox("Meta", 
-                string.Format("Failed to find {0} from the id games mirror.\n\nIf you are sure this file should exist try chaning your mirror in the Settings menu.", localFile.FileName),
+                string.Format("Failed to find {0} from the id games mirror.\n\nIf you are sure this file should exist try changing your mirror in the Settings menu.", localFile.FileName),
                 "Don't show this error again", SystemIcons.Error);
             errorForm.StartPosition = FormStartPosition.CenterParent;
             errorForm.ShowDialog(this);

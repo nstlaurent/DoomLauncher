@@ -1,7 +1,7 @@
 ﻿using Octokit;
 using System;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DoomLauncher
 {

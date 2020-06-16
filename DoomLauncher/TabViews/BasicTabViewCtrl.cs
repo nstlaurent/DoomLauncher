@@ -1,11 +1,11 @@
-﻿using System;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
+using Equin.ApplicationFramework;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using DoomLauncher.Interfaces;
-using DoomLauncher.DataSources;
-using Equin.ApplicationFramework;
-using System.Globalization;
 
 namespace DoomLauncher
 {
