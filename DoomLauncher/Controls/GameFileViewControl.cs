@@ -247,6 +247,16 @@ namespace DoomLauncher
 
         private void SetupGridView()
         {
+            dgvMain.RowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
+            dgvMain.AlternatingRowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
+
+            var color = dgvMain.RowsDefaultCellStyle.ForeColor;
+
+            if (color.R > 160 || color.G > 160 || color.B > 160)
+                dgvMain.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(32, 32, 32);
+            else
+                dgvMain.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(224, 224, 224);
+
             dgvMain.DefaultCellStyle.NullValue = "N/A";
             dgvMain.RowHeadersVisible = false;
             dgvMain.AutoGenerateColumns = false;
