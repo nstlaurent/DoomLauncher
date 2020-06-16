@@ -975,7 +975,7 @@ namespace DoomLauncher
                 fi.CopyTo(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), dlFile.FileName), true);
                 fi.Delete();
 
-                await SyncLocalDatabase(new string[] { fi.Name }, FileManagement.Managed);
+                await SyncLocalDatabase(new string[] { fi.Name }, FileManagement.Managed, true);
             }
             catch (IOException)
             {
@@ -1325,10 +1325,10 @@ namespace DoomLauncher
             switch (type)
             {
                 case AddFileType.GameFile:
-                    await SyncLocalDatabase(files, fileManagement);
+                    await SyncLocalDatabase(files, fileManagement, true);
                     break;
                 case AddFileType.IWad:
-                    await SyncLocalDatabase(files, fileManagement);
+                    await SyncLocalDatabase(files, fileManagement, false);
                     SyncIWads(fileAddResults);
                     break;
                 default:

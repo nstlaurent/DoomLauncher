@@ -13,7 +13,7 @@ namespace DoomLauncher
     {
         private ProgressBarForm m_progressBarSync;
 
-        private async Task SyncLocalDatabase(string[] fileNames, FileManagement fileManagement)
+        private async Task SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews)
         {
             if (m_progressBarSync == null)
             {
@@ -25,13 +25,16 @@ namespace DoomLauncher
 
             ProgressBarEnd(m_progressBarSync);
             m_progressBarSync = null;
-            SyncLocalDatabaseComplete(handler);
+            SyncLocalDatabaseComplete(handler, updateViews);
         }
 
-        void SyncLocalDatabaseComplete(SyncLibraryHandler handler)
+        void SyncLocalDatabaseComplete(SyncLibraryHandler handler, bool updateViews)
         {
-            UpdateLocal();
-            HandleTabSelectionChange();
+            if (updateViews)
+            {
+                UpdateLocal();
+                HandleTabSelectionChange();
+            }
 
             if (handler != null &&
                 (handler.InvalidFiles.Length > 0 || m_zdlInvalidFiles.Count > 0))
@@ -190,14 +193,8 @@ namespace DoomLauncher
                 }
             }
 
-            foreach (ITabView tab in m_tabHandler.TabViews)
-            {
-                if (tab is IWadTabViewCtrl)
-                {
-                    UpdateLocalTabData(tab);
-                    HandleSelectionChange(tab.GameFileViewControl, false);
-                }
-            }
+            UpdateLocal();
+            HandleTabSelectionChange();
         }
 
         private async void HandleSyncStatus()
@@ -232,7 +229,7 @@ namespace DoomLauncher
                     SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(files.ToArray(), FileManagement.Managed));
 
                     ProgressBarEnd(m_progressBarSync);
-                    SyncLocalDatabaseComplete(handler);
+                    SyncLocalDatabaseComplete(handler, true);
                     break;
 
                 case SyncFileOption.Delete:
