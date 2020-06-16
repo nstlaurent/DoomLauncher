@@ -31,6 +31,8 @@ namespace DoomLauncher
                     return new IWadInfo("Freedoom: Phase 1");
                 case "FREEDOOM2":
                     return new IWadInfo("Freedoom: Phase 2");
+                case "FREEDM":
+                    return new IWadInfo("FreeDM");
                 case "CHEX":
                     return new IWadInfo("Chex Quest");
                 case "CHEX3":
