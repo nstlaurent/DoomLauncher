@@ -38,6 +38,29 @@ namespace DoomLauncher
             dgvMain.KeyDown += dgvMain_KeyDown;
         }
 
+        public static void StyleGrid(DataGridView view)
+        {
+            view.RowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
+            view.AlternatingRowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
+
+            if (SystemInformation.HighContrast)
+            {
+                view.AlternatingRowsDefaultCellStyle.BackColor = view.DefaultCellStyle.BackColor;
+                view.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
+            }
+            else
+            {
+                view.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(224, 224, 224);
+                view.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            }
+
+            view.DefaultCellStyle.NullValue = "N/A";
+            view.RowHeadersVisible = false;
+            view.AutoGenerateColumns = false;
+            view.ShowCellToolTips = false;
+            view.BackgroundColor = SystemColors.Window;
+        }
+
         public static void StyleDisplayLabel(Label label)
         {
             label.AutoSize = true;
@@ -247,21 +270,8 @@ namespace DoomLauncher
 
         private void SetupGridView()
         {
-            dgvMain.RowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
-            dgvMain.AlternatingRowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
+            StyleGrid(dgvMain);
 
-            var color = dgvMain.RowsDefaultCellStyle.ForeColor;
-
-            if (color.R > 160 || color.G > 160 || color.B > 160)
-                dgvMain.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(32, 32, 32);
-            else
-                dgvMain.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(224, 224, 224);
-
-            dgvMain.DefaultCellStyle.NullValue = "N/A";
-            dgvMain.RowHeadersVisible = false;
-            dgvMain.AutoGenerateColumns = false;
-            dgvMain.ShowCellToolTips = false;
-            dgvMain.DefaultCellStyle.SelectionBackColor = Color.Gray;
             dgvMain.SelectionChanged += dgvMain_SelectionChanged;
             dgvMain.CellClick += dgvMain_CellClick;
             dgvMain.ColumnDisplayIndexChanged += dgvMain_ColumnDisplayIndexChanged;

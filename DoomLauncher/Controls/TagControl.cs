@@ -19,9 +19,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            dgvTags.RowHeadersVisible = false;
-            dgvTags.AutoGenerateColumns = false;
-            dgvTags.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            GameFileViewControl.StyleGrid(dgvTags);
 
             DataGridViewColumn col = new DataGridViewTextBoxColumn();
             col.HeaderText = "Name";

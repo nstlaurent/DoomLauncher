@@ -24,11 +24,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            dgvSourcePorts.DefaultCellStyle.NullValue = "N/A";
-            dgvSourcePorts.RowHeadersVisible = false;
-            dgvSourcePorts.AutoGenerateColumns = false;
-            dgvSourcePorts.MultiSelect = false;
-            dgvSourcePorts.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            GameFileViewControl.StyleGrid(dgvSourcePorts);
 
             m_adapter = adapter;
             m_appConfig = appConfig;
