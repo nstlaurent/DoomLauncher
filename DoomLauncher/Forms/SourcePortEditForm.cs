@@ -12,6 +12,8 @@ namespace DoomLauncher
         private readonly ITabView[] m_additionalFileViews;
         private readonly SourcePortLaunchType m_type;
 
+        private ISourcePortData m_sourcePort;
+
         public SourcePortEditForm(IDataSourceAdapter adapter, ITabView[] additionalTabViews, SourcePortLaunchType type)
         {
             InitializeComponent();
@@ -59,12 +61,14 @@ namespace DoomLauncher
 
         public void SetDataSource(ISourcePortData sourcePort)
         {
+            m_sourcePort = sourcePort;
             sourcePortEdit1.SetDataSource(sourcePort);
             ctrlFiles.SetDataSource(Util.GetAdditionalFiles(m_adapter, sourcePort));
         }
 
         public void UpdateDataSource(ISourcePortData sourcePort)
         {
+            m_sourcePort = sourcePort;
             sourcePortEdit1.UpdateDataSource(sourcePort);
             sourcePort.SettingsFiles = ctrlFiles.GetAdditionalFilesString();
         }
@@ -84,17 +88,20 @@ namespace DoomLauncher
             if (string.IsNullOrEmpty(sourcePortEdit1.SourcePortExec))
                 err = string.Format("Please select an executable for the {0}.", type);
 
-            IEnumerable<ISourcePortData> data;
-            if (m_type == SourcePortLaunchType.SourcePort)
-                data = m_adapter.GetSourcePorts();
-            else
-                data = m_adapter.GetUtilities();
-
-            if (data.Any(x => x.Executable == sourcePortEdit1.SourcePortExec && x.Directory.GetFullPath() == sourcePortEdit1.GetSourcePortDirectory().GetFullPath()) 
-                && PromptUserSourcePortDuplicate())
+            if (m_sourcePort == null)
             {
-                DialogResult = DialogResult.None;
-                return;
+                IEnumerable<ISourcePortData> data;
+                if (m_type == SourcePortLaunchType.SourcePort)
+                    data = m_adapter.GetSourcePorts();
+                else
+                    data = m_adapter.GetUtilities();
+
+                if (data.Any(x => x.Executable == sourcePortEdit1.SourcePortExec && x.Directory.GetFullPath() == sourcePortEdit1.GetSourcePortDirectory().GetFullPath())
+                    && PromptUserSourcePortDuplicate())
+                {
+                    DialogResult = DialogResult.None;
+                    return;
+                }
             }
 
             if (!string.IsNullOrEmpty(err))

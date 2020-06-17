@@ -1,7 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -11,16 +10,13 @@ namespace DoomLauncher
 {
     public partial class GenericFileView : BasicFileView
     {
-        private static string s_dateColumn = "DateCreated";
+        private static readonly string s_dateColumn = "DateCreated";
 
         public GenericFileView()
         {
             InitializeComponent();
 
-            dgvMain.RowHeadersVisible = false;
-            dgvMain.AutoGenerateColumns = false;
-            dgvMain.ShowCellToolTips = false;
-            dgvMain.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            GameFileViewControl.StyleGrid(dgvMain);
 
             SetColumnFields(new Tuple<string, string>[]
             {

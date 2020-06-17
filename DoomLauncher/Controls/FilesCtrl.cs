@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -22,6 +23,7 @@ namespace DoomLauncher
         public FilesCtrl()
         {
             InitializeComponent();
+            dgvAdditionalFiles.BackgroundColor = SystemColors.Window;
             dgvAdditionalFiles.AutoGenerateColumns = false;
             dgvAdditionalFiles.RowHeadersVisible = false;
             dgvAdditionalFiles.MultiSelect = false;
