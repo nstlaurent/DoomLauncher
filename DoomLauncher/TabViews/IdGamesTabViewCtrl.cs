@@ -76,7 +76,7 @@ namespace DoomLauncher
 
             if (IdGamesDataSource != null)
             {
-                base.SetDataSource(IdGamesDataSource.ToList());
+                base.SetDataSource(IdGamesDataSource);
             }
             else
             {
