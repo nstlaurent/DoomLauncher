@@ -229,13 +229,8 @@ namespace DoomLauncher
             }
             else
             {
-                GameFileView.DataSource = gameFiles.Cast<GameFile>().ToList();
+                GameFileView.DataSource = gameFiles.ToList();
             }
-        }
-
-        protected IGameFile FromDataBoundItem(object item)
-        {
-            return ((ObjectView<GameFile>)item).Object as IGameFile;
         }
 
         public virtual bool IsLocal { get { return true; } }

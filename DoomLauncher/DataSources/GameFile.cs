@@ -60,10 +60,8 @@ namespace DoomLauncher.DataSources
 
         public override bool Equals(object obj)
         {
-            IGameFile check = obj as IGameFile;
-
-            if (check != null)
-                return ((IGameFile)obj).FileName == FileName;
+            if (obj is IGameFile gameFile)
+                return gameFile.FileName == FileName;
 
             return false;
         }

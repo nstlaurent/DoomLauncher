@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <licenseUrl>https://github.com/waynebloss/BindingListView/blob/master/license.txt</licenseUrl>
+    <projectUrl>https://github.com/waynebloss/BindingListView</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>$description$</summary>
+    <description>The BindingListView .NET library provides a type-safe, sortable, filterable, data-bindable view of one or more lists of objects. It is the business objects equivalent of using a DataView on a DataTable in ADO.NET. If you have a list of objects to display on a Windows Forms UI (e.g. in a DataGridView) and want to allow your user to sort and filter, then this is the library to use!</description>
+    <releaseNotes>Initial</releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>.net IBindingListView winforms</tags>
+  </metadata>
+</package>

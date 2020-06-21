@@ -24,7 +24,7 @@ namespace DoomLauncher
 
         private readonly Label m_label = new Label();
         private readonly Dictionary<int, PropertyInfo> m_properties = new Dictionary<int, PropertyInfo>();
-        private BindingListView<GameFile> m_datasource;
+        private BindingListView<IGameFile> m_datasource;
         private bool m_binding = false;
 
         public GameFileViewControl()
@@ -147,30 +147,23 @@ namespace DoomLauncher
             get
             {
                 if (m_datasource != null)
-                {
-                    foreach (ObjectView<GameFile> item in m_datasource)
-                        yield return item.Object;
-                }
+                    return m_datasource;
                 else
-                {
-                    IGameFile[] source = new IGameFile[] { };
-                    foreach (var gameFile in source)
-                        yield return gameFile;
-                }
+                    return new IGameFile[] { };
             }
             set
             {
                 if (value != null)
-                    SetDataSource(new BindingListView<GameFile>(value.ToList()));
+                    SetDataSource(new BindingListView<IGameFile>(value.ToList()));
                 else
-                    SetDataSource(new BindingListView<GameFile>(new GameFile[] { }));
+                    SetDataSource(new BindingListView<IGameFile>(new GameFile[] { }));
             }
         }
 
         private void SetDataSource(object datasource)
         {
             m_binding = true;
-            m_datasource = (BindingListView<GameFile>)datasource;
+            m_datasource = (BindingListView<IGameFile>)datasource;
 
             if (m_datasource == null)
             {
@@ -325,7 +318,7 @@ namespace DoomLauncher
         {
             if (m_datasource != null && m_datasource.Count > e.RowIndex)
             {
-                GameFile gameFile = m_datasource[e.RowIndex].Object;
+                IGameFile gameFile = m_datasource[e.RowIndex].Object;
 
                 if (!m_properties.ContainsKey(e.ColumnIndex))
                     m_properties.Add(e.ColumnIndex, gameFile.GetType().GetProperty(dgvMain.Columns[e.ColumnIndex].DataPropertyName));

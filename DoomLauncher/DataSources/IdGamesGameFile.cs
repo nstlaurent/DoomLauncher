@@ -104,8 +104,7 @@ namespace DoomLauncher.DataSources
 
         public override bool Equals(object obj)
         {
-            IdGamesGameFile gameFile = obj as IdGamesGameFile;
-            if (gameFile != null)
+            if (obj is IdGamesGameFile gameFile)
                 return id == gameFile.id;
 
             return false;
