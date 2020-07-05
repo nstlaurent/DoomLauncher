@@ -72,6 +72,8 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_6_4_1, AppVersion.Version_2_6_4_1);
                 ExecuteUpdate(Pre_2_6_4_1_Update, AppVersion.Version_2_6_4_1_Update1);
                 ExecuteUpdate(Pre_2_7_0_0, AppVersion.Version_2_7_0_0);
+                ExecuteUpdate(Pre_2_8_0_0, AppVersion.Version_2_8_0_0);
+                ExecuteUpdate(Pre_2_8_0_0_1, AppVersion.Version_2_8_0_0_1);
             }
         }
 
@@ -166,7 +168,7 @@ namespace DoomLauncher
 
                 DataAccess.ExecuteNonQuery(query);
 
-                DirectoryInfo di = new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(),  ConfigurationManager.AppSettings["GameFileDirectory"], "SaveGames"));
+                DirectoryInfo di = new DirectoryInfo(Path.Combine(LauncherPath.GetDataDirectory(),  ConfigurationManager.AppSettings["GameFileDirectory"], "SaveGames"));
                 if (!di.Exists)
                     di.Create();
             }
@@ -256,8 +258,8 @@ namespace DoomLauncher
         [Conditional("RELEASE")]
         private static void CreateDatabaseBackup()
         {
-            FileInfo fi = new FileInfo(DbDataSourceAdapter.GetDatabaseFileName());
-            fi.CopyTo(string.Format("{0}_{1}.sqlite.bak", DbDataSourceAdapter.GetDatabaseFileName(), Guid.NewGuid().ToString()));
+            FileInfo fi = new FileInfo(DbDataSourceAdapter.DatabaseFileName);
+            fi.CopyTo(string.Format("{0}_{1}.sqlite.bak", DbDataSourceAdapter.DatabaseFileName, Guid.NewGuid().ToString()));
         }
 
         private void Pre_2_1_0()
@@ -516,6 +518,35 @@ namespace DoomLauncher
                 DataAccess.ExecuteNonQuery("update GameFiles set SettingsSaved = 1 where SourcePortID is not null");
                 DataAccess.ExecuteNonQuery("update GameFiles set SettingsSaved = 0 where SourcePortID is null");
             }
+        }
+
+        private void Pre_2_8_0_0()
+        {
+            ConfigurationData config = new ConfigurationData()
+            {
+                Name = "FileManagement",
+                Value = FileManagement.Managed.ToString(),
+                UserCanModify = false,
+            };
+
+            m_adapter.InsertConfiguration(config);
+        }
+
+        private void Pre_2_8_0_0_1()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "GameFileViewType",
+                Value = GameFileViewType.TileView.ToString(),
+                UserCanModify = false,
+            });
+
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "ItemsPerPage",
+                Value = "30",
+                UserCanModify = false,
+            });
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)

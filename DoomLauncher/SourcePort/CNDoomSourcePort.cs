@@ -1,14 +1,10 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.SourcePort
 {
-    public class CNDoomSourcePort : GenericSourcePort
+    public class CNDoomSourcePort : ChocolateDoomSourcePort
     {
         public CNDoomSourcePort(ISourcePortData sourcePortData)
             : base(sourcePortData)
@@ -18,17 +14,7 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            return Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals("CNDOOM", StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        public override bool StatisticsSupported()
-        {
-            return true;
-        }
-
-        public override IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats)
-        {
-            return new CNDoomStatsReader(gameFile, Path.Combine(m_sourcePortData.Directory.GetFullPath(), "stdout.txt"));
+            return Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals("cndoom", StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

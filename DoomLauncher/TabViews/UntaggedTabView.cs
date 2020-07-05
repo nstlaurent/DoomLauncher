@@ -1,16 +1,13 @@
 ﻿using DoomLauncher.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
     class UntaggedTabView : LocalTabViewCtrl
     {
-        public UntaggedTabView(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup)
-            : base(key, title, adapter, selectFields, lookup)
+        public UntaggedTabView(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup, GameFileViewFactory factory)
+            : base(key, title, adapter, selectFields, lookup, factory)
         {
 
         }

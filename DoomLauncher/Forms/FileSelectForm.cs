@@ -1,14 +1,6 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
-using Equin.ApplicationFramework;
+﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -17,6 +9,7 @@ namespace DoomLauncher
     {
         private TabHandler m_tabHandler;
         private bool m_bOverrideInit, m_multiSelect;
+        private IGameFileView m_lastView;
 
         public FileSelectForm()
         {
@@ -30,7 +23,7 @@ namespace DoomLauncher
         {
             if (e.KeyCode == Keys.Enter)
             {
-                GameFileViewControl ctrl = CurrentGameFileControl;
+                IGameFileView ctrl = CurrentGameFileControl;
                 if (ctrl != null)
                     HandleSearch(ctrl);
             }
@@ -52,7 +45,7 @@ namespace DoomLauncher
             {
                 ITabView viewAdd = (ITabView)view.Clone();
                 viewAdd.GameFileViewControl.MultiSelect = MultiSelect;
-                viewAdd.GameFileViewControl.RowDoubleClicked += GameFileViewControl_RowDoubleClicked;
+                viewAdd.GameFileViewControl.ItemDoubleClick += GameFileViewControl_RowDoubleClicked;
                 m_tabHandler.AddTab(viewAdd);
             }
         }
@@ -115,34 +108,17 @@ namespace DoomLauncher
 
         public IDataSourceAdapter DataSourceAdapter { get; set; }
 
-        public IGameFile[] SelectedFiles
-        {
-            get
-            {
-                object[] items = CurrentGameFileControl.SelectedItems;
-
-                List<IGameFile> ret = new List<IGameFile>(items.Length);
-
-                foreach (object obj in items)
-                {
-                    ret.Add(((ObjectView<GameFile>)obj).Object as IGameFile);
-                }
-
-                return ret.ToArray();
-            }
-        }
+        public IGameFile[] SelectedFiles => CurrentGameFileControl.SelectedItems;
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            GameFileViewControl ctrl = CurrentGameFileControl;
+            IGameFileView ctrl = CurrentGameFileControl;
 
             if (ctrl != null)
-            {
                 HandleSearch(ctrl);
-            }
         }
 
-        private void HandleSearch(GameFileViewControl ctrl)
+        private void HandleSearch(IGameFileView ctrl)
         {
             if (!m_bOverrideInit)
             {
@@ -158,13 +134,24 @@ namespace DoomLauncher
             }
         }
 
-        private GameFileViewControl CurrentGameFileControl
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var gameFileControl = CurrentGameFileControl;
+
+            if (m_lastView != null)
+                m_lastView.SetVisible(false);
+
+            if (gameFileControl != null)
+                gameFileControl.SetVisible(true);
+
+            m_lastView = gameFileControl;
+        }
+
+        private IGameFileView CurrentGameFileControl
         {
             get
             {
-                ITabView view = tabControl.SelectedTab.Controls[0] as ITabView;
-
-                if (view != null)
+                if (tabControl.SelectedTab.Controls[0] is ITabView view)
                     return view.GameFileViewControl;
 
                 return null;

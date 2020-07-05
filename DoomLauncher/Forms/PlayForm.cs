@@ -33,7 +33,7 @@ namespace DoomLauncher
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
             InitializeComponent();
-            ctrlFiles.Initialize("GameFileID", "FileName");
+            ctrlFiles.Initialize("GameFileID", "FileNameNoPath");
             ctrlFiles.CellFormatting += ctrlFiles_CellFormatting;
             ctrlFiles.NewItemNeeded += ctrlFiles_NewItemNeeded;
             ctrlFiles.ItemRemoving += CtrlFiles_ItemRemoving;
@@ -107,6 +107,7 @@ namespace DoomLauncher
             bool reset = ShouldRecalculateAdditionalFiles();
             HandleSourcePortSelectionChange(reset);
             HandleIwadSelectionChanged(reset);
+            SetAdditionalFiles(reset);
             HandleDemoChange();
             RegisterEvents();
 
@@ -456,8 +457,8 @@ namespace DoomLauncher
             {
                 var tabTo = m_additionalFileViews.FirstOrDefault(x => x.Title == tabFrom.Title);
 
-                if (tabTo != null)
-                    tabTo.SetColumnConfig(tabTo.GameFileViewControl.ColumnFields, tabFrom.GetColumnConfig().ToArray());
+                if (tabTo != null && tabTo.GameFileViewControl is IGameFileColumnView columnView)
+                    tabTo.SetColumnConfig(columnView.ColumnFields, tabFrom.GetColumnConfig().ToArray());
             }
         }
 
@@ -602,7 +603,7 @@ namespace DoomLauncher
             IGameFile iwad = SelectedIWad;
             ISourcePortData port = SelectedSourcePort;
             if (iwad != null && m_handler.IsIWadFile(gameFile))
-                e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, Util.RemoveExtension(iwad.FileName));
+                e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, Path.GetFileNameWithoutExtension(iwad.FileName));
             if (port != null && m_handler.IsSourcePortFile(gameFile))
                 e.DisplayText = string.Format("{0} ({1})", gameFile.FileName, port.Name);
         }
@@ -636,9 +637,6 @@ namespace DoomLauncher
 
         private void HandleDemoChange()
         {
-            m_handler.Reset();
-            SetAdditionalFiles(true);
-
             if (chkDemo.Checked && cmbDemo.SelectedItem != null)
             {
                 var file = cmbDemo.SelectedItem as IFileData;
@@ -646,6 +644,9 @@ namespace DoomLauncher
 
                 if (parser != null)
                 {
+                    m_handler.Reset();
+                    SetAdditionalFiles(true);
+
                     string[] requiredFiles = parser.GetRequiredFiles();
                     List<string> unavailable = new List<string>();
                     List<IGameFile> iwads = new List<IGameFile>();

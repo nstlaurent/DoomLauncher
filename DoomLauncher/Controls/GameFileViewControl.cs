@@ -1,32 +1,30 @@
-﻿using System;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
+using Equin.ApplicationFramework;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DoomLauncher.Interfaces;
-using Equin.ApplicationFramework;
-using DoomLauncher.DataSources;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
-    public partial class GameFileViewControl : UserControl
+    public partial class GameFileViewControl : UserControl, IGameFileColumnView
     {
-        public event AddingNewEventHandler ToolTipTextNeeded;
-        public event EventHandler RowDoubleClicked;
-        public event EventHandler RowContentDoubleClicked;
+        public event EventHandler ItemClick;
+        public event EventHandler ItemDoubleClick;
         public event EventHandler SelectionChange;
         public event CancelEventHandler CustomRowPaint;
-        public event KeyPressEventHandler GridKeyPress;
-        public event KeyEventHandler GridKeyDown;
+        public event KeyPressEventHandler ViewKeyPress;
+        public event KeyEventHandler ViewKeyDown;
+        public event GameFileEventHandler GameFileEnter;
+        public event GameFileEventHandler GameFileLeave;
 
-        private Label m_label = new Label();
-        private BindingListView<GameFile> m_datasource;
-        private Dictionary<int, PropertyInfo> m_properties = new Dictionary<int, PropertyInfo>();
+        private readonly Label m_label = new Label();
+        private readonly Dictionary<int, PropertyInfo> m_properties = new Dictionary<int, PropertyInfo>();
+        private BindingListView<IGameFile> m_datasource;
         private bool m_binding = false;
 
         public GameFileViewControl()
@@ -35,13 +33,46 @@ namespace DoomLauncher
 
             SetupGridView();
 
-            m_label.AutoSize = true;
-            m_label.Visible = false;
-            m_label.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-            m_label.Margin = new Padding(12);
-            m_label.Font = new Font(m_label.Font.FontFamily, 12.0f, FontStyle.Bold);
+            StyleDisplayLabel(m_label);
             Controls.Add(m_label);
             dgvMain.KeyDown += dgvMain_KeyDown;
+        }
+
+        public static void StyleGrid(DataGridView view)
+        {
+            view.RowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
+            view.AlternatingRowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
+
+            if (SystemInformation.HighContrast)
+            {
+                view.AlternatingRowsDefaultCellStyle.BackColor = view.DefaultCellStyle.BackColor;
+                view.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
+            }
+            else
+            {
+                view.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(224, 224, 224);
+                view.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            }
+
+            view.DefaultCellStyle.NullValue = "N/A";
+            view.RowHeadersVisible = false;
+            view.AutoGenerateColumns = false;
+            view.ShowCellToolTips = false;
+            view.BackgroundColor = SystemColors.Window;
+        }
+
+        public static void StyleDisplayLabel(Label label)
+        {
+            label.AutoSize = true;
+            label.Visible = false;
+            label.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            label.Margin = new Padding(12);
+            label.Font = new Font(label.Font.FontFamily, 12.0f, FontStyle.Bold);
+        }
+
+        public void SetVisible(bool set)
+        {
+            // Not required
         }
 
         public bool MultiSelect
@@ -75,10 +106,12 @@ namespace DoomLauncher
             {            
                 foreach (var item in columnFields)
                 {
-                    DataGridViewColumn col = new DataGridViewTextBoxColumn();
-                    col.HeaderText = item.Title;
-                    col.Name = item.DataKey;
-                    col.DataPropertyName = item.DataKey;
+                    DataGridViewColumn col = new DataGridViewTextBoxColumn
+                    {
+                        HeaderText = item.Title,
+                        Name = item.DataKey,
+                        DataPropertyName = item.DataKey
+                    };
                     dgvMain.Columns.Add(col);
                     m_orderLookup.Add(item.DataKey.ToLower(), col);
                 }
@@ -86,7 +119,7 @@ namespace DoomLauncher
                 dgvMain.Columns[dgvMain.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
                 if (resetDataSource) //need to reset datasource so columns show in correct order
-                    SetDataSource(DataSource);
+                    SetDataSource(m_datasource);
             }
         }
 
@@ -109,16 +142,28 @@ namespace DoomLauncher
             return formats;
         }
 
-        public object DataSource
+        public IEnumerable<IGameFile> DataSource
         {
-            get { return m_datasource; }
-            set { SetDataSource(value); }
+            get
+            {
+                if (m_datasource != null)
+                    return m_datasource;
+                else
+                    return new IGameFile[] { };
+            }
+            set
+            {
+                if (value != null)
+                    SetDataSource(new BindingListView<IGameFile>(value.ToList()));
+                else
+                    SetDataSource(new BindingListView<IGameFile>(new GameFile[] { }));
+            }
         }
 
         private void SetDataSource(object datasource)
         {
             m_binding = true;
-            m_datasource = (BindingListView<GameFile>)datasource;
+            m_datasource = (BindingListView<IGameFile>)datasource;
 
             if (m_datasource == null)
             {
@@ -140,17 +185,24 @@ namespace DoomLauncher
                 BorderStyle = BorderStyle.None;
             }
 
+            Refresh();
+
             m_binding = false;
         }
 
-        public object SelectedItem
+        public void UpdateGameFile(IGameFile gameFile)
+        {
+            // Grid view inherently supports this
+        }
+
+        public IGameFile SelectedItem
         {
             get
             {
                 if (dgvMain.SelectedRows.Count > 0)
                 {
                     DataGridViewRow dgvr = dgvMain.SelectedRows[0];
-                    return m_datasource[dgvr.Index];
+                    return m_datasource[dgvr.Index].Object;
                 }
 
                 return null;
@@ -175,55 +227,50 @@ namespace DoomLauncher
             }
         }
 
-        public object[] SelectedItems
+        public IGameFile[] SelectedItems
         {
             get
             {
                 if (m_datasource != null && dgvMain.SelectedRows.Count > 0)
                 {
-                    List<object> ret = new List<object>(dgvMain.Rows.Count);
-
+                    List<IGameFile> ret = new List<IGameFile>(dgvMain.Rows.Count);
+                    
                     foreach (DataGridViewRow dgvr in dgvMain.SelectedRows)
                     {
                         if (m_datasource.Count > dgvr.Index)
-                            ret.Add(m_datasource[dgvr.Index]);
+                            ret.Add(m_datasource[dgvr.Index].Object as IGameFile);
                     }
 
                     return ret.ToArray();
                 }
 
-                return new object[] { };
+                return new IGameFile[] { };
             }
         }
 
-        public object ItemForRow(int rowIndex)
+        public IGameFile GameFileForIndex(int index)
         {
-            if (rowIndex > -1 && rowIndex < dgvMain.Rows.Count)
-            {
-                return m_datasource[rowIndex];
-            }
+            if (index > -1 && index < dgvMain.Rows.Count)
+                return m_datasource[index].Object;
 
             return null;
         }
 
+        public void RefreshData()
+        {
+            Refresh();
+        }
+
         private void SetupGridView()
         {
-            dgvMain.DefaultCellStyle.NullValue = "N/A";
-            dgvMain.RowHeadersVisible = false;
-            dgvMain.AutoGenerateColumns = false;
-            dgvMain.ShowCellToolTips = false;
-            dgvMain.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            StyleGrid(dgvMain);
+
             dgvMain.SelectionChanged += dgvMain_SelectionChanged;
             dgvMain.CellClick += dgvMain_CellClick;
             dgvMain.ColumnDisplayIndexChanged += dgvMain_ColumnDisplayIndexChanged;
             
             dgvMain.VirtualMode = true;
             dgvMain.CellValueNeeded += dgvMain_CellValueNeeded;
-
-            toolTip1.AutoPopDelay = 32767; //this is the max you can leave a tooltip up
-
-            ToolTipTimer = new System.Timers.Timer(500);
-            ToolTipTimer.Elapsed += ToolTipTimer_Elapsed;
 
             dgvMain.ColumnHeaderMouseClick += dgvMain_ColumnHeaderMouseClick;
 
@@ -240,8 +287,6 @@ namespace DoomLauncher
         {
             if (m_datasource != null)
             {
-                string sortOrder = null;
-
                 DataGridViewColumn dgvcSet = dgvMain.Columns[columnIndex];
 
                 foreach (DataGridViewColumn dgvc in dgvMain.Columns)
@@ -258,6 +303,7 @@ namespace DoomLauncher
                         dgvcSet.HeaderCell.SortGlyphDirection = SortOrder.Ascending;
                 }
 
+                string sortOrder;
                 if (dgvcSet.HeaderCell.SortGlyphDirection == SortOrder.Ascending)
                     sortOrder = "ASC";
                 else
@@ -272,7 +318,7 @@ namespace DoomLauncher
         {
             if (m_datasource != null && m_datasource.Count > e.RowIndex)
             {
-                GameFile gameFile = m_datasource[e.RowIndex].Object;
+                IGameFile gameFile = m_datasource[e.RowIndex].Object;
 
                 if (!m_properties.ContainsKey(e.ColumnIndex))
                     m_properties.Add(e.ColumnIndex, gameFile.GetType().GetProperty(dgvMain.Columns[e.ColumnIndex].DataPropertyName));
@@ -288,6 +334,7 @@ namespace DoomLauncher
 
         void dgvMain_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            ItemClick?.Invoke(this, EventArgs.Empty);
             HandleSelection();
         }
 
@@ -313,72 +360,39 @@ namespace DoomLauncher
                 dgvMain.Rows[e.RowIndex].Selected = true;
                 dgvMain.Rows[e.RowIndex].Cells[0].Selected = true;
 
-                if (SelectionChange != null)
-                {
-                    SelectionChange(this, new EventArgs());
-                }
+                SelectionChange?.Invoke(this, new EventArgs());
                 m_setting = false;
             }
         }
 
-        void ToolTipTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            if (ToolTipTimer.Enabled && InvokeRequired)
-            {
-                Invoke(new Action(SetToolTipText));
-                ToolTipTimer.Stop();
-            }
-        }
-
-        private void SetToolTipText()
-        {
-            if (ToolTipTextNeeded != null)
-            {
-                AddingNewEventArgs args = new AddingNewEventArgs(string.Empty);
-                ToolTipTextNeeded(this, args);
-
-                toolTip1.SetToolTip(dgvMain, args.NewObject.ToString());
-            }
-        }
+        private IGameFile m_lastEnter;
 
         private void dgvMain_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
-            ToolTipTimer.Stop();
-
-            if (e.RowIndex != ToolTipRowIndex)
+            var gameFile = GameFileForIndex(e.RowIndex);
+            if (gameFile != m_lastEnter)
             {
-                toolTip1.Hide(dgvMain);
-                ToolTipRowIndex = e.RowIndex;
-                ToolTipTimer.Interval = 500;
-                ToolTipTimer.Start();
+                m_lastEnter = gameFile;
+                GameFileEnter?.Invoke(this, new GameFileEventArgs(gameFile));
             }
         }
 
         private void dgvMain_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
         {
-            ToolTipTimer.Stop();
-            toolTip1.Hide(dgvMain);
-            ToolTipRowIndex = -1;
-        }
-
-        private void dgvMain_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (RowContentDoubleClicked != null)
-            {
-                RowContentDoubleClicked(this, new EventArgs());
-            }
+            GameFileLeave?.Invoke(this, new GameFileEventArgs(m_lastEnter));
+            m_lastEnter = null;
         }
 
         private void dgvMain_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (RowDoubleClicked != null)
-            {
-                RowDoubleClicked(this, new EventArgs());
-            }
+            ItemDoubleClick?.Invoke(this, new EventArgs());
         }
 
         public void SetColumnWidth(string key, int width)
         {
+            if (width <= 0)
+                return;
+
             key = key.ToLower();
             m_orderLookup[key].Width = width;
         }
@@ -397,6 +411,17 @@ namespace DoomLauncher
                     return column.HeaderCell.SortGlyphDirection;
             }
             return SortOrder.None;
+        }
+
+        public string GetSortedColumnKey()
+        {
+            foreach (DataGridViewColumn column in dgvMain.Columns)
+            {
+                if (column.HeaderCell.SortGlyphDirection != SortOrder.None)
+                    return column.Name;
+            }
+
+            return string.Empty;
         }
 
         public string[] GetColumnKeyOrder()
@@ -430,39 +455,36 @@ namespace DoomLauncher
         {
             if (CustomRowColorPaint && CustomRowPaint != null && !m_binding)
             {
-                CustomRowPaintDataBoundItem = this.ItemForRow(e.RowIndex);
+                CustomRowPaintDataBoundItem = GameFileForIndex(e.RowIndex);
 
                 CancelEventArgs args = new CancelEventArgs();
                 CustomRowPaint(this, args);
 
                 if (!args.Cancel)
-                {
                     dgvMain.Rows[e.RowIndex].DefaultCellStyle.ForeColor = CustomRowPaintForeColor;
-                }
             }
         }
 
         public ColumnField[] ColumnFields { get; private set; }
-        public int ToolTipRowIndex { get; private set; }
+        public int ToolTipItemIndex { get; private set; }
         public int ColumnReorderIndex { get; private set; }
 
         public bool CustomRowColorPaint { get; set; }
-        public object CustomRowPaintDataBoundItem { get; private set; }
+        public IGameFile CustomRowPaintDataBoundItem { get; private set; }
         public Color CustomRowPaintForeColor { get; set; }
 
         public object DoomLauncherParent { get; set; }
 
-        private System.Timers.Timer ToolTipTimer { get; set; }
         private Dictionary<string, DataGridViewColumn> m_orderLookup = new Dictionary<string, DataGridViewColumn>();
 
         private void dgvMain_KeyPress(object sender, KeyPressEventArgs e)
         {
-            GridKeyPress?.Invoke(this, e);
+            ViewKeyPress?.Invoke(this, e);
         }
 
         private void dgvMain_KeyDown(object sender, KeyEventArgs e)
         {
-            GridKeyDown?.Invoke(this, e);
+            ViewKeyDown?.Invoke(this, e);
         }
     }
 }

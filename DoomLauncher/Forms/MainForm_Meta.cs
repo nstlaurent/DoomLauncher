@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -34,13 +32,13 @@ namespace DoomLauncher
                     try
                     {
 
-                        this.Enabled = false;
-                        progress.DisplayText = string.Format("Searching for {0}...", localFile.FileName);
+                        Enabled = false;
+                        progress.DisplayText = string.Format("Searching for {0}...", localFile.FileNameNoPath);
                         progress.Show(this);
 
-                        IEnumerable<IGameFile> remoteFiles = await Task.Run(() => GetMetaFiles(adapter, localFile.FileName));
+                        IEnumerable<IGameFile> remoteFiles = await Task.Run(() => GetMetaFiles(adapter, localFile.FileNameNoPath));
 
-                        this.Enabled = true;
+                        Enabled = true;
                         progress.Hide();
 
                         if (remoteFiles == null || m_cancelMetaUpdate)
@@ -75,16 +73,16 @@ namespace DoomLauncher
                     }
                     catch
                     {
-                        this.Enabled = true;
+                        Enabled = true;
                         progress.Hide();
 
-                        MessageBox.Show(this, "Failed to fetch metadeta from the id games mirror.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(this, "Failed to fetch metadata from the id games mirror.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break; //not expected, break from loop
                     }
                 }
 
                 if (updateView)
-                    HandleSelectionChange(GetCurrentViewControl());
+                    HandleSelectionChange(GetCurrentViewControl(), true);
             }
         }
 
@@ -95,10 +93,12 @@ namespace DoomLauncher
 
         private ProgressBarForm InitMetaProgressBar()
         {
-            ProgressBarForm progress = new ProgressBarForm();
-            progress.Text = "Fetching data...";
-            progress.Minimum = 0;
-            progress.Maximum = 0;
+            ProgressBarForm progress = new ProgressBarForm
+            {
+                Text = "Fetching data...",
+                Minimum = 0,
+                Maximum = 0
+            };
             progress.SetCancelAllowed(false);
             return progress;
         }
@@ -119,7 +119,7 @@ namespace DoomLauncher
             form.ShowSearchControl(false);
             string display = localFile.FileName;
             if (!string.IsNullOrEmpty(localFile.Title))
-                display = string.Format("{0}({1})", localFile.Title, localFile.FileName);
+                display = string.Format("{0}({1})", localFile.Title, localFile.FileNameNoPath);
             form.SetDisplayText(string.Format("Multiple files found for {0}. Please select intended file.", display));
             form.MultiSelect = false;
             form.StartPosition = FormStartPosition.CenterParent;
@@ -162,7 +162,7 @@ namespace DoomLauncher
         private bool HandleMetaError(IGameFile localFile)
         {
             MessageCheckBox errorForm = new MessageCheckBox("Meta", 
-                string.Format("Failed to find {0} from the id games mirror.\n\nIf you are sure this file should exist try chaning your mirror in the Settings menu.", localFile.FileName),
+                string.Format("Failed to find {0} from the id games mirror.\n\nIf you are sure this file should exist try changing your mirror in the Settings menu.", localFile.FileNameNoPath),
                 "Don't show this error again", SystemIcons.Error);
             errorForm.StartPosition = FormStartPosition.CenterParent;
             errorForm.ShowDialog(this);

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -35,6 +36,40 @@ namespace DoomLauncher
 
         public bool Execute()
         {
+            if (LauncherPath.IsInstalled())
+                return ExecuteInstallUpdate();
+            else
+                return ExecuteNonInstallUpdate();
+        }
+
+        private bool ExecuteInstallUpdate()
+        {
+            try
+            {
+                string extractFolder = Path.Combine(Path.GetTempPath(), "DoomLauncherUpdate");
+                if (Directory.Exists(extractFolder))
+                    Directory.Delete(extractFolder, true);
+                using (ZipArchive za = ZipFile.OpenRead(m_zipArchive))
+                    za.ExtractToDirectory(extractFolder);
+
+                string setup = Path.Combine(extractFolder, "setup.exe");
+                if (File.Exists(setup))
+                {
+                    Process.Start(setup);
+                    Application.Exit();
+                }
+            }
+            catch(Exception ex)
+            {
+                SetLastErrorException(ex);
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ExecuteNonInstallUpdate()
+        {
             List<RenameFile> renamedFiles = new List<RenameFile>();
 
             try
@@ -62,13 +97,18 @@ namespace DoomLauncher
             }
             catch (Exception ex)
             {
-                LastError = string.Concat("**ERROR TRACE**", Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace);
+                SetLastErrorException(ex);
                 RevertRenamedFiles(renamedFiles);
                 return false;
             }
 
-            Process.Start(Path.Combine(m_executingDirectory, "DoomLauncher.exe"));
+            Process.Start(Path.Combine(m_executingDirectory, Util.GetExecutableNoPath()));
             return true;
+        }
+
+        private void SetLastErrorException(Exception ex)
+        {
+            LastError = string.Concat("**ERROR TRACE**", Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace);
         }
 
         private void RevertRenamedFiles(List<RenameFile> renamedFiles)

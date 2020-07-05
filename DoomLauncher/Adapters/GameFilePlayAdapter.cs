@@ -4,12 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -88,9 +84,7 @@ namespace DoomLauncher
                 if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePortData, true)) return null;
             }
 
-            string[] extensions = sourcePortData.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            launchFiles = SortParameters(launchFiles, extensions).ToList();
-
+            launchFiles = SortParameters(launchFiles).ToList();
             BuildLaunchString(sb, sourcePort, launchFiles);
 
             if (Map != null)
@@ -130,16 +124,15 @@ namespace DoomLauncher
         {
             try
             {
-                using (ZipArchive za = ZipFile.OpenRead(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
+                using (IArchiveReader reader = ArchiveReader.Create(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
                 {
-                    ZipArchiveEntry zae = za.Entries.First();
-                    string extractFile = Path.Combine(tempDirectory.GetFullPath(), zae.Name);
-                    if (ExtractFiles)
-                    {
-                        if (File.Exists(extractFile))
-                            TrySetFileAttributes(extractFile);
-                        zae.ExtractToFile(extractFile, true);
-                    }
+                    IArchiveEntry entry = reader.Entries.First();
+                    string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
+                    if (ExtractFiles && entry.ExtractRequired)
+                        entry.ExtractToFile(extractFile, true);
+
+                    if (!entry.ExtractRequired)
+                        extractFile = entry.FullName;
 
                     sb.Append(sourcePort.IwadParameter(new SpData(extractFile, gameFile, AdditionalFiles)));
                 }
@@ -154,11 +147,6 @@ namespace DoomLauncher
                 LastError = string.Format("File in use: {0}", gameFile.FileName);
                 return false;
             }
-            catch(UnauthorizedAccessException)
-            {
-                LastError = string.Format("Could not overwrite temporary file: {0}", gameFile.FileName);
-                return false;
-            }
             catch (Exception)
             {
                 LastError = string.Format("There was an issue with the IWad: {0}. Corrupted file?", gameFile.FileName);
@@ -166,18 +154,6 @@ namespace DoomLauncher
             }
 
             return true;
-        }
-
-        private void TrySetFileAttributes(string file)
-        {
-            try
-            {
-                File.SetAttributes(file, FileAttributes.Normal);
-            }
-            catch
-            {
-                //failed, nothing to do
-            }
         }
 
         private bool HandleGameFile(IGameFile gameFile, List<string> launchFiles, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
@@ -216,9 +192,9 @@ namespace DoomLauncher
                 {
                     if (File.Exists(pathFile.ExtractedFile))
                     {
-                        using (ZipArchive za = ZipFile.OpenRead(pathFile.ExtractedFile))
+                        using (IArchiveReader reader = ArchiveReader.Create(pathFile.ExtractedFile))
                         {
-                            var entry = za.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
+                            var entry = reader.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
                             if (entry != null)
                                 files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
                         }
@@ -243,19 +219,17 @@ namespace DoomLauncher
 
         private void BuildLaunchString(StringBuilder sb, ISourcePort sourcePort, List<string> files)
         {
-            string[] dehExt = new string[] { ".deh", ".bex" }; //future - should be configurable
             List<string> dehFiles = new List<string>();
 
             if (files.Count > 0)
             {
                 sb.Append(sourcePort.FileParameter(new SpData()));
-                //if (!string.IsNullOrEmpty(sourcePort.FileOption))
-                //    sb.Append(string.Concat(" ", sourcePort.FileOption, " ")); //" -file "
+                var dehExtensions = Util.GetDehackedExtensions();
 
                 foreach (string str in files)
                 {
                     FileInfo fi = new FileInfo(str);
-                    if (!dehExt.Contains(fi.Extension.ToLower()))
+                    if (!dehExtensions.Contains(fi.Extension.ToLower()))
                         sb.Append(string.Format("\"{0}\" ", str));
                     else
                         dehFiles.Add(str);
@@ -275,26 +249,33 @@ namespace DoomLauncher
         {
             List<string> files = new List<string>();
 
-            using (ZipArchive za = ZipFile.OpenRead(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
+            using (IArchiveReader reader = ArchiveReader.Create(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
             {
-                var entries = za.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains('.') &&
+                var entries = reader.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains('.') &&
                     extensions.Any(y => y.Equals(Path.GetExtension(x.Name), StringComparison.OrdinalIgnoreCase)));
 
-                foreach (ZipArchiveEntry zae in entries)
+                foreach (IArchiveEntry entry in entries)
                 {
                     bool useFile = true;
 
                     if (checkSpecific && SpecificFiles != null && SpecificFiles.Length > 0)
                     {
-                        useFile = SpecificFiles.Contains(zae.FullName);
+                        useFile = SpecificFiles.Contains(entry.FullName);
                     }
 
                     if (useFile)
                     {
-                        string extractFile = Path.Combine(tempDirectory.GetFullPath(), zae.Name);
-                        if (ExtractFiles)
-                            zae.ExtractToFile(extractFile, true);
-                        files.Add(extractFile);
+                        if (entry.ExtractRequired)
+                        {
+                            string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
+                            if (ExtractFiles)
+                                entry.ExtractToFile(extractFile, true);
+                            files.Add(extractFile);
+                        }
+                        else
+                        {
+                            files.Add(entry.FullName);
+                        }
                     }
                 }
             }
@@ -338,11 +319,22 @@ namespace DoomLauncher
             ProcessExited?.Invoke(this, new EventArgs());
         }
 
-        private IEnumerable<string> SortParameters(IEnumerable<string> parameters, string[] extensionOrder)
+        // Take .deh and .bex files and put them together so they cane be put in the same parameter
+        private IEnumerable<string> SortParameters(IEnumerable<string> parameters)
         {
-            List<string> ret = new List<string>();
-            Array.ForEach(extensionOrder, x => ret.AddRange(parameters.Where(y => y.ToLower().Contains(x.ToLower()))));
-            return ret;
+            List<string> dehFiles = new List<string>();
+            var dehExtensions = Util.GetDehackedExtensions();
+
+            foreach (string file in parameters)
+            {
+                foreach (string deh in dehExtensions)
+                {
+                    if (Path.GetExtension(file).Equals(deh, StringComparison.OrdinalIgnoreCase))
+                        dehFiles.Add(file);
+                }
+            }
+
+            return parameters.Except(dehFiles).Union(dehFiles).ToList();
         }
     }
 }

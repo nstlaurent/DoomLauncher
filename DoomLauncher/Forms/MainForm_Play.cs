@@ -462,8 +462,9 @@ namespace DoomLauncher
                 }
             }
 
-            if (GetCurrentViewControl() != null)
-                HandleSelectionChange(GetCurrentViewControl());
+            IGameFileView view = GetCurrentViewControl();
+            view.UpdateGameFile(adapter.GameFile);
+            HandleSelectionChange(view, true);
         }
 
         private IGameFile GetGameFileForIWad(IGameFile gameFile)

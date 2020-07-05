@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -16,8 +11,8 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
+            GameFileViewControl.StyleGrid(dgvFiles);
             dgvFiles.Columns[dgvFiles.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvFiles.RowHeadersVisible = false;
         }
 
         public void SetHeaderText(string text)

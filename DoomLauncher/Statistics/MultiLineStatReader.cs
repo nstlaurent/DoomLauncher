@@ -1,8 +1,8 @@
-﻿using System;
+﻿using DoomLauncher.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using DoomLauncher.Interfaces;
 
 namespace DoomLauncher.Statistics
 {

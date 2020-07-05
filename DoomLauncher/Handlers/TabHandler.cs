@@ -1,17 +1,13 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
 {
     class TabHandler
     {
-        private readonly Dictionary<GameFileViewControl, Tuple<ITabView, TabPage>> m_tabLookup = new Dictionary<GameFileViewControl, Tuple<ITabView, TabPage>>();
+        private readonly Dictionary<IGameFileView, Tuple<ITabView, TabPage>> m_tabLookup = new Dictionary<IGameFileView, Tuple<ITabView, TabPage>>();
         private readonly List<ITabView> m_tabs = new List<ITabView>();
 
         public TabHandler(TabControl tabControl)
@@ -75,6 +71,8 @@ namespace DoomLauncher
 
         public void UpdateTabTitle(ITabView tab, string text)
         {
+            tab.Title = text;
+
             if (m_tabLookup.ContainsKey(tab.GameFileViewControl))
             {
                 Tuple<ITabView, TabPage> item = m_tabLookup[tab.GameFileViewControl];
@@ -82,7 +80,7 @@ namespace DoomLauncher
             }
         }
 
-        public ITabView TabViewForControl(GameFileViewControl ctrl)
+        public ITabView TabViewForControl(IGameFileView ctrl)
         {
             if (m_tabLookup.ContainsKey(ctrl))
                 return m_tabLookup[ctrl].Item1;

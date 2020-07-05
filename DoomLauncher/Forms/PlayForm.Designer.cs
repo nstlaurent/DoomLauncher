@@ -668,7 +668,6 @@
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PlayForm";
-            this.ShowIcon = false;
             this.Text = "Launch";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

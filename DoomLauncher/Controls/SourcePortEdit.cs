@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
+﻿using DoomLauncher.Interfaces;
+using System;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using DoomLauncher.Interfaces;
-using System.IO;
 
 namespace DoomLauncher
 {
@@ -70,10 +65,12 @@ namespace DoomLauncher
 
         public string SourcePortName { get { return txtName.Text;  } }
         public string SourcePortExec { get { return txtExec.Text; } }
+        public LauncherPath GetSourcePortDirectory() => new LauncherPath(m_directory);
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Executable (*.exe)|*.exe|All Files (*.*)|*.*";
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
@@ -83,12 +80,13 @@ namespace DoomLauncher
                 m_directory = file.Replace(m_exec, string.Empty);
 
                 txtExec.Text = m_exec;
+                txtName.Text = Path.GetFileNameWithoutExtension(file);
             }
         }
 
         private string GetRelativeDirectory(string file)
         {
-            string current = Directory.GetCurrentDirectory();
+            string current = LauncherPath.GetDataDirectory();
 
             if (file.Contains(current))
             {

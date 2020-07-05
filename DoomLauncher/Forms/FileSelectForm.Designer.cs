@@ -149,6 +149,7 @@
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(1002, 659);
             this.tabControl.TabIndex = 3;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
             // 
             // FileSelectForm
             // 
@@ -159,7 +160,6 @@
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FileSelectForm";
-            this.ShowIcon = false;
             this.Text = "Select File";
             this.tblMain.ResumeLayout(false);
             this.flpButtons.ResumeLayout(false);

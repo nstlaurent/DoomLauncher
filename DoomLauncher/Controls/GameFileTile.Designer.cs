@@ -1,6 +1,6 @@
 ﻿namespace DoomLauncher
 {
-    partial class GameFileFolderViewControl
+    partial class GameFileTile
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,35 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ctrlView = new DoomLauncher.GameFileViewControl();
+            this.pb = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pb)).BeginInit();
             this.SuspendLayout();
             // 
-            // ctrlView
+            // pb
             // 
-            this.ctrlView.CustomRowColorPaint = false;
-            this.ctrlView.CustomRowPaintForeColor = System.Drawing.Color.Empty;
-            this.ctrlView.DataSource = null;
-            this.ctrlView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlView.Location = new System.Drawing.Point(0, 0);
-            this.ctrlView.Name = "ctrlView";
-            this.ctrlView.SelectedItem = null;
-            this.ctrlView.Size = new System.Drawing.Size(322, 150);
-            this.ctrlView.TabIndex = 0;
+            this.pb.Location = new System.Drawing.Point(0, 0);
+            this.pb.Name = "pb";
+            this.pb.Size = new System.Drawing.Size(100, 50);
+            this.pb.TabIndex = 2;
+            this.pb.TabStop = false;
             // 
-            // GameFileFolderViewControl
+            // GameFileTile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.ctrlView);
-            this.Name = "GameFileFolderViewControl";
-            this.Size = new System.Drawing.Size(322, 150);
+            this.Controls.Add(this.pb);
+            this.Name = "GameFileTile";
+            ((System.ComponentModel.ISupportInitialize)(this.pb)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private GameFileViewControl ctrlView;
-
+        private System.Windows.Forms.PictureBox pb;
     }
 }

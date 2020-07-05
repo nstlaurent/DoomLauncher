@@ -1,26 +1,19 @@
-﻿using System;
+﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DoomLauncher.Interfaces;
 
 namespace DoomLauncher
 {
     public partial class OptionsTabViewCtrl : LocalTabViewCtrl
     {
-        public OptionsTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields) 
-            : base(key, title, adapter, selectFields, null)
+        public OptionsTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, GameFileViewFactory factory) 
+            : base(key, title, adapter, selectFields, null, factory)
         {
             InitializeComponent();
         }
 
-        public OptionsTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup)
-            : base(key, title, adapter, selectFields, lookup)
+        public OptionsTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup, GameFileViewFactory factory)
+            : base(key, title, adapter, selectFields, lookup, factory)
         {
             InitializeComponent();
         }

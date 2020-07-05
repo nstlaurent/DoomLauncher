@@ -3,14 +3,10 @@ using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -28,10 +24,8 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            dgvSourcePorts.DefaultCellStyle.NullValue = "N/A";
-            dgvSourcePorts.RowHeadersVisible = false;
-            dgvSourcePorts.AutoGenerateColumns = false;
-            dgvSourcePorts.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            GameFileViewControl.StyleGrid(dgvSourcePorts);
+            dgvSourcePorts.MultiSelect = false;
 
             m_adapter = adapter;
             m_appConfig = appConfig;
@@ -88,11 +82,15 @@ namespace DoomLauncher
                 if (dgvSourcePorts.SelectedRows.Count == 0)
                     return null;
 
-                object item = dgvSourcePorts.SelectedRows[0].DataBoundItem;
-                PropertyInfo pi = item.GetType().GetProperty("SourcePort");
-
-                return pi.GetValue(item) as ISourcePortData;
+                return GetSourcePortFromRow(dgvSourcePorts.SelectedRows[0]);
             }
+        }
+
+        private ISourcePortData GetSourcePortFromRow(DataGridViewRow row)
+        {
+            object item = row.DataBoundItem;
+            PropertyInfo pi = item.GetType().GetProperty("SourcePort");
+            return pi.GetValue(item) as ISourcePortData;
         }
 
         private void dgvSourcePorts_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -119,6 +117,7 @@ namespace DoomLauncher
                     editForm.UpdateDataSource(sourcePort);
                     m_adapter.UpdateSourcePort(sourcePort);
                     ResetData();
+                    SelectSourcePort(sourcePort);
                 }
             }
         }
@@ -127,10 +126,14 @@ namespace DoomLauncher
         {
             SourcePortEditForm editForm = new SourcePortEditForm(m_adapter, m_tabViews, m_launchType);
 
+            IEnumerable<string> extensions = new string[] { ".wad" };
+
             if (m_launchType == SourcePortLaunchType.SourcePort)
-                editForm.SetSupportedExtensions(string.Format(".wad,{0},.deh,.bex", Util.GetPkExtensionsCsv()));
+                extensions = extensions.Union(Util.GetDehackedExtensions().Union(Util.GetSourcePortPkExtensions()));
             else
-                editForm.SetSupportedExtensions(string.Format(".wad,{0}", Util.GetPkExtensionsCsv()));
+                extensions = extensions.Union(Util.GetSourcePortPkExtensions());
+
+            editForm.SetSupportedExtensions(string.Join(",", extensions));
 
             editForm.StartPosition = FormStartPosition.CenterParent;
 
@@ -141,6 +144,30 @@ namespace DoomLauncher
                 sourcePort.LaunchType = m_launchType;
                 m_adapter.InsertSourcePort(sourcePort);
                 ResetData();
+
+                SelectSourcePort(sourcePort);
+            }
+        }
+
+        private void SelectSourcePort(ISourcePortData sourcePort)
+        {
+            // Source ports are ordered by name so we have to search for it
+            // The identity (SourcePortID) is saved after the insert so just use the name to find it when the ID is zero
+            foreach (DataGridViewRow row in dgvSourcePorts.Rows)
+            {
+                if (sourcePort.SourcePortID > 0)
+                {
+                    if (sourcePort.SourcePortID == GetSourcePortFromRow(row).SourcePortID)
+                    {
+                        row.Selected = true;
+                        break;
+                    }
+                }
+                else if (sourcePort.Executable == GetSourcePortFromRow(row).Executable)
+                {
+                    row.Selected = true;
+                    break;
+                }
             }
         }
 
@@ -153,6 +180,7 @@ namespace DoomLauncher
 
             if (SelectedItem != null && messageBox.ShowDialog(this) == DialogResult.OK)
             {
+                int index = dgvSourcePorts.SelectedRows[0].Index;
                 try
                 {
                     if (m_launchType == SourcePortLaunchType.SourcePort)
@@ -178,6 +206,12 @@ namespace DoomLauncher
                 }
 
                 ResetData();
+
+                if (index >= dgvSourcePorts.Rows.Count)
+                    index = dgvSourcePorts.Rows.Count - 1;
+
+                if (dgvSourcePorts.Rows.Count > 0)
+                    dgvSourcePorts.Rows[index].Selected = true;
             }
         }
 

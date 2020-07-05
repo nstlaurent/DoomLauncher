@@ -14,6 +14,9 @@ namespace DoomLauncher
 {
     public class DbDataSourceAdapter : IDataSourceAdapter
     {
+        public static readonly string DatabaseFileName = "DoomLauncher.sqlite";
+        public static readonly string InitDatabaseFileName = "DoomLauncher_.sqlite";
+
         private static string[] s_opLookup = new string[] { "= ", "<>", "<", ">", "like" };
 
         public DbDataSourceAdapter(IDatabaseAdapter dbAdapter, string connectionString)
@@ -31,17 +34,12 @@ namespace DoomLauncher
             DataAccess = new DataAccess(dbAdapter, connectionString);
         }
 
-        public static string GetDatabaseFileName()
-        {
-            return "DoomLauncher.sqlite";
-        }
-
         public static IDataSourceAdapter CreateAdapter() => CreateAdapter(false);
 
-        public static IDataSourceAdapter CreateAdapter(bool outOfDataDatabase)
+        public static IDataSourceAdapter CreateAdapter(bool outOfDateDatabase)
         {
-            string dataSource = Path.Combine(Directory.GetCurrentDirectory(), GetDatabaseFileName());
-            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), CreateConnectionString(dataSource), outOfDataDatabase);
+            string databaseFile = Path.Combine(LauncherPath.GetDataDirectory(), DatabaseFileName);      
+            return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), CreateConnectionString(databaseFile), outOfDateDatabase);
         }
 
         public static string CreateConnectionString(string dataSource)
@@ -188,7 +186,7 @@ namespace DoomLauncher
 
         public void InsertGameFile(IGameFile gameFile)
         {
-            string insert = InsertStatement("GameFiles", gameFile, new string[] { "GameFileID", "FileSizeBytes", "GameProfileID", "Name" }, out List<DbParameter> parameters);
+            string insert = InsertStatement("GameFiles", gameFile, new string[] { "GameFileID", "FileSizeBytes", "GameProfileID", "Name", "FullFileName" }, out List<DbParameter> parameters);
             DataAccess.ExecuteNonQuery(insert, parameters);
         }
 
@@ -448,6 +446,12 @@ namespace DoomLauncher
         public IEnumerable<IFileData> GetFiles(IGameFile gameFile, FileType fileTypeID)
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from Files where GameFileID = {0} and FileTypeID = {1} order by FileOrder, FileID", gameFile.GameFileID.Value, (int)fileTypeID)).Tables[0];
+            return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
+        }
+
+        public IEnumerable<IFileData> GetFiles(FileType fileTypeID)
+        {
+            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from Files where FileTypeID = {0} order by GameFileID, FileOrder desc", (int)fileTypeID)).Tables[0];
             return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
         }
 

@@ -73,7 +73,6 @@
     <Compile Include="Tests\TestLoadFiles.cs" />
     <Compile Include="Tests\TestBoomStats.cs" />
     <Compile Include="Tests\TestZdoomStats.cs" />
-    <Compile Include="Tests\TestCnDoomStats.cs" />
     <Compile Include="Tests\TestZdlParser.cs" />
     <Compile Include="Tests\TestCldDemoParser.cs" />
     <Compile Include="Tests\TestLauncherPath.cs" />

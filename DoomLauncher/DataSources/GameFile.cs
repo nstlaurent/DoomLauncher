@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
+using System.IO;
 
 namespace DoomLauncher.DataSources
 {
@@ -15,7 +16,9 @@ namespace DoomLauncher.DataSources
         }
 
         public int? GameFileID { get; set; }
+        public string FullFileName { get; set; }
         public virtual string FileName { get; set; }
+        public string FileNameNoPath => Path.GetFileName(FileName);
         public virtual string Title { get; set; }
         public virtual string Author { get; set; }
         public virtual DateTime? ReleaseDate { get; set; }
@@ -57,10 +60,8 @@ namespace DoomLauncher.DataSources
 
         public override bool Equals(object obj)
         {
-            IGameFile check = obj as IGameFile;
-
-            if (check != null)
-                return ((IGameFile)obj).FileName == FileName;
+            if (obj is IGameFile gameFile)
+                return gameFile.FileName == FileName;
 
             return false;
         }

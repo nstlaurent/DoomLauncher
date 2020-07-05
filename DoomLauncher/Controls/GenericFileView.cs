@@ -1,34 +1,22 @@
-﻿using System;
+﻿using DoomLauncher.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DoomLauncher.Interfaces;
-using System.Reflection;
-using DoomLauncher.DataSources;
-using System.IO;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
     public partial class GenericFileView : BasicFileView
     {
-        private static string s_dateColumn = "DateCreated";
+        private static readonly string s_dateColumn = "DateCreated";
 
         public GenericFileView()
         {
             InitializeComponent();
 
-            dgvMain.RowHeadersVisible = false;
-            dgvMain.AutoGenerateColumns = false;
-            dgvMain.ShowCellToolTips = false;
-            dgvMain.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            GameFileViewControl.StyleGrid(dgvMain);
 
             SetColumnFields(new Tuple<string, string>[]
             {

@@ -1,8 +1,5 @@
-﻿using System;
-using System.IO;
-using DoomLauncher.SaveGame;
+﻿using DoomLauncher.SaveGame;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTest.Tests;
 
 namespace UnitTest.Tests
 {

@@ -29,6 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileDetailsEditForm));
             this.btnSave = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
@@ -139,8 +140,8 @@
             this.CancelButton = this.button1;
             this.ClientSize = new System.Drawing.Size(384, 262);
             this.Controls.Add(this.tblMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FileDetailsEditForm";
-            this.ShowIcon = false;
             this.Text = "Details";
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();

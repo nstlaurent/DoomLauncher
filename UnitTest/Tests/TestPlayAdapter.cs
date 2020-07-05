@@ -1,13 +1,12 @@
-﻿using System;
+﻿using DoomLauncher;
+using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DoomLauncher;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using DoomLauncher.Interfaces;
-using DoomLauncher.DataSources;
-using System.Collections.Generic;
 using System.Linq;
-using DoomLauncher.SourcePort;
 
 namespace UnitTest.Tests
 {
@@ -94,7 +93,7 @@ namespace UnitTest.Tests
             adapter.ExtractFiles = false;
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+            adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
 
             Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.wad")));
             Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.deh")));
@@ -181,10 +180,10 @@ namespace UnitTest.Tests
             GameFilePlayAdapter adapter = new GameFilePlayAdapter();
             adapter.AdditionalFiles = GetTestFiles().Skip(1).ToArray();
 
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.pk3,.deh"), false);
 
             //-file parameters should be together, then -deh files should be together
-            string check = string.Format("-file \"{0}\\Temp\\test2.wad\" \"{0}\\Temp\\test3.wad\" \"{0}\\Temp\\test4.wad\" \"{0}\\Temp\\test1.wad\"  -deh \"{0}\\Temp\\test2.deh\" \"{0}\\Temp\\test3.deh\" \"{0}\\Temp\\test4.deh\" \"{0}\\Temp\\test1.deh\" ",
+            string check = string.Format(" -file \"{0}\\Temp\\test2.wad\" \"{0}\\Temp\\test2.pk3\" \"{0}\\Temp\\test3.wad\" \"{0}\\Temp\\test3.pk3\" \"{0}\\Temp\\test4.wad\" \"{0}\\Temp\\test4.pk3\" \"{0}\\Temp\\test1.wad\" \"{0}\\Temp\\test1.pk3\"  -deh \"{0}\\Temp\\test2.deh\" \"{0}\\Temp\\test3.deh\" \"{0}\\Temp\\test4.deh\" \"{0}\\Temp\\test1.deh\" ",
                 Directory.GetCurrentDirectory());
             Assert.AreEqual(check.Trim(), launch.Trim());
 
@@ -348,7 +347,7 @@ namespace UnitTest.Tests
 
         private static void CreateTestPathedFile()
         {
-            string filename = string.Format(@"GameFiles\testpathed.zip");
+            string filename = @"GameFiles\testpathed.zip";
             if (File.Exists(filename))
                 File.Delete(filename);
 
@@ -365,7 +364,7 @@ namespace UnitTest.Tests
         {
             for (int i = 1; i < 5; i++)
             {
-                string[] files = new string[] { string.Format("test{0}.wad", i), string.Format("test{0}.deh", i), string.Format("test{0}.txt", i) };
+                string[] files = new string[] { string.Format("test{0}.wad", i), string.Format("test{0}.deh", i), string.Format("test{0}.pk3", i), string.Format("test{0}.txt", i) };
 
                 string filename = string.Format(@"GameFiles\test{0}.zip", i);
                 if (File.Exists(filename))

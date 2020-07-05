@@ -29,6 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TagForm));
             this.SuspendLayout();
             // 
             // TagForm
@@ -36,8 +37,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 262);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TagForm";
-            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Manage Tags";
             this.ResumeLayout(false);

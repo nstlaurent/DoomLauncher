@@ -1,7 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DoomLauncher.Statistics;
+﻿using DoomLauncher;
 using DoomLauncher.DataSources;
-using DoomLauncher;
+using DoomLauncher.Statistics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.IO;
 
@@ -13,7 +13,7 @@ namespace UnitTest.Tests
         private readonly List<NewStatisticsEventArgs> m_args = new List<NewStatisticsEventArgs>();
 
         [TestMethod]
-        public void TestChocolateDoomStatSingle()
+        public void TestChocolateDoomStatFileSingle()
         {
             string file = @"===========================================
 E1M1 / MAP01
@@ -70,8 +70,6 @@ Player 1 (Green):
 	Kills: 13 / 41 (31%)
 	Items: 12 / 42 (2%)
 	Secrets: 3/ 6 (0%)
-
-
 ";
 
             ChocolateDoomStatsReader statsReader = new ChocolateDoomStatsReader(new GameFile() { GameFileID = 1 }, "stats.txt");
@@ -134,6 +132,41 @@ Player 1 (Green):
             Assert.AreEqual(0, m_args[0].Statistics.SecretCount);
             Assert.AreEqual(0, m_args[0].Statistics.TotalSecrets);
             Assert.AreEqual(21.0f, m_args[0].Statistics.LevelTime);
+        }
+
+        [TestMethod]
+        public void TestChocolateDoomStatFileKills()
+        {
+            string file = @"===========================================
+MAP11
+===========================================
+
+Time: 6:39 (par: 3:30)
+
+Player 1 (Green):
+	Kills: 78 / 71 (109%)
+	Items: 21 / 21 (100%)
+	Secrets: 3 / 3 (100%)
+";
+
+            ChocolateDoomStatsReader statsReader = new ChocolateDoomStatsReader(new GameFile() { GameFileID = 1 }, "stats.txt");
+            statsReader.NewStastics += statsReader_NewStastics;
+
+            File.WriteAllText("stats.txt", file);
+            statsReader.ReadNow();
+
+            Assert.AreEqual(1, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
+
+            //Check that the kill count does not exceed total kills
+            Assert.AreEqual("MAP11", m_args[0].Statistics.MapName);
+            Assert.AreEqual(71, m_args[0].Statistics.KillCount);
+            Assert.AreEqual(71, m_args[0].Statistics.TotalKills);
+            Assert.AreEqual(21, m_args[0].Statistics.ItemCount);
+            Assert.AreEqual(21, m_args[0].Statistics.TotalItems);
+            Assert.AreEqual(3, m_args[0].Statistics.SecretCount);
+            Assert.AreEqual(3, m_args[0].Statistics.TotalSecrets);
+            Assert.AreEqual(399.0f, m_args[0].Statistics.LevelTime);
         }
 
         private void statsReader_NewStastics(object sender, DoomLauncher.NewStatisticsEventArgs e)

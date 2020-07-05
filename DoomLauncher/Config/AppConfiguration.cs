@@ -9,6 +9,19 @@ namespace DoomLauncher
 {
     public class AppConfiguration
     {
+        public event EventHandler GameFileViewTypeChanged;
+
+        public static string SplitTopBottomName => "SplitTopBottom";
+        public static string SplitLeftRightName => "SplitLeftRight";
+        public static string AppWidthName => "AppWidth";
+        public static string AppHeightName => "AppHeight";
+        public static string AppXName => "AppX";
+        public static string AppYName => "AppY";
+        public static string WindowStateName => "WindowState";
+        public static string ColumnConfigName => "ColumnConfig";
+        public static string ScreenshotPreviewSizeName => "ScreenshotPreviewSize";
+        public static string ItemsPerPageName => "ItemsPerPage";
+
         public AppConfiguration(IDataSourceAdapter adapter)
         {
             DataSourceAdapter = adapter;
@@ -45,6 +58,8 @@ namespace DoomLauncher
                     return SaveGameDirectory;
                 case FileType.Screenshot:
                     return ScreenshotDirectory;
+                case FileType.Thumbnail:
+                    return ThumbnailDirectory;
                 default:
                     throw new ArgumentException($"Invalid FileType {type}");
             }
@@ -86,24 +101,34 @@ namespace DoomLauncher
                 CleanTemp = Convert.ToBoolean(GetValue(config, "CleanTemp"));
 
                 SetChildDirectories(config);
-                SplitTopBottom = Convert.ToInt32(GetValue(config, "SplitTopBottom"));
-                SplitLeftRight = Convert.ToInt32(GetValue(config, "SplitLeftRight"));
-                AppWidth = Convert.ToInt32(GetValue(config, "AppWidth"));
-                AppHeight = Convert.ToInt32(GetValue(config, "AppHeight"));
-                AppX = Convert.ToInt32(GetValue(config, "AppX"));
-                AppY = Convert.ToInt32(GetValue(config, "AppY"));
-                WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), GetValue(config, "WindowState"));
-                ColumnConfig = GetValue(config, "ColumnConfig");
-                ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, "ScreenshotPreviewSize"));
+                SplitTopBottom = Convert.ToInt32(GetValue(config, SplitTopBottomName));
+                SplitLeftRight = Convert.ToInt32(GetValue(config, SplitLeftRightName));
+                AppWidth = Convert.ToInt32(GetValue(config, AppWidthName));
+                AppHeight = Convert.ToInt32(GetValue(config, AppHeightName));
+                AppX = Convert.ToInt32(GetValue(config, AppXName));
+                AppY = Convert.ToInt32(GetValue(config, AppYName));
+                WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), GetValue(config, WindowStateName));
+                ColumnConfig = GetValue(config, ColumnConfigName);
+                ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, ScreenshotPreviewSizeName));
+                FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
+                ItemsPerPage = Convert.ToInt32(GetValue(config, ItemsPerPageName));
+
+                var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
+                if (newType != GameFileViewType)
+                {
+                    GameFileViewType = newType;
+                    GameFileViewTypeChanged?.Invoke(this, EventArgs.Empty);
+                }
 
                 DateParseFormats = Util.SplitString(GetValue(config, "DateParseFormats"));
                 ScreenshotCaptureDirectories = Util.SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
             }
-            catch(Exception)
+            catch
             {
                 if (throwErrors)
                     throw;
             }
+
             VerifyPaths(throwErrors);
         }
 
@@ -115,11 +140,31 @@ namespace DoomLauncher
         private void SetChildDirectories(IEnumerable<IConfigurationData> config)
         {
             string gameFileDir = GetValue(config, "GameFileDirectory");
+            GameFileDirectory = GetGameFileDir(gameFileDir);
+            gameFileDir = GameFileDirectory.GetFullPath();
+
             ScreenshotDirectory = SetChildDirectory(gameFileDir, "Screenshots");
             TempDirectory = SetChildDirectory(gameFileDir, "Temp");
             DemoDirectory = SetChildDirectory(gameFileDir, "Demos");
             SaveGameDirectory = SetChildDirectory(gameFileDir, "SaveGames");
-            GameFileDirectory = new LauncherPath(gameFileDir);
+            ThumbnailDirectory = SetChildDirectory(gameFileDir, "Thumbnails");
+        }
+
+        private static LauncherPath GetGameFileDir(string gameFileDir)
+        {
+            if (gameFileDir == "GameFiles\\")
+            {
+                string dataDir = LauncherPath.GetDataDirectory();
+                if (!Directory.Exists(dataDir))
+                {
+                    Directory.CreateDirectory(dataDir);
+                    Directory.CreateDirectory(Path.Combine(dataDir, gameFileDir));
+                }
+
+                return new LauncherPath(Path.Combine(dataDir, gameFileDir));
+            }
+
+            return new LauncherPath(gameFileDir);
         }
 
         private LauncherPath SetChildDirectory(string gameFileDirectory, string childDirectory)
@@ -133,7 +178,7 @@ namespace DoomLauncher
         public void RefreshColumnConfig()
         {
             IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
-            ColumnConfig = GetValue(config, "ColumnConfig");
+            ColumnConfig = GetValue(config, ColumnConfigName);
         }
 
         private void VerifyPaths(bool throwErrors)
@@ -143,12 +188,18 @@ namespace DoomLauncher
             VerifyPath(TempDirectory, throwErrors);
             VerifyPath(DemoDirectory, throwErrors);
             VerifyPath(SaveGameDirectory, throwErrors);
+            VerifyPath(ThumbnailDirectory, throwErrors);
         }
 
         private void VerifyPath(LauncherPath path, bool throwErrors)
         {
-            if (throwErrors && !Directory.Exists(path.GetFullPath()))
+            bool exists = Directory.Exists(path.GetFullPath());
+
+            if (throwErrors && !exists)
                 throw new DirectoryNotFoundException(path.GetPossiblyRelativePath());
+
+            if (!exists)
+                Directory.CreateDirectory(path.GetFullPath());
         }
 
         public IDataSourceAdapter DataSourceAdapter { get; set; }
@@ -157,6 +208,7 @@ namespace DoomLauncher
         public LauncherPath SaveGameDirectory { get; private set; }
         public LauncherPath TempDirectory { get; private set; }
         public LauncherPath DemoDirectory { get; private set; }
+        public LauncherPath ThumbnailDirectory { get; private set; }
         public string IdGamesUrl { get; private set; }
         public string ApiPage { get; private set; }
         public string MirrorUrl { get; private set; }
@@ -172,5 +224,8 @@ namespace DoomLauncher
         public string[] DateParseFormats { get; private set; }
         public string ColumnConfig { get; private set; }
         public int ScreenshotPreviewSize { get; private set; }
+        public FileManagement FileManagement { get; private set; }
+        public GameFileViewType GameFileViewType { get; private set; }
+        public int ItemsPerPage { get; set; }
     }
 }

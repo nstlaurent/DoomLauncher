@@ -1,12 +1,10 @@
 ﻿using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
-using Equin.ApplicationFramework;
 using PresentationControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -29,6 +27,8 @@ namespace DoomLauncher
 
         public static string[] GetBaseTabs() { return new string[] { s_recentKey, s_localKey, s_iwadKey, s_idGamesKey, s_untaggedKey }; }
 
+        public bool ShouldShowToolTip { get; private set; } = true;
+
         private string m_workingDirectory;
         private bool m_playInProgress = false, m_idGamesLoaded;
         private IGameFile m_lastSelectedItem;
@@ -49,6 +49,7 @@ namespace DoomLauncher
 
         public MainForm(string launchFile)
         {
+            Load += MainForm_Load;
             m_launchFile = launchFile;
 
             m_splash = new SplashScreen();
@@ -59,14 +60,14 @@ namespace DoomLauncher
             InitializeComponent();
             ClearSummary();
 
-            m_workingDirectory = Directory.GetCurrentDirectory();
+            m_workingDirectory = LauncherPath.GetDataDirectory();
             bool success = false;
 
             if (VerifyDatabase())
             {
-                string dataSource = Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
+                string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
                 DataSourceAdapter = DbDataSourceAdapter.CreateAdapter();
-                AppConfiguration = new AppConfiguration(DataSourceAdapter);
+                DataCache.Instance.Init(DataSourceAdapter);
 
                 BackupDatabase(dataSource);
                 CreateSendToLink();
@@ -83,13 +84,18 @@ namespace DoomLauncher
                 Close();
         }
 
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            HandleTabSelectionChange();
+        }
+
         private void KillRunningApps()
         {
             try
             {
                 Process currentProc = Process.GetCurrentProcess();
                 foreach (Process proc in Process.GetProcessesByName("DoomLauncher").Where(x => x.Id != currentProc.Id))
-                    proc.Kill();
+                    proc.CloseMainWindow();
             }
             catch
             {
@@ -97,7 +103,7 @@ namespace DoomLauncher
             }
         }
 
-        private GameFileViewControl GetCurrentViewControl()
+        public IGameFileView GetCurrentViewControl()
         {
             ITabView view = GetCurrentTabView();
 
@@ -109,12 +115,16 @@ namespace DoomLauncher
 
         void ctrlAssociationView_FileDeleted(object sender, EventArgs e)
         {
+            IGameFileView view = GetCurrentViewControl();
+            view.UpdateGameFile(view.SelectedItem);
             HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
         void ctrlAssociationView_FileOrderChanged(object sender, EventArgs e)
         {
-            HandleSelectionChange(GetCurrentViewControl(), true);
+            IGameFileView view = GetCurrentViewControl();
+            view.UpdateGameFile(view.SelectedItem);
+            HandleSelectionChange(view, true);
         }
 
         void DownloadView_UserPlay(object sender, EventArgs e)
@@ -134,7 +144,7 @@ namespace DoomLauncher
 
         void ctrlView_RowDoubleClicked(object sender, EventArgs e)
         {
-            HandleRowDoubleClicked(sender as GameFileViewControl);
+            HandleRowDoubleClicked(sender as IGameFileView);
         }
 
         void ctrlView_GridKeyPress(object sender, KeyPressEventArgs e)
@@ -142,7 +152,7 @@ namespace DoomLauncher
             HandleKeyPress(e);
         }
 
-        private void HandleRowDoubleClicked(GameFileViewControl ctrl)
+        private void HandleRowDoubleClicked(IGameFileView ctrl)
         {
             if (ctrl != null)
             {
@@ -152,23 +162,6 @@ namespace DoomLauncher
                     HandleDownload(AppConfiguration.TempDirectory);
                 else if (tabView != null && tabView.IsPlayAllowed)
                     HandlePlay();
-            }
-        }
-
-        void ctrlView_ToolTipTextNeeded(object sender, AddingNewEventArgs e)
-        {
-            GameFileViewControl ctrl = sender as GameFileViewControl;
-            object objItem = ctrl.ItemForRow(ctrl.ToolTipRowIndex);
-
-            if (objItem != null)
-            {
-                IGameFile item = ((ObjectView<GameFile>)objItem).Object as IGameFile;
-
-                if (item != null)
-                {
-                    ToolTipHandler toolTipHandler = new ToolTipHandler();
-                    e.NewObject = toolTipHandler.GetToolTipText(this.Font, item);
-                }
             }
         }
 
@@ -266,6 +259,16 @@ namespace DoomLauncher
             HandleDelete();
         }
 
+        private void ToolStripDropDownButton1_DropDownOpened(object sender, EventArgs e)
+        {
+            ShouldShowToolTip = false;
+        }
+
+        private void ToolStripDropDownButton1_DropDownClosed(object sender, EventArgs e)
+        {
+            ShouldShowToolTip = true;
+        }
+
         private void HandleRename()
         {
             IGameFile gameFile = SelectedItems(GetCurrentViewControl()).FirstOrDefault();
@@ -346,7 +349,7 @@ namespace DoomLauncher
                     gameFileUpdate.FileName = fileName;
                     DataSourceAdapter.UpdateGameFile(gameFileUpdate, new GameFileFieldType[] { GameFileFieldType.Filename });
                     UpdateAdditinalFileReferences(oldFileName, fileName);
-                    HandleSelectionChange(GetCurrentViewControl());
+                    HandleSelectionChange(GetCurrentViewControl(), true);
                 }
                 else
                 {
@@ -417,53 +420,55 @@ namespace DoomLauncher
 
             IGameFile[] items = SelectedItems(GetCurrentViewControl());
 
-            foreach(IGameFile item in items)
+            foreach (IGameFile item in items)
             {
                 if (item != null && AssertFile(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName)))
                 {
-                    ZipArchive za = ZipFile.OpenRead(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName));
-                    var entries = za.Entries.Where(x => x.FullName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase));
-
-                    if (entries.Any())
+                    using (IArchiveReader reader = ArchiveReader.Create(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName)))
                     {
-                        var entry = entries.First();
-                        if (entries.Count() > 1)
-                        {
-                            entry = null;
-                            SimpleFileSelectForm form = new SimpleFileSelectForm();
-                            form.Initialize(GetSortedTextFiles(item, entries));
-                            form.StartPosition = FormStartPosition.CenterParent;
-                            if (form.ShowDialog(this) == DialogResult.OK)
-                                entry = entries.FirstOrDefault(x => x.Name == form.SelectedFile);
-                        }
+                        var entries = reader.Entries.Where(x => x.FullName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase));
 
-                        if (entry != null)
+                        if (entries.Any())
                         {
-                            string extractedFileName = Path.Combine(AppConfiguration.TempDirectory.GetFullPath(), entry.Name);
-                            entry.ExtractToFile(extractedFileName, true);
-                            Process.Start(extractedFileName);
+                            var entry = entries.First();
+                            if (entries.Count() > 1)
+                            {
+                                entry = null;
+                                SimpleFileSelectForm form = new SimpleFileSelectForm();
+                                form.Initialize(GetSortedTextFiles(item, entries));
+                                form.StartPosition = FormStartPosition.CenterParent;
+                                if (form.ShowDialog(this) == DialogResult.OK)
+                                    entry = entries.FirstOrDefault(x => x.Name == form.SelectedFile);
+                            }
+
+                            if (entry != null)
+                            {
+                                string extractedFileName = Path.Combine(AppConfiguration.TempDirectory.GetFullPath(), entry.Name);
+                                entry.ExtractToFile(extractedFileName, true);
+                                Process.Start(extractedFileName);
+                            }
                         }
-                    }
-                    else
-                    {
-                        MessageBox.Show(this, "No text file found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        else
+                        {
+                            MessageBox.Show(this, "No text file found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
         }
 
-        private IEnumerable<string> GetSortedTextFiles(IGameFile item, IEnumerable<ZipArchiveEntry> entries)
+        private IEnumerable<string> GetSortedTextFiles(IGameFile item, IEnumerable<IArchiveEntry> entries)
         {
             FileInfo fi = new FileInfo(item.FileName);
             string baseFile = fi.Name.Replace(fi.Extension, string.Empty);
 
-            var find =  entries.Select(x => x.Name).ToList();
+            var find = entries.Select(x => x.Name).ToList();
             var first = find.FirstOrDefault(x => x.StartsWith(baseFile, StringComparison.InvariantCultureIgnoreCase));
 
             if (first != null)
             {
                 find.Remove(first);
-                find.Insert(0, first);  
+                find.Insert(0, first);
             }
 
             return find;
@@ -478,13 +483,14 @@ namespace DoomLauncher
 
             foreach (IGameFile item in items)
             {
-                if (item != null && AssertFile(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName)))
+                if (item != null && AssertFile(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName)) &&
+                    Util.GetReadablePkExtensions().Contains(Path.GetExtension(item.FileName)))
                 {
                     Process.Start(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName));
                 }
             }
         }
-  
+
         private void HandleDelete()
         {
             if (GetCurrentViewControl() != null)
@@ -498,7 +504,7 @@ namespace DoomLauncher
                 {
                     IGameFile[] items = SelectedItems(GetCurrentViewControl());
 
-                    foreach(IGameFile gameFile in items)
+                    foreach (IGameFile gameFile in items)
                     {
                         if (showDialog)
                         {
@@ -532,7 +538,7 @@ namespace DoomLauncher
                 {
                     GetCurrentViewControl().SelectedItem = null;
                     UpdateLocal();
-                    HandleSelectionChange(GetCurrentViewControl());
+                    HandleSelectionChange(GetCurrentViewControl(), true);
                 }
             }
         }
@@ -545,7 +551,8 @@ namespace DoomLauncher
             if (iwadFind != null)
                 DataSourceAdapter.DeleteIWad(iwadFind);
             //note: appears sqlite we re-use deleted auto-inc ids so we have to be careful and delete everything
-            DirectoryDataSourceAdapter.DeleteGameFile(gameFile);
+            if (!Path.IsPathRooted(gameFile.FileName))
+                DirectoryDataSourceAdapter.DeleteGameFile(gameFile);
             DataSourceAdapter.DeleteGameFile(gameFile);
             if (gameFile.GameFileID.HasValue)
                 DataSourceAdapter.DeleteStatsByFile(gameFile.GameFileID.Value);
@@ -554,7 +561,7 @@ namespace DoomLauncher
             tagMapping.ToList().ForEach(x => DataSourceAdapter.DeleteTagMapping(x));
 
             var profiles = DataSourceAdapter.GetGameProfiles(gameFile.GameFileID.Value);
-            profiles.ToList().ForEach(x =>DataSourceAdapter.DeleteGameProfile(x.GameProfileID));
+            profiles.ToList().ForEach(x => DataSourceAdapter.DeleteGameProfile(x.GameProfileID));
         }
 
         private void DeleteLocalFileAssociations(IGameFile gameFIle)
@@ -575,7 +582,7 @@ namespace DoomLauncher
 
         private LauncherPath DirectoryForFileType(FileType fileTypeID)
         {
-            switch(fileTypeID)
+            switch (fileTypeID)
             {
                 case FileType.Screenshot:
                     return AppConfiguration.ScreenshotDirectory;
@@ -583,72 +590,61 @@ namespace DoomLauncher
                     return AppConfiguration.DemoDirectory;
                 case FileType.SaveGame:
                     return AppConfiguration.SaveGameDirectory;
+                case FileType.Thumbnail:
+                    return AppConfiguration.ThumbnailDirectory;
                 default:
                     throw new NotImplementedException();
             }
         }
 
-        private void HandleSelectionChange(object sender)
-        {
-            HandleSelectionChange(sender, true);
-        }
-
         private void HandleSelectionChange(object sender, bool forceChange)
         {
-            GameFileViewControl ctrl = sender as GameFileViewControl;
+            if (!(sender is IGameFileView))
+                return;
 
-            if (ctrl != null)
+            IGameFile item = null;
+            IGameFile[] items = SelectedItems(GetCurrentViewControl());
+            if (items.Length > 0)
+                item = items.First();
+
+            if (!forceChange && !AssertCurrentViewItem(item))
             {
-                IGameFile item = null;
-                IGameFile[] items = SelectedItems(GetCurrentViewControl());
-                if (items.Length > 0)
-                    item = items.First();
-
-                if (!forceChange && !AssertCurrentViewItem(item))
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        m_lastSelectedItem = null;
-                        ctrlAssociationView.ClearData();
-                        ClearSummary();
-                        btnPlay.Enabled = false;
-                    }
-                    return;
-                }
-
-                ctrlAssociationView.SetData(item);
-
-                if (item != null)
-                {
-                    RebuildTagToolStrip();
-                    ctrlSummary.Visible = false;
-                    ctrlSummary.SuspendLayout();
-                    SetSummary(item);
-
-                    IFileData imgFile = null;
-                    IEnumerable<IStatsData> stats = new IStatsData[] { };
-
-                    if (item.GameFileID.HasValue)
-                    {
-                        imgFile = DataSourceAdapter.GetFiles(item, FileType.Screenshot).FirstOrDefault();
-                        stats = DataSourceAdapter.GetStats(item.GameFileID.Value);
-                    }
-
-                    if (imgFile != null && !string.IsNullOrEmpty(imgFile.FileName))
-                        SetPreviewImage(imgFile);
-
-                    ctrlSummary.SetStatistics(item, stats);
-                }
-                else
-                {
-                    btnPlay.Enabled = false;
+                    m_lastSelectedItem = null;
                     ctrlAssociationView.ClearData();
+                    ClearSummary();
+                    btnPlay.Enabled = false;
+                }
+                return;
+            }
+
+            ctrlAssociationView.SetData(item);
+
+            if (item != null)
+            {
+                RebuildTagToolStrip();
+
+                IFileData imgFile = null;
+                IEnumerable<IStatsData> stats = new IStatsData[] { };
+
+                if (item.GameFileID.HasValue)
+                {
+                    imgFile = DataSourceAdapter.GetFiles(item, FileType.Screenshot).FirstOrDefault();
+                    stats = DataSourceAdapter.GetStats(item.GameFileID.Value);
                 }
 
-                ctrlSummary.Visible = true;
-                ctrlSummary.ResumeLayout();
-                GetCurrentViewControl().Refresh();
+                SetSummary(item, imgFile);
+                ctrlSummary.SetStatistics(item, stats);
             }
+            else
+            {
+                btnPlay.Enabled = false;
+                ctrlAssociationView.ClearData();
+            }
+
+            if (forceChange)
+                GetCurrentViewControl().RefreshData();
         }
 
         private bool AssertCurrentViewItem(IGameFile item)
@@ -662,16 +658,22 @@ namespace DoomLauncher
             return true;
         }
 
-        private void SetSummary(IGameFile item)
+        private void SetSummary(IGameFile item, IFileData imgFile)
         {
             ctrlSummary.SetTitle(item.Title);
             ctrlSummary.SetDescription(item.Description);
-            ctrlSummary.ClearPreviewImage();
             ctrlSummary.TagText = BuildTagText(item);
             ctrlSummary.SetTimePlayed(item.MinutesPlayed);
-            ctrlSummary.ClearComments();
+ 
             if (!string.IsNullOrEmpty(item.Comments))
                 ctrlSummary.SetComments(item.Comments);
+            else
+                ctrlSummary.ClearComments();
+
+            if (imgFile != null && !string.IsNullOrEmpty(imgFile.FileName))
+                SetPreviewImage(imgFile);
+            else
+                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
         }
 
         private void ClearSummary()
@@ -695,7 +697,7 @@ namespace DoomLauncher
             }
             catch
             {
-                ctrlSummary.ClearPreviewImage();
+                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
             }
         }
 
@@ -718,35 +720,22 @@ namespace DoomLauncher
             return from tag in DataSourceAdapter.GetTags() join map in tagMapping on tag.TagID equals map.TagID select tag;
         }
 
-        private IGameFile[] SelectedItems(GameFileViewControl ctrl)
+        private IGameFile[] SelectedItems(IGameFileView ctrl)
         {
-            object[] items = ctrl.SelectedItems;
-
-            List<IGameFile> ret = new List<IGameFile>(items.Length);
-
-            foreach(object obj in items)
-            {
-                ret.Add(((ObjectView<GameFile>)obj).Object as IGameFile);
-            }
-
-            return ret.ToArray();
+            return ctrl.SelectedItems;
         }
 
-        private void SetSelectedItem(GameFileViewControl ctrl, IGameFile gameFile)
+        private void SetSelectedItem(IGameFileView ctrl, IGameFile gameFile)
         {
-            foreach (ObjectView<GameFile> item in (BindingListView<GameFile>)ctrl.DataSource)
-            {
-                if (item.Object.Equals(gameFile))
-                {
-                    ctrl.SelectedItem = item;
-                    break;
-                }
-            }
+            IGameFile ctrlItem = ctrl.DataSource.FirstOrDefault(x => x.Equals(gameFile));
+
+            if (ctrlItem != null)
+                ctrl.SelectedItem = ctrlItem;
         }
 
         private void UpdateDataSourceViews(IGameFile gameFile)
         {
-            foreach(ITabView tab in m_tabHandler.TabViews)
+            foreach (ITabView tab in m_tabHandler.TabViews)
                 tab.UpdateDataSourceFile(gameFile);
         }
 
@@ -857,7 +846,7 @@ namespace DoomLauncher
 
         private void HandleEdit()
         {
-            GameFileViewControl ctrl = GetCurrentViewControl();
+            IGameFileView ctrl = GetCurrentViewControl();
 
             if (ctrl != null)
             {
@@ -894,7 +883,7 @@ namespace DoomLauncher
                         }
 
                         if (gameFiles.Any())
-                            HandleSelectionChange(ctrl);
+                            HandleSelectionChange(ctrl, true);
                     }
                 }
             }
@@ -908,14 +897,14 @@ namespace DoomLauncher
 
             var deletedTags = existingTagIDs.Except(newTagIDs);
             var newTags = newTagIDs.Except(existingTagIDs);
-            
-            foreach(var deletedTag in deletedTags)
+
+            foreach (var deletedTag in deletedTags)
             {
                 TagMapping tagMap = new TagMapping() { FileID = gameFile.GameFileID.Value, TagID = deletedTag };
                 DataSourceAdapter.DeleteTagMapping(tagMap);
             }
 
-            foreach(var newTag in newTags)
+            foreach (var newTag in newTags)
             {
                 TagMapping tagMap = new TagMapping() { FileID = gameFile.GameFileID.Value, TagID = newTag };
                 DataSourceAdapter.InsertTagMapping(tagMap);
@@ -932,7 +921,7 @@ namespace DoomLauncher
 
         private void HandleViewWebPage()
         {
-            GameFileViewControl ctrl = GetCurrentViewControl();
+            IGameFileView ctrl = GetCurrentViewControl();
 
             if (ctrl != null)
             {
@@ -949,7 +938,7 @@ namespace DoomLauncher
                         if (dsItemFull != null)
                             Process.Start(string.Format("{0}?file={1}{2}", AppConfiguration.IdGamesUrl, dsItemFull.dir, dsItemFull.FileName));
                     }
-                    catch(WebException)
+                    catch (WebException)
                     {
                         ShowBadConnectionError();
                     }
@@ -999,7 +988,7 @@ namespace DoomLauncher
                 fi.CopyTo(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), dlFile.FileName), true);
                 fi.Delete();
 
-                await SyncLocalDatabase(new string[] { fi.Name });
+                await SyncLocalDatabase(new string[] { fi.Name }, FileManagement.Managed, true);
             }
             catch (IOException)
             {
@@ -1027,14 +1016,20 @@ namespace DoomLauncher
             HandleTabSelectionChange();
         }
 
+        private ITabView m_lastSelectedTabView;
+
         private void HandleTabSelectionChange()
         {
             if (tabControl.SelectedTab != null)
             {
+                if (m_lastSelectedTabView != null)
+                    m_lastSelectedTabView.GameFileViewControl.SetVisible(false);
+
                 ITabView tabView = GetCurrentTabView();
 
                 if (tabView != null)
                 {
+                    m_lastSelectedTabView = tabView;
                     btnSearch.Enabled = tabView.IsSearchAllowed;
                     btnPlay.Enabled = tabView.IsPlayAllowed;
                     chkAutoSearch.Enabled = tabView.IsAutoSearchAllowed;
@@ -1045,8 +1040,9 @@ namespace DoomLauncher
                         m_idGamesLoaded = true;
                     }
 
-                    HandleSelectionChange(GetCurrentViewControl(), false);
                     tabView.GameFileViewControl.Focus();
+                    tabView.GameFileViewControl.SetVisible(true);
+                    HandleSelectionChange(tabView.GameFileViewControl, false);
                 }
             }
         }
@@ -1159,7 +1155,7 @@ namespace DoomLauncher
                 catch (DirectoryNotFoundException ex)
                 {
                     MessageBox.Show(this, string.Format("The directory {0} was not found. DoomLauncher will not operate correctly with invalid paths. " +
-                        "Make sure the directory you are setting contains all folders required (Demos, SaveGames, Screenshots, Temp)", ex.Message), 
+                        "Make sure the directory you are setting contains all folders required (Demos, SaveGames, Screenshots, Temp)", ex.Message),
                         "Invalid Directory",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -1192,71 +1188,9 @@ namespace DoomLauncher
 
         private void CtrlAssociationView_RequestScreenshots(object sender, RequestScreenshotsEventArgs e)
         {
-            //m_requestGuid = Guid.NewGuid();
-            //Task.Run(() => SetScreenshotsAsync(e, m_requestGuid));
-
             List<IFileData> screens = DataSourceAdapter.GetFiles(e.GameFile, FileType.Screenshot).ToList();
             ctrlAssociationView.SetScreenshots(screens);
-
-            if (screens.Count > 0)
-                SetPreviewImage(screens.First());
-            else
-                ctrlSummary.ClearPreviewImage();
         }
-
-        //private void SetScreenshotsAsync(RequestScreenshotsEventArgs e, Guid reqGuid)
-        //{
-        //    List<IFileDataSource> screens = DataSourceAdapter.GetFiles(e.GameFile, FileType.Screenshot).ToList();
-        //    WadArchiveDataAdapter secondaryAdapter = new WadArchiveDataAdapter();
-        //    IGameFileDataSource secondFile = GetSecondaryFile(e.GameFile, secondaryAdapter);
-                
-        //    if (secondFile != null)
-        //        screens.AddRange(secondaryAdapter.GetFiles(secondFile, FileType.Screenshot));
-
-        //    if (InvokeRequired)
-        //        Invoke(new Action<IGameFileDataSource, List<IFileDataSource>, Guid>(SetScreenshotControls), new object[] { e.GameFile, screens, reqGuid });
-        //    else
-        //        SetScreenshotControls(e.GameFile, screens, reqGuid);
-        //}
-
-        //private void SetScreenshotControls(IGameFileDataSource gameFile, List<IFileDataSource> screens, Guid reqGuid)
-        //{
-        //    IGameFileDataSource[] selectedItems = SelectedItems(GetCurrentViewControl());
-
-        //    if (selectedItems.Length > 0 && m_requestGuid == reqGuid)
-        //    {
-        //        ctrlAssociationView.SetScreenshots(screens);
-
-        //        if (screens.Count > 0)
-        //            SetPreviewImage(screens.First());
-        //        else
-        //            ctrlSummary.ClearPreviewImage();
-        //    }
-        //}
-
-        //private IGameFileDataSource GetSecondaryFile(IGameFileDataSource gameFile, WadArchiveDataAdapter funzies)
-        //{
-        //    string file = Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), gameFile.FileName);
-        //    ZipArchive za = ZipFile.OpenRead(file);
-        //    ZipArchiveEntry zae = za.Entries.Where(x => x.Name.Contains(".wad")).FirstOrDefault();
-
-        //    if (zae != null)
-        //    {
-        //        try
-        //        {
-        //            string extractFile = Path.Combine("GameFiles", "Temp", zae.Name);
-        //            if (!File.Exists(extractFile))
-        //                zae.ExtractToFile(extractFile, true);
-
-        //            GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.MD5, extractFile));
-        //            IGameFileDataSource secondFile = funzies.GetGameFiles(options).FirstOrDefault();
-        //            return secondFile;
-        //        }
-        //        catch { }
-        //    }
-
-        //    return null;
-        //}
 
         private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1275,27 +1209,33 @@ namespace DoomLauncher
 
         private async Task HandleAddIWads()
         {
-            await HandleAddFiles(AddFileType.IWad, new string[] {"WAD"}, "Select IWADs");
+            await HandleAddFiles(AddFileType.IWad, new string[] { "WAD" }, "Select IWADs");
         }
 
         private void UpdateLocal()
         {
             foreach (ITabView tab in m_tabHandler.TabViews)
-            {
-                if (tab.IsLocal)
-                {
-                    if (m_savedTabSearches.ContainsKey(tab))
-                        tab.SetGameFiles(m_savedTabSearches[tab]);
-                    else
-                        tab.SetGameFiles();
-                }
-            }
+                UpdateLocalTabData(tab);
+        }
+
+        private void UpdateLocalTabData(ITabView tab)
+        {
+            if (!tab.IsLocal)
+                return;
+            
+            if (m_savedTabSearches.ContainsKey(tab))
+                tab.SetGameFiles(m_savedTabSearches[tab]);
+            else
+                tab.SetGameFiles();
         }
 
         private IGameFile[] m_pendingZdlFiles;
 
         private async Task HandleAddGameFiles(AddFileType type, string[] files)
         {
+            if (!VerifyAddFiles(type, files))
+                return;
+
             List<string> libraryFiles = new List<string>(files);
             string[] zdlFiles = GetZdlFiles(files).ToArray();
             libraryFiles = libraryFiles.Except(zdlFiles).ToList();
@@ -1315,19 +1255,54 @@ namespace DoomLauncher
             {
                 StringBuilder sb = new StringBuilder();
                 Array.ForEach(missingFiles, x => sb.Append(x + "\n"));
-                MessageBox.Show(this, "The following files were not found and will not be added:" + Environment.NewLine + Environment.NewLine + 
+                MessageBox.Show(this, "The following files were not found and will not be added:" + Environment.NewLine + Environment.NewLine +
                     sb.ToString(), "Files Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 libraryFiles = libraryFiles.Except(missingFiles).ToList();
             }
 
             if (libraryFiles.Count > 0)
             {
-                await HandleCopyFiles(type, libraryFiles.ToArray());
+                await HandleCopyFiles(type, libraryFiles.ToArray(), GetUserSelectedFileManagement());
             }
             else if (m_zdlInvalidFiles.Count > 0)
             {
                 DisplayInvalidFilesError(m_zdlInvalidFiles);
             }
+        }
+
+        private bool VerifyAddFiles(AddFileType type, string[] files)
+        {
+            List<string> warnFiles = new List<string>();
+
+            foreach (string file in files)
+            {
+                IWadInfo info = IWadInfo.GetIWadInfo(file);
+
+                if (type == AddFileType.GameFile && info != null)
+                    warnFiles.Add(Path.GetFileName(file));
+                else if (type == AddFileType.IWad && info == null)
+                    warnFiles.Add(Path.GetFileName(file));
+            }
+
+            if (warnFiles.Count > 0)
+            {
+                StringBuilder warn = new StringBuilder();
+                if (type == AddFileType.GameFile)
+                    warn.Append("The following file(s) were detected be IWADS and are being added as game files:");
+                else
+                    warn.Append("The following files(s) were not detected to be IWADS and are being added as IWADS:");
+
+                warn.AppendLine();
+                warn.Append(string.Join(", ", warnFiles));
+                warn.Append("\n\nContinue?");
+
+                TopMost = true;
+                bool ret = MessageBox.Show(this, warn.ToString(), "File Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+                TopMost = false;
+                return ret;
+            }
+
+            return true;
         }
 
         private async Task HandleAddFiles(AddFileType type, string[] extensions, string dialogTitle)
@@ -1342,51 +1317,98 @@ namespace DoomLauncher
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Await.Warning", "CS4014:Await.Warning")]
-        private async Task HandleCopyFiles(AddFileType type, string[] fileNames)
+        private async Task HandleCopyFiles(AddFileType type, string[] fileNames, FileManagement fileManagement)
         {
             ProgressBarForm progressBar = CreateProgressBar("Copying...", ProgressBarStyle.Marquee);
             progressBar.Cancelled += m_progressBarFormCopy_Cancelled;
 
             ProgressBarStart(progressBar);
-            CopyResults copyResults = null;
 
-            await Task.Run(() => copyResults = CopyFiles(fileNames, AppConfiguration.GameFileDirectory.GetFullPath(), progressBar));
+            FileAddResults fileAddResults = new FileAddResults();
+
+            if (fileManagement == FileManagement.Managed)
+                await Task.Run(() => fileAddResults = CopyFiles(fileNames, AppConfiguration.GameFileDirectory.GetFullPath(), progressBar));
+            else
+                fileAddResults = UnmanagedAddCheck(fileNames, AppConfiguration.GameFileDirectory.GetFullPath());
+
+            string[] files = fileAddResults.GetAllFiles().ToArray();
 
             ProgressBarEnd(progressBar);
 
-            switch(type)
+            switch (type)
             {
                 case AddFileType.GameFile:
-                    {
-                        string[] files = copyResults.ReplacedFiles.Union(copyResults.NewFiles).ToArray();
-                        await SyncLocalDatabase(files);
-                    }
+                    await SyncLocalDatabase(files, fileManagement, true);
                     break;
                 case AddFileType.IWad:
-                    {
-                        string[] files = copyResults.ReplacedFiles.Union(copyResults.NewFiles).ToArray();
-                        SyncIWads(files);
-                        files = fileNames.Select(x => ToZipExtension(new FileInfo(x))).ToArray();
-                        await SyncLocalDatabase(files);
-                    }
+                    await SyncLocalDatabase(files, fileManagement, false);
+                    SyncIWads(fileAddResults);
                     break;
                 default:
                     break;
             }
 
-            if (copyResults.Errors.Count > 0)
+            if (fileAddResults.Errors.Count > 0)
             {
-                string start = copyResults.Errors.Count > 1 ? string.Concat("Errors:", Environment.NewLine) : string.Empty;
-                string tab = copyResults.Errors.Count > 1 ? "\t" : string.Empty;
+                string start = fileAddResults.Errors.Count > 1 ? string.Concat("Errors:", Environment.NewLine) : string.Empty;
+                string tab = fileAddResults.Errors.Count > 1 ? "\t" : string.Empty;
                 StringBuilder sb = new StringBuilder(start);
-                copyResults.Errors.ForEach(x => sb.Append(string.Concat(tab, x.FileName, ": ", x.Error, Environment.NewLine)));
-                MessageBox.Show(this, sb.ToString(), "Failed to Copy", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                fileAddResults.Errors.ForEach(x => sb.Append(string.Concat(tab, x.FileName, ": ", x.Error, Environment.NewLine)));
+                MessageBox.Show(this, sb.ToString(), "Failed to Add", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private static string ToZipExtension(FileInfo fi)
+        private FileAddResults UnmanagedAddCheck(string[] fileNames, string directory)
         {
-            return fi.Name.Replace(fi.Extension, ".zip");
+            FileAddResults results = new FileAddResults();
+
+            string managedError = "File already exists as a managed file.";
+            string unmanagedError = "File already exists as an unmanaged file.";
+
+            foreach (string fileName in fileNames)
+            {
+                string zipName = Path.Combine(directory, Path.GetFileNameWithoutExtension(fileName) + ".zip");
+                IGameFile existingGameFile = DataSourceAdapter.GetGameFile(fileName);
+
+                if (File.Exists(zipName))
+                {
+                    results.Errors.Add(new FileError { FileName = fileName, Error = managedError  });
+                }
+                else if (existingGameFile != null)
+                {
+                    if (Path.IsPathRooted(existingGameFile.FileName))
+                        results.Errors.Add(new FileError { FileName = fileName, Error = unmanagedError });
+                    else
+                        results.NewFiles.Add(fileName);
+                    //else
+                    //    results.Errors.Add(new FileError { FileName = fileName, Error = managedError });
+                }
+                else
+                {
+                    results.NewFiles.Add(fileName);
+                }
+            }
+
+            return results;
+        }
+
+        private FileManagement GetUserSelectedFileManagement()
+        {
+            FileManagement fileManagement = AppConfiguration.FileManagement;
+
+            if (fileManagement == FileManagement.Prompt)
+            {
+                FileManagementSelect select = new FileManagementSelect
+                {
+                    StartPosition = FormStartPosition.CenterParent
+                };
+                TopMost = true;
+                select.ShowDialog(this);
+                TopMost = false;
+                fileManagement = select.GetSelectedFileManagement();
+            }
+
+            return fileManagement;
         }
 
         private List<InvalidFile> m_zdlInvalidFiles = new List<InvalidFile>();
@@ -1447,9 +1469,9 @@ namespace DoomLauncher
             return string.Format("{0} ({1})|{1}|All Files (*.*)|*.*", name, sb.ToString());
         }
 
-        private CopyResults CopyFiles(string[] files, string directory, ProgressBarForm progressBar)
+        private FileAddResults CopyFiles(string[] files, string directory, ProgressBarForm progressBar)
         {
-            CopyResults ret = new CopyResults();
+            FileAddResults results = new FileAddResults();
             HashSet<string> addedNames = new HashSet<string>();
 
             List<string> fileNames = files.ToList();
@@ -1460,8 +1482,8 @@ namespace DoomLauncher
 
             foreach (string file in fileNames)
             {
-                UpdateProgressBar(progressBar, string.Format("Copying {0}...", file),
-                    Convert.ToInt32(count / (double)fileNames.Count * 100));
+                if (progressBar != null)
+                    UpdateProgressBar(progressBar, string.Format("Copying {0}...", file), Convert.ToInt32(count / (double)fileNames.Count * 100));
                 FileInfo fi = new FileInfo(file);
                 string baseName = fi.Name.Replace(fi.Extension, string.Empty);
 
@@ -1477,9 +1499,17 @@ namespace DoomLauncher
                 if (!isZip)
                     zipName = Path.Combine(directory, baseName + ".zip");
 
+                IEnumerable<string> existingFileNames = DataSourceAdapter.GetGameFileNames();
+
                 try
                 {
-                    if (File.Exists(zipName))
+                    string existingFile = existingFileNames.FirstOrDefault(x => Path.GetFileName(x).Equals(fi.Name));
+
+                    if (existingFile != null && Path.IsPathRooted(existingFile))
+                    {
+                        results.Errors.Add(new FileError { FileName = baseName, Error = "File already exists as an unmanaged file." });
+                    }
+                    else if (File.Exists(zipName))
                     {
                         if (promptOverwrite)
                         {
@@ -1490,7 +1520,7 @@ namespace DoomLauncher
 
                         if (overwrite)
                         {
-                            ret.ReplacedFiles.Add(baseName + ".zip");
+                            results.ReplacedFiles.Add(baseName + ".zip");
                             if (isZip)
                                 fi.CopyTo(zipName, true);
                             else
@@ -1499,7 +1529,7 @@ namespace DoomLauncher
                     }
                     else
                     {
-                        ret.NewFiles.Add(baseName + ".zip");
+                        results.NewFiles.Add(baseName + ".zip");
 
                         if (IsZipFile(fi))
                         {
@@ -1508,24 +1538,36 @@ namespace DoomLauncher
                         else
                         {
                             string newZipName = Path.Combine(directory, baseName + ".zip");
-                            using (ZipArchive za = ZipFile.Open(newZipName, ZipArchiveMode.Create))
-                                za.CreateEntryFromFile(file, fi.Name);
+                            AddZipEntry(file, fi.Name, newZipName);
                         }
                     }
                 }
-                catch(IOException)
+                catch (IOException)
                 {
-                    ret.Errors.Add(new CopyError { FileName = baseName, Error = "File is in use." });
+                    results.Errors.Add(new FileError { FileName = baseName, Error = "File is in use." });
                 }
                 catch (Exception ex)
                 {
-                    ret.Errors.Add(new CopyError { FileName = baseName, Error = String.Concat("Unknown error: ", ex.HResult) }); //Shouldn't happen
+                    results.Errors.Add(new FileError { FileName = baseName, Error = string.Concat("Unknown error: ", ex.HResult) }); //Shouldn't happen
                 }
 
                 count++;
             }
 
-            return ret;
+            return results;
+        }
+
+        private static void AddZipEntry(string file, string name, string newZipName)
+        {
+            using (ZipArchive za = ZipFile.Open(newZipName, ZipArchiveMode.Create))
+            {
+                using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    var entry = za.CreateEntry(name);
+                    using (var destStream = entry.Open())
+                        fileStream.CopyTo(destStream);
+                }
+            }
         }
 
         private void HandleNonZipReplacement(FileInfo fi, string zipName)
@@ -1573,7 +1615,7 @@ namespace DoomLauncher
         {
             if (InvokeRequired)
             {
-                return (Tuple<bool, bool>)Invoke(new Func<string, Tuple<bool,bool>>(PromptCopyFileOverwrite), new object[] { file });
+                return (Tuple<bool, bool>)Invoke(new Func<string, Tuple<bool, bool>>(PromptCopyFileOverwrite), new object[] { file });
             }
             else
             {
@@ -1612,7 +1654,7 @@ namespace DoomLauncher
 
         private void ctrlView_DragDrop(object sender, DragEventArgs e)
         {
-            GameFileViewControl ctrl = sender as GameFileViewControl;
+            IGameFileView ctrl = sender as IGameFileView;
             string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
 
             if (ctrl != null && files != null)
@@ -1641,6 +1683,32 @@ namespace DoomLauncher
             HandleFormClosing();
         }
 
+        private void MnuLocal_Opening(object sender, CancelEventArgs e)
+        {
+            if (!(GetCurrentViewControl() is IGameFileSortableView sortableView))
+                return;
+
+            ToolStripMenuItem sortToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
+            IGameFileView view = GetCurrentViewControl();
+            sortToolStrip.Visible = view is GameFileTileViewControl;
+
+            for (int i = 0; i < GameFileViewFactory.DefaultColumnTextFields.Length; i++)
+            {
+                ColumnField columnField = GameFileViewFactory.DefaultColumnTextFields[i];
+                string text = columnField.Title;
+
+                if (columnField.DataKey.Equals(sortableView.GetSortedColumnKey(), StringComparison.InvariantCultureIgnoreCase) && sortableView.GetColumnSort(sortableView.GetSortedColumnKey()) != SortOrder.None)
+                {
+                    if (sortableView.GetColumnSort(sortableView.GetSortedColumnKey()) == SortOrder.Ascending)
+                        text += " ▲";
+                    else
+                        text += " ▼";
+                }
+
+                sortToolStrip.DropDownItems[i].Text = text;
+            }
+        }
+
         private void newTagToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HandleManageTags();
@@ -1656,6 +1724,58 @@ namespace DoomLauncher
             HandleManageTags();
         }
 
+        private void sortToolStripItem_Click(object sender, EventArgs e)
+        {
+            if (!(GetCurrentViewControl() is IGameFileSortableView sortableView))
+                return;
+
+            IGameFileView view = GetCurrentViewControl();
+            ToolStripItem strip = sender as ToolStripItem;
+            ToolStripMenuItem sortToolStrip = GetSortByToolStrip();
+
+            int index = 0;
+            for (int i = 0; i < sortToolStrip.DropDownItems.Count; i++)
+            {
+                if (sortToolStrip.DropDownItems[i] == strip)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            ColumnField columnField = GameFileViewFactory.DefaultColumnTextFields[index];
+            SortOrder sortOrder;
+
+            if (sortableView.GetColumnSort(columnField.DataKey) == SortOrder.Descending)
+                sortOrder = SortOrder.Ascending;
+            else
+                sortOrder = SortOrder.Descending;
+
+            sortableView.SetSortedColumn(columnField.DataKey, sortOrder);
+            view.DataSource = GetViewSort(view, view.DataSource);
+        }
+
+        private IEnumerable<IGameFile> GetViewSort(IGameFileView view, IEnumerable<IGameFile> gameFiles)
+        {
+            if (!(view is IGameFileSortableView sortableView) || string.IsNullOrEmpty(sortableView.GetSortedColumnKey()))
+                return gameFiles;
+
+            ColumnField columnField = GameFileViewFactory.DefaultColumnTextFields.FirstOrDefault(x => x.DataKey.Equals(sortableView.GetSortedColumnKey(), StringComparison.InvariantCultureIgnoreCase));
+
+            if (columnField != null)
+            {
+                var property = typeof(IGameFile).GetProperty(columnField.DataKey);
+                var sort = sortableView.GetColumnSort(sortableView.GetSortedColumnKey());
+
+                if (sort == SortOrder.Ascending)
+                    return gameFiles.OrderBy(x => property.GetValue(x));
+                else if (sort == SortOrder.Descending)
+                    return gameFiles.OrderByDescending(x => property.GetValue(x));
+            }
+
+            return gameFiles;
+        }
+
         private void HandleManageTags()
         {
             TagForm form = new TagForm();
@@ -1664,9 +1784,9 @@ namespace DoomLauncher
             form.ShowDialog(this);
 
             RebuildTagToolStrip();
-            TagMapLookup.Refresh();
+            DataCache.Instance.TagMapLookup.Refresh();
 
-            if (form.TagControl.AddedTags.Length > 0)
+            if (form.TagControl.AddedTags.Length > 0 && GameFileViewFactory.IsUsingColumnView)
             {
                 UpdateColumnConfig(); //the ordered tab insert will use this column configuration
                 AppConfiguration.RefreshColumnConfig();
@@ -1688,7 +1808,6 @@ namespace DoomLauncher
                         m_tabHandler.UpdateTabTitle(tabView, tag.Name);
                     else
                         m_tabHandler.RemoveTab(tabView);
-
                 }
                 else
                 {
@@ -1696,6 +1815,8 @@ namespace DoomLauncher
                         OrderedTagTabInsert(tag);
                 }
             }
+
+            UpdateTagColumnConfig(form.TagControl.EditedTags);
 
             foreach (ITagData tag in form.TagControl.DeletedTags)
             {
@@ -1708,6 +1829,26 @@ namespace DoomLauncher
             HandleSelectionChange(GetCurrentViewControl(), false);
         }
 
+        private void UpdateTagColumnConfig(ITagData[] editedTags)
+        {
+            ColumnConfig[] columnConfig = DataCache.Instance.GetColumnConfig();
+
+            foreach (ITagData tag in editedTags)
+            {
+                ITagData previousRevision = DataCache.Instance.PreviousTags.FirstOrDefault(x => x.TagID == tag.TagID);
+                if (previousRevision == null)
+                    continue;
+
+                var updateColumns = columnConfig.Where(x => x.Parent == previousRevision.Name);
+                foreach (var col in updateColumns)
+                    col.Parent = tag.Name;
+            }
+
+            IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
+            UpdateConfig(config, AppConfiguration.ColumnConfigName, SerializeColumnConfig(columnConfig.ToList()));
+            AppConfiguration.RefreshColumnConfig();
+        }
+
         private void OrderedTagTabInsert(ITagData tag)
         {
             int start = m_tabHandler.TabViews.Length - 1;
@@ -1715,13 +1856,13 @@ namespace DoomLauncher
 
             ITabView[] tabViews = m_tabHandler.TabViews;
 
-            while (start > end && tabViews[start] is TagTabView && 
+            while (start > end && tabViews[start] is TagTabView &&
                 tabViews[start].Title.CompareTo(tag.Name) > 0)
             {
                 start--;
             }
 
-            m_tabHandler.InsertTab(start+1, CreateTagTab(DefaultColumnTextFields, GetColumnConfig(), tag.Name, tag, true));
+            m_tabHandler.InsertTab(start + 1, CreateTagTab(GameFileViewFactory.DefaultColumnTextFields, DataCache.Instance.GetColumnConfig(), tag.Name, tag, true));
         }
 
         private void utilityToolStripItem_Click(object sender, EventArgs e)
@@ -1745,76 +1886,80 @@ namespace DoomLauncher
         private void tagToolStripItem_Click(object sender, EventArgs e)
         {
             ToolStripItem strip = sender as ToolStripItem;
+            if (strip == null)
+                return;
+
+            ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
+            if (tag == null)
+                return;
+
             IGameFile[] gameFiles = SelectedItems(GetCurrentViewControl());
+            StringBuilder sbError = new StringBuilder();
 
-            if (strip != null)
+            foreach (IGameFile gameFile in gameFiles)
             {
-                ITagData tag = Tags.FirstOrDefault(x => x.Name == strip.Text);
+                TagMapping tagMapping = new TagMapping();
+                tagMapping.FileID = gameFile.GameFileID.Value;
+                tagMapping.TagID = tag.TagID;
 
-                if (tag != null)
+                if (!DataSourceAdapter.GetTagMappings(tagMapping.FileID).Contains(tagMapping))
                 {
-                    StringBuilder sbError = new StringBuilder();
-
-                    foreach (IGameFile gameFile in gameFiles)
-                    {
-                        TagMapping tagMapping = new TagMapping();
-                        tagMapping.FileID = gameFile.GameFileID.Value;
-                        tagMapping.TagID = tag.TagID;
-
-                        if (!DataSourceAdapter.GetTagMappings(tagMapping.FileID).Contains(tagMapping))
-                        {
-                            DataSourceAdapter.InsertTagMapping(tagMapping);
-                        }
-                        else
-                        {
-                            sbError.Append(gameFile.FileName);
-                            sbError.Append(", ");
-                        }
-                    }
-
-                    TagMapLookup.Refresh();
-                    UpdateTagTabData(tag.TagID);
-                    HandleTabSelectionChange();
-
-                    if (sbError.Length > 0)
-                    {
-                        sbError.Remove(sbError.Length - 2, 2);
-                        sbError.Insert(0, "The file(s) ");
-                        sbError.Append(" already have the tag ");
-                        sbError.Append(tag.Name);
-                        MessageBox.Show(this, sbError.ToString(), "Already Tagged", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-
-                    HandleSelectionChange(GetCurrentViewControl(), true);
+                    DataSourceAdapter.InsertTagMapping(tagMapping);
+                }
+                else
+                {
+                    sbError.Append(gameFile.FileName);
+                    sbError.Append(", ");
                 }
             }
+
+            DataCache.Instance.TagMapLookup.Refresh();
+            UpdateTagTabData(tag.TagID);
+
+            foreach (IGameFile gameFile in gameFiles)
+                GetCurrentViewControl().UpdateGameFile(gameFile);
+
+            HandleTabSelectionChange();
+
+            if (sbError.Length > 0)
+            {
+                sbError.Remove(sbError.Length - 2, 2);
+                sbError.Insert(0, "The file(s) ");
+                sbError.Append(" already have the tag ");
+                sbError.Append(tag.Name);
+                MessageBox.Show(this, sbError.ToString(), "Already Tagged", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
         private void removeTagToolStripItem_Click(object sender, EventArgs e)
         {
             ToolStripItem strip = sender as ToolStripItem;
+            if (strip == null)
+                return;
+
+            ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
+            if (tag == null)
+                return;
+
+            TagMapping tagMapping = new TagMapping();
             IGameFile[] gameFiles = SelectedItems(GetCurrentViewControl());
 
-            if (strip != null)
+            foreach (IGameFile gameFile in gameFiles)
             {
-                ITagData tag = Tags.FirstOrDefault(x => x.Name == strip.Text);
-
-                if (tag != null)
-                {
-                    TagMapping tagMapping = new TagMapping();
-
-                    foreach (IGameFile gameFile in gameFiles)
-                    {
-                        tagMapping.TagID = tag.TagID;
-                        tagMapping.FileID = gameFile.GameFileID.Value;
-                        DataSourceAdapter.DeleteTagMapping(tagMapping);
-                    }
-
-                    TagMapLookup.Refresh();
-                    UpdateTagTabData(tag.TagID);
-                    HandleSelectionChange(GetCurrentViewControl(), true);
-                }
+                tagMapping.TagID = tag.TagID;
+                tagMapping.FileID = gameFile.GameFileID.Value;
+                DataSourceAdapter.DeleteTagMapping(tagMapping);
             }
+
+            DataCache.Instance.TagMapLookup.Refresh();
+            UpdateTagTabData(tag.TagID);
+
+            foreach (IGameFile gameFile in gameFiles)
+                GetCurrentViewControl().UpdateGameFile(gameFile);
+
+            HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
         private void anyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1957,7 +2102,7 @@ namespace DoomLauncher
             }
         }
 
-        private bool SelectItem(GameFileViewControl ctrl, string search)
+        private bool SelectItem(IGameFileView ctrl, string search)
         {
            bool success = false, isIdGames = false;
 
@@ -1965,16 +2110,16 @@ namespace DoomLauncher
             if (tabView != null && tabView is IdGamesTabViewCtrl)
                 isIdGames = true;
 
-            foreach (ObjectView<GameFile> item in (BindingListView<GameFile>)GetCurrentViewControl().DataSource)
+            foreach (IGameFile item in GetCurrentViewControl().DataSource)
             {
                 if (isIdGames)
-                    success = item.Object.Title.ToLower().StartsWith(search);
+                    success = item.Title.ToLower().StartsWith(search);
                 else
-                    success = item.Object.FileName.ToLower().StartsWith(search);
+                    success = item.FileName.ToLower().StartsWith(search);
 
                 if (success)
                 {
-                    SetSelectedItem(GetCurrentViewControl(), item.Object);
+                    SetSelectedItem(GetCurrentViewControl(), item);
                     break;
                 }
             }
@@ -1998,12 +2143,12 @@ namespace DoomLauncher
             {
                 List<IStatsData> stats = new List<IStatsData>();
                 List<IGameFile> gameFiles = new List<IGameFile>();
-                foreach (ObjectView<GameFile> item in (BindingListView<GameFile>)GetCurrentViewControl().DataSource)
+                foreach (IGameFile item in GetCurrentViewControl().DataSource)
                 {
-                    if (item.Object.GameFileID.HasValue)
+                    if (item.GameFileID.HasValue)
                     {
-                        stats.AddRange(DataSourceAdapter.GetStats(item.Object.GameFileID.Value));
-                        gameFiles.Add(item.Object);
+                        stats.AddRange(DataSourceAdapter.GetStats(item.GameFileID.Value));
+                        gameFiles.Add(item);
                     }
                 }
 
@@ -2107,7 +2252,7 @@ namespace DoomLauncher
                     IWshRuntimeLibrary.WshShell wsh = new IWshRuntimeLibrary.WshShell();
                     IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(filePath) as IWshRuntimeLibrary.IWshShortcut;
                     shortcut.Arguments = gameFile.FileName;
-                    shortcut.TargetPath = string.Format(Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.exe"));
+                    shortcut.TargetPath = string.Format(Path.Combine(Directory.GetCurrentDirectory(), Util.GetExecutableNoPath()));
                     shortcut.WindowStyle = 1;
                     shortcut.Description = string.Concat("Doom Launcher - ", gameFile.FileName);
                     shortcut.WorkingDirectory = Directory.GetCurrentDirectory();
@@ -2183,11 +2328,31 @@ namespace DoomLauncher
             return true;
         }
 
-        private AppConfiguration AppConfiguration { get; set; }
-        private IDataSourceAdapter DataSourceAdapter { get; set; }
-        private IGameFileDataSourceAdapter DirectoryDataSourceAdapter { get; set; }
-        private IGameFileDataSourceAdapter IdGamesDataSourceAdapter { get; set; }
+        private void addFIlesRecursivelyToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
 
-        private ITagData[] Tags { get; set; }
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                List<string> extensions = Util.GetPkExtenstions().Union(Util.GetDehackedExtensions()).ToList();
+                extensions.Add(".wad");
+                for (int i = 0; i < extensions.Count; i++)
+                    extensions[i] = "*" + extensions[i];
+
+                IEnumerable<string> files = new List<string>();
+
+                foreach (string ext in extensions)
+                    files = files.Union(Directory.EnumerateFiles(dialog.SelectedPath, ext, SearchOption.AllDirectories));
+
+                HandleAddGameFiles(AddFileType.GameFile, files.ToArray());
+            }
+        }
+
+        private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
+        private IDataSourceAdapter DataSourceAdapter { get; set; }
+
+        private IGameFileDataSourceAdapter DirectoryDataSourceAdapter { get; set; }
+
+        private IGameFileDataSourceAdapter IdGamesDataSourceAdapter { get; set; }
     }
 }

@@ -1,11 +1,7 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.DataSources
 {
@@ -108,8 +104,7 @@ namespace DoomLauncher.DataSources
 
         public override bool Equals(object obj)
         {
-            IdGamesGameFile gameFile = obj as IdGamesGameFile;
-            if (gameFile != null)
+            if (obj is IdGamesGameFile gameFile)
                 return id == gameFile.id;
 
             return false;

@@ -29,7 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
-            this.flpScreenshots = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpScreenshots = new DoomLauncher.FlowLayoutPanelDB();
             this.SuspendLayout();
             // 
             // flpScreenshots
@@ -53,6 +53,6 @@
 
         #endregion
 
-        private System.Windows.Forms.FlowLayoutPanel flpScreenshots;
+        private DoomLauncher.FlowLayoutPanelDB flpScreenshots;
     }
 }

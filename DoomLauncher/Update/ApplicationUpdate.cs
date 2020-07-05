@@ -1,7 +1,7 @@
 ﻿using Octokit;
 using System;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
@@ -27,7 +27,12 @@ namespace DoomLauncher
                     Version remoteVersion = new Version(release.Name);
                     if (remoteVersion > currentVersion)
                     {
-                        var asset = release.Assets.FirstOrDefault(x => x.Name.EndsWith(".zip"));
+                        ReleaseAsset asset;
+                        if (LauncherPath.IsInstalled())
+                            asset = release.Assets.FirstOrDefault(x => x.Name.EndsWith("_install.zip"));
+                        else
+                            asset = release.Assets.FirstOrDefault(x => x.Name.EndsWith(".zip") && !x.Name.EndsWith("_install.zip"));
+
                         if (asset != null)
                             return new ApplicationUpdateInfo(remoteVersion, asset.BrowserDownloadUrl, release.HtmlUrl, asset.CreatedAt.LocalDateTime);
                     }

@@ -1,12 +1,7 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -17,10 +12,12 @@ namespace DoomLauncher
         private readonly ITabView[] m_additionalFileViews;
         private readonly SourcePortLaunchType m_type;
 
+        private ISourcePortData m_sourcePort;
+
         public SourcePortEditForm(IDataSourceAdapter adapter, ITabView[] additionalTabViews, SourcePortLaunchType type)
         {
             InitializeComponent();
-            pbInfo.Image = DoomLauncher.Properties.Resources.bon2b;
+            pbInfo.Image = Properties.Resources.bon2b;
             lblInfo.Text = string.Format("These files will automatically be added when this executable{0} is selected.", Environment.NewLine);
 
             ctrlFiles.Initialize("GameFileID", "FileName");
@@ -64,12 +61,14 @@ namespace DoomLauncher
 
         public void SetDataSource(ISourcePortData sourcePort)
         {
+            m_sourcePort = sourcePort;
             sourcePortEdit1.SetDataSource(sourcePort);
             ctrlFiles.SetDataSource(Util.GetAdditionalFiles(m_adapter, sourcePort));
         }
 
         public void UpdateDataSource(ISourcePortData sourcePort)
         {
+            m_sourcePort = sourcePort;
             sourcePortEdit1.UpdateDataSource(sourcePort);
             sourcePort.SettingsFiles = ctrlFiles.GetAdditionalFilesString();
         }
@@ -89,6 +88,22 @@ namespace DoomLauncher
             if (string.IsNullOrEmpty(sourcePortEdit1.SourcePortExec))
                 err = string.Format("Please select an executable for the {0}.", type);
 
+            if (m_sourcePort == null)
+            {
+                IEnumerable<ISourcePortData> data;
+                if (m_type == SourcePortLaunchType.SourcePort)
+                    data = m_adapter.GetSourcePorts();
+                else
+                    data = m_adapter.GetUtilities();
+
+                if (data.Any(x => x.Executable == sourcePortEdit1.SourcePortExec && x.Directory.GetFullPath() == sourcePortEdit1.GetSourcePortDirectory().GetFullPath())
+                    && PromptUserSourcePortDuplicate())
+                {
+                    DialogResult = DialogResult.None;
+                    return;
+                }
+            }
+
             if (!string.IsNullOrEmpty(err))
             {
                 MessageBox.Show(this, err, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -98,6 +113,12 @@ namespace DoomLauncher
             {
                 DialogResult = DialogResult.OK;
             }
+        }
+
+        private bool PromptUserSourcePortDuplicate()
+        {
+            return MessageBox.Show(this, $"The {GetTypeString()} {sourcePortEdit1.SourcePortExec} already exists. Continue?", "Warning",
+                                MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel;
         }
 
         private string GetTypeString()

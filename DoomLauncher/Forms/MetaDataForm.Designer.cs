@@ -29,6 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MetaDataForm));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.gameFileEdit1 = new DoomLauncher.GameFileEdit();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -69,6 +70,7 @@
             this.gameFileEdit1.ReleaseDateChecked = false;
             this.gameFileEdit1.Size = new System.Drawing.Size(424, 452);
             this.gameFileEdit1.TabIndex = 0;
+            this.gameFileEdit1.TagsChecked = true;
             this.gameFileEdit1.TitleChecked = false;
             // 
             // flowLayoutPanel1
@@ -134,8 +136,8 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(430, 530);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MetaDataForm";
-            this.ShowIcon = false;
             this.Text = "Metadata";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();

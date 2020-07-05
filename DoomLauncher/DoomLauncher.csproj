@@ -59,10 +59,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Equin.ApplicationFramework.BindingListView, Version=1.2.2446.31718, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Equin.ApplicationFramework.BindingListView.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Newtonsoft.Json.dll</HintPath>
@@ -92,6 +88,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\WadArchiveDataAdapter.cs" />
+    <Compile Include="Archive\ArchiveReader.cs" />
+    <Compile Include="Archive\FileArchiveReader.cs" />
+    <Compile Include="Archive\IArchiveEntry.cs" />
+    <Compile Include="Archive\ZipArchiveReader.cs" />
+    <Compile Include="Archive\ZipArchiveReaderEntry.cs" />
+    <Compile Include="Controls\GameFileTile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTile.Designer.cs">
+      <DependentUpon>GameFileTile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GlowButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -101,8 +108,55 @@
     <Compile Include="Controls\UpdateControl.Designer.cs">
       <DependentUpon>UpdateControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Config\DataCache.cs" />
     <Compile Include="DataSources\GameProfile.cs" />
+    <Compile Include="Config\FileManagement.cs" />
+    <Compile Include="Controls\FlowLayoutPanelDB.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FlowLayoutPanelDB.Designer.cs">
+      <DependentUpon>FlowLayoutPanelDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FileManagementSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FileManagementSelect.Designer.cs">
+      <DependentUpon>FileManagementSelect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Archive\IArchiveReader.cs" />
+    <Compile Include="Controls\GameFileTileViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTileViewControl.Designer.cs">
+      <DependentUpon>GameFileTileViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameFileTileBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTileExpanded.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GameFileTileExpanded.Designer.cs">
+      <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\GameFileListEventArgs.cs" />
+    <Compile Include="GameFileView\GameFileViewFactory.cs" />
+    <Compile Include="GameFileView\GameFileViewType.cs" />
+    <Compile Include="Handlers\GameFileTileManager.cs" />
+    <Compile Include="Interfaces\IGameFileSortableView.cs" />
+    <Compile Include="Interfaces\IGameFileTile.cs" />
+    <Compile Include="Interfaces\IGameFileColumnView.cs" />
+    <Compile Include="Interfaces\IGameFileView.cs" />
     <Compile Include="Interfaces\IGameProfile.cs" />
+    <Compile Include="IWad\IWadInfo.cs" />
+    <Compile Include="Controls\PagingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PagingControl.Designer.cs">
+      <DependentUpon>PagingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers\ToolTipDisplayHandler.cs" />
+    <Compile Include="Handlers\ThumbnailManager.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />
@@ -137,7 +191,7 @@
     <Compile Include="Forms\Welcome.Designer.cs">
       <DependentUpon>Welcome.cs</DependentUpon>
     </Compile>
-    <Compile Include="Handlers\CopyResults.cs" />
+    <Compile Include="Handlers\FIleAddResults.cs" />
     <Compile Include="DataSources\CustomParam.cs" />
     <Compile Include="Demo\CldDemoParser.cs" />
     <Compile Include="Demo\DemoUtil.cs" />
@@ -280,7 +334,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Statistics\ChocolateDoomStatsReader.cs" />
-    <Compile Include="Statistics\CNDoomStatsReader.cs" />
     <Compile Include="Statistics\IStatisticsReader.cs" />
     <Compile Include="Statistics\MultiLineStatReader.cs" />
     <Compile Include="Statistics\NewStatisticsEventArgs.cs" />
@@ -548,11 +601,20 @@
     <EmbeddedResource Include="Controls\FilesCtrl.resx">
       <DependentUpon>FilesCtrl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GameFileTile.resx">
+      <DependentUpon>GameFileTile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GameFileTileViewControl.resx">
+      <DependentUpon>GameFileTileViewControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\StatisticsView.resx">
       <DependentUpon>StatisticsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\StatsControl.resx">
       <DependentUpon>StatsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FileManagementSelect.resx">
+      <DependentUpon>FileManagementSelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FilterForm.resx">
       <DependentUpon>FilterForm.cs</DependentUpon>
@@ -601,6 +663,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Welcome.resx">
       <DependentUpon>Welcome.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PagingControl.resx">
+      <DependentUpon>PagingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GameFileTileExpanded.resx">
+      <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TabViews\BasicTabViewCtrl.resx">
       <DependentUpon>BasicTabViewCtrl.cs</DependentUpon>
@@ -715,6 +783,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BindingListView\BindingListView.csproj">
+      <Project>{75af36a8-7797-4023-b183-5b63d448420a}</Project>
+      <Name>BindingListView</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CheckBoxComboBox\CheckBoxComboBox.csproj">
       <Project>{70a25201-8ea4-48f8-a4a6-ed13adf8823c}</Project>
       <Name>CheckBoxComboBox</Name>

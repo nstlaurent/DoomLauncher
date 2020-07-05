@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
@@ -30,6 +26,16 @@ namespace DoomLauncher
                     m_path = m_path.Replace(current, string.Empty);
             }
         }
+
+        public static string GetDataDirectory()
+        {
+            if (IsInstalled())
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DoomLauncher");
+
+            return Directory.GetCurrentDirectory();
+        }
+
+        public static bool IsInstalled() => !File.Exists(Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.DatabaseFileName)) && !File.Exists(Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.InitDatabaseFileName));
 
         public string GetFullPath()
         {

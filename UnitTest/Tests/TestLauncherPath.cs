@@ -1,6 +1,5 @@
-﻿using System;
+﻿using DoomLauncher;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DoomLauncher;
 using System.IO;
 
 namespace UnitTest.Tests

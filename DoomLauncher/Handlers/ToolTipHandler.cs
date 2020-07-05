@@ -1,21 +1,26 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
 {
     class ToolTipHandler
     {
-        public ToolTipHandler() {}
-
         public string GetToolTipText(Font font, IGameFile item)
         {
             StringBuilder sb = new StringBuilder();
+
+            if (!string.IsNullOrEmpty(item.FileName))
+            {
+                sb.Append("File: ");
+                sb.Append(item.FileName);
+
+                sb.Append(Environment.NewLine);
+                sb.Append(Environment.NewLine);
+            }
+
             sb.Append("Title: ");
             if (item.Title != null)
                 sb.Append(item.Title);
@@ -126,13 +131,12 @@ namespace DoomLauncher
 
         private string TruncateLine(Font font, string line, int maxWidth)
         {
-            for(int i = 1; i < line.Length; i++)
+            for (int i = 1; i < line.Length; i++)
             {
                 int test = TextRenderer.MeasureText(line.Substring(0, i), font).Width;
 
                 if (test > maxWidth)
                 {
-                    int start = i;
                     while (i > 0 && line[i] != ' ') i--;
                     if (i == 0) return line.Substring(0, i);
                     return line.Substring(0, i);

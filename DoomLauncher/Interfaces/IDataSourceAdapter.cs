@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace DoomLauncher.Interfaces
 {
@@ -20,6 +16,7 @@ namespace DoomLauncher.Interfaces
         IEnumerable<IFileData> GetFiles();
         IEnumerable<IFileData> GetFiles(IGameFile gameFile);
         IEnumerable<IFileData> GetFiles(IGameFile gameFile, FileType fileTypeID);
+        IEnumerable<IFileData> GetFiles(FileType fileTypeID);
         void UpdateFile(IFileData file);
         void UpdateFiles(int sourcePortID_Where, int? sourcePortID_Set);
         void InsertFile(IFileData file);

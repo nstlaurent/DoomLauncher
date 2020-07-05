@@ -1,11 +1,11 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DoomLauncher.Interfaces;
-using DoomLauncher;
+﻿using DoomLauncher;
 using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 
 namespace UnitTest.Tests
 {
@@ -518,7 +518,7 @@ namespace UnitTest.Tests
         {
             int value = 0;
             //Properties we do not write to the database
-            string[] exclude = new string[] { "FileSizeBytes", "GameFileID" };
+            string[] exclude = new string[] { "FileSizeBytes", "GameFileID", "FileNameNoPath" };
 
             foreach (var gameFile in gameFiles)
             {

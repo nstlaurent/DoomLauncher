@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DoomLauncher.TextFileParsers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DoomLauncher.TextFileParsers;
+using System;
 
 namespace UnitTest.Tests
 {

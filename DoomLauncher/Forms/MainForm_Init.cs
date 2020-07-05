@@ -21,7 +21,16 @@ namespace DoomLauncher
             bool check = false;
             try
             {
-                check = InitFileCheck("DoomLauncher.sqlite", "DoomLauncher_.sqlite", false);
+                if (File.Exists(Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName)))
+                {
+                    check = true;
+                    // Still attempt to delete the init database here for people that manually update (not installed)
+                    if (File.Exists(DbDataSourceAdapter.InitDatabaseFileName))
+                        File.Delete(DbDataSourceAdapter.InitDatabaseFileName);
+                    return check;
+                }
+
+                check = InitFileCheck(DbDataSourceAdapter.DatabaseFileName, DbDataSourceAdapter.InitDatabaseFileName, false);
 
                 if (!check)
                 {
@@ -39,7 +48,11 @@ namespace DoomLauncher
 
         private bool VerifyGameFilesDirectory()
         {
+            if (Directory.Exists(AppConfiguration.GameFileDirectory.GetFullPath()))
+                return true;
+
             bool check = false;
+
             try
             {
                 InitGameFilesDebug();
@@ -72,14 +85,21 @@ namespace DoomLauncher
         [Conditional("DEBUG")]
         private void InitGameFilesDebug()
         {
-            string basePath = "GameFiles";
-
-            if (!Directory.Exists(basePath))
+            try
             {
-                Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
-                Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
-                Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
-                Directory.CreateDirectory(Path.Combine(basePath, "Temp"));
+                string basePath = "GameFiles";
+
+                if (!Directory.Exists(basePath))
+                {
+                    Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
+                    Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
+                    Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
+                    Directory.CreateDirectory(Path.Combine(basePath, "Temp"));
+                }
+            }
+            catch
+            {
+                // For local debug code only, just catch if we testing in debug outside of dev
             }
         }
 
@@ -123,7 +143,7 @@ namespace DoomLauncher
                         return false;
                 }
             }
- 
+
             return true;
         }
 
@@ -133,7 +153,7 @@ namespace DoomLauncher
 
             if (fi.Exists)
             {
-                Directory.CreateDirectory("Backup");
+                Directory.CreateDirectory(Path.Combine(LauncherPath.GetDataDirectory(), "Backup"));
                 string backupName = GetBackupFileName(fi);
 
                 FileInfo fiBackup = new FileInfo(backupName);
@@ -146,12 +166,12 @@ namespace DoomLauncher
 
         private void CleanupBackupDirectory()
         {
-            string[] files = Directory.GetFiles("Backup", "*.sqlite");
+            string[] files = Directory.GetFiles(Path.Combine(LauncherPath.GetDataDirectory(), "Backup"), "*.sqlite");
             List<FileInfo> filesInfo = new List<FileInfo>();
             Array.ForEach(files, x => filesInfo.Add(new FileInfo(x)));
             List<FileInfo> filesInfoOrdered = filesInfo.OrderBy(x => x.CreationTime).ToList();
 
-            while(filesInfoOrdered.Count > 10)
+            while (filesInfoOrdered.Count > 10)
             {
                 filesInfoOrdered.First().Delete();
                 filesInfoOrdered.RemoveAt(0);
@@ -169,21 +189,29 @@ namespace DoomLauncher
             tabView.SetColumnConfig(columnTextFields, colConfig);
             tabView.GameFileViewControl.SetContextMenuStrip(menu);
             tabView.GameFileViewControl.AllowDrop = dragDrop;
+            tabView.DataSourceChanging += TabView_DataSourceChanging;
             SetGameFileViewEvents(tabView.GameFileViewControl, dragDrop);
+        }
+
+        private void TabView_DataSourceChanging(object sender, GameFileListEventArgs e)
+        {
+            if (sender is ITabView tabView)
+                e.GameFiles = GetViewSort(tabView.GameFileViewControl, e.GameFiles);
         }
 
         private void SetupTabs()
         {
             List<ITabView> tabViews = new List<ITabView>();
-            ColumnConfig[] colConfig = GetColumnConfig();
-            TagMapLookup = new TagMapLookup(DataSourceAdapter);
+            ColumnConfig[] colConfig = DataCache.Instance.GetColumnConfig();
+            GameFileViewFactory = new GameFileViewFactory(this, AppConfiguration.GameFileViewType);
+            GameFileTileManager.Instance.Init(GameFileViewFactory);
 
             tabViews.Add(CreateTabViewRecent(colConfig));
             tabViews.Add(CreateTabViewLocal(colConfig));
             tabViews.Add(CreateTabViewUntagged(colConfig));
             tabViews.Add(CreateTabViewIwad(colConfig));
             tabViews.Add(CreateTabViewIdGames(colConfig));
-            tabViews.AddRange(CreateTagTabs(DefaultColumnTextFields, colConfig));
+            tabViews.AddRange(CreateTagTabs(GameFileViewFactory.DefaultColumnTextFields, colConfig));
 
             m_tabHandler = new TabHandler(tabControl);
             m_tabHandler.SetTabs(tabViews);
@@ -200,7 +228,8 @@ namespace DoomLauncher
             };
 
             IdGamesDataSourceAdapter = new IdGamesDataAdapater(AppConfiguration.IdGamesUrl, AppConfiguration.ApiPage, AppConfiguration.MirrorUrl);
-            IdGamesTabViewCtrl tabViewIdGames = new IdGamesTabViewCtrl(s_idGamesKey, s_idGamesKey, IdGamesDataSourceAdapter, DefaultGameFileSelectFields);
+            var factory = new GameFileViewFactory(this, GameFileViewType.GridView);
+            IdGamesTabViewCtrl tabViewIdGames = new IdGamesTabViewCtrl(s_idGamesKey, s_idGamesKey, IdGamesDataSourceAdapter, DefaultGameFileSelectFields, factory);
             SetupTabBase(tabViewIdGames, columnTextFields, colConfig, mnuIdGames, false);
             return tabViewIdGames;
         }
@@ -209,34 +238,34 @@ namespace DoomLauncher
         {
             ColumnField[] columnTextFields = new ColumnField[]
             {
-                new ColumnField("FileName", "File"),
+                new ColumnField("FileNameNoPath", "File"),
                 new ColumnField("Title", "Title"),
                 new ColumnField("LastPlayed", "Last Played")
             };
 
-            IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(s_iwadKey, s_iwadKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
+            IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(s_iwadKey, s_iwadKey, DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);
             SetupTabBase(tabViewIwads, columnTextFields, colConfig, mnuLocal, true);
             return tabViewIwads;
         }
 
         private LocalTabViewCtrl CreateTabViewUntagged(ColumnConfig[] colConfig)
         {
-            LocalTabViewCtrl tabViewUntagged = new UntaggedTabView(s_untaggedKey, s_untaggedKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
-            SetupTabBase(tabViewUntagged, DefaultColumnTextFields, colConfig, mnuLocal, true);
+            LocalTabViewCtrl tabViewUntagged = new UntaggedTabView(s_untaggedKey, s_untaggedKey, DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);
+            SetupTabBase(tabViewUntagged, GameFileViewFactory.DefaultColumnTextFields, colConfig, mnuLocal, true);
             return tabViewUntagged;
         }
 
         private LocalTabViewCtrl CreateTabViewLocal(ColumnConfig[] colConfig)
         {
-            LocalTabViewCtrl tabViewLocal = new LocalTabViewCtrl(s_localKey, s_localKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
-            SetupTabBase(tabViewLocal, DefaultColumnTextFields, colConfig, mnuLocal, true);
+            LocalTabViewCtrl tabViewLocal = new LocalTabViewCtrl(s_localKey, s_localKey, DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);
+            SetupTabBase(tabViewLocal, GameFileViewFactory.DefaultColumnTextFields, colConfig, mnuLocal, true);
             return tabViewLocal;
         }
 
         private OptionsTabViewCtrl CreateTabViewRecent(ColumnConfig[] colConfig)
         {
-            OptionsTabViewCtrl tabViewRecent = new OptionsTabViewCtrl(s_recentKey, s_recentKey, DataSourceAdapter, DefaultGameFileSelectFields, TagMapLookup);
-            SetupTabBase(tabViewRecent, DefaultColumnTextFields, colConfig, mnuLocal, true);
+            OptionsTabViewCtrl tabViewRecent = new OptionsTabViewCtrl(s_recentKey, s_recentKey, DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);
+            SetupTabBase(tabViewRecent, GameFileViewFactory.DefaultColumnTextFields, colConfig, mnuLocal, true);
             tabViewRecent.Options = new GameFileGetOptions();
             tabViewRecent.Options.Limit = 10;
             tabViewRecent.Options.OrderBy = OrderType.Desc;
@@ -246,11 +275,11 @@ namespace DoomLauncher
 
         private List<ITabView> CreateTagTabs(ColumnField[] columnTextFields, ColumnConfig[] colConfig)
         {
-            List<ITabView> ret = new List<ITabView>();           
-            IEnumerable<ITagData> tags = DataSourceAdapter.GetTags().Where(x => x.HasTab).OrderBy(x => x.Name);
-            Tags = tags.ToArray();
+            List<ITabView> ret = new List<ITabView>();
+            DataCache.Instance.UpdateTags();
+            IEnumerable<ITagData> tags = DataCache.Instance.Tags.Where(x => x.HasTab);
 
-            foreach(ITagData tag in tags)
+            foreach (ITagData tag in tags)
                 ret.Add(CreateTagTab(columnTextFields, colConfig, tag.Name, tag, false));
 
             return ret;
@@ -265,11 +294,15 @@ namespace DoomLauncher
                 Array.ForEach(colConfig, x => x.Parent = tag.Name);
             }
 
-            TagTabView tabView = new TagTabView(tag.TagID, name, DataSourceAdapter, DefaultGameFileSelectFields, tag);
+            TagTabView tabView = new TagTabView(tag.TagID, name, DataSourceAdapter, DefaultGameFileSelectFields, tag, GameFileViewFactory);
             SetupTabBase(tabView, columnTextFields, colConfig, mnuLocal, true);
-            tabView.GameFileViewControl.SetColumnFormat("ReleaseDate", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
-            tabView.GameFileViewControl.SetColumnFormat("Downloaded", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
-            tabView.GameFileViewControl.SetColumnFormat("LastPlayed", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+
+            if (tabView.GameFileViewControl is IGameFileColumnView columnView)
+            {
+                columnView.SetColumnFormat("ReleaseDate", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+                columnView.SetColumnFormat("Downloaded", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+                columnView.SetColumnFormat("LastPlayed", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+            }
 
             return tabView;
         }
@@ -288,21 +321,21 @@ namespace DoomLauncher
 
         private void RebuildTagToolStrip()
         {
-            GameFileViewControl currentControl = GetCurrentViewControl();
+            IGameFileView currentControl = GetCurrentViewControl();
             if (currentControl != null)
             {
                 List<ITagData> addTags = new List<ITagData>();
                 List<ITagData> removeTags = new List<ITagData>();
 
-                Tags = DataSourceAdapter.GetTags().OrderBy(x => x.Name).ToArray();
+                DataCache.Instance.UpdateTags();
 
                 foreach (var gameFile in SelectedItems(currentControl))
                 {
                     if (gameFile.GameFileID.HasValue)
                     {
-                        var gameFileTags = TagMapLookup.GetTags(gameFile);
-                        var currentRemoveTags = Tags.Where(x => gameFileTags.Any(y => y.TagID == x.TagID));
-                        var currentAddTags = Tags.Except(currentRemoveTags);
+                        var gameFileTags = DataCache.Instance.TagMapLookup.GetTags(gameFile);
+                        var currentRemoveTags = DataCache.Instance.Tags.Where(x => gameFileTags.Any(y => y.TagID == x.TagID));
+                        var currentAddTags = DataCache.Instance.Tags.Except(currentRemoveTags);
 
                         addTags = addTags.Union(currentAddTags).ToList();
                         removeTags = removeTags.Union(currentRemoveTags).ToList();
@@ -329,18 +362,17 @@ namespace DoomLauncher
                 tagToolStrip.DropDownItems.Add(tag.Name, null, handler);
         }
 
-        private void SetGameFileViewEvents(GameFileViewControl ctrl, bool dragDrop)
+        private void SetGameFileViewEvents(IGameFileView ctrl, bool dragDrop)
         {
-            ctrl.ToolTipTextNeeded += ctrlView_ToolTipTextNeeded;
-            ctrl.RowDoubleClicked += ctrlView_RowDoubleClicked;
+            ctrl.ItemDoubleClick += ctrlView_RowDoubleClicked;
             ctrl.SelectionChange += ctrlView_SelectionChange;
-            ctrl.GridKeyPress += ctrlView_GridKeyPress;
+            ctrl.ViewKeyPress += ctrlView_GridKeyPress;
 
             if (dragDrop)
             {
                 ctrl.DragDrop += ctrlView_DragDrop;
                 ctrl.DragEnter += ctrlView_DragEnter;
-                ctrl.GridKeyDown += ctrlView_GridKeyDown;
+                ctrl.ViewKeyDown += ctrlView_GridKeyDown;
             }
         }
 
@@ -354,7 +386,7 @@ namespace DoomLauncher
 
         private async void Initialize()
         {
-            string dataSource = Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.GetDatabaseFileName());
+            string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
             DataAccess access = new DataAccess(new SqliteDatabaseAdapter(), DbDataSourceAdapter.CreateConnectionString(dataSource));
 
             m_versionHandler = new VersionHandler(access, DbDataSourceAdapter.CreateAdapter(true), AppConfiguration);
@@ -378,17 +410,32 @@ namespace DoomLauncher
                 //Only set location and window state if the location is valid, either way we always set Width, Height, and splitter values
                 if (ValidatePosition(AppConfiguration))
                 {
-                    StartPosition = FormStartPosition.Manual;
-                    Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
-
                     WindowState = AppConfiguration.WindowState;
+
+                    if (WindowState != FormWindowState.Maximized)
+                    {
+                        StartPosition = FormStartPosition.Manual;
+                        Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
+                    }
                 }
+
+                // Save the height and set after splitter, otherwise splitter resizing will be incorrect
+                int saveWidth = Width;
+                int saveHeight = Height;
 
                 Width = AppConfiguration.AppWidth;
                 Height = AppConfiguration.AppHeight;
 
                 splitTopBottom.SplitterDistance = AppConfiguration.SplitTopBottom;
                 splitLeftRight.SplitterDistance = AppConfiguration.SplitLeftRight;
+
+                // If the app was closed in the maximized state then the width and height are maxed out
+                // This causes the window to take up the full screen even when set to normal state
+                if (WindowState == FormWindowState.Maximized)
+                {
+                    Width = saveWidth;
+                    Height = saveHeight;
+                }
             }
             catch (DirectoryNotFoundException ex)
             {
@@ -402,8 +449,12 @@ namespace DoomLauncher
                 CleanTempDirectory();
 
             DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory);
+            DataCache.Instance.Init(DataSourceAdapter);
+            DataCache.Instance.AppConfiguration.GameFileViewTypeChanged += AppConfiguration_GameFileViewTypeChanged;
+
             SetupTabs();
             RebuildUtilityToolStrip();
+            BuildUtilityToolStrip();
 
             m_downloadView = new DownloadView();
             m_downloadView.UserPlay += DownloadView_UserPlay;
@@ -420,9 +471,35 @@ namespace DoomLauncher
             UpdateLocal();
 
             SetupSearchFilters();
-            HandleTabSelectionChange();
 
             await Task.Run(() => CheckForAppUpdate());
+        }
+
+        private void AppConfiguration_GameFileViewTypeChanged(object sender, EventArgs e)
+        {
+            if (GameFileViewFactory.IsBaseViewTypeChange(GameFileViewFactory.DefaultType, AppConfiguration.GameFileViewType))
+            {
+                // Write any settings the user may have changed before the application is killed
+                HandleFormClosing();
+                Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Util.GetExecutableNoPath()));
+                return;
+            }
+
+            GameFileViewFactory.UpdateDefaultType(AppConfiguration.GameFileViewType);
+            GameFileTileManager.Instance.Init(GameFileViewFactory);
+        }
+
+        private void BuildUtilityToolStrip()
+        {
+            ToolStripMenuItem sortToolStrip = GetSortByToolStrip();
+
+            foreach (var col in GameFileViewFactory.DefaultColumnTextFields)
+                sortToolStrip.DropDownItems.Add(col.Title, null, sortToolStripItem_Click);
+        }
+
+        private ToolStripMenuItem GetSortByToolStrip()
+        {
+            return mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
         }
 
         private async Task CheckForAppUpdate()
@@ -442,7 +519,7 @@ namespace DoomLauncher
                 // no internet connection or bad connection, try again next time
             }
         }
-        
+
         private void SetUpdateAvailable(ApplicationUpdateInfo info)
         {
             if (InvokeRequired)
@@ -466,9 +543,9 @@ namespace DoomLauncher
             }
 
             if (!DataSourceAdapter.GetIWads().Any()) //If no iwads then prompt to add iwads
-            { 
+            {
                 await HandleAddIWads();
-                this.Invoke((MethodInvoker)delegate { tabControl.SelectTab(s_iwadKey); }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
+                this.Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = 3; }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
                 DisplayInitSettings(); //give user the change set default port, iwad, skill
             }
         }
@@ -479,6 +556,8 @@ namespace DoomLauncher
             settings.SetToLaunchSettingsTab();
             settings.StartPosition = FormStartPosition.CenterParent;
             settings.ShowDialog();
+
+            AppConfiguration.Refresh();
         }
 
         private void DisplayWelcome()
@@ -510,8 +589,8 @@ namespace DoomLauncher
             {
                 //Maximized goes outside the bounds to hide the border, bring the rectangle in a more than safe amount to check if the monitor is still there
                 //Windows 7 can be -4, later version are -6, could change based on DPI
-                int offs = 32; 
-                Rectangle formRectangle = new Rectangle(config.AppX + offs, config.AppY + offs, config.AppWidth - offs*2, config.AppHeight - offs*2);
+                int offs = 32;
+                Rectangle formRectangle = new Rectangle(config.AppX + offs, config.AppY + offs, config.AppWidth - offs * 2, config.AppHeight - offs * 2);
                 return Screen.AllScreens.Any(x => x.WorkingArea.Contains(formRectangle));
             }
             else if (config.WindowState != FormWindowState.Minimized)
@@ -560,7 +639,7 @@ namespace DoomLauncher
                 var lnk = shell.CreateShortcut(Path.Combine(sendToPath, "DoomLauncher.lnk"));
                 try
                 {
-                    lnk.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.exe");
+                    lnk.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), Util.GetExecutableNoPath());
                     lnk.IconLocation = string.Format(Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.ico"));
                     lnk.Save();
                 }
@@ -581,25 +660,6 @@ namespace DoomLauncher
                 GetCurrentTabView().GetType() != typeof(IdGamesTabViewCtrl))
             {
                 HandleSearch();
-            }
-        }
-
-        private ColumnField[] DefaultColumnTextFields
-        {
-            get
-            {
-                 return new ColumnField[]
-                 {
-                    new ColumnField("FileName", "File"),
-                    new ColumnField("Title", "Title"),
-                    new ColumnField("Author", "Author"),
-                    new ColumnField("ReleaseDate", "Release Date"),
-                    new ColumnField("MapCount", "Maps"),
-                    new ColumnField("Comments", "Comments"),
-                    new ColumnField("Rating", "Rating"),
-                    new ColumnField("Downloaded", "Downloaded"),
-                    new ColumnField("LastPlayed", "Last Played")
-                 };
             }
         }
 
@@ -626,6 +686,6 @@ namespace DoomLauncher
             }
         }
 
-        private ITagMapLookup TagMapLookup { get; set; }
+        private GameFileViewFactory GameFileViewFactory { get; set; }
     }
 }

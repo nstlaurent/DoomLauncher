@@ -47,7 +47,6 @@
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.Size = new System.Drawing.Size(137, 29);
             this.tblMain.TabIndex = 0;
-            this.tblMain.MouseLeave += new System.EventHandler(this.tblMain_MouseLeave);
             // 
             // RatingControl
             // 

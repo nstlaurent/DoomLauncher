@@ -29,6 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CumulativeStats));
             this.btnOK = new System.Windows.Forms.Button();
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
             this.lblTimePlayed = new System.Windows.Forms.Label();
@@ -105,8 +106,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(344, 211);
             this.Controls.Add(this.tblMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CumulativeStats";
-            this.ShowIcon = false;
             this.Text = "Cumulative Stats";
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();

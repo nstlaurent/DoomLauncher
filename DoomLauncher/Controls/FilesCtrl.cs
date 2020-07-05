@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Reflection;
+using System.Text;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -26,8 +23,10 @@ namespace DoomLauncher
         public FilesCtrl()
         {
             InitializeComponent();
+            dgvAdditionalFiles.BackgroundColor = SystemColors.Window;
             dgvAdditionalFiles.AutoGenerateColumns = false;
             dgvAdditionalFiles.RowHeadersVisible = false;
+            dgvAdditionalFiles.MultiSelect = false;
             dgvAdditionalFiles.CellFormatting += dgvAdditionalFiles_CellFormatting;
         }
 
@@ -94,13 +93,14 @@ namespace DoomLauncher
         private void btnAddFile_Click(object sender, EventArgs e)
         {
             AdditionalFilesEventArgs args = new AdditionalFilesEventArgs(null);
-            if (NewItemNeeded != null)
-                NewItemNeeded(this, args);
+            NewItemNeeded?.Invoke(this, args);
 
             if (args.NewItems != null)
             {
                 m_files.AddRange(args.NewItems);
                 Rebind();
+                if (dgvAdditionalFiles.Rows.Count > 0)          
+                    dgvAdditionalFiles.Rows[dgvAdditionalFiles.Rows.Count - 1].Selected = true;
             }
         }
 
@@ -109,16 +109,23 @@ namespace DoomLauncher
             object item = SelectedItem;
             if (item != null)
             {
+                int index = dgvAdditionalFiles.SelectedRows[0].Index;
                 AdditionalFilesEventArgs cancelEvent = new AdditionalFilesEventArgs(item);
-                if (ItemRemoving != null)
-                    ItemRemoving(this, cancelEvent);
+                ItemRemoving?.Invoke(this, cancelEvent);
 
                 if (!cancelEvent.Cancel)
                 {
                     m_files.Remove(item);
                     Rebind();
-                    if (ItemRemoved != null)
-                        ItemRemoved(this, new AdditionalFilesEventArgs(item));
+
+                    if (dgvAdditionalFiles.Rows.Count > 0)
+                    {
+                        if (index >= dgvAdditionalFiles.Rows.Count)
+                            index = dgvAdditionalFiles.Rows.Count - 1;
+                        dgvAdditionalFiles.Rows[index].Selected = true;
+                    }
+
+                    ItemRemoved?.Invoke(this, new AdditionalFilesEventArgs(item));
                 }
             }
         }

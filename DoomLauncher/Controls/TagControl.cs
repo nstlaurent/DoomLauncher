@@ -1,31 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
-using DoomLauncher.DataSources;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
     public partial class TagControl : UserControl
     {
         private IDataSourceAdapter m_adapter;
-        private List<ITagData> m_addTags = new List<ITagData>();
-        private List<ITagData> m_editTags = new List<ITagData>();
-        private List<ITagData> m_deleteTags = new List<ITagData>();
+        private readonly List<ITagData> m_addTags = new List<ITagData>();
+        private readonly List<ITagData> m_editTags = new List<ITagData>();
+        private readonly List<ITagData> m_deleteTags = new List<ITagData>();
 
         public TagControl()
         {
             InitializeComponent();
 
-            dgvTags.RowHeadersVisible = false;
-            dgvTags.AutoGenerateColumns = false;
-            dgvTags.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            GameFileViewControl.StyleGrid(dgvTags);
+            dgvTags.MultiSelect = false;
 
             DataGridViewColumn col = new DataGridViewTextBoxColumn();
             col.HeaderText = "Name";

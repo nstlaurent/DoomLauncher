@@ -13,7 +13,7 @@ namespace DoomLauncher
     {
         private ProgressBarForm m_progressBarSync;
 
-        private async Task SyncLocalDatabase(string[] fileNames)
+        private async Task SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews)
         {
             if (m_progressBarSync == null)
             {
@@ -21,19 +21,20 @@ namespace DoomLauncher
                 ProgressBarStart(m_progressBarSync);
             }
 
-            SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames));
+            SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement));
 
             ProgressBarEnd(m_progressBarSync);
             m_progressBarSync = null;
-            SyncLocalDatabaseComplete(handler);
+            SyncLocalDatabaseComplete(handler, updateViews);
         }
 
-        void SyncLocalDatabaseComplete(SyncLibraryHandler handler)
+        void SyncLocalDatabaseComplete(SyncLibraryHandler handler, bool updateViews)
         {
-            SetIWadGameFiles();
-
-            UpdateLocal();
-            HandleTabSelectionChange();
+            if (updateViews)
+            {
+                UpdateLocal();
+                HandleTabSelectionChange();
+            }
 
             if (handler != null &&
                 (handler.InvalidFiles.Length > 0 || m_zdlInvalidFiles.Count > 0))
@@ -46,41 +47,6 @@ namespace DoomLauncher
                 m_launchFile = null;
                 if (launchFile != null)
                     HandlePlay(new IGameFile[] { launchFile });
-            }
-        }
-
-        private void SetIWadGameFiles()
-        {
-            IEnumerable<IIWadData> iwads = DataSourceAdapter.GetIWads();
-            List<IGameFile> gameFileDataUpdate = new List<IGameFile>();
-
-            if (iwads.Any())
-            {
-                IEnumerable<IGameFile> gameFiles = DataSourceAdapter.GetGameFiles();
-                foreach (IIWadData iwad in iwads)
-                {
-                    IGameFile find = gameFiles.FirstOrDefault(x => x.FileName.ToLower() == iwad.FileName.ToLower().Replace(".wad", ".zip"));
-                    if (find != null)
-                    {
-                        if (!find.IWadID.HasValue) //this should mean the file was just added so we should set the pre-defined title
-                        {
-                            FillIwadData(find);
-                            gameFileDataUpdate.Add(find);
-                            find.IWadID = iwad.IWadID;
-                            DataSourceAdapter.UpdateGameFile(find, new GameFileFieldType[] { GameFileFieldType.IWadID });
-                        }
-
-                        if (!iwad.GameFileID.HasValue)
-                        {
-                            iwad.GameFileID = find.GameFileID;
-                            DataSourceAdapter.UpdateIWad(iwad);
-                        }                   
-                    }
-                    else
-                    {
-                        Util.ThrowDebugException("This should not happen");
-                    }
-                }
             }
         }
 
@@ -101,14 +67,14 @@ namespace DoomLauncher
                 sb.ToString(), true);
         }
 
-        private SyncLibraryHandler ExecuteSyncHandler(string[] files)
+        private SyncLibraryHandler ExecuteSyncHandler(string[] files, FileManagement fileManagement)
         {
             SyncLibraryHandler handler = null;
 
             try
             {
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter,
-                    AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats);
+                    AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats, fileManagement);
                 handler.SyncFileChange += syncHandler_SyncFileChange;
                 handler.GameFileDataNeeded += syncHandler_GameFileDataNeeded;
 
@@ -120,7 +86,7 @@ namespace DoomLauncher
                     m_pendingZdlFiles = null;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Util.DisplayUnexpectedException(this, ex);
             }
@@ -149,68 +115,6 @@ namespace DoomLauncher
 
                     DataSourceAdapter.UpdateGameFile(libraryGameFile);
                 }
-            }
-        }
-            
-        private void FillIwadData(IGameFile gameFile)
-        {
-            FileInfo fi = new FileInfo(gameFile.FileName);
-
-            if (string.IsNullOrEmpty(gameFile.Title))
-            {
-                switch (gameFile.FileName.Replace(fi.Extension, string.Empty).ToUpper())
-                {
-                    case "DOOM1":
-                        gameFile.Title = "Doom Shareware";
-                        break;
-                    case "DOOM":
-                        gameFile.Title = "The Ultimate Doom";
-                        break;
-                    case "DOOM2":
-                        gameFile.Title = "Doom II: Hell on Earth";
-                        break;
-                    case "PLUTONIA":
-                        gameFile.Title = "Final Doom: The Plutonia Experiment";
-                        break;
-                    case "TNT":
-                        gameFile.Title = "Final Doom: TNT: Evilution";
-                        break;
-                    case "FREEDOOM1":
-                        gameFile.Title = "Freedoom: Phase 1";
-                        break;
-                    case "FREEDOOM2":
-                        gameFile.Title = "Freedoom: Phase 2";
-                        break;
-                    case "CHEX":
-                        gameFile.Title = "Chex Quest";
-                        break;
-                    case "CHEX3":
-                        gameFile.Title = "Chex Quest 3";
-                        break;
-                    case "HACX":
-                        gameFile.Title = "Hacx: Twitch 'n Kill";
-                        break;
-                    case "HERETIC1":
-                        gameFile.Title = "Heretic Shareware";
-                        break;
-                    case "HERETIC":
-                        gameFile.Title = "Heretic: Shadow of the Serpent Riders";
-                        break;
-                    case "HEXEN":
-                        gameFile.Title = "Hexen: Beyond Heretic";
-                        break;
-                    case "STRIFE0":
-                        gameFile.Title = "Strife Demo";
-                        break;
-                    case "STRIFE1":
-                        gameFile.Title = "Strife: Quest for the Sigil";
-                        break;
-                    default:
-                        gameFile.Title = gameFile.FileName.Replace(fi.Extension, string.Empty);
-                        break;
-                }
-
-                DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
             }
         }
 
@@ -262,26 +166,35 @@ namespace DoomLauncher
 
         void ProgressBarForm_Cancelled(object sender, EventArgs e)
         {
-            this.Enabled = true;
-            this.BringToFront();
+            Enabled = true;
+            BringToFront();
         }
 
-        private void SyncIWads(string[] files)
+        private void SyncIWads(FileAddResults fileAddResults)
         {
-            IEnumerable<string> iwads = DataSourceAdapter.GetIWads().Select(x => x.Name);
-            IEnumerable<string> iwadsToAdd = files.Except(iwads);
-
-            foreach (string file in iwadsToAdd)
+            foreach (string file in fileAddResults.GetAllFiles())
             {
-                try
+                IGameFile gameFile = DataSourceAdapter.GetGameFile(file);
+
+                if (gameFile != null && !gameFile.IWadID.HasValue)
                 {
-                    DataSourceAdapter.InsertIWad(new IWadData() { FileName = file, Name = file });
-                }
-                catch (Exception ex)
-                {
-                    Util.DisplayUnexpectedException(this, ex);
+                    DataSourceAdapter.InsertIWad(new IWadData() { GameFileID = gameFile.GameFileID.Value, FileName = file, Name = file });
+                    var iwad = DataSourceAdapter.GetIWads().OrderBy(x => x.IWadID).LastOrDefault();
+
+                    IWadInfo wadInfo = IWadInfo.GetIWadInfo(gameFile.FileName);
+                    gameFile.Title = wadInfo == null ? Path.GetFileNameWithoutExtension(gameFile.FileName).ToUpper() : wadInfo.Title;
+                    DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
+
+                    if (iwad != null)
+                    {
+                        gameFile.IWadID = iwad.IWadID;
+                        DataSourceAdapter.UpdateGameFile(gameFile, new[] { GameFileFieldType.IWadID });
+                    }
                 }
             }
+
+            UpdateLocal();
+            HandleTabSelectionChange();
         }
 
         private async void HandleSyncStatus()
@@ -313,10 +226,10 @@ namespace DoomLauncher
                     m_progressBarSync = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
                     ProgressBarStart(m_progressBarSync);
 
-                    SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(files.ToArray()));
+                    SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(files.ToArray(), FileManagement.Managed));
 
                     ProgressBarEnd(m_progressBarSync);
-                    SyncLocalDatabaseComplete(handler);
+                    SyncLocalDatabaseComplete(handler, true);
                     break;
 
                 case SyncFileOption.Delete:

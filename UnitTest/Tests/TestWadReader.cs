@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WadReader;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using WadReader;
 
 namespace UnitTest.Tests
 {

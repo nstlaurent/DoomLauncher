@@ -145,8 +145,8 @@
             // 
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tblMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ScreenshotViewerForm";
-            this.ShowIcon = false;
             this.tblMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbMain)).EndInit();
             this.tblButtons.ResumeLayout(false);

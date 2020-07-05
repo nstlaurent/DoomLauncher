@@ -1,10 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher
 {
@@ -12,35 +8,34 @@ namespace DoomLauncher
     {
         private readonly ITagMapLookup m_tagLookup;
 
-        public LocalTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup)
-            : base(key, title, adapter, selectFields)
+        public LocalTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, ITagMapLookup lookup, GameFileViewFactory factory)
+            : base(key, title, adapter, selectFields, factory)
         {
             GameFileViewControl.DoomLauncherParent = this;
             m_tagLookup = lookup;
 
-            if (m_tagLookup != null)
+            if (m_tagLookup != null && GameFileViewControl is IGameFileColumnView columnView)
             {
-                GameFileViewControl.CustomRowColorPaint = true;
-                GameFileViewControl.CustomRowPaint += GameFileViewControl_CustomRowPaint;
+                columnView.CustomRowColorPaint = true;
+                columnView.CustomRowPaint += GameFileViewControl_CustomRowPaint;
             }
         }
 
         void GameFileViewControl_CustomRowPaint(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = false;
-            IGameFile gameFile = FromDataBoundItem(GameFileViewControl.CustomRowPaintDataBoundItem);
-
-            if (gameFile != null)
+            if (GameFileViewControl is IGameFileColumnView columnView)
             {
-                ITagData tag = m_tagLookup.GetTags(gameFile).FirstOrDefault(x => x.HasColor && x.Color.HasValue);
+                e.Cancel = false;
+                IGameFile gameFile = columnView.CustomRowPaintDataBoundItem;
 
-                if (tag != null)
+                if (gameFile != null)
                 {
-                    GameFileViewControl.CustomRowPaintForeColor = Color.FromArgb(tag.Color.Value);
-                }
-                else
-                {
-                    GameFileViewControl.CustomRowPaintForeColor = CDataGridView.DefaultForeColor;
+                    ITagData tag = m_tagLookup.GetTags(gameFile).FirstOrDefault(x => x.HasColor && x.Color.HasValue);
+
+                    if (tag != null)
+                        columnView.CustomRowPaintForeColor = Color.FromArgb(tag.Color.Value);
+                    else
+                        columnView.CustomRowPaintForeColor = CDataGridView.DefaultForeColor;
                 }
             }
         }

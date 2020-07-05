@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.Interfaces
 {
     public interface ITabView : ICloneable
     {
+        event EventHandler<GameFileListEventArgs> DataSourceChanging;
+
         void SetGameFiles();
         void SetGameFiles(IEnumerable<GameFileSearchField> searchFields);
         void SetGameFilesData(IEnumerable<IGameFile> gameFiles);
@@ -20,9 +19,9 @@ namespace DoomLauncher.Interfaces
         bool IsSearchAllowed { get; }
         bool IsPlayAllowed { get; }
         bool IsAutoSearchAllowed { get; }
-        string Title { get; }
+        string Title { get; set; }
         object Key { get; }
         IGameFileDataSourceAdapter Adapter { get; set; }
-        GameFileViewControl GameFileViewControl { get; }
+        IGameFileView GameFileViewControl { get; }
     }
 }

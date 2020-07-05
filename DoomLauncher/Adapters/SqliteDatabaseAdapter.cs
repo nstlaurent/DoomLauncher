@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DoomLauncher.Interfaces;
-using System.Data;
-using System.Data.SQLite;
+﻿using DoomLauncher.Interfaces;
 using System.Data.Common;
+using System.Data.SQLite;
 
 namespace DoomLauncher
 {

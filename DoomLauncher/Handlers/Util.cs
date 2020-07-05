@@ -5,11 +5,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -93,7 +92,7 @@ namespace DoomLauncher
 
             try
             {
-                FileStream fs = File.OpenRead(file);
+                FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 WadFileReader wadReader = new WadFileReader(fs);
 
                 if (wadReader.WadType != WadType.Unknown)
@@ -277,13 +276,13 @@ namespace DoomLauncher
             throw new Exception(msg);
         }
 
-        public static IEnumerable<ZipArchiveEntry> GetEntriesByExtension(ZipArchive za, string[] extensions)
+        public static IEnumerable<IArchiveEntry> GetEntriesByExtension(IArchiveReader reader, string[] extensions)
         {
-            List<ZipArchiveEntry> entries = new List<ZipArchiveEntry>();
+            List<IArchiveEntry> entries = new List<IArchiveEntry>();
 
             foreach (var ext in extensions)
             {
-                 entries.AddRange(za.Entries
+                 entries.AddRange(reader.Entries
                      .Where(x => x.Name.Contains('.') && Path.GetExtension(x.Name).Equals(ext, StringComparison.OrdinalIgnoreCase)));
             }
 
@@ -292,12 +291,22 @@ namespace DoomLauncher
 
         public static string[] GetPkExtenstions()
         {
-            return new string[] { ".pk3", ".pk7" };
+            return new string[] { ".pk3", ".pk7", ".zip" };
         }
 
-        public static string GetPkExtensionsCsv()
+        public static string[] GetReadablePkExtensions()
         {
-            return ".pk3,.pk7";
+            return new string[] { ".pk3", ".zip" };
+        }
+
+        public static string[] GetDehackedExtensions()
+        {
+            return new string[] { ".deh", ".bex" };
+        }
+
+        public static string[] GetSourcePortPkExtensions()
+        {
+            return new string[] { ".pk3", ".pk7"};
         }
 
         public static GameFileFieldType[] DefaultGameFileUpdateFields
@@ -326,18 +335,22 @@ namespace DoomLauncher
         //Takes a file 'MAP01.wad' and makes it 'MAP01_GUID.wad'.
         //Checks if file with prefix MAP01 exists with same file length and returns that file (same file).
         //Otherwise a new file is extracted and returned.
-        public static string ExtractTempFile(string tempDirectory, ZipArchiveEntry zae)
+        public static string ExtractTempFile(string tempDirectory, IArchiveEntry entry)
         {
-            string ext = Path.GetExtension(zae.Name);
-            string file = zae.Name.Replace(ext, string.Empty) + "_";
+            // The file is a regular file and not an archive - return the FulName
+            if (!entry.ExtractRequired)
+                return entry.FullName;
+
+            string ext = Path.GetExtension(entry.Name);
+            string file = entry.Name.Replace(ext, string.Empty) + "_";
             string[] searchFiles = Directory.GetFiles(tempDirectory, file + "*");
 
-            string matchingFile = searchFiles.FirstOrDefault(x => new FileInfo(x).Length == zae.Length);
+            string matchingFile = searchFiles.FirstOrDefault(x => new FileInfo(x).Length == entry.Length);
 
             if (matchingFile == null)
             {
                 string extractFile = Path.Combine(tempDirectory, string.Concat(file, Guid.NewGuid().ToString(), ext));
-                zae.ExtractToFile(extractFile);
+                entry.ExtractToFile(extractFile);
                 return extractFile;
             }
 
@@ -347,13 +360,8 @@ namespace DoomLauncher
         public static List<IIWadData> GetIWadsDataSource(IDataSourceAdapter adapter)
         {
             List<IIWadData> iwads = adapter.GetIWads().ToList();
-            iwads.ForEach(x => x.FileName = RemoveExtension(x.FileName));
+            iwads.ForEach(x => x.FileName = Path.GetFileNameWithoutExtension(x.FileName));
             return iwads;
-        }
-
-        public static string RemoveExtension(string fileName)
-        {
-            return fileName.Replace(Path.GetExtension(fileName), string.Empty);
         }
 
         public static string CleanDescription(string description)
@@ -406,6 +414,63 @@ namespace DoomLauncher
                 return value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             else
                 return new string[] { };
+        }
+
+        public static string GetExecutableNoPath() => AppDomain.CurrentDomain.FriendlyName;
+
+        public static string GetClippedEllipsesText(Graphics g, Font f, string text, SizeF layout)
+        {
+            int charactersFitted, linesFilled;
+            g.MeasureString(text, f, layout, StringFormat.GenericDefault, out charactersFitted, out linesFilled);
+
+            if (charactersFitted != text.Length && charactersFitted > 3)
+                return text.Substring(0, charactersFitted - 3) + "...";
+
+            return text.Substring(0, charactersFitted);
+        }
+
+        static public SizeF MeasureDisplayString(this Graphics graphics, string text, Font font)
+        {
+            StringFormat format = new StringFormat();
+            RectangleF rect = new RectangleF(0, 0, 1000, 1000);
+            CharacterRange[] ranges = { new CharacterRange(0, text.Length) };
+
+            format.SetMeasurableCharacterRanges(ranges);
+
+            Region[] regions = graphics.MeasureCharacterRanges(text, font, rect, format);
+            rect = regions[0].GetBounds(graphics);
+            rect.Inflate(2, 2);
+
+            return rect.Size;
+        }
+
+        [DllImport("user32.dll")]
+        static extern IntPtr WindowFromPoint(WinPoint Point);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct WinPoint
+        {
+            public int X;
+            public int Y;
+
+            public WinPoint(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
+        }
+
+        public static bool IsVisibleAtPoint(this Control control, Point windowPoint)
+        {
+            var hwnd = WindowFromPoint(new WinPoint(windowPoint.X, windowPoint.Y));
+            var other = Control.FromChildHandle(hwnd);
+            if (other == null)
+                return false;
+
+            if (control == other || control.Contains(other))
+                return true;
+
+            return false;
         }
     }
 }

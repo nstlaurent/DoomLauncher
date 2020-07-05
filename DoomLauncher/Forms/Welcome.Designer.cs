@@ -28,11 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Welcome));
             this.btnContinue = new System.Windows.Forms.Button();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblWelcome = new System.Windows.Forms.Label();
-            this.lnkHelp = new System.Windows.Forms.LinkLabel();
             this.growLabel1 = new DoomLauncher.GrowLabel();
+            this.lnkHelp = new System.Windows.Forms.LinkLabel();
             this.tblMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,6 +84,20 @@
             this.lblWelcome.TabIndex = 0;
             this.lblWelcome.Text = "Welcome to Doom Launcher";
             // 
+            // growLabel1
+            // 
+            this.growLabel1.AutoSize = true;
+            this.growLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.growLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.growLabel1.ForeColor = System.Drawing.Color.White;
+            this.growLabel1.IsPath = false;
+            this.growLabel1.Location = new System.Drawing.Point(3, 200);
+            this.growLabel1.Name = "growLabel1";
+            this.growLabel1.Size = new System.Drawing.Size(331, 60);
+            this.growLabel1.TabIndex = 2;
+            this.growLabel1.Text = "If this is your first time using Doom Launcher it is recommended to view the help" +
+    " document.";
+            // 
             // lnkHelp
             // 
             this.lnkHelp.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -98,19 +113,6 @@
             this.lnkHelp.Text = "Click here to view the help document";
             this.lnkHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelp_LinkClicked);
             // 
-            // growLabel1
-            // 
-            this.growLabel1.AutoSize = true;
-            this.growLabel1.BackColor = System.Drawing.Color.Transparent;
-            this.growLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.growLabel1.ForeColor = System.Drawing.Color.White;
-            this.growLabel1.Location = new System.Drawing.Point(3, 200);
-            this.growLabel1.Name = "growLabel1";
-            this.growLabel1.Size = new System.Drawing.Size(331, 60);
-            this.growLabel1.TabIndex = 2;
-            this.growLabel1.Text = "If this is your first time using Doom Launcher it is recommended to view the help" +
-    " document.";
-            // 
             // Welcome
             // 
             this.AcceptButton = this.btnContinue;
@@ -119,6 +121,7 @@
             this.ClientSize = new System.Drawing.Size(364, 341);
             this.ControlBox = false;
             this.Controls.Add(this.tblMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Welcome";
             this.Text = "Welcome";
             this.tblMain.ResumeLayout(false);
