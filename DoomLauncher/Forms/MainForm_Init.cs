@@ -461,6 +461,7 @@ namespace DoomLauncher
             m_downloadHandler = new DownloadHandler(AppConfiguration.TempDirectory, m_downloadView);
 
             ctrlAssociationView.Initialize(DataSourceAdapter, AppConfiguration);
+            ctrlAssociationView.FileAdded += ctrlAssociationView_FileAdded;
             ctrlAssociationView.FileDeleted += ctrlAssociationView_FileDeleted;
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
