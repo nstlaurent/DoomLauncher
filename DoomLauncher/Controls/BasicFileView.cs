@@ -78,27 +78,27 @@ namespace DoomLauncher
         public virtual bool New()
         {
             GameFile = DataSourceAdapter.GetGameFile(GameFile.FileName); //todo: refactor may have broke this, or no longer needed
-            return CreateFileAssociation(this, DataSourceAdapter, DataDirectory, FileType, GameFile, null).Count > 0;
+            return CreateFileAssociation(this, DataSourceAdapter, DataDirectory, FileType, GameFile, null, true).Count > 0;
         }
 
-        public static List<IFileData> CreateFileAssociation(IWin32Window parent, IDataSourceAdapter adapter, LauncherPath directory, FileType type, IGameFile gameFile, ISourcePortData sourcePort)
+        public static List<IFileData> CreateFileAssociation(IWin32Window parent, IDataSourceAdapter adapter, LauncherPath directory, FileType type, IGameFile gameFile, 
+            ISourcePortData sourcePort, bool multiSelect = false)
         {
             List<IFileData> fileDataList = new List<IFileData>();
             OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Multiselect = multiSelect;
 
             if (dialog.ShowDialog(parent) == DialogResult.OK)
             {
                 FileDetailsEditForm detailsForm = new FileDetailsEditForm();
                 detailsForm.Initialize(adapter);
                 detailsForm.StartPosition = FormStartPosition.CenterParent;
+                if (sourcePort != null)
+                    detailsForm.SourcePort = sourcePort;
 
-                foreach (string file in dialog.FileNames)
+                if (detailsForm.ShowDialog(parent) == DialogResult.OK && detailsForm.SourcePort != null)
                 {
-                    detailsForm.Description = Path.GetFileName(file);
-                    if (sourcePort != null)
-                        detailsForm.SourcePort = sourcePort;
-
-                    if (detailsForm.ShowDialog(parent) == DialogResult.OK && detailsForm.SourcePort != null)
+                    foreach (string file in dialog.FileNames)
                     {
                         FileInfo fi = new FileInfo(file);
                         IFileData fileData = CreateNewFileDataSource(detailsForm, fi, type, gameFile);
@@ -106,14 +106,14 @@ namespace DoomLauncher
                         fi.CopyTo(Path.Combine(directory.GetFullPath(), fileData.FileName));
 
                         adapter.InsertFile(fileData);
-                        var fileSearch = adapter.GetFiles(gameFile, FileType.Demo).FirstOrDefault(x => x.FileName == fileData.FileName);
+                        var fileSearch = adapter.GetFiles(gameFile, type).FirstOrDefault(x => x.FileName == fileData.FileName);
                         if (fileSearch != null) fileData = fileSearch;
                         fileDataList.Add(fileData);
                     }
-                    else if (detailsForm.SourcePort == null)
-                    {
-                        MessageBox.Show(parent, "A source port must be selected.", "Error", MessageBoxButtons.OK);
-                    }
+                }
+                else if (detailsForm.SourcePort == null)
+                {
+                    MessageBox.Show(parent, "A source port must be selected.", "Error", MessageBoxButtons.OK);
                 }
             }
 
