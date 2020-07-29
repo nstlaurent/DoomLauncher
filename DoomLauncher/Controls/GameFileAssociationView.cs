@@ -7,6 +7,7 @@ namespace DoomLauncher
 {
     public partial class GameFileAssociationView : UserControl
     {
+        public event EventHandler FileAdded;
         public event EventHandler FileDeleted;
         public event EventHandler FileOrderChanged;
         public event EventHandler<RequestScreenshotsEventArgs> RequestScreenshots;
@@ -163,7 +164,7 @@ namespace DoomLauncher
         private void HandleDelete()
         {
             if (CurrentView != null && CurrentView.DeleteAllowed && CurrentView.Delete())
-                FileDeleted?.Invoke(this, new EventArgs());
+                FileDeleted?.Invoke(this, EventArgs.Empty);
         }
 
         private void addFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -174,7 +175,10 @@ namespace DoomLauncher
         private void HandleAdd()
         {
             if (CurrentView != null && CurrentView.NewAllowed && CurrentView.New())
+            {
+                FileAdded?.Invoke(this, EventArgs.Empty);
                 SetData(m_gameFile);
+            }
         }
 
         private void editDetailsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -209,7 +213,7 @@ namespace DoomLauncher
                 CurrentView.SetFileOrderFirst())
             {
                 SetData(m_gameFile);
-                FileOrderChanged?.Invoke(this, new EventArgs());
+                FileOrderChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -228,7 +232,7 @@ namespace DoomLauncher
             if (success)
             {
                 SetData(m_gameFile);
-                FileOrderChanged?.Invoke(this, new EventArgs());
+                FileOrderChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
