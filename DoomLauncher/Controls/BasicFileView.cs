@@ -212,19 +212,27 @@ namespace DoomLauncher
         {
             List<IFileData> selectedFiles = GetSelectedFiles();
 
-            if (selectedFiles.Count > 0)
+            try
             {
-                IFileData file = selectedFiles.First();
+                if (selectedFiles.Count > 0)
+                {
+                    IFileData file = selectedFiles.First();
 
-                if (file.IsUrl)
-                {
-                    Process.Start(file.FileName);
+                    if (file.IsUrl)
+                    {
+                        Process.Start(file.FileName);
+                    }
+                    else
+                    {
+                        if (File.Exists(Path.Combine(DataDirectory.GetFullPath(), file.FileName)))
+                            Process.Start(Path.Combine(DataDirectory.GetFullPath(), file.FileName));
+                    }
                 }
-                else
-                {
-                    if (File.Exists(Path.Combine(DataDirectory.GetFullPath(), file.FileName)))
-                        Process.Start(Path.Combine(DataDirectory.GetFullPath(), file.FileName));
-                }
+            }
+            catch (Exception ex)
+            {
+                // This happens when windows doesn't recognize the file extension
+                MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
