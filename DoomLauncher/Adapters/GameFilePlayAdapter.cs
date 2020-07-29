@@ -288,7 +288,9 @@ namespace DoomLauncher
             string file = Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName);
             // If the unmanaged file is a pk3 then ArchiveReader.Create will read it as a zip and try to unpack
             // Return FileArchiveReader instead so the pk3 will be added as a file
-            if (gameFile.IsUnmanaged())
+            // Zip extensions are ignored in this case since Doom Launcher's base functionality revovles around reading zip contents
+            // SpecificFilesForm will also read zip files explicitly to allow user to select files in the archive
+            if (gameFile.IsUnmanaged() && !Path.GetExtension(gameFile.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
                 return new FileArchiveReader(file);
 
             return ArchiveReader.Create(file);
