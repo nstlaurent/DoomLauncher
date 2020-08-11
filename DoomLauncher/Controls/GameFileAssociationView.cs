@@ -103,7 +103,7 @@ namespace DoomLauncher
         private void SetButtonsEnabled(IFileAssociationView view)
         {
             btnAddFile.Enabled = view.NewAllowed;
-            btnCopy.Enabled = btnCopyAll.Enabled = view.CopyAllowed;
+            btnCopy.Enabled = btnCopyAll.Enabled = view.CopyOrExportAllowed;
             btnDelete.Enabled = view.DeleteAllowed;
             btnEdit.Enabled = view.EditAllowed;
             btnMoveDown.Enabled = btnMoveUp.Enabled = btnSetFirst.Enabled = view.ChangeOrderAllowed;
@@ -137,10 +137,8 @@ namespace DoomLauncher
 
         private void HandleCopy()
         {
-            IFileAssociationView view = CurrentView;
-
-            if (view != null)
-                view.CopyToClipboard();
+            if (CurrentView != null && CurrentView.CopyOrExportAllowed)
+                CurrentView.CopyToClipboard();
         }
 
         private void copyAllFilesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -150,10 +148,8 @@ namespace DoomLauncher
 
         private void HandleCopyAll()
         {
-            if (CurrentView != null && CurrentView.CopyAllowed)
-            {
+            if (CurrentView != null && CurrentView.CopyOrExportAllowed)
                 CurrentView.CopyAllToClipboard();
-            }
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -179,6 +175,28 @@ namespace DoomLauncher
                 FileAdded?.Invoke(this, EventArgs.Empty);
                 SetData(m_gameFile);
             }
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HandleExport();
+        }
+
+        private void exportAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HandleExportAll();
+        }
+
+        private void HandleExport()
+        {
+            if (CurrentView != null && CurrentView.CopyOrExportAllowed)
+                CurrentView.Export();
+        }
+
+        private void HandleExportAll()
+        {
+            if (CurrentView != null && CurrentView.CopyOrExportAllowed)
+                CurrentView.ExportAll();
         }
 
         private void editDetailsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -238,12 +256,12 @@ namespace DoomLauncher
 
         private void btnCopy_Click(object sender, EventArgs e)
         {
-            HandleCopy();
+            HandleExport();
         }
 
         private void btnCopyAll_Click(object sender, EventArgs e)
         {
-            HandleCopyAll();
+            HandleExportAll();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -298,8 +316,11 @@ namespace DoomLauncher
         {
             ContextMenuStrip menu = new ContextMenuStrip();
 
-            if (view.CopyAllowed)
+            if (view.CopyOrExportAllowed)
             {
+                CreateMenuItem(menu, "Export...", exportToolStripMenuItem_Click);
+                CreateMenuItem(menu, "Export All...", exportAllToolStripMenuItem_Click);
+                AddSeperator(menu);
                 CreateMenuItem(menu, "Copy", copyFileToolStripMenuItem_Click);
                 CreateMenuItem(menu, "Copy All", copyAllFilesToolStripMenuItem_Click);
             }

@@ -319,7 +319,7 @@
             this.btnCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(23, 21);
-            this.btnCopy.Text = "Copy to Clipboard";
+            this.btnCopy.Text = "Export File";
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
             // btnCopyAll
@@ -329,7 +329,7 @@
             this.btnCopyAll.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCopyAll.Name = "btnCopyAll";
             this.btnCopyAll.Size = new System.Drawing.Size(23, 21);
-            this.btnCopyAll.Text = "Copy All to Clipboard";
+            this.btnCopyAll.Text = "Export All Files";
             this.btnCopyAll.Click += new System.EventHandler(this.btnCopyAll_Click);
             // 
             // btnDelete

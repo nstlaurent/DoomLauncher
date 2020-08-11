@@ -25,7 +25,7 @@ namespace DoomLauncher
 
                 var items = from file in files
                             join sp in sourcePorts on file.SourcePortID equals sp.SourcePortID
-                            select new { Description = file.Description, DateCreated = file.DateCreated, SourcePortName = sp.Name, FileData = file };
+                            select new { file.Description, file.DateCreated, SourcePortName = sp.Name, FileData = file };
 
                 dgvMain.DataSource = items.ToList();
                 dgvMain.ContextMenuStrip = m_menu;
@@ -160,52 +160,110 @@ namespace DoomLauncher
 
         public void CopyToClipboard()
         {
-            List<IFileData> selectedFiles = GetSelectedFiles();
-
-            if (selectedFiles.Count > 0)
-            {
-                StringCollection paths = new StringCollection();
-
-                foreach (IFileData file in selectedFiles)
-                {
-                    if (file.IsUrl)
-                    {
-                        Process.Start(file.FileName);
-                    }
-                    else
-                    {
-                        FileInfo fi = new FileInfo(Path.Combine(DataDirectory.GetFullPath(), file.FileName));
-                        if (fi.Exists)
-                            paths.Add(Path.Combine(DataDirectory.GetFullPath(), file.FileName));
-
-                        if (paths.Count > 0)
-                            Clipboard.SetFileDropList(paths);
-                    }
-                }
-            }
+            CopyFilesToClipboard(GetSelectedFiles());
         }
 
         public void CopyAllToClipboard()
         {
+            CopyFilesToClipboard(Files);
+        }
+
+        private void CopyFilesToClipboard(IEnumerable<IFileData> files)
+        {
             StringCollection paths = new StringCollection();
 
-            foreach (IFileData dsFile in Files)
+            string tempDirectory = DataCache.Instance.AppConfiguration.TempDirectory.GetFullPath();
+            List<string> exportedFiles = ExportFilesTo(files, tempDirectory);
+            exportedFiles.ForEach(x => paths.Add(Path.Combine(tempDirectory, x)));
+
+            if (paths.Count > 0)
+                Clipboard.SetFileDropList(paths);
+        }
+
+        public bool Export()
+        {
+            List<IFileData> selectedFiles = GetSelectedFiles();
+            if (selectedFiles.Count == 0)
+                return false;
+
+            var sourcePorts = Util.GetSourcePortsData(DataSourceAdapter);
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.FileName = GetNiceFileName(selectedFiles[0], sourcePorts);
+
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                if (!dsFile.IsUrl)
-                {
-                    FileInfo fi = new FileInfo(Path.Combine(DataDirectory.GetFullPath(), dsFile.FileName));
-
-                    if (fi.Exists)
-                    {
-                        paths.Add(Path.Combine(DataDirectory.GetFullPath(), dsFile.FileName));
-                    }
-
-                    if (paths.Count > 0)
-                    {
-                        Clipboard.SetFileDropList(paths);
-                    }
-                }
+                CopyFile(selectedFiles[0], dialog.FileName);
+                return true;
             }
+
+            return false;
+        }
+
+        public bool ExportAll()
+        {
+            if (Files.Length == 0)
+                return false;
+
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                ExportFilesTo(Files, dialog.SelectedPath);
+                return true;
+            }
+
+            return false;
+        }
+
+        private List<string> ExportFilesTo(IEnumerable<IFileData> files, string directory)
+        {
+            var sourcePorts = Util.GetSourcePortsData(DataSourceAdapter);
+            HashSet<string> exportedNames = new HashSet<string>();
+            int collision = 2;
+
+            foreach (IFileData file in files)
+            {
+                if (!File.Exists(Path.Combine(DataDirectory.GetFullPath(), file.FileName)))
+                    continue;
+
+                string fileName = GetNiceFileName(file, sourcePorts);
+                while (exportedNames.Contains(fileName))
+                {
+                    fileName = $"{Path.GetFileNameWithoutExtension(fileName)}_{collision}{Path.GetExtension(fileName)}";
+                    collision++;
+                }
+
+                exportedNames.Add(fileName);
+                CopyFile(file, Path.Combine(directory, fileName));
+            }
+
+            return exportedNames.ToList();
+        }
+
+        private void CopyFile(IFileData file, string to)
+        {
+            FileInfo fi = new FileInfo(Path.Combine(DataDirectory.GetFullPath(), file.FileName));
+            if (fi.Exists)
+                fi.CopyTo(to, true);
+        }
+
+        private string GetNiceFileName(IFileData file, List<ISourcePortData> sourcePorts)
+        {
+            string prefix;
+            if (file.FileTypeID == FileType.Demo && file.Description.Length > 0)
+                prefix = file.Description;
+            else
+                prefix = Path.GetFileNameWithoutExtension(file.OriginalFileName);
+
+            if (string.IsNullOrEmpty(prefix))
+                prefix = file.FileTypeID.ToString().ToLower();
+
+            string sourcePortName = "N/A";
+            var sourcePort = sourcePorts.FirstOrDefault(x => x.SourcePortID == file.SourcePortID);
+            if (sourcePort != null)
+                sourcePortName = sourcePort.Name;
+
+            return $"{prefix}_{sourcePortName}_{Path.GetFileNameWithoutExtension(GameFile.FileNameNoPath)}{Path.GetExtension(file.FileName)}";
         }
 
         public virtual void View()
@@ -331,7 +389,7 @@ namespace DoomLauncher
 
         public FileType FileType { get; set; }
         public virtual bool DeleteAllowed { get { return true; } }
-        public virtual bool CopyAllowed { get { return true; } }
+        public virtual bool CopyOrExportAllowed { get { return true; } }
         public virtual bool NewAllowed { get { return true; } }
         public virtual bool EditAllowed { get { return true; } }
         public virtual bool ViewAllowed { get { return true; } }

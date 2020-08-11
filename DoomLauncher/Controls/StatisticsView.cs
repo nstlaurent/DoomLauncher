@@ -100,6 +100,10 @@ namespace DoomLauncher
             Clipboard.SetDataObject(dgvMain.GetClipboardContent(), true);
         }
 
+        public bool Export() => false;
+
+        public bool ExportAll() => false;
+
         private IStatsData GetStatsFromGridRow(DataGridViewRow row)
         {
             StatsBind bind = ((ObjectView<StatsBind>)row.DataBoundItem).Object as StatsBind;
@@ -135,7 +139,7 @@ namespace DoomLauncher
         public IGameFile GameFile { get; set; }
 
         public bool DeleteAllowed { get { return true; } }
-        public bool CopyAllowed { get { return false; } }
+        public bool CopyOrExportAllowed { get { return false; } }
         public bool NewAllowed { get { return false; } }
         public bool EditAllowed { get { return false; } }
         public bool ViewAllowed { get { return false; } }
