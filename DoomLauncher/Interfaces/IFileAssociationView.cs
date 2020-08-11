@@ -9,7 +9,7 @@ namespace DoomLauncher.Interfaces
         void ClearData();
 
         bool DeleteAllowed { get; }
-        bool CopyAllowed { get; }
+        bool CopyOrExportAllowed { get; }
         bool NewAllowed { get; }
         bool EditAllowed { get; }
         bool ViewAllowed { get; }
@@ -24,6 +24,8 @@ namespace DoomLauncher.Interfaces
         bool MoveFileOrderUp();
         bool MoveFileOrderDown();
         bool SetFileOrderFirst();
+        bool Export();
+        bool ExportAll();
 
         IGameFile GameFile { get; set; }
     }
