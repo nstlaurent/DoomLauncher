@@ -73,6 +73,7 @@
             this.dgvAdditionalFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvAdditionalFiles.Size = new System.Drawing.Size(241, 283);
             this.dgvAdditionalFiles.TabIndex = 2;
+            this.dgvAdditionalFiles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvAdditionalFiles_KeyDown);
             // 
             // FileName
             // 
