@@ -87,7 +87,7 @@ namespace DoomLauncher
                     if (existing == null)
                         DbDataSource.InsertGameFile(file);
                     else
-                        DbDataSource.UpdateGameFile(file, Util.GetSyncGameFileUpdateFields());
+                        DbDataSource.UpdateGameFile(file, Util.DefaultGameFileUpdateFields);
                 }
                 else
                 {

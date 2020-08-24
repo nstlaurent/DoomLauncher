@@ -45,15 +45,18 @@ namespace DoomLauncher
 
         private void btnCopyFrom_Click(object sender, EventArgs e)
         {
-            using (FileSelectForm fileSelect = CreateFileSelectForm()) //select the file you want to copy data from
+            // Select the file you want to copy data from
+            using (FileSelectForm fileSelect = CreateFileSelectForm())
             {
                 if (fileSelect.ShowDialog(this) == DialogResult.OK)
                 {
-                    using (GameFileEditForm dataSelect = CreateDataSelectForm(fileSelect)) //show another GameFileEdit with checkboxes to select what fields
+                    // Show another GameFileEdit with checkboxes to select what fields
+                    using (GameFileEditForm dataSelect = CreateDataSelectForm(fileSelect))
                     {
                         if (dataSelect.ShowDialog(this) == DialogResult.OK)
                         {
-                            GameFile updateFile = ((GameFile)EditControl.DataSource).Clone() as GameFile; //clone GameFile otherwise we are modifying the datasource the gridview is using
+                            // Clone GameFile otherwise we are modifying the datasource the gridview is using
+                            GameFile updateFile = ((GameFile)EditControl.DataSource).Clone() as GameFile; 
                             List<GameFileFieldType> fields = dataSelect.EditControl.UpdateDataSource(EditControl.DataSource);
 
                             foreach (var field in fields)
@@ -86,10 +89,13 @@ namespace DoomLauncher
 
         private GameFileEditForm CreateDataSelectForm(FileSelectForm fileSelect)
         {
-            GameFileEditForm dataSelect = new GameFileEditForm();
-            dataSelect.Text = "Select Fields to Copy";
-            dataSelect.StartPosition = FormStartPosition.CenterParent;
-            var selectedFile = fileSelect.SelectedFiles[0];
+            GameFileEditForm dataSelect = new GameFileEditForm
+            {
+                Text = "Select Fields to Copy",
+                StartPosition = FormStartPosition.CenterParent
+            };
+
+            IGameFile selectedFile = m_adapter.GetGameFile(fileSelect.SelectedFiles[0].FileName);
             IEnumerable<ITagMapping> tagMapping = m_adapter.GetTagMappings(selectedFile.GameFileID.Value);
             var tags = from tag in m_adapter.GetTags() join map in tagMapping on tag.TagID equals map.TagID select tag;
             dataSelect.EditControl.SetDataSource(selectedFile, tags);

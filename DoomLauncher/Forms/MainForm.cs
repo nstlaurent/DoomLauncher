@@ -849,7 +849,7 @@ namespace DoomLauncher
 
                 if (CheckEdit(tabView, gameFiles))
                 {
-                    IGameFile gameFile = gameFiles.First();
+                    IGameFile gameFile = DataSourceAdapter.GetGameFile(gameFiles.First().FileName);
                     IEnumerable<ITagData> tags = GetTagsFromFile(gameFile);
 
                     GameFileEditForm form = new GameFileEditForm();
