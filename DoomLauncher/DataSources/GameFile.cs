@@ -51,6 +51,8 @@ namespace DoomLauncher.DataSources
         public int MinutesPlayed { get; set; }
         public virtual int FileSizeBytes { get; set; }
 
+        public bool IsUnmanaged() => Path.IsPathRooted(FileName);
+
         public object Clone()
         {
             GameFile gameFile = new GameFile();

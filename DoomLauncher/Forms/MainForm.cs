@@ -545,7 +545,7 @@ namespace DoomLauncher
             if (iwadFind != null)
                 DataSourceAdapter.DeleteIWad(iwadFind);
             //note: appears sqlite we re-use deleted auto-inc ids so we have to be careful and delete everything
-            if (!Path.IsPathRooted(gameFile.FileName))
+            if (!gameFile.IsUnmanaged())
                 DirectoryDataSourceAdapter.DeleteGameFile(gameFile);
             DataSourceAdapter.DeleteGameFile(gameFile);
             if (gameFile.GameFileID.HasValue)
