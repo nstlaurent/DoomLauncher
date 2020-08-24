@@ -322,14 +322,11 @@ namespace DoomLauncher
                     GameFileFieldType.LastPlayed,
                     GameFileFieldType.ReleaseDate,
                     GameFileFieldType.Comments,
-                    GameFileFieldType.Rating
+                    GameFileFieldType.Rating,
+                    GameFileFieldType.Map,
+                    GameFileFieldType.MapCount,
                 };
             }
-        }
-
-        public static GameFileFieldType[] GetSyncGameFileUpdateFields()
-        {
-            return DefaultGameFileUpdateFields.Union(new GameFileFieldType[] { GameFileFieldType.Map, GameFileFieldType.MapCount }).ToArray();
         }
 
         //Takes a file 'MAP01.wad' and makes it 'MAP01_GUID.wad'.

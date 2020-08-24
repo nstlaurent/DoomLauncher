@@ -55,7 +55,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(430, 561);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(430, 587);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // gameFileEdit1
@@ -68,7 +68,7 @@
             this.gameFileEdit1.Name = "gameFileEdit1";
             this.gameFileEdit1.RatingChecked = true;
             this.gameFileEdit1.ReleaseDateChecked = true;
-            this.gameFileEdit1.Size = new System.Drawing.Size(424, 491);
+            this.gameFileEdit1.Size = new System.Drawing.Size(424, 517);
             this.gameFileEdit1.TabIndex = 0;
             this.gameFileEdit1.TagsChecked = true;
             this.gameFileEdit1.TitleChecked = true;
@@ -81,7 +81,7 @@
             this.tblButtons.Controls.Add(this.flowLayoutPanel1, 1, 0);
             this.tblButtons.Controls.Add(this.btnCopyFrom, 0, 0);
             this.tblButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblButtons.Location = new System.Drawing.Point(0, 529);
+            this.tblButtons.Location = new System.Drawing.Point(0, 555);
             this.tblButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tblButtons.Name = "tblButtons";
             this.tblButtons.RowCount = 1;
@@ -136,7 +136,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(430, 561);
+            this.ClientSize = new System.Drawing.Size(430, 587);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "GameFileEditForm";

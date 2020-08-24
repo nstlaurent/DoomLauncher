@@ -30,6 +30,7 @@
         private void InitializeComponent()
         {
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
+            this.label9 = new System.Windows.Forms.Label();
             this.lblTags = new System.Windows.Forms.Label();
             this.txtAuthor = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -49,6 +50,8 @@
             this.chkComments = new System.Windows.Forms.CheckBox();
             this.chkTags = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.lnkMapsEdit = new System.Windows.Forms.LinkLabel();
+            this.chkMaps = new System.Windows.Forms.CheckBox();
             this.ctrlStarRating = new DoomLauncher.RatingControl();
             this.txtDescription = new DoomLauncher.Controls.CRichTextBox();
             this.txtComments = new DoomLauncher.Controls.CRichTextBox();
@@ -62,6 +65,7 @@
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.Controls.Add(this.label9, 0, 8);
             this.tblMain.Controls.Add(this.lblTags, 2, 5);
             this.tblMain.Controls.Add(this.txtAuthor, 2, 2);
             this.tblMain.Controls.Add(this.label1, 0, 1);
@@ -85,10 +89,12 @@
             this.tblMain.Controls.Add(this.chkTags, 1, 5);
             this.tblMain.Controls.Add(this.label8, 0, 0);
             this.tblMain.Controls.Add(this.lblFile, 2, 0);
+            this.tblMain.Controls.Add(this.chkMaps, 1, 8);
+            this.tblMain.Controls.Add(this.lnkMapsEdit, 2, 8);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 9;
+            this.tblMain.RowCount = 10;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
@@ -98,8 +104,19 @@
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 160F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 160F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tblMain.Size = new System.Drawing.Size(349, 502);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tblMain.Size = new System.Drawing.Size(349, 553);
             this.tblMain.TabIndex = 0;
+            // 
+            // label9
+            // 
+            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(3, 497);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(33, 13);
+            this.label9.TabIndex = 25;
+            this.label9.Text = "Maps";
             // 
             // lblTags
             // 
@@ -311,6 +328,31 @@
             this.label8.TabIndex = 23;
             this.label8.Text = "File";
             // 
+            // lnkMapsEdit
+            // 
+            this.lnkMapsEdit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lnkMapsEdit.AutoSize = true;
+            this.lnkMapsEdit.Location = new System.Drawing.Point(103, 497);
+            this.lnkMapsEdit.Name = "lnkMapsEdit";
+            this.lnkMapsEdit.Size = new System.Drawing.Size(34, 13);
+            this.lnkMapsEdit.TabIndex = 26;
+            this.lnkMapsEdit.TabStop = true;
+            this.lnkMapsEdit.Text = "Edit...";
+            this.lnkMapsEdit.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkMapsEdit_LinkClicked);
+            // 
+            // chkMaps
+            // 
+            this.chkMaps.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.chkMaps.AutoSize = true;
+            this.chkMaps.Checked = true;
+            this.chkMaps.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkMaps.Location = new System.Drawing.Point(83, 498);
+            this.chkMaps.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+            this.chkMaps.Name = "chkMaps";
+            this.chkMaps.Size = new System.Drawing.Size(14, 14);
+            this.chkMaps.TabIndex = 27;
+            this.chkMaps.UseVisualStyleBackColor = true;
+            // 
             // ctrlStarRating
             // 
             this.ctrlStarRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -360,7 +402,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tblMain);
             this.Name = "GameFileEdit";
-            this.Size = new System.Drawing.Size(349, 502);
+            this.Size = new System.Drawing.Size(349, 553);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
             this.ResumeLayout(false);
@@ -393,5 +435,8 @@
         private System.Windows.Forms.CheckBox chkTags;
         private System.Windows.Forms.Label label8;
         private GrowLabel lblFile;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.LinkLabel lnkMapsEdit;
+        private System.Windows.Forms.CheckBox chkMaps;
     }
 }

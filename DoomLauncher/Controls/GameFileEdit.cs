@@ -8,7 +8,11 @@ namespace DoomLauncher
 {
     public partial class GameFileEdit : UserControl
     {
+        public IGameFile DataSource { get; private set; }
+        public ITagData[] TagData { get; private set; }
+
         private bool m_showCheckBoxes;
+        private string m_maps;
 
         public GameFileEdit()
         {
@@ -21,7 +25,8 @@ namespace DoomLauncher
         public void SetShowCheckBoxes(bool set)
         {
             chkAuthor.Visible = chkDescription.Visible = chkRating.Visible =
-                chkReleaseDate.Visible = chkTitle.Visible = chkComments.Visible = set;
+                chkReleaseDate.Visible = chkTitle.Visible = chkComments.Visible = 
+                chkMaps.Visible = set;
             m_showCheckBoxes = set;
         }
 
@@ -33,7 +38,8 @@ namespace DoomLauncher
         public void SetCheckBoxesChecked(bool set)
         {
             chkAuthor.Checked = chkDescription.Checked = chkRating.Checked =
-                chkReleaseDate.Checked = chkTitle.Checked = chkComments.Checked = set;
+                chkReleaseDate.Checked = chkTitle.Checked = chkComments.Checked = 
+                chkMaps.Checked = set;
         }
 
         public bool AuthorChecked
@@ -78,8 +84,11 @@ namespace DoomLauncher
             set { chkTags.Checked = value; }
         }
 
-        public IGameFile DataSource { get; private set; }
-        public ITagData[] TagData { get; private set; }
+        public bool MapsChecked
+        {
+            get { return chkMaps.Checked; }
+            set { chkMaps.Checked = value; }
+        }
 
         public void SetDataSource(IGameFile gameFile, IEnumerable<ITagData> tags)
         {
@@ -104,6 +113,7 @@ namespace DoomLauncher
             dtRelease.Checked = gameFile.ReleaseDate.HasValue;
 
             lblTags.Text = string.Join(", ", tags.Select(x => x.Name).ToArray());
+            m_maps = DataSource.Map;
         }
 
         public List<GameFileFieldType> UpdateDataSource(IGameFile gameFile)
@@ -126,6 +136,12 @@ namespace DoomLauncher
                 else
                     gameFile.Rating = ctrlStarRating.SelectedRating;
             }
+            if (AssertSet(chkMaps, fields, GameFileFieldType.Map))
+            {
+                fields.Add(GameFileFieldType.MapCount);
+                gameFile.Map = m_maps;
+                gameFile.MapCount = DataSources.GameFile.GetMaps(gameFile).Length;
+            }
 
             return fields;
         }
@@ -139,6 +155,20 @@ namespace DoomLauncher
             }
 
             return false;
+        }
+
+        private void lnkMapsEdit_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            TextBoxForm textBoxForm = new TextBoxForm(true, MessageBoxButtons.OKCancel)
+            {
+                Text = "Maps",
+                HeaderText = "Enter map names, separated by commas.",
+                DisplayText = m_maps,
+                StartPosition = FormStartPosition.CenterScreen
+            };
+
+            if (textBoxForm.ShowDialog(this) == DialogResult.OK)
+                m_maps = textBoxForm.DisplayText;
         }
     }
 }

@@ -180,10 +180,7 @@ namespace DoomLauncher
             return new List<IGameProfile>();
         }
 
-        private static string[] MapSplit(IGameFile gameFile)
-        {
-            return gameFile.Map.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
-        }
+        private static string[] MapSplit(IGameFile gameFile) => DataSources.GameFile.GetMaps(gameFile);
 
         private static void SetAutoCompleteCustomSource(ComboBox cmb, IEnumerable<object> datasource, Type dataType, string property)
         {
