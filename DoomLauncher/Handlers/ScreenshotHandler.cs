@@ -7,12 +7,6 @@ namespace DoomLauncher
 {
     class ScreenshotHandler
     {
-        public ScreenshotHandler(IDataSourceAdapter adapter, LauncherPath screenshotDirectory)
-        {
-            DataSourceAdapter = adapter;
-            ScreenshotDirectory = screenshotDirectory;
-        }
-
         public IEnumerable<IFileData> HandleNewScreenshots(ISourcePortData sourcePort, IGameFile gameFile, string[] files)
         {
             List<IFileData> ret = new List<IFileData>();
@@ -25,15 +19,21 @@ namespace DoomLauncher
                     {
                         FileInfo fi = new FileInfo(file);
                         string fileName = Guid.NewGuid().ToString() + fi.Extension;
-                        fi.CopyTo(Path.Combine(ScreenshotDirectory.GetFullPath(), fileName));
-                        FileData fileData = new FileData();
-                        fileData.FileName = fileName;
-                        fileData.GameFileID = gameFile.GameFileID.Value;
-                        fileData.SourcePortID = sourcePort.SourcePortID;
-                        fileData.FileTypeID = FileType.Screenshot;
+                        fi.CopyTo(Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), fileName));
 
-                        DataSourceAdapter.InsertFile(fileData);
+                        FileData fileData = new FileData
+                        {
+                            FileName = fileName,
+                            GameFileID = gameFile.GameFileID.Value,
+                            SourcePortID = sourcePort.SourcePortID,
+                            FileTypeID = FileType.Screenshot
+                        };
+
+                        DataCache.Instance.DataSourceAdapter.InsertFile(fileData);
                         ret.Add(fileData);
+
+                        if (DataCache.Instance.AppConfiguration.DeleteScreenshotsAfterImport)
+                            File.Delete(file);
                     }
                     catch
                     {
@@ -44,8 +44,5 @@ namespace DoomLauncher
 
             return ret;
         }
-
-        public LauncherPath ScreenshotDirectory { get; set; }
-        public IDataSourceAdapter DataSourceAdapter { get; set; }
     }
 }
