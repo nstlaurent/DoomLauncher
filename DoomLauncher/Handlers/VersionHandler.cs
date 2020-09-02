@@ -74,6 +74,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_7_0_0, AppVersion.Version_2_7_0_0);
                 ExecuteUpdate(Pre_2_8_0_0, AppVersion.Version_2_8_0_0);
                 ExecuteUpdate(Pre_2_8_0_0_1, AppVersion.Version_2_8_0_0_1);
+                ExecuteUpdate(Pre_Version_3_1_0, AppVersion.Version_3_1_0);
             }
         }
 
@@ -546,6 +547,17 @@ namespace DoomLauncher
                 Name = "ItemsPerPage",
                 Value = "30",
                 UserCanModify = false,
+            });
+        }
+
+        private void Pre_Version_3_1_0()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "DeleteScreenshotsAfterImport",
+                Value = "false",
+                UserCanModify = true,
+                AvailableValues = "Yes;true;No;false"
             });
         }
 

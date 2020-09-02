@@ -112,6 +112,7 @@ namespace DoomLauncher
                 ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, ScreenshotPreviewSizeName));
                 FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
                 ItemsPerPage = Convert.ToInt32(GetValue(config, ItemsPerPageName));
+                DeleteScreenshotsAfterImport = Convert.ToBoolean(GetValue(config, "DeleteScreenshotsAfterImport"));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
@@ -227,5 +228,6 @@ namespace DoomLauncher
         public FileManagement FileManagement { get; private set; }
         public GameFileViewType GameFileViewType { get; private set; }
         public int ItemsPerPage { get; set; }
+        public bool DeleteScreenshotsAfterImport { get; set; }
     }
 }
