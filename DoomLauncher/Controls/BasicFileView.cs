@@ -90,11 +90,16 @@ namespace DoomLauncher
 
             if (dialog.ShowDialog(parent) == DialogResult.OK)
             {
+                bool isMultiImport = dialog.FileNames.Length > 1;
+
                 FileDetailsEditForm detailsForm = new FileDetailsEditForm();
                 detailsForm.Initialize(adapter);
                 detailsForm.StartPosition = FormStartPosition.CenterParent;
+                detailsForm.ShowDescription(!isMultiImport);
                 if (sourcePort != null)
                     detailsForm.SourcePort = sourcePort;
+                if (!isMultiImport)
+                    detailsForm.Description = Path.GetFileName(dialog.FileNames[0]);
 
                 if (detailsForm.ShowDialog(parent) == DialogResult.OK && detailsForm.SourcePort != null)
                 {
@@ -102,6 +107,8 @@ namespace DoomLauncher
                     {
                         FileInfo fi = new FileInfo(file);
                         IFileData fileData = CreateNewFileDataSource(detailsForm, fi, type, gameFile);
+                        if (isMultiImport)
+                            fileData.Description = Path.GetFileName(file);
 
                         fi.CopyTo(Path.Combine(directory.GetFullPath(), fileData.FileName));
 

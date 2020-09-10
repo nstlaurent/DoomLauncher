@@ -113,9 +113,9 @@
             // 
             // cmbSourcePort
             // 
-            this.cmbSourcePort.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmbSourcePort.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmbSourcePort.FormattingEnabled = true;
-            this.cmbSourcePort.Location = new System.Drawing.Point(103, 3);
+            this.cmbSourcePort.Location = new System.Drawing.Point(103, 5);
             this.cmbSourcePort.Name = "cmbSourcePort";
             this.cmbSourcePort.Size = new System.Drawing.Size(278, 21);
             this.cmbSourcePort.TabIndex = 3;

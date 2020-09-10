@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -27,6 +28,22 @@ namespace DoomLauncher
             {
                 cmbSourcePort.SelectedValue = file.SourcePortID;
                 txtDescription.Text = file.Description;
+            }
+        }
+
+        public void ShowDescription(bool set)
+        {
+            if (set)
+            {
+                txtDescription.Visible = true;
+                Height = 300;
+                MaximumSize = new Size(400, Height);
+            }
+            else
+            {
+                txtDescription.Visible = false;
+                Height = 104;
+                MaximumSize = new Size(400, Height);
             }
         }
 
