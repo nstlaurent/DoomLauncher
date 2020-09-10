@@ -613,7 +613,10 @@ namespace DoomLauncher
                 return;
             }
 
-            ctrlAssociationView.SetData(item);
+            if (GetCurrentTabView() is IdGamesTabViewCtrl)
+                ctrlAssociationView.SetButtonsAllButtonsEnabled(false);
+            else
+                ctrlAssociationView.SetData(item);
 
             if (item != null)
             {

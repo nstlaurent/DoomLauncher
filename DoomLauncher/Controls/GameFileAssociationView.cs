@@ -25,6 +25,7 @@ namespace DoomLauncher
             ctrlDemoView.FileType = FileType.Demo;
 
             ctrlScreenshotView.RequestScreenshots += CtrlScreenshotView_RequestScreenshots;
+            SetButtonsAllButtonsEnabled(false);
         }
 
         private void CtrlScreenshotView_RequestScreenshots(object sender, RequestScreenshotsEventArgs e)
@@ -111,7 +112,7 @@ namespace DoomLauncher
             btnCopyAll.Enabled = true;
         }
 
-        private void SetButtonsAllButtonsEnabled(bool enabled)
+        public void SetButtonsAllButtonsEnabled(bool enabled)
         {
             btnAddFile.Enabled = enabled;
             btnCopy.Enabled = enabled;
