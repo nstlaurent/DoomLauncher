@@ -621,6 +621,14 @@ namespace DoomLauncher
         private void ToggleSelection(GameFileTileBase tile)
         {
             tile.SetSelected(!tile.Selected);
+            if (tile.Selected)
+            {
+                m_selectedTiles.Add(tile);
+            }
+            else
+            {
+                m_selectedTiles.Remove(tile);
+            }
         }
 
         private void SelectGameFile(IGameFile gameFile)
