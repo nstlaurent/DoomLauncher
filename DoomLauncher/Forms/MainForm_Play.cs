@@ -500,7 +500,7 @@ namespace DoomLauncher
 
         private void HandleDetectorFiles(GameFilePlayAdapter adapter, IGameFile gameFile)
         {
-            ScreenshotHandler screenshotHandler = new ScreenshotHandler(DataSourceAdapter, AppConfiguration.ScreenshotDirectory);
+            ScreenshotHandler screenshotHandler = new ScreenshotHandler();
             screenshotHandler.HandleNewScreenshots(adapter.SourcePort, gameFile, GetNewScreenshots());
             SaveGameHandler savegameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
             savegameHandler.HandleNewSaveGames(adapter.SourcePort, gameFile, GetNewSaveGames());

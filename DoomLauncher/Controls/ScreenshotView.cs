@@ -139,7 +139,12 @@ namespace DoomLauncher
 
             m_pictureBoxes.Clear();
 
-            for (int i = 0; i < 50; i++)
+            ExpandPictureBoxes(50);
+        }
+
+        private void ExpandPictureBoxes(int count)
+        {
+            for (int i = 0; i < count; i++)
                 m_pictureBoxes.Add(CreatePictureBox());
 
             ToolTip tt = new ToolTip();
@@ -150,13 +155,17 @@ namespace DoomLauncher
         public void SetScreenshots(List<IFileData> screenshots)
         {
             flpScreenshots.SuspendLayout();
-            List<PictureBox>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
 
             foreach (var pb in m_pictureBoxes)
                 pb.ImageLocation = string.Empty;
 
             m_screenshots = screenshots.ToList();
             m_lookup.Clear();
+
+            if (m_screenshots.Count > m_pictureBoxes.Count)
+                ExpandPictureBoxes(m_screenshots.Count - m_pictureBoxes.Count);
+
+            List<PictureBox>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
 
             foreach (IFileData screen in screenshots)
             {

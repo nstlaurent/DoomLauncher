@@ -34,5 +34,7 @@ namespace DoomLauncher.Interfaces
 
         int MinutesPlayed { get; set; }
         int FileSizeBytes { get; set; }
+
+        bool IsUnmanaged();
     }
 }

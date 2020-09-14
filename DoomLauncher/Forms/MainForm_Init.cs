@@ -637,16 +637,29 @@ namespace DoomLauncher
             {
                 string sendToPath = Environment.ExpandEnvironmentVariables(@"%AppData%\Microsoft\Windows\SendTo");
                 var lnk = shell.CreateShortcut(Path.Combine(sendToPath, "DoomLauncher.lnk"));
+
+                // This should always exist, but a user did report not having this folder on Windows 10...
+                if (!Directory.Exists(sendToPath))
+                    Directory.CreateDirectory(sendToPath);
+
                 try
                 {
                     lnk.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), Util.GetExecutableNoPath());
                     lnk.IconLocation = string.Format(Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.ico"));
                     lnk.Save();
                 }
+                catch
+                {
+                    // Do not crash just for failing to create SendTo link
+                }
                 finally
                 {
                     Marshal.FinalReleaseComObject(lnk);
                 }
+            }
+            catch
+            {
+                // Do not crash just for failing to create SendTo link
             }
             finally
             {

@@ -124,7 +124,7 @@ namespace DoomLauncher
         {
             try
             {
-                using (IArchiveReader reader = ArchiveReader.Create(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
+                using (IArchiveReader reader = CreateArchiveReader(gameFile, gameFileDirectory))
                 {
                     IArchiveEntry entry = reader.Entries.First();
                     string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
@@ -181,7 +181,7 @@ namespace DoomLauncher
         //This function is currently only used for loading files by utility (which also uses ISourcePort).
         //This uses Util.ExtractTempFile to avoid extracting files with the same name where the user can have the previous file locked.
         //E.g. opening MAP01 from a pk3, and then opening another MAP01 from a different pk3
-        public bool HandleGameFile(IGameFile gameFile, StringBuilder sb, LauncherPath gameFileDirectory, LauncherPath tempDirectory,
+        public bool HandleGameFile(IGameFile gameFile, StringBuilder sb, LauncherPath tempDirectory,
             ISourcePort sourcePort, List<SpecificFilesForm.SpecificFilePath> pathFiles)
         {
             try
@@ -249,7 +249,7 @@ namespace DoomLauncher
         {
             List<string> files = new List<string>();
 
-            using (IArchiveReader reader = ArchiveReader.Create(Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName)))
+            using (IArchiveReader reader = CreateArchiveReader(gameFile, gameFileDirectory))
             {
                 var entries = reader.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains('.') &&
                     extensions.Any(y => y.Equals(Path.GetExtension(x.Name), StringComparison.OrdinalIgnoreCase)));
@@ -281,6 +281,19 @@ namespace DoomLauncher
             }
 
             return files;
+        }
+
+        private IArchiveReader CreateArchiveReader(IGameFile gameFile, LauncherPath gameFileDirectory)
+        {
+            string file = Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName);
+            // If the unmanaged file is a pk3 then ArchiveReader.Create will read it as a zip and try to unpack
+            // Return FileArchiveReader instead so the pk3 will be added as a file
+            // Zip extensions are ignored in this case since Doom Launcher's base functionality revovles around reading zip contents
+            // SpecificFilesForm will also read zip files explicitly to allow user to select files in the archive
+            if (gameFile.IsUnmanaged() && !Path.GetExtension(gameFile.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                return new FileArchiveReader(file);
+
+            return ArchiveReader.Create(file);
         }
 
         private bool AssertFile(string path, string filename, string displayTypeName)

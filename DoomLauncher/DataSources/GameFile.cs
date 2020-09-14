@@ -6,6 +6,8 @@ namespace DoomLauncher.DataSources
 {
     public class GameFile : IGameFile, IGameProfile, ICloneable
     {
+        public static string[] GetMaps(IGameFile gameFile) => gameFile.Map.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+
         public GameFile()
         {
             FileName = Title = Author = Description = Thumbnail = Comments = Map = SettingsMap = SettingsSkill = SettingsExtraParams = SettingsFiles
@@ -49,12 +51,18 @@ namespace DoomLauncher.DataSources
         public int MinutesPlayed { get; set; }
         public virtual int FileSizeBytes { get; set; }
 
+        public bool IsUnmanaged() => Path.IsPathRooted(FileName);
+
         public object Clone()
         {
             GameFile gameFile = new GameFile();
             var properties = gameFile.GetType().GetProperties();
             foreach (var prop in properties)
-                prop.SetValue(gameFile, prop.GetValue(this));
+            {
+                if (prop.GetSetMethod() != null)
+                    prop.SetValue(gameFile, prop.GetValue(this));
+            }
+
             return gameFile;
         }
 

@@ -50,7 +50,7 @@ namespace DoomLauncher
             dgvAdditionalFiles.DataSource = dataSource;
 
             m_files.Clear();
-            foreach(DataGridViewRow dgvr in dgvAdditionalFiles.Rows)
+            foreach (DataGridViewRow dgvr in dgvAdditionalFiles.Rows)
                 m_files.Add(dgvr.DataBoundItem);
         }
 
@@ -58,7 +58,7 @@ namespace DoomLauncher
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach(object file in m_files)
+            foreach (object file in m_files)
             {
                 PropertyInfo pi = file.GetType().GetProperty(m_dataProperty);
                 sb.Append(pi.GetValue(file).ToString());
@@ -99,35 +99,20 @@ namespace DoomLauncher
             {
                 m_files.AddRange(args.NewItems);
                 Rebind();
-                if (dgvAdditionalFiles.Rows.Count > 0)          
+                if (dgvAdditionalFiles.Rows.Count > 0)
                     dgvAdditionalFiles.Rows[dgvAdditionalFiles.Rows.Count - 1].Selected = true;
             }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            object item = SelectedItem;
-            if (item != null)
-            {
-                int index = dgvAdditionalFiles.SelectedRows[0].Index;
-                AdditionalFilesEventArgs cancelEvent = new AdditionalFilesEventArgs(item);
-                ItemRemoving?.Invoke(this, cancelEvent);
+            HandleDelete();
+        }
 
-                if (!cancelEvent.Cancel)
-                {
-                    m_files.Remove(item);
-                    Rebind();
-
-                    if (dgvAdditionalFiles.Rows.Count > 0)
-                    {
-                        if (index >= dgvAdditionalFiles.Rows.Count)
-                            index = dgvAdditionalFiles.Rows.Count - 1;
-                        dgvAdditionalFiles.Rows[index].Selected = true;
-                    }
-
-                    ItemRemoved?.Invoke(this, new AdditionalFilesEventArgs(item));
-                }
-            }
+        private void dgvAdditionalFiles_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+                HandleDelete();
         }
 
         private void btnMoveUp_Click(object sender, EventArgs e)
@@ -189,6 +174,32 @@ namespace DoomLauncher
             }
 
             return count;
+        }
+
+        private void HandleDelete()
+        {
+            object item = SelectedItem;
+            if (item != null)
+            {
+                int index = dgvAdditionalFiles.SelectedRows[0].Index;
+                AdditionalFilesEventArgs cancelEvent = new AdditionalFilesEventArgs(item);
+                ItemRemoving?.Invoke(this, cancelEvent);
+
+                if (!cancelEvent.Cancel)
+                {
+                    m_files.Remove(item);
+                    Rebind();
+
+                    if (dgvAdditionalFiles.Rows.Count > 0)
+                    {
+                        if (index >= dgvAdditionalFiles.Rows.Count)
+                            index = dgvAdditionalFiles.Rows.Count - 1;
+                        dgvAdditionalFiles.Rows[index].Selected = true;
+                    }
+
+                    ItemRemoved?.Invoke(this, new AdditionalFilesEventArgs(item));
+                }
+            }
         }
     }
 

@@ -113,6 +113,13 @@ namespace DoomLauncher
             return null;
         }
 
+        private void ctrlAssociationView_FileAdded(object sender, EventArgs e)
+        {
+            IGameFileView view = GetCurrentViewControl();
+            view.UpdateGameFile(view.SelectedItem);
+            HandleSelectionChange(GetCurrentViewControl(), true);
+        }
+
         void ctrlAssociationView_FileDeleted(object sender, EventArgs e)
         {
             IGameFileView view = GetCurrentViewControl();
@@ -551,7 +558,7 @@ namespace DoomLauncher
             if (iwadFind != null)
                 DataSourceAdapter.DeleteIWad(iwadFind);
             //note: appears sqlite we re-use deleted auto-inc ids so we have to be careful and delete everything
-            if (!Path.IsPathRooted(gameFile.FileName))
+            if (!gameFile.IsUnmanaged())
                 DirectoryDataSourceAdapter.DeleteGameFile(gameFile);
             DataSourceAdapter.DeleteGameFile(gameFile);
             if (gameFile.GameFileID.HasValue)
@@ -619,7 +626,10 @@ namespace DoomLauncher
                 return;
             }
 
-            ctrlAssociationView.SetData(item);
+            if (GetCurrentTabView() is IdGamesTabViewCtrl)
+                ctrlAssociationView.SetButtonsAllButtonsEnabled(false);
+            else
+                ctrlAssociationView.SetData(item);
 
             if (item != null)
             {
@@ -855,7 +865,7 @@ namespace DoomLauncher
 
                 if (CheckEdit(tabView, gameFiles))
                 {
-                    IGameFile gameFile = gameFiles.First();
+                    IGameFile gameFile = DataSourceAdapter.GetGameFile(gameFiles.First().FileName);
                     IEnumerable<ITagData> tags = GetTagsFromFile(gameFile);
 
                     GameFileEditForm form = new GameFileEditForm();
