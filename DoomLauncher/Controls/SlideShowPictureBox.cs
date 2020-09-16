@@ -1,0 +1,235 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Diagnostics;
+
+namespace DoomLauncher
+{
+    public partial class SlideShowPictureBox : UserControl
+    {
+        private const int ImageMilliseconds = 4000;
+        private const int FadeMilliseconds = 500;
+        private const int FadeTimes = 10;
+        private readonly Timer m_timer = new Timer();
+        private readonly Brush m_bgBrush = new SolidBrush(Color.Black);
+        private readonly Stopwatch m_stopwatch = new Stopwatch();
+        private Stopwatch m_fadeOut = new Stopwatch();
+        private int m_index = 0;
+        private int m_fadeCount = 0;
+        private int m_lastFadeDiff = 0;
+        private List<string> m_images = new List<string>();
+        private float m_alpha = 0.0F;
+
+        private SlideshowState m_state = SlideshowState.SetImage;
+        private DateTime m_fadeOutTime;
+        private Image m_currentImage;
+        private Image m_drawImage;
+        private Graphics m_currentGraphics;
+
+        private enum SlideshowState
+        {
+            SetImage,
+            FadeIn,
+            Wait,
+            FadeOut
+        }
+
+        public int ImageCount => m_images.Count;
+
+        public SlideShowPictureBox()
+        {
+            InitializeComponent();
+            pbImage.BackColor = Color.Black;
+
+            m_timer.Interval = FadeMilliseconds / FadeTimes;
+            m_timer.Tick += M_timer_Tick;
+
+            Resize += SlideShowPictureBox_Resize;
+        }
+
+        public void SetImage(Image image)
+        {
+            ClearImage();
+            pbImage.Image = image;
+        }
+
+        public bool SetImages(List<string> imagePaths, int startIndex = 0)
+        {
+            imagePaths = imagePaths.Where(x => File.Exists(x)).ToList();
+            if (imagePaths.Count == 0)
+                return false;
+
+            if (startIndex < 0 || startIndex > imagePaths.Count)
+                startIndex = imagePaths.Count - 1;
+
+            m_alpha = 1.0F;
+            m_index = startIndex;
+            m_images = imagePaths;
+            m_state = SlideshowState.Wait;
+            m_fadeOut.Restart();
+            //m_fadeOutTime = GetFadeOutTime();
+            m_timer.Stop();
+            m_timer.Start();
+
+            pbImage.CancelAsync();
+            pbImage.ImageLocation = m_images[m_index];
+            InitBlendCache();
+
+            return true;
+        }
+
+        public void SetImageIndex(int index)
+        {
+            if (index > 0 && index < m_images.Count)
+                m_index = index;
+        }
+
+        public void ClearImage()
+        {
+            pbImage.CancelAsync();
+            m_images = new List<string>();
+            m_timer.Stop();
+            pbImage.ImageLocation = string.Empty;
+        }
+
+        private void SlideShowPictureBox_Resize(object sender, EventArgs e)
+        {
+            SetImage();
+        }
+
+        private void HandleState()
+        {
+            switch (m_state)
+            {
+                case SlideshowState.SetImage:
+                    m_state = SlideshowState.FadeIn;
+                    m_alpha = 0.0F;
+                    m_fadeOut.Restart();
+                   // m_fadeOutTime = GetFadeOutTime();
+                    SetImage();
+
+                    m_fadeCount = FadeTimes;
+                    break;
+
+                case SlideshowState.FadeIn:
+                    Fade(1.0F / FadeTimes);
+                    if (m_fadeCount == 0)
+                        m_state = SlideshowState.Wait;
+                    break;
+
+                case SlideshowState.Wait:
+                    if (m_fadeOut.ElapsedMilliseconds >= ImageMilliseconds - FadeMilliseconds)
+                    {
+                        m_fadeCount = FadeTimes;
+                        m_state = SlideshowState.FadeOut;
+                    }
+                    break;
+
+                case SlideshowState.FadeOut:
+                    Fade(-1.0F / FadeTimes);
+                    if (m_fadeCount == 0)
+                    {
+                        m_index++;
+                        m_index %= m_images.Count;
+                        m_state = SlideshowState.SetImage;
+                    }
+                    break;
+            }
+        }
+
+        private void M_timer_Tick(object sender, EventArgs e)
+        {
+            HandleState();
+        }
+
+        private void Fade(float step)
+        {
+            m_stopwatch.Start();
+            m_fadeCount--;
+            m_alpha += step;
+
+            SetTransparency();
+
+            // SetTransparency uses DrawImage and becomes slower as the image becomes larger
+            // If the blend takes longer than expected then skip the next one to keep the overall fade time roughly the same
+            if (m_stopwatch.ElapsedMilliseconds + m_lastFadeDiff >= FadeMilliseconds / FadeTimes)
+            {
+                m_lastFadeDiff = (int)m_stopwatch.ElapsedMilliseconds - (FadeMilliseconds / FadeTimes);
+                m_fadeCount--;
+                m_alpha += step;
+
+                if (m_fadeCount <= 0)
+                {
+                    if (step < 0)
+                        m_alpha = 0.0F;
+                    else
+                        m_alpha = 1.0F;
+                    m_fadeCount = 0;
+                }
+            }
+            else
+            {
+                m_lastFadeDiff = 0;
+            }
+
+            m_stopwatch.Reset();
+        }
+
+        private void SetImage()
+        {
+            m_currentImage?.Dispose();
+            m_currentGraphics?.Dispose();
+
+            if (m_images.Count == 0)
+            {
+                pbImage.ImageLocation = string.Empty;
+                return;
+            }
+
+            try
+            {
+                InitBlendCache();
+                pbImage.Image = m_drawImage;
+                SetTransparency();
+            }
+            catch
+            {
+                m_images.Clear();
+                SetImage();
+            }
+        }
+
+        private void InitBlendCache()
+        {
+            m_currentImage = Util.FixedSize(Image.FromFile(m_images[m_index]), pbImage.Width, pbImage.Height);
+            m_drawImage = new Bitmap(m_currentImage.Width, m_currentImage.Height);
+            m_currentGraphics = Graphics.FromImage(m_drawImage);
+        }
+
+        private void SetTransparency()
+        {
+            ColorMatrix colorMatrix = new ColorMatrix(new float[][]
+            {
+                new [] { 1.0F, 0.0F, 0.0F, 0.0F, 0.0F },
+                new [] { 0.0F, 1.0F, 0.0F, 0.0F, 0.0F },
+                new [] { 0.0F, 0.0F, 1.0F, 0.0F, 0.0F },
+                new [] { 0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
+                new [] { 0.0F, 0.0F, 0.0F, m_alpha, 1.0F },
+            });
+
+            m_currentGraphics.FillRectangle(m_bgBrush, 0, 0, m_currentImage.Width, m_currentImage.Height);
+
+            ImageAttributes imageAttrs = new ImageAttributes();
+            imageAttrs.SetColorMatrix(colorMatrix);
+
+            m_currentGraphics.DrawImage(m_currentImage, new Rectangle(0, 0, m_currentImage.Width, m_currentImage.Height), 0, 0,
+                m_drawImage.Width, m_drawImage.Height, GraphicsUnit.Pixel, imageAttrs);
+            pbImage.Image = m_drawImage;
+            pbImage.Refresh();
+        }
+    }
+}

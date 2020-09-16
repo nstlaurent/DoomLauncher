@@ -621,17 +621,12 @@ namespace DoomLauncher
             if (item != null)
             {
                 RebuildTagToolStrip();
-
-                IFileData imgFile = null;
                 IEnumerable<IStatsData> stats = new IStatsData[] { };
 
                 if (item.GameFileID.HasValue)
-                {
-                    imgFile = DataSourceAdapter.GetFiles(item, FileType.Screenshot).FirstOrDefault();
                     stats = DataSourceAdapter.GetStats(item.GameFileID.Value);
-                }
 
-                SetSummary(item, imgFile);
+                SetSummary(item);
                 ctrlSummary.SetStatistics(item, stats);
             }
             else
@@ -655,7 +650,7 @@ namespace DoomLauncher
             return true;
         }
 
-        private void SetSummary(IGameFile item, IFileData imgFile)
+        private void SetSummary(IGameFile item)
         {
             ctrlSummary.SetTitle(item.Title);
             ctrlSummary.SetDescription(item.Description);
@@ -667,8 +662,15 @@ namespace DoomLauncher
             else
                 ctrlSummary.ClearComments();
 
-            if (imgFile != null && !string.IsNullOrEmpty(imgFile.FileName))
-                SetPreviewImage(imgFile);
+            List<string> imagePaths = new List<string>();
+            if (item.GameFileID.HasValue)
+            {
+                foreach (var screenshot in DataSourceAdapter.GetFiles(item, FileType.Screenshot))
+                    imagePaths.Add(Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), screenshot.FileName));
+            }
+
+            if (imagePaths.Count > 0)
+                SetPreviewImages(imagePaths);
             else
                 ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
         }
@@ -683,14 +685,11 @@ namespace DoomLauncher
             ctrlSummary.ClearComments();
         }
 
-        private void SetPreviewImage(IFileData imgFile)
+        private void SetPreviewImages(List<string> imagePaths)
         {
             try
             {
-                if (imgFile.IsUrl)
-                    ctrlSummary.SetPreviewImage(imgFile.FileName, true);
-                else
-                    ctrlSummary.SetPreviewImage(Path.Combine(AppConfiguration.ScreenshotDirectory.GetFullPath(), imgFile.FileName), false);
+                ctrlSummary.SetPreviewImages(imagePaths);
             }
             catch
             {
