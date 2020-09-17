@@ -55,7 +55,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(430, 530);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(430, 571);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // gameFileEdit1
@@ -65,10 +65,11 @@
             this.gameFileEdit1.DescriptionChecked = false;
             this.gameFileEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gameFileEdit1.Location = new System.Drawing.Point(3, 3);
+            this.gameFileEdit1.MapsChecked = true;
             this.gameFileEdit1.Name = "gameFileEdit1";
             this.gameFileEdit1.RatingChecked = false;
             this.gameFileEdit1.ReleaseDateChecked = false;
-            this.gameFileEdit1.Size = new System.Drawing.Size(424, 452);
+            this.gameFileEdit1.Size = new System.Drawing.Size(424, 493);
             this.gameFileEdit1.TabIndex = 0;
             this.gameFileEdit1.TagsChecked = true;
             this.gameFileEdit1.TitleChecked = false;
@@ -80,7 +81,7 @@
             this.flowLayoutPanel1.Controls.Add(this.btnAccept);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 498);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 539);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(430, 32);
@@ -121,7 +122,7 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(3, 465);
+            this.label1.Location = new System.Drawing.Point(3, 506);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(421, 26);
             this.label1.TabIndex = 2;
@@ -134,7 +135,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(430, 530);
+            this.ClientSize = new System.Drawing.Size(430, 571);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MetaDataForm";

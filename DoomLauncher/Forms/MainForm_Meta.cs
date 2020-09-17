@@ -149,6 +149,7 @@ namespace DoomLauncher
             form.StartPosition = FormStartPosition.CenterParent;
             form.GameFileEdit.SetCheckBoxesChecked(true);
             form.GameFileEdit.CommentsChecked = false;
+            form.GameFileEdit.MapsChecked = false;
             return form;
         }
 
