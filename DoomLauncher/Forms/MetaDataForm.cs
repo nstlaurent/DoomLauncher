@@ -8,6 +8,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
             gameFileEdit1.SetShowCheckBoxes(true);
+            gameFileEdit1.SetShowMaps(false);
         }
 
         public GameFileEdit GameFileEdit
