@@ -15,6 +15,8 @@ namespace DoomLauncher.Forms
         {
             InitializeComponent();
 
+            btnSave.Image = Icons.Save;
+
             KeyPreview = true;
             KeyUp += ScreenshotViewerForm_KeyUp;
             MouseWheel += ScreenshotViewerForm_MouseWheel;

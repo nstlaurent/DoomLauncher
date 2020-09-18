@@ -58,6 +58,7 @@ namespace DoomLauncher
             m_splash.Invalidate();
 
             InitializeComponent();
+            InitIcons();
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
@@ -82,6 +83,14 @@ namespace DoomLauncher
 
             if (!success)
                 Close();
+        }
+
+        private void InitIcons()
+        {
+            btnSearch.Image = Icons.Search;
+            btnPlay.Image = Icons.Play;
+            toolStripDropDownButton1.Image = Icons.Bars;
+            btnDownloads.Image = Icons.Download;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
