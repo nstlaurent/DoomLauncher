@@ -135,8 +135,8 @@
             this.btnMoveDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnMoveDown.Name = "btnMoveDown";
-            this.btnMoveDown.Size = new System.Drawing.Size(52, 21);
-            this.btnMoveDown.Text = "Move Up";
+            this.btnMoveDown.Size = new System.Drawing.Size(23, 21);
+            this.btnMoveDown.Text = "Move Down";
             this.btnMoveDown.Click += new System.EventHandler(this.btnMoveDown_Click);
             // 
             // FilesCtrl

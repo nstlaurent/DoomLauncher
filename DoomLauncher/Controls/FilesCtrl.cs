@@ -31,8 +31,8 @@ namespace DoomLauncher
 
             btnAdd.Image = Icons.File;
             btnDelete.Image = Icons.Delete;
-            btnMoveUp.Image = Icons.ArrowDown;
-            btnMoveDown.Image = Icons.ArrowUp;
+            btnMoveUp.Image = Icons.ArrowUp;
+            btnMoveDown.Image = Icons.ArrowDown;
         }
 
         public void Initialize(string keyProperty, string dataProperty)
