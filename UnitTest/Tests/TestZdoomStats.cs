@@ -24,8 +24,8 @@ namespace UnitTest.Tests
 
             TestUtil.CopyResourceFile(save1);
 
-            WaitForEvents();
             statsReader.Stop();
+            statsReader.ReadNow();
 
             Assert.AreEqual(2, m_args.Count);
             Assert.AreEqual(0, statsReader.Errors.Length);
@@ -68,8 +68,8 @@ namespace UnitTest.Tests
 
             TestUtil.CopyResourceFile(save1);
 
-            WaitForEvents();
             statsReader.Stop();
+            statsReader.ReadNow();
 
             Assert.AreEqual(2, m_args.Count);
             Assert.AreEqual(0, statsReader.Errors.Length);
@@ -105,7 +105,7 @@ namespace UnitTest.Tests
             statsReader.NewStastics += StatsReader_NewStastics;
             statsReader.Start();
 
-            WaitForEvents();
+            statsReader.ReadNow();
 
             File.Copy(Path.Combine("Resources", save1), save1);
             Assert.AreEqual(0, m_args.Count);
@@ -124,8 +124,8 @@ namespace UnitTest.Tests
 
             TestUtil.CopyResourceFile(save1);
 
-            WaitForEvents();
             statsReader.Stop();
+            statsReader.ReadNow();
 
             Assert.AreEqual(2, m_args.Count);
             Assert.AreEqual(0, statsReader.Errors.Length);
@@ -161,18 +161,10 @@ namespace UnitTest.Tests
             statsReader.NewStastics += StatsReader_NewStastics;
             statsReader.Start();
 
-            WaitForEvents();
+            statsReader.ReadNow();
 
             File.Copy(Path.Combine("Resources", save1), save1);
             Assert.AreEqual(0, m_args.Count);
-        }
-
-        private void WaitForEvents()
-        {
-            DateTime start = DateTime.Now;
-
-            while (DateTime.Now.Subtract(start).TotalMilliseconds < 2000 && m_args.Count == 0)
-                System.Threading.Thread.Sleep(100);
         }
 
         private static ZDoomStatsReader CreateStatsReader()
