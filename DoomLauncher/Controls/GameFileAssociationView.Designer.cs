@@ -55,15 +55,15 @@
             this.tabPageStatistics = new System.Windows.Forms.TabPage();
             this.ctrlViewStats = new DoomLauncher.StatisticsView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.btnCopy = new System.Windows.Forms.ToolStripButton();
             this.btnCopyAll = new System.Windows.Forms.ToolStripButton();
             this.btnDelete = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.btnAddFile = new System.Windows.Forms.ToolStripButton();
             this.btnOpenFile = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.btnEdit = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.btnMoveUp = new System.Windows.Forms.ToolStripButton();
             this.btnMoveDown = new System.Windows.Forms.ToolStripButton();
             this.btnSetFirst = new System.Windows.Forms.ToolStripButton();
@@ -312,10 +312,26 @@
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 24);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 24);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 24);
+            // 
             // btnCopy
             // 
             this.btnCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCopy.Image = ((System.Drawing.Image)(resources.GetObject("btnCopy.Image")));
+            this.btnCopy.Image = global::DoomLauncher.Properties.Resources.Export;
+            this.btnCopy.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(23, 21);
@@ -325,7 +341,8 @@
             // btnCopyAll
             // 
             this.btnCopyAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCopyAll.Image = ((System.Drawing.Image)(resources.GetObject("btnCopyAll.Image")));
+            this.btnCopyAll.Image = global::DoomLauncher.Properties.Resources.ExportAll;
+            this.btnCopyAll.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnCopyAll.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCopyAll.Name = "btnCopyAll";
             this.btnCopyAll.Size = new System.Drawing.Size(23, 21);
@@ -335,22 +352,18 @@
             // btnDelete
             // 
             this.btnDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnDelete.Image = ((System.Drawing.Image)(resources.GetObject("btnDelete.Image")));
+            this.btnDelete.Image = global::DoomLauncher.Properties.Resources.Delete;
             this.btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(23, 21);
             this.btnDelete.Text = "Delete";
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 24);
-            // 
             // btnAddFile
             // 
             this.btnAddFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnAddFile.Image = ((System.Drawing.Image)(resources.GetObject("btnAddFile.Image")));
+            this.btnAddFile.Image = global::DoomLauncher.Properties.Resources.File;
+            this.btnAddFile.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnAddFile.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnAddFile.Name = "btnAddFile";
             this.btnAddFile.Size = new System.Drawing.Size(23, 21);
@@ -360,37 +373,28 @@
             // btnOpenFile
             // 
             this.btnOpenFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnOpenFile.Image = ((System.Drawing.Image)(resources.GetObject("btnOpenFile.Image")));
+            this.btnOpenFile.Image = global::DoomLauncher.Properties.Resources.FolderOpen;
             this.btnOpenFile.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnOpenFile.Name = "btnOpenFile";
             this.btnOpenFile.Size = new System.Drawing.Size(23, 21);
             this.btnOpenFile.Text = "Open File";
             this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 24);
-            // 
             // btnEdit
             // 
             this.btnEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnEdit.Image = ((System.Drawing.Image)(resources.GetObject("btnEdit.Image")));
+            this.btnEdit.Image = global::DoomLauncher.Properties.Resources.Edit;
             this.btnEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(23, 21);
             this.btnEdit.Text = "Edit Details";
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 24);
-            // 
             // btnMoveUp
             // 
             this.btnMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveUp.Image")));
+            this.btnMoveUp.Image = global::DoomLauncher.Properties.Resources.UpArrow;
+            this.btnMoveUp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnMoveUp.Name = "btnMoveUp";
             this.btnMoveUp.Size = new System.Drawing.Size(23, 21);
@@ -401,6 +405,7 @@
             // 
             this.btnMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveDown.Image")));
+            this.btnMoveDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnMoveDown.Name = "btnMoveDown";
             this.btnMoveDown.Size = new System.Drawing.Size(23, 21);
@@ -410,7 +415,7 @@
             // btnSetFirst
             // 
             this.btnSetFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnSetFirst.Image = ((System.Drawing.Image)(resources.GetObject("btnSetFirst.Image")));
+            this.btnSetFirst.Image = global::DoomLauncher.Properties.Resources.StepBack;
             this.btnSetFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSetFirst.Name = "btnSetFirst";
             this.btnSetFirst.Size = new System.Drawing.Size(23, 21);

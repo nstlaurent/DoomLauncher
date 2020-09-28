@@ -15,6 +15,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
             SetupSearchFilters();
+            btnSearch.Image = Icons.Search;
             m_multiSelect = m_bOverrideInit = false;
             ctrlSearch.SearchTextKeyPreviewDown += CtrlSearch_SearchTextKeyPreviewDown;
         }

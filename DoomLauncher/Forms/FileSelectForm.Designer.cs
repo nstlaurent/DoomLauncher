@@ -129,7 +129,7 @@
             // 
             this.btnSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
+            this.btnSearch.Image = global::DoomLauncher.Properties.Resources.Search;
             this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnSearch.Location = new System.Drawing.Point(157, 2);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(0, 2, 3, 3);

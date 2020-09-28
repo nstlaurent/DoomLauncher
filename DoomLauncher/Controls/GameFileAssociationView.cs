@@ -26,6 +26,17 @@ namespace DoomLauncher
 
             ctrlScreenshotView.RequestScreenshots += CtrlScreenshotView_RequestScreenshots;
             SetButtonsAllButtonsEnabled(false);
+
+            btnDelete.Image = Icons.Delete;
+            btnAddFile.Image = Icons.File;
+            btnCopy.Image = Icons.Export;
+            btnCopyAll.Image = Icons.ExportAll;
+            btnEdit.Image = Icons.Edit;
+            btnMoveUp.Image = Icons.ArrowUp;
+            btnMoveDown.Image = Icons.ArrowDown;
+            btnSetFirst.Image = Icons.StepBack;
+            btnEdit.Image = Icons.Edit;
+            btnOpenFile.Image = Icons.FolderOpen;
         }
 
         private void CtrlScreenshotView_RequestScreenshots(object sender, RequestScreenshotsEventArgs e)

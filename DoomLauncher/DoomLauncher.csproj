@@ -143,6 +143,7 @@
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
+    <Compile Include="Config\Icons.cs" />
     <Compile Include="Interfaces\IGameFileSortableView.cs" />
     <Compile Include="Interfaces\IGameFileTile.cs" />
     <Compile Include="Interfaces\IGameFileColumnView.cs" />
@@ -826,6 +827,22 @@
     <None Include="Resources\DoomLauncherTile.png" />
     <None Include="Resources\map.bmp" />
     <None Include="Resources\PMAPA0.png" />
+    <None Include="Resources\DownArrow.bmp" />
+    <None Include="Resources\arrow-down-solid.png" />
+    <None Include="Resources\Delete.png" />
+    <None Include="Resources\DownArrow.png" />
+    <None Include="Resources\Edit.png" />
+    <None Include="Resources\Export.png" />
+    <None Include="Resources\ExportAll.png" />
+    <None Include="Resources\Save.png" />
+    <None Include="Resources\UpArrow.png" />
+    <None Include="Resources\File.png" />
+    <None Include="Resources\FolderOpen.png" />
+    <None Include="Resources\Video.png" />
+    <None Include="Resources\StepBack.png" />
+    <None Include="Resources\Search.png" />
+    <None Include="Resources\Play.png" />
+    <None Include="Resources\Bars.png" />
     <Content Include="TileImages\DoomLauncherTile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
