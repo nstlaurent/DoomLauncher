@@ -35,6 +35,12 @@ namespace DoomLauncher
             chkTags.Visible = set;
         }
 
+        public void SetShowMaps(bool set)
+        {
+            lnkMapsEdit.Visible = set;
+            chkMaps.Visible = set;
+        }
+
         public void SetCheckBoxesChecked(bool set)
         {
             chkAuthor.Checked = chkDescription.Checked = chkRating.Checked =

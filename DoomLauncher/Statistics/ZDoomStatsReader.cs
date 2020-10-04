@@ -8,7 +8,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Timers;
 
 namespace DoomLauncher
 {
@@ -32,14 +31,12 @@ namespace DoomLauncher
 
         private readonly string m_dir;
         private NewFileDetector m_detector;
-        private Timer m_checkTimer;
         private readonly List<IStatsData> m_statistics;
         private readonly List<string> m_errors = new List<string>();
 
         public ZDoomStatsReader(IGameFile gameFile, string directory, IEnumerable<IStatsData> existingStats)
         {
             m_dir = directory;
-            m_detector = new NewFileDetector(new string[] { ".zds" }, directory, true);
             m_statistics = existingStats.ToList();
             GameFile = gameFile;
         }
@@ -47,52 +44,33 @@ namespace DoomLauncher
         public IGameFile GameFile { get; set; }
 
         public string LaunchParameter { get { return string.Empty; } }
-        public bool ReadOnClose { get { return false; } }
+        public bool ReadOnClose { get { return true; } }
 
         public void Start()
         {
-            if (m_checkTimer == null)
-            {
-                m_detector.StartDetection();
-                m_checkTimer = new Timer(1000);
-                m_checkTimer.Elapsed += m_checkTimer_Elapsed;
-                m_checkTimer.Start();
-            }
+            m_detector = new NewFileDetector(new string[] { ".zds" }, m_dir, true);
+            m_detector.StartDetection();
         }
 
         public void Stop()
         {
-            if (m_checkTimer != null)
-            {
-                m_checkTimer.Stop();
-            }
+            // Nothing to do
         }
 
         public void ReadNow()
         {
-            throw new NotSupportedException();
+            if (m_detector == null)
+                return;
+
+            string[] files = m_detector.GetNewFiles().Union(m_detector.GetModifiedFiles()).ToArray();
+
+            if (files.Length > 0)
+                Array.ForEach(files, x => HandleSaveFile(x));
         }
 
         public string[] Errors
         {
             get { return m_errors.ToArray(); }
-        }
-
-        void m_checkTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            m_checkTimer.Stop();
-
-            string[] files = m_detector.GetNewFiles().Union(m_detector.GetModifiedFiles()).ToArray();
-
-            if (files.Length > 0)
-            {
-                Array.ForEach(files, x => HandleSaveFile(x));
-
-                m_detector = new NewFileDetector(new string[] { ".zds" }, m_dir, true);
-                m_detector.StartDetection();
-            }
-
-            m_checkTimer.Start();
         }
 
         private void HandleSaveFile(string file)

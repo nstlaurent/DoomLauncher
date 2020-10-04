@@ -9,10 +9,10 @@ simple utility to launch your files, it serves as database for all your
 _Doom_ engine games and mods. It can be compared to https://www.quaddicted.com/tools/quake_injector[Quake Injector],
 a popular tool for _Quake_.
 
-image::https://i.imgur.com/OYvvXaM.png[IWads Tile View Showcase]
+image::https://i.imgur.com/TIg4kNK.png[IWads Tile View Showcase]
 Large tile view for IWads tab. IWADs such as _Freedoom_ and _Heretic_ can be played with Doom Launcher.
 
-image::https://i.imgur.com/fzgbyt1.png[Custom Files Tile View Showcase]
+image::https://i.imgur.com/mYqC1QO.png[Custom Files Tile View Showcase]
 Large tile view for a custom tag named "Playing". Doom Launcher can play custom mapsets such as Eviternity, Back to Saturn X, Plutonia 2, and more!
 
 == Features

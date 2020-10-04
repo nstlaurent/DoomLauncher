@@ -58,6 +58,7 @@ namespace DoomLauncher
             m_splash.Invalidate();
 
             InitializeComponent();
+            InitIcons();
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
@@ -82,6 +83,14 @@ namespace DoomLauncher
 
             if (!success)
                 Close();
+        }
+
+        private void InitIcons()
+        {
+            btnSearch.Image = Icons.Search;
+            btnPlay.Image = Icons.Play;
+            toolStripDropDownButton1.Image = Icons.Bars;
+            btnDownloads.Image = Icons.Download;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -487,14 +496,24 @@ namespace DoomLauncher
                 return;
 
             IGameFile[] items = SelectedItems(GetCurrentViewControl());
+            IGameFile lastFile = null;
 
-            foreach (IGameFile item in items)
+            try
             {
-                if (item != null && AssertFile(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName)) &&
-                    Util.GetReadablePkExtensions().Contains(Path.GetExtension(item.FileName)))
+                foreach (IGameFile item in items)
                 {
-                    Process.Start(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName));
+                    if (item != null && AssertFile(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName)) &&
+                        Util.GetReadablePkExtensions().Contains(Path.GetExtension(item.FileName)))
+                    {
+                        lastFile = item;
+                        Process.Start(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName));
+                    }
                 }
+            }
+            catch
+            {
+                string filename = lastFile == null ? "the file" : lastFile.FileNameNoPath; 
+                MessageBox.Show(this, $"Could not open {filename}", "Cannot Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

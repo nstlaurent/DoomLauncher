@@ -45,6 +45,11 @@ namespace DoomLauncher
 
             m_filterSettings = GetFilterSettings();
             chkScreenFilter.Checked = m_filterSettings.Enabled;
+
+            newProfileToolStripMenuItem.Image = Icons.File;
+            deleteProfileToolStripMenuItem.Image = Icons.Delete;
+            editProfileToolStripMenuItem.Image = Icons.Edit;
+            toolStripDropDownButton1.Image = Icons.Bars;
         }
 
         public void Initialize(IEnumerable<ITabView> additionalFileViews, IGameFile gameFile)

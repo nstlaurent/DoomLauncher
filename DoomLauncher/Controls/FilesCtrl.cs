@@ -28,6 +28,11 @@ namespace DoomLauncher
             dgvAdditionalFiles.RowHeadersVisible = false;
             dgvAdditionalFiles.MultiSelect = false;
             dgvAdditionalFiles.CellFormatting += dgvAdditionalFiles_CellFormatting;
+
+            btnAdd.Image = Icons.File;
+            btnDelete.Image = Icons.Delete;
+            btnMoveUp.Image = Icons.ArrowUp;
+            btnMoveDown.Image = Icons.ArrowDown;
         }
 
         public void Initialize(string keyProperty, string dataProperty)
