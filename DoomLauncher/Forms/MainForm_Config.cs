@@ -36,6 +36,7 @@ namespace DoomLauncher
 
                 UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
                 UpdateConfig(config, AppConfiguration.ItemsPerPageName, AppConfiguration.ItemsPerPage.ToString());
+                UpdateConfig(config, AppConfiguration.LastSelectedTab, tabControl.SelectedIndex.ToString());
             }
         }
 
