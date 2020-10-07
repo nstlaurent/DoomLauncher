@@ -464,6 +464,7 @@ namespace DoomLauncher
             ctrlAssociationView.FileDeleted += ctrlAssociationView_FileDeleted;
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
+            tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex;
 
             m_splash.Close();
 

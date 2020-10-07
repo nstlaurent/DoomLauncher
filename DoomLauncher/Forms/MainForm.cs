@@ -1058,6 +1058,7 @@ namespace DoomLauncher
 
                     tabView.GameFileViewControl.Focus();
                     tabView.GameFileViewControl.SetVisible(true);
+                    AppConfiguration.LastSelectedTabIndex = tabControl.SelectedIndex;
                     HandleSelectionChange(tabView.GameFileViewControl, false);
                 }
             }

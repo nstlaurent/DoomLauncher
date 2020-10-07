@@ -21,6 +21,7 @@ namespace DoomLauncher
         public static string ColumnConfigName => "ColumnConfig";
         public static string ScreenshotPreviewSizeName => "ScreenshotPreviewSize";
         public static string ItemsPerPageName => "ItemsPerPage";
+        public static string LastSelectedTab => "LastSelectedTab";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -113,6 +114,7 @@ namespace DoomLauncher
                 FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
                 ItemsPerPage = Convert.ToInt32(GetValue(config, ItemsPerPageName));
                 DeleteScreenshotsAfterImport = Convert.ToBoolean(GetValue(config, "DeleteScreenshotsAfterImport"));
+                LastSelectedTabIndex = Convert.ToInt32(GetValue(config, LastSelectedTab));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
@@ -229,5 +231,6 @@ namespace DoomLauncher
         public GameFileViewType GameFileViewType { get; private set; }
         public int ItemsPerPage { get; set; }
         public bool DeleteScreenshotsAfterImport { get; set; }
+        public int LastSelectedTabIndex { get; set; }
     }
 }
