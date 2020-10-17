@@ -27,6 +27,8 @@ namespace DoomLauncher
 
         private Color m_titleColor = SystemColors.WindowText;
         private bool m_new;
+        private bool m_loadingImage;
+        private Image m_setImage;
 
         public GameFileTile()
         {
@@ -46,6 +48,7 @@ namespace DoomLauncher
             pb.BackColor = Color.Black;
             pb.SizeMode = PictureBoxSizeMode.Zoom;
             pb.WaitOnLoad = false;
+            pb.LoadCompleted += Pb_LoadCompleted;
 
             MouseClick += CtrlMouseClick;
             pb.MouseClick += CtrlMouseClick;
@@ -55,6 +58,16 @@ namespace DoomLauncher
 
             pb.Paint += Screenshot_Paint;
             Paint += GameFileTile_Paint;
+        }
+
+        private void Pb_LoadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            m_loadingImage = false;
+            if (m_setImage != null)
+            {
+                pb.Image = m_setImage;
+                m_setImage = null;
+            }
         }
 
         private void GameFileTile_Paint(object sender, PaintEventArgs e)
@@ -137,6 +150,12 @@ namespace DoomLauncher
         public override void ClearData()
         {
             GameFile = null;
+            ClearImage();
+        }
+
+        private void ClearImage()
+        {
+            m_setImage = null;
 
             pb.CancelAsync();
 
@@ -149,14 +168,24 @@ namespace DoomLauncher
 
         public override void SetImageLocation(string file)
         {
-            pb.CancelAsync();
+            ClearImage();
+
             if (!string.IsNullOrEmpty(file))
+            {
+                m_loadingImage = true;
                 pb.LoadAsync(file);
+            }
         }
 
         public override void SetImage(Image image)
         {
-            pb.CancelAsync();
+            ClearImage();
+
+            // CancelAsync doesn't really work, to get around this set m_setImage set to pb.Image when Pb_LoadCompleted fires 
+            if (m_loadingImage)
+                m_setImage = image;
+
+            m_loadingImage = true;
             pb.Image = image;
         }
 
