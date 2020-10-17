@@ -34,6 +34,12 @@ namespace DoomLauncher
             dgvTags.Columns.Add(col);
 
             col = new DataGridViewTextBoxColumn();
+            col.HeaderText = "Exclude";
+            col.Name = "ExcludeFromOtherTabs";
+            col.DataPropertyName = "ExcludeFromOtherTabs";
+            dgvTags.Columns.Add(col);
+
+            col = new DataGridViewTextBoxColumn();
             col.HeaderText = "Display Color";
             col.Name = "HasColor";
             col.DataPropertyName = "HasColor";

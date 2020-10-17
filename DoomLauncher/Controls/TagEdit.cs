@@ -14,8 +14,9 @@ namespace DoomLauncher
             InitializeComponent();
             cmbTab.SelectedIndex = 0;
             cmbColor.SelectedIndex = 1;
+            cmbExclude.SelectedIndex = 1;
 
-            this.Load += TagEdit_Load;
+            Load += TagEdit_Load;
         }
 
         private void TagEdit_Load(object sender, EventArgs e)
@@ -28,6 +29,7 @@ namespace DoomLauncher
             txtName.Text = tag.Name;
             cmbTab.SelectedIndex = tag.HasTab ? 0 : 1;
             cmbColor.SelectedIndex = tag.HasColor ? 0 : 1;
+            cmbExclude.SelectedIndex = tag.ExcludeFromOtherTabs ? 0 : 1;
             if (tag.HasColor && tag.Color.HasValue)
             {
                 m_color = pnlColor.BackColor = Color.FromArgb(tag.Color.Value);
@@ -39,6 +41,7 @@ namespace DoomLauncher
             tag.Name = txtName.Text;
             tag.HasTab = cmbTab.SelectedIndex == 0;
             tag.HasColor = cmbColor.SelectedIndex == 0;
+            tag.ExcludeFromOtherTabs = cmbExclude.SelectedIndex == 0;
 
             if (m_color.HasValue)
                 tag.Color = m_color.Value.ToArgb();
