@@ -22,5 +22,6 @@
         Version_2_8_0_0,
         Version_2_8_0_0_1,
         Version_3_1_0,
+        Version_3_2_0,
     }
 }

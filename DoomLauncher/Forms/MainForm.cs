@@ -1843,6 +1843,7 @@ namespace DoomLauncher
                     m_tabHandler.RemoveTab(tabView);
             }
 
+            UpdateLocal();
             HandleSelectionChange(GetCurrentViewControl(), false);
         }
 
@@ -1902,8 +1903,7 @@ namespace DoomLauncher
 
         private void tagToolStripItem_Click(object sender, EventArgs e)
         {
-            ToolStripItem strip = sender as ToolStripItem;
-            if (strip == null)
+            if (!(sender is ToolStripItem strip))
                 return;
 
             ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
@@ -1936,8 +1936,6 @@ namespace DoomLauncher
             foreach (IGameFile gameFile in gameFiles)
                 GetCurrentViewControl().UpdateGameFile(gameFile);
 
-            HandleTabSelectionChange();
-
             if (sbError.Length > 0)
             {
                 sbError.Remove(sbError.Length - 2, 2);
@@ -1947,13 +1945,14 @@ namespace DoomLauncher
                 MessageBox.Show(this, sbError.ToString(), "Already Tagged", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
+            if (tag.ExcludeFromOtherTabs)
+                UpdateLocal();
             HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
         private void removeTagToolStripItem_Click(object sender, EventArgs e)
         {
-            ToolStripItem strip = sender as ToolStripItem;
-            if (strip == null)
+            if (!(sender is ToolStripItem strip))
                 return;
 
             ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
@@ -1976,6 +1975,8 @@ namespace DoomLauncher
             foreach (IGameFile gameFile in gameFiles)
                 GetCurrentViewControl().UpdateGameFile(gameFile);
 
+            if (tag.ExcludeFromOtherTabs)
+                UpdateLocal();
             HandleSelectionChange(GetCurrentViewControl(), true);
         }
 

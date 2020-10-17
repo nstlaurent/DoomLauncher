@@ -9,15 +9,12 @@ namespace DoomLauncher.DataSources
         public bool HasTab { get; set; }
         public bool HasColor { get; set; }
         public int? Color { get; set; }
+        public bool ExcludeFromOtherTabs { get; set; }
 
         public override bool Equals(object obj)
         {
-            ITagData tag = obj as ITagData;
-
-            if (tag != null)
-            {
-                return tag.TagID == this.TagID;
-            }
+            if (obj is ITagData tag)
+                return tag.TagID == TagID;
 
             return false;
         }

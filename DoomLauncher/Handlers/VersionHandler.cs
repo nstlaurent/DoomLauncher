@@ -75,6 +75,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_2_8_0_0, AppVersion.Version_2_8_0_0);
                 ExecuteUpdate(Pre_2_8_0_0_1, AppVersion.Version_2_8_0_0_1);
                 ExecuteUpdate(Pre_Version_3_1_0, AppVersion.Version_3_1_0);
+                ExecuteUpdate(Pre_Version_3_2_0, AppVersion.Version_3_2_0);
             }
         }
 
@@ -559,6 +560,24 @@ namespace DoomLauncher
                 UserCanModify = true,
                 AvailableValues = "Yes;true;No;false"
             });
+        }
+
+        private void Pre_Version_3_2_0()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "LastSelectedTabIndex",
+                Value = "0",
+                UserCanModify = false,
+            });
+
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(Tags);").Tables[0];
+
+            if (!dt.Select("name = 'ExcludeFromOtherTabs'").Any())
+            {
+                DataAccess.ExecuteNonQuery(@"alter table Tags add column 'ExcludeFromOtherTabs' INTEGER;");
+                DataAccess.ExecuteNonQuery("update Tags set ExcludeFromOtherTabs = 0");
+            }
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)
