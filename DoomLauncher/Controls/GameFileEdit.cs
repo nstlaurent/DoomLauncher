@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Controls;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace DoomLauncher
     {
         public IGameFile DataSource { get; private set; }
         public ITagData[] TagData { get; private set; }
+        public bool TagsChanged { get; private set; }
 
         private bool m_showCheckBoxes;
         private string m_maps;
@@ -117,9 +119,16 @@ namespace DoomLauncher
             else ctrlStarRating.SelectedRating = 0;
 
             dtRelease.Checked = gameFile.ReleaseDate.HasValue;
-
-            lblTags.Text = string.Join(", ", tags.Select(x => x.Name).ToArray());
+            SetTagsLabel();
             m_maps = DataSource.Map;
+        }
+
+        private void SetTagsLabel()
+        {
+            if (TagData.Length > 0)
+                lblTags.Text = string.Join(", ", TagData.Select(x => x.Name).ToArray());
+            else
+                lblTags.Text = "Select...";
         }
 
         public List<GameFileFieldType> UpdateDataSource(IGameFile gameFile)
@@ -175,6 +184,21 @@ namespace DoomLauncher
 
             if (textBoxForm.ShowDialog(this) == DialogResult.OK)
                 m_maps = textBoxForm.DisplayText;
+        }
+
+        private void lblTags_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            TagSelectForm form = new TagSelectForm();
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.TagSelectControl.Init(new TagSelectOptions() { ShowCheckBoxes = true });
+            form.TagSelectControl.SetCheckedTags(TagData);
+
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                TagsChanged = true;
+                TagData = form.TagSelectControl.GetCheckedTags().ToArray();
+                SetTagsLabel();
+            }
         }
     }
 }
