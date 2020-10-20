@@ -25,10 +25,9 @@ namespace DoomLauncher
 
         private TabPage CreateTabPage(ITabView tab)
         {
-            Control ctrl = tab as Control;
             TabPage page = new TabPage(tab.Title);
 
-            if (ctrl != null)
+            if (tab is Control ctrl)
             {
                 page.Controls.Add(ctrl);
                 ctrl.Dock = DockStyle.Fill;
@@ -85,6 +84,43 @@ namespace DoomLauncher
                 return m_tabLookup[ctrl].Item1;
 
             return null;
+        }
+
+        public ITabView TabViewForTag(ITagData tag)
+        {
+            foreach (var item in m_tabLookup)
+            {
+                if (item.Value.Item1 is TagTabView tagTabView && tagTabView.TagDataSource.TagID == tag.TagID)
+                    return item.Value.Item1;
+            }
+
+            return null;
+        }
+
+        public bool SelectTabView(ITabView view)
+        {
+            foreach (var item in m_tabLookup)
+            {
+                if (item.Value.Item1 == view)
+                {
+                    TabControl.SelectedTab = item.Value.Item2;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void SelectTabFromKey(string key)
+        {
+            foreach (TabPage tab in TabControl.TabPages)
+            {
+                if (tab.Text == key)
+                {
+                    TabControl.SelectedTab = tab;
+                    break;
+                }
+            }
         }
 
         public TabControl TabControl { get; private set; }

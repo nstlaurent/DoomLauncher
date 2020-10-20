@@ -115,7 +115,7 @@ namespace DoomLauncher
                 return check.First();
 
             FileSelectForm form = new FileSelectForm();
-            form.Initialize(DataSourceAdapter, m_tabHandler.TabViews.First(x => x.Key.Equals(s_idGamesKey)), remoteFiles);
+            form.Initialize(DataSourceAdapter, m_tabHandler.TabViews.First(x => x.Key.Equals(TabKeys.IdGamesKey)), remoteFiles);
             form.ShowSearchControl(false);
             string display = localFile.FileName;
             if (!string.IsNullOrEmpty(localFile.Title))

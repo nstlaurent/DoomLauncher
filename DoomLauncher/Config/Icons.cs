@@ -19,6 +19,7 @@ namespace DoomLauncher
         public static Image Search => GetIcon(Properties.Resources.Search);
         public static Image StepBack => GetIcon(Properties.Resources.StepBack);
         public static Image Video => GetIcon(Properties.Resources.Video);
+        public static Image Tags => GetIcon(Properties.Resources.Tags);
 
         private static Image GetIcon(Bitmap bitmap)
         {

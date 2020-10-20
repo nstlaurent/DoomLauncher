@@ -40,6 +40,7 @@
             this.updateMetadataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.sortByToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectTagsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -94,6 +95,9 @@
             this.splitLeftRight = new System.Windows.Forms.SplitContainer();
             this.splitTopBottom = new System.Windows.Forms.SplitContainer();
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.flpTags = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnTags = new System.Windows.Forms.Button();
+            this.lblSelectedTag = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.mnuIdGames = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -117,6 +121,7 @@
             this.splitTopBottom.Panel1.SuspendLayout();
             this.splitTopBottom.Panel2.SuspendLayout();
             this.splitTopBottom.SuspendLayout();
+            this.flpTags.SuspendLayout();
             this.mnuIdGames.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -131,6 +136,7 @@
             this.updateMetadataToolStripMenuItem,
             this.toolStripSeparator8,
             this.sortByToolStripMenuItem,
+            this.selectTagsToolStripMenuItem,
             this.tagToolStripMenuItem,
             this.removeTagToolStripMenuItem,
             this.utilityToolStripMenuItem,
@@ -144,7 +150,7 @@
             this.toolStripSeparator12,
             this.createShortcutToolStripMenuItem});
             this.mnuLocal.Name = "mnuGrid";
-            this.mnuLocal.Size = new System.Drawing.Size(194, 348);
+            this.mnuLocal.Size = new System.Drawing.Size(194, 370);
             this.mnuLocal.Opening += new System.ComponentModel.CancelEventHandler(this.MnuLocal_Opening);
             // 
             // viewTextFileToolStripMenuItem
@@ -197,6 +203,13 @@
             this.sortByToolStripMenuItem.Name = "sortByToolStripMenuItem";
             this.sortByToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.sortByToolStripMenuItem.Text = "Sort By";
+            // 
+            // selectTagsToolStripMenuItem
+            // 
+            this.selectTagsToolStripMenuItem.Name = "selectTagsToolStripMenuItem";
+            this.selectTagsToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.selectTagsToolStripMenuItem.Text = "Select Tags...";
+            this.selectTagsToolStripMenuItem.Click += new System.EventHandler(this.selectTagsToolStripMenuItem_Click);
             // 
             // tagToolStripMenuItem
             // 
@@ -321,14 +334,15 @@
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.Controls.Add(this.tblTop, 0, 0);
-            this.tblMain.Controls.Add(this.tblDataView, 0, 1);
+            this.tblMain.Controls.Add(this.tblDataView, 0, 2);
+            this.tblMain.Controls.Add(this.flpTags, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 2;
+            this.tblMain.RowCount = 3;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblMain.Size = new System.Drawing.Size(1008, 701);
             this.tblMain.TabIndex = 1;
             // 
@@ -338,7 +352,7 @@
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 98.03922F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 1.960784F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 127F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 152F));
             this.tblTop.Controls.Add(this.flpSearch, 0, 0);
             this.tblTop.Controls.Add(this.btnDownloads, 3, 0);
             this.tblTop.Controls.Add(this.btnUpdate, 2, 0);
@@ -363,7 +377,7 @@
             this.flpSearch.Location = new System.Drawing.Point(0, 0);
             this.flpSearch.Margin = new System.Windows.Forms.Padding(0);
             this.flpSearch.Name = "flpSearch";
-            this.flpSearch.Size = new System.Drawing.Size(726, 32);
+            this.flpSearch.Size = new System.Drawing.Size(701, 32);
             this.flpSearch.TabIndex = 0;
             // 
             // toolStrip1
@@ -637,12 +651,12 @@
             this.tblDataView.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblDataView.Controls.Add(this.splitLeftRight, 0, 0);
             this.tblDataView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblDataView.Location = new System.Drawing.Point(3, 32);
+            this.tblDataView.Location = new System.Drawing.Point(3, 58);
             this.tblDataView.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.tblDataView.Name = "tblDataView";
             this.tblDataView.RowCount = 1;
             this.tblDataView.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblDataView.Size = new System.Drawing.Size(1002, 669);
+            this.tblDataView.Size = new System.Drawing.Size(1002, 643);
             this.tblDataView.TabIndex = 4;
             // 
             // splitLeftRight
@@ -659,7 +673,7 @@
             // splitLeftRight.Panel2
             // 
             this.splitLeftRight.Panel2.Controls.Add(this.ctrlSummary);
-            this.splitLeftRight.Size = new System.Drawing.Size(996, 660);
+            this.splitLeftRight.Size = new System.Drawing.Size(996, 634);
             this.splitLeftRight.SplitterDistance = 680;
             this.splitLeftRight.TabIndex = 9;
             // 
@@ -678,8 +692,8 @@
             // splitTopBottom.Panel2
             // 
             this.splitTopBottom.Panel2.Controls.Add(this.ctrlAssociationView);
-            this.splitTopBottom.Size = new System.Drawing.Size(680, 660);
-            this.splitTopBottom.SplitterDistance = 455;
+            this.splitTopBottom.Size = new System.Drawing.Size(680, 634);
+            this.splitTopBottom.SplitterDistance = 436;
             this.splitTopBottom.TabIndex = 8;
             // 
             // tabControl
@@ -689,9 +703,49 @@
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(680, 455);
+            this.tabControl.Size = new System.Drawing.Size(680, 436);
             this.tabControl.TabIndex = 6;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
+            // 
+            // flpTags
+            // 
+            this.flpTags.Controls.Add(this.btnTags);
+            this.flpTags.Controls.Add(this.lblSelectedTag);
+            this.flpTags.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpTags.Location = new System.Drawing.Point(0, 32);
+            this.flpTags.Margin = new System.Windows.Forms.Padding(0);
+            this.flpTags.Name = "flpTags";
+            this.flpTags.Size = new System.Drawing.Size(1008, 26);
+            this.flpTags.TabIndex = 6;
+            // 
+            // btnTags
+            // 
+            this.btnTags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTags.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnTags.FlatAppearance.BorderSize = 0;
+            this.btnTags.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTags.Image = global::DoomLauncher.Properties.Resources.Tags;
+            this.btnTags.Location = new System.Drawing.Point(0, 0);
+            this.btnTags.Margin = new System.Windows.Forms.Padding(0, 0, 1, 0);
+            this.btnTags.Name = "btnTags";
+            this.btnTags.Size = new System.Drawing.Size(66, 22);
+            this.btnTags.TabIndex = 5;
+            this.btnTags.Text = "Tags";
+            this.btnTags.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnTags.UseVisualStyleBackColor = true;
+            this.btnTags.Click += new System.EventHandler(this.btnTags_Click);
+            // 
+            // lblSelectedTag
+            // 
+            this.lblSelectedTag.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSelectedTag.AutoSize = true;
+            this.lblSelectedTag.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSelectedTag.Location = new System.Drawing.Point(67, 4);
+            this.lblSelectedTag.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            this.lblSelectedTag.Name = "lblSelectedTag";
+            this.lblSelectedTag.Size = new System.Drawing.Size(79, 15);
+            this.lblSelectedTag.TabIndex = 6;
+            this.lblSelectedTag.Text = "Selected Tag";
             // 
             // mnuIdGames
             // 
@@ -733,7 +787,7 @@
             this.btnUpdate.FlatAppearance.BorderSize = 0;
             this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUpdate.Image = global::DoomLauncher.Properties.Resources.bon2b;
-            this.btnUpdate.Location = new System.Drawing.Point(759, 2);
+            this.btnUpdate.Location = new System.Drawing.Point(734, 2);
             this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(120, 22);
@@ -753,7 +807,7 @@
             this.ctrlAssociationView.Name = "ctrlAssociationView";
             this.ctrlAssociationView.SaveGameDirectory = null;
             this.ctrlAssociationView.ScreenshotDirectory = null;
-            this.ctrlAssociationView.Size = new System.Drawing.Size(680, 201);
+            this.ctrlAssociationView.Size = new System.Drawing.Size(680, 194);
             this.ctrlAssociationView.TabIndex = 7;
             // 
             // ctrlSummary
@@ -764,7 +818,7 @@
             this.ctrlSummary.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.ctrlSummary.Name = "ctrlSummary";
             this.ctrlSummary.Padding = new System.Windows.Forms.Padding(0, 20, 0, 0);
-            this.ctrlSummary.Size = new System.Drawing.Size(312, 660);
+            this.ctrlSummary.Size = new System.Drawing.Size(312, 634);
             this.ctrlSummary.TabIndex = 4;
             this.ctrlSummary.TagText = "Tags:";
             // 
@@ -798,6 +852,8 @@
             this.splitTopBottom.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitTopBottom)).EndInit();
             this.splitTopBottom.ResumeLayout(false);
+            this.flpTags.ResumeLayout(false);
+            this.flpTags.PerformLayout();
             this.mnuIdGames.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -877,6 +933,10 @@
         private System.Windows.Forms.ToolStripMenuItem addFIlesRecursivelyToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
         private System.Windows.Forms.ToolStripMenuItem sortByToolStripMenuItem;
+        private System.Windows.Forms.FlowLayoutPanel flpTags;
+        private System.Windows.Forms.Button btnTags;
+        private System.Windows.Forms.Label lblSelectedTag;
+        private System.Windows.Forms.ToolStripMenuItem selectTagsToolStripMenuItem;
     }
 }
 

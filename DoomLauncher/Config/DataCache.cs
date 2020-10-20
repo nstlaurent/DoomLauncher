@@ -1,5 +1,7 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,6 +12,8 @@ namespace DoomLauncher
     class DataCache
     {
         public static readonly DataCache Instance = new DataCache();
+
+        public event EventHandler TagsChanged;
 
         public IDataSourceAdapter DataSourceAdapter { get; private set; }
         public AppConfiguration AppConfiguration { get; private set; }
@@ -36,6 +40,61 @@ namespace DoomLauncher
             Tags = DataSourceAdapter.GetTags().OrderBy(x => x.Name).ToArray();
             if (PreviousTags == null)
                 PreviousTags = Tags;
+
+            TagsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void UpdateGameFileTags(IEnumerable<IGameFile> gameFiles, IEnumerable<ITagData> tags)
+        {
+            ITagData[] changedTagsAll = new ITagData[] { };
+
+            foreach (IGameFile gameFile in gameFiles)
+            {
+                ITagData[] existingTags = DataCache.Instance.TagMapLookup.GetTags(gameFile);
+
+                var addTags = tags.Except(existingTags);
+                var removeTags = existingTags.Except(tags);
+
+                foreach (var tag in addTags)
+                    AddGameFileTag(new IGameFile[] { gameFile }, tag, out _);
+
+                foreach (var tag in removeTags)
+                    RemoveGameFileTag(new IGameFile[] { gameFile }, tag);
+
+                changedTagsAll = changedTagsAll.Union(addTags.Union(removeTags)).ToArray();
+            }
+
+            TagMapLookup.Refresh(changedTagsAll);
+        }
+
+        public void AddGameFileTag(IEnumerable<IGameFile> gameFiles, ITagData tag, out List<IGameFile> alreadyTagged)
+        {
+            alreadyTagged = new List<IGameFile>();
+
+            foreach (IGameFile gameFile in gameFiles)
+            {
+                TagMapping tagMapping = new TagMapping
+                {
+                    FileID = gameFile.GameFileID.Value,
+                    TagID = tag.TagID
+                };
+
+                if (!DataSourceAdapter.GetTagMappings(tagMapping.FileID).Contains(tagMapping))
+                    DataSourceAdapter.InsertTagMapping(tagMapping);
+                else
+                    alreadyTagged.Add(gameFile);
+            }
+        }
+
+        public void RemoveGameFileTag(IEnumerable<IGameFile> gameFiles, ITagData tag)
+        {
+            TagMapping tagMapping = new TagMapping();
+            foreach (IGameFile gameFile in gameFiles)
+            {
+                tagMapping.TagID = tag.TagID;
+                tagMapping.FileID = gameFile.GameFileID.Value;
+                DataSourceAdapter.DeleteTagMapping(tagMapping);
+            }
         }
 
         public ColumnConfig[] GetColumnConfig()

@@ -130,7 +130,7 @@ namespace DoomLauncher
             accepted = false;
 
             FileSelectForm form = new FileSelectForm();
-            ITabView tabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(s_localKey));
+            ITabView tabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(TabKeys.LocalKey));
             form.Initialize(DataSourceAdapter, tabView, gameFiles);
             form.StartPosition = FormStartPosition.CenterParent;
             form.SetDisplayText("Please select the main file that all data will be associated with. (Screenshots, demos, save games, etc.)");
@@ -225,7 +225,7 @@ namespace DoomLauncher
         private List<ITabView> GetAdditionalTabViews()
         {
             List<ITabView> views = new List<ITabView>();
-            views.AddRange(m_tabHandler.TabViews.Where(x => x.Title == s_localKey));
+            views.AddRange(m_tabHandler.TabViews.Where(x => x.Title == TabKeys.LocalKey));
             views.AddRange(m_tabHandler.TabViews.Where(x => x is TagTabView));
             return views;
         }

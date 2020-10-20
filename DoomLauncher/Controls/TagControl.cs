@@ -140,7 +140,7 @@ namespace DoomLauncher
         private bool IsTagNameUnique(ITagData tag)
         {
             IEnumerable<ITagData> check = m_adapter.GetTags().Where(x => x.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase) && !x.Equals(tag));
-            return !(string.IsNullOrEmpty(tag.Name) || check.Any() || MainForm.GetBaseTabs().ToList().FindAll(x=> tag.Name.Equals(x, StringComparison.CurrentCultureIgnoreCase)).Any());
+            return !(string.IsNullOrEmpty(tag.Name) || check.Any() || TabKeys.KeyNames.ToList().FindAll(x=> tag.Name.Equals(x, StringComparison.CurrentCultureIgnoreCase)).Any());
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

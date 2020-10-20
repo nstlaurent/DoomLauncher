@@ -29,6 +29,8 @@ namespace DoomLauncher
             return view;
         }
 
+        
+
         public override void SetGameFiles()
         {
             GameFileGetOptions options = new GameFileGetOptions();
@@ -51,7 +53,7 @@ namespace DoomLauncher
         public ITagData TagDataSource
         {
             get;
-            private set;
+            set;
         }
     }
 }
