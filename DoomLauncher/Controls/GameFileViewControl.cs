@@ -238,7 +238,7 @@ namespace DoomLauncher
                     foreach (DataGridViewRow dgvr in dgvMain.SelectedRows)
                     {
                         if (m_datasource.Count > dgvr.Index)
-                            ret.Add(m_datasource[dgvr.Index].Object as IGameFile);
+                            ret.Add(m_datasource[dgvr.Index].Object);
                     }
 
                     return ret.ToArray();
@@ -250,7 +250,7 @@ namespace DoomLauncher
 
         public IGameFile GameFileForIndex(int index)
         {
-            if (index > -1 && index < dgvMain.Rows.Count)
+            if (index > -1 && index < m_datasource.Count)
                 return m_datasource[index].Object;
 
             return null;
@@ -369,6 +369,9 @@ namespace DoomLauncher
 
         private void dgvMain_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
+            if (m_binding)
+                return;
+
             var gameFile = GameFileForIndex(e.RowIndex);
             if (gameFile != m_lastEnter)
             {
