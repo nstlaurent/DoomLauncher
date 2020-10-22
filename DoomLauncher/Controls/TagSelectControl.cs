@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using DoomLauncher.Interfaces;
-using DoomLauncher.DataSources;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,6 +17,7 @@ namespace DoomLauncher.Controls
 
         private TagSelectOptions m_options = new TagSelectOptions();
         private List<ITagData> m_checkedTags = new List<ITagData>();
+        private IEnumerable<ITagData> m_customSource;
         private bool m_loaded;
 
         public TagSelectControl()
@@ -29,6 +29,21 @@ namespace DoomLauncher.Controls
 
             SetPinned(false);
             Load += TagSelectControl_Load;
+            Resize += TagSelectControl_Resize;
+        }
+
+        private void TagSelectControl_Resize(object sender, EventArgs e)
+        {
+            if (flpSearch.Width < txtSearch.MaximumSize.Width + offset)
+            {
+                DpiScale dpiScale = new DpiScale(CreateGraphics());
+                int offset = btnPin.Width + dpiScale.ScaleIntX(12);
+                txtSearch.Width = flpSearch.Width - offset;
+            }
+            else
+            {
+                txtSearch.Width = txtSearch.MaximumSize.Width;
+            }
         }
 
         private void TagSelectControl_Load(object sender, EventArgs e)
@@ -75,16 +90,52 @@ namespace DoomLauncher.Controls
 
         public List<ITagData> GetCheckedTags() => m_checkedTags;
 
+        public ITagData SelectedItem => dgvCustom.SelectedRows.Count == 0 ? null : dgvCustom.SelectedRows[0].DataBoundItem as ITagData;
+
+        public void SetSelectedItem(ITagData tag)
+        {
+            ClearSelections();
+
+            foreach (DataGridViewRow row in dgvCustom.Rows)
+            {
+                if (row.DataBoundItem is ITagData tagData && tagData.Equals(tag))
+                {
+                    dgvCustom.FirstDisplayedScrollingRowIndex = row.Index;
+                    row.Selected = true;
+                    break;
+                }
+            }
+        }
+
+        public void SetDataSource(IEnumerable<ITagData> tags)
+        {
+            if (!m_options.CustomSetData)
+                throw new InvalidOperationException("Can only call SetDataSource with CustomSetData in TagSelectOptions.");
+
+            m_customSource = tags;
+            SetTags();
+        }
+
         private void SetTags()
         {
             DisableSelection();
 
             IEnumerable<ITagData> tags;
 
-            if (m_options.HasTabOnly)
-                tags = DataCache.Instance.Tags.Where(x => x.HasTab);
+            if (m_options.CustomSetData)
+            {
+                if (m_customSource == null)
+                    return;
+
+                tags = m_customSource;
+            }
             else
-                tags = DataCache.Instance.Tags;
+            {
+                if (m_options.HasTabOnly)
+                    tags = DataCache.Instance.Tags.Where(x => x.HasTab);
+                else
+                    tags = DataCache.Instance.Tags;
+            }
 
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 tags = DataCache.Instance.Tags.Where(x => x.Name.IndexOf(txtSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0);
@@ -131,7 +182,7 @@ namespace DoomLauncher.Controls
 
             view.Columns.Clear();
 
-            view.ColumnHeadersVisible = false;
+            view.ColumnHeadersVisible = m_options.ShowTagData;
             view.MultiSelect = false;
             view.AllowUserToResizeColumns = false;
             view.AllowUserToResizeRows = false;
@@ -142,10 +193,41 @@ namespace DoomLauncher.Controls
 
             view.Columns.Add(new DataGridViewTextBoxColumn
             {
-                HeaderText = string.Empty,
+                HeaderText = "Name",
                 Name = nameof(ITagData.Name),
                 DataPropertyName = nameof(ITagData.FavoriteName)
             });
+
+            if (m_options.ShowTagData)
+            {
+                view.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    HeaderText = "Display Tab",
+                    Name = "HasTab",
+                    DataPropertyName = "HasTab"
+                });
+
+                view.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    HeaderText = "Exclude",
+                    Name = "ExcludeFromOtherTabs",
+                    DataPropertyName = "ExcludeFromOtherTabs"
+                });
+
+                view.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    HeaderText = "Favorite",
+                    Name = "Favorite",
+                    DataPropertyName = "Favorite"
+                });                
+
+                view.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    HeaderText = "Display Color",
+                    Name = "HasColor",
+                    DataPropertyName = "HasColor"
+                });
+            }
 
             view.Columns[view.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
@@ -218,5 +300,7 @@ namespace DoomLauncher.Controls
         public bool ShowCheckBoxes { get; set; }
         public bool AllowRowSelect { get; set; }
         public bool ShowPin { get; set; }
+        public bool ShowTagData { get; set; }
+        public bool CustomSetData { get; set; }
     }
 }

@@ -73,7 +73,7 @@
             // 
             this.tblTop.ColumnCount = 2;
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblTop.Controls.Add(this.flpSearch, 0, 0);
             this.tblTop.Controls.Add(this.btnPin, 1, 0);
             this.tblTop.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -93,13 +93,14 @@
             this.flpSearch.Location = new System.Drawing.Point(0, 0);
             this.flpSearch.Margin = new System.Windows.Forms.Padding(0);
             this.flpSearch.Name = "flpSearch";
-            this.flpSearch.Size = new System.Drawing.Size(185, 32);
+            this.flpSearch.Size = new System.Drawing.Size(197, 32);
             this.flpSearch.TabIndex = 0;
             // 
             // txtSearch
             // 
             this.txtSearch.Location = new System.Drawing.Point(3, 5);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(3, 5, 0, 3);
+            this.txtSearch.MaximumSize = new System.Drawing.Size(130, 20);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(130, 20);
             this.txtSearch.TabIndex = 0;
