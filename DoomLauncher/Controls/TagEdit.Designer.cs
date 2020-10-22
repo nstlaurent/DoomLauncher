@@ -38,10 +38,10 @@
             this.flp = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlColor = new System.Windows.Forms.Panel();
             this.btnSelect = new System.Windows.Forms.Button();
+            this.cmbExclude = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cmbColor = new System.Windows.Forms.ComboBox();
-            this.cmbExclude = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.lblFavorite = new System.Windows.Forms.Label();
             this.cmbFavorite = new System.Windows.Forms.ComboBox();
             this.tblMain.SuspendLayout();
             this.flp.SuspendLayout();
@@ -61,7 +61,7 @@
             this.tblMain.Controls.Add(this.cmbExclude, 1, 2);
             this.tblMain.Controls.Add(this.label4, 0, 4);
             this.tblMain.Controls.Add(this.cmbColor, 1, 4);
-            this.tblMain.Controls.Add(this.label5, 0, 3);
+            this.tblMain.Controls.Add(this.lblFavorite, 0, 3);
             this.tblMain.Controls.Add(this.cmbFavorite, 1, 3);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
@@ -162,6 +162,19 @@
             this.btnSelect.UseVisualStyleBackColor = true;
             this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
             // 
+            // cmbExclude
+            // 
+            this.cmbExclude.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmbExclude.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbExclude.FormattingEnabled = true;
+            this.cmbExclude.Items.AddRange(new object[] {
+            "Yes",
+            "No"});
+            this.cmbExclude.Location = new System.Drawing.Point(139, 55);
+            this.cmbExclude.Name = "cmbExclude";
+            this.cmbExclude.Size = new System.Drawing.Size(152, 21);
+            this.cmbExclude.TabIndex = 8;
+            // 
             // label4
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -186,28 +199,15 @@
             this.cmbColor.TabIndex = 6;
             this.cmbColor.SelectedIndexChanged += new System.EventHandler(this.cmbColor_SelectedIndexChanged);
             // 
-            // cmbExclude
+            // lblFavorite
             // 
-            this.cmbExclude.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmbExclude.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbExclude.FormattingEnabled = true;
-            this.cmbExclude.Items.AddRange(new object[] {
-            "Yes",
-            "No"});
-            this.cmbExclude.Location = new System.Drawing.Point(139, 55);
-            this.cmbExclude.Name = "cmbExclude";
-            this.cmbExclude.Size = new System.Drawing.Size(152, 21);
-            this.cmbExclude.TabIndex = 8;
-            // 
-            // label5
-            // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 84);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(45, 13);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "Favorite";
+            this.lblFavorite.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFavorite.AutoSize = true;
+            this.lblFavorite.Location = new System.Drawing.Point(3, 84);
+            this.lblFavorite.Name = "lblFavorite";
+            this.lblFavorite.Size = new System.Drawing.Size(45, 13);
+            this.lblFavorite.TabIndex = 10;
+            this.lblFavorite.Text = "Favorite";
             // 
             // cmbFavorite
             // 
@@ -250,7 +250,7 @@
         private System.Windows.Forms.Panel pnlColor;
         private System.Windows.Forms.ComboBox cmbExclude;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblFavorite;
         private System.Windows.Forms.ComboBox cmbFavorite;
     }
 }

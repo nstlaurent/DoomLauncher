@@ -4,6 +4,8 @@ namespace DoomLauncher.DataSources
 {
     public class TagData : ITagData
     {
+        public static readonly string FavoriteChar = "★";
+
         public int TagID { get; set; }
         public string Name { get; set; }
         public bool HasTab { get; set; }
@@ -12,7 +14,7 @@ namespace DoomLauncher.DataSources
         public bool ExcludeFromOtherTabs { get; set; }
         public bool Favorite { get; set; }
 
-        public virtual string FavoriteName => Favorite ? string.Concat("★ ", Name) : Name;
+        public virtual string FavoriteName => Favorite ? string.Concat(FavoriteChar, " ", Name) : Name;
 
         public override bool Equals(object obj)
         {

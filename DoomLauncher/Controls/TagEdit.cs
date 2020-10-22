@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,6 +13,9 @@ namespace DoomLauncher
         public TagEdit()
         {
             InitializeComponent();
+
+            lblFavorite.Text = string.Concat("Favorite ", TagData.FavoriteChar);
+
             cmbTab.SelectedIndex = 0;
             cmbColor.SelectedIndex = 1;
             cmbExclude.SelectedIndex = 1;
