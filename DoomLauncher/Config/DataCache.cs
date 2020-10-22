@@ -37,7 +37,7 @@ namespace DoomLauncher
             if (Tags != null)
                 PreviousTags = Tags.ToArray();
 
-            Tags = DataSourceAdapter.GetTags().OrderBy(x => x.Name).ToArray();
+            Tags = DataSourceAdapter.GetTags().OrderByDescending(x => x.Favorite).ThenBy(x => x.Name).ToArray();
             if (PreviousTags == null)
                 PreviousTags = Tags;
 

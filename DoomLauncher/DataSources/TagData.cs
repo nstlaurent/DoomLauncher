@@ -10,6 +10,9 @@ namespace DoomLauncher.DataSources
         public bool HasColor { get; set; }
         public int? Color { get; set; }
         public bool ExcludeFromOtherTabs { get; set; }
+        public bool Favorite { get; set; }
+
+        public virtual string FavoriteName => Favorite ? string.Concat("★ ", Name) : Name;
 
         public override bool Equals(object obj)
         {

@@ -1120,6 +1120,9 @@ namespace DoomLauncher
 
         private void DisplayTags()
         {
+            if (m_tagSelectControl.Pinned)
+                return;
+
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             m_tagSelectControl.ClearSelections();
             m_tagPopup = new Popup(m_tagSelectControl)
@@ -1189,6 +1192,7 @@ namespace DoomLauncher
             }
 
             ctrlAssociationView.Initialize(DataSourceAdapter, AppConfiguration);
+            SetShowTabHeaders();
         }
 
         private void CtrlAssociationView_RequestScreenshots(object sender, RequestScreenshotsEventArgs e)
@@ -1811,7 +1815,7 @@ namespace DoomLauncher
                 if (tabView != null)
                 {
                     if (tag.HasTab)
-                        m_tabHandler.UpdateTabTitle(tabView, tag.Name);
+                        m_tabHandler.UpdateTabTitle(tabView, tag.FavoriteName);
                     else
                         m_tabHandler.RemoveTab(tabView);
                 }
@@ -1832,8 +1836,33 @@ namespace DoomLauncher
                     m_tabHandler.RemoveTab(tabView);
             }
 
+            DataCache.Instance.UpdateTags();
+            UpdateTabOrder();
+
             UpdateLocal();
             HandleSelectionChange(GetCurrentViewControl(), false);
+        }
+
+        private void UpdateTabOrder()
+        {
+            int index = TabKeys.KeyNames.Length;
+
+            foreach (var tag in DataCache.Instance.Tags)
+            {
+                if (!tag.HasTab)
+                    continue;
+
+                ITabView tabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(tag.TagID) && x is TagTabView);
+                if (tabView == null)
+                    continue;
+
+                int checkIndex = m_tabHandler.GetTabIndex(tabView);
+
+                if (checkIndex != -1 && checkIndex != index)
+                    m_tabHandler.SetTabIndex(index, tabView);
+
+                index++;
+            }
         }
 
         private void UpdateTagColumnConfig(ITagData[] editedTags)

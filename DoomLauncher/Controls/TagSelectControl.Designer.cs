@@ -29,45 +29,61 @@
         private void InitializeComponent()
         {
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.dgvStatic = new System.Windows.Forms.DataGridView();
+            this.dgvCustom = new System.Windows.Forms.DataGridView();
+            this.tblTop = new System.Windows.Forms.TableLayoutPanel();
             this.flpSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.dgvCustom = new System.Windows.Forms.DataGridView();
+            this.btnPin = new System.Windows.Forms.Button();
             this.tblMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStatic)).BeginInit();
-            this.flpSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustom)).BeginInit();
+            this.tblTop.SuspendLayout();
+            this.flpSearch.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblMain
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.dgvStatic, 0, 1);
-            this.tblMain.Controls.Add(this.flpSearch, 0, 0);
-            this.tblMain.Controls.Add(this.dgvCustom, 0, 2);
+            this.tblMain.Controls.Add(this.dgvCustom, 0, 1);
+            this.tblMain.Controls.Add(this.tblTop, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 3;
+            this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 132F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Size = new System.Drawing.Size(199, 419);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblMain.Size = new System.Drawing.Size(217, 419);
             this.tblMain.TabIndex = 0;
             // 
-            // dgvStatic
+            // dgvCustom
             // 
-            this.dgvStatic.AllowUserToAddRows = false;
-            this.dgvStatic.AllowUserToDeleteRows = false;
-            this.dgvStatic.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStatic.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvStatic.Location = new System.Drawing.Point(3, 35);
-            this.dgvStatic.Name = "dgvStatic";
-            this.dgvStatic.ReadOnly = true;
-            this.dgvStatic.Size = new System.Drawing.Size(193, 126);
-            this.dgvStatic.TabIndex = 3;
+            this.dgvCustom.AllowUserToAddRows = false;
+            this.dgvCustom.AllowUserToDeleteRows = false;
+            this.dgvCustom.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCustom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvCustom.Location = new System.Drawing.Point(3, 35);
+            this.dgvCustom.Name = "dgvCustom";
+            this.dgvCustom.ReadOnly = true;
+            this.dgvCustom.Size = new System.Drawing.Size(211, 381);
+            this.dgvCustom.TabIndex = 2;
+            // 
+            // tblTop
+            // 
+            this.tblTop.ColumnCount = 2;
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tblTop.Controls.Add(this.flpSearch, 0, 0);
+            this.tblTop.Controls.Add(this.btnPin, 1, 0);
+            this.tblTop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblTop.Location = new System.Drawing.Point(0, 0);
+            this.tblTop.Margin = new System.Windows.Forms.Padding(0);
+            this.tblTop.Name = "tblTop";
+            this.tblTop.RowCount = 1;
+            this.tblTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblTop.Size = new System.Drawing.Size(217, 32);
+            this.tblTop.TabIndex = 4;
             // 
             // flpSearch
             // 
@@ -77,7 +93,7 @@
             this.flpSearch.Location = new System.Drawing.Point(0, 0);
             this.flpSearch.Margin = new System.Windows.Forms.Padding(0);
             this.flpSearch.Name = "flpSearch";
-            this.flpSearch.Size = new System.Drawing.Size(199, 32);
+            this.flpSearch.Size = new System.Drawing.Size(185, 32);
             this.flpSearch.TabIndex = 0;
             // 
             // txtSearch
@@ -104,17 +120,20 @@
             this.btnSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.btnSearch.UseVisualStyleBackColor = true;
             // 
-            // dgvCustom
+            // btnPin
             // 
-            this.dgvCustom.AllowUserToAddRows = false;
-            this.dgvCustom.AllowUserToDeleteRows = false;
-            this.dgvCustom.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvCustom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvCustom.Location = new System.Drawing.Point(3, 167);
-            this.dgvCustom.Name = "dgvCustom";
-            this.dgvCustom.ReadOnly = true;
-            this.dgvCustom.Size = new System.Drawing.Size(193, 249);
-            this.dgvCustom.TabIndex = 2;
+            this.btnPin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnPin.FlatAppearance.BorderSize = 0;
+            this.btnPin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPin.Image = global::DoomLauncher.Properties.Resources.Pin;
+            this.btnPin.Location = new System.Drawing.Point(197, 0);
+            this.btnPin.Margin = new System.Windows.Forms.Padding(0);
+            this.btnPin.Name = "btnPin";
+            this.btnPin.Size = new System.Drawing.Size(20, 20);
+            this.btnPin.TabIndex = 4;
+            this.btnPin.UseVisualStyleBackColor = true;
+            this.btnPin.Click += new System.EventHandler(this.btnPin_Click);
             // 
             // TagSelectControl
             // 
@@ -122,12 +141,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tblMain);
             this.Name = "TagSelectControl";
-            this.Size = new System.Drawing.Size(199, 419);
+            this.Size = new System.Drawing.Size(217, 419);
             this.tblMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStatic)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCustom)).EndInit();
+            this.tblTop.ResumeLayout(false);
             this.flpSearch.ResumeLayout(false);
             this.flpSearch.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCustom)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -138,7 +157,8 @@
         private System.Windows.Forms.FlowLayoutPanel flpSearch;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.DataGridView dgvCustom;
-        private System.Windows.Forms.DataGridView dgvStatic;
         private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.TableLayoutPanel tblTop;
+        private System.Windows.Forms.Button btnPin;
     }
 }

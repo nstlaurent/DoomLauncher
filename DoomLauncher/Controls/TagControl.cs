@@ -19,6 +19,7 @@ namespace DoomLauncher
             InitializeComponent();
 
             GameFileViewControl.StyleGrid(dgvTags);
+            dgvTags.AllowUserToResizeRows = false;
             dgvTags.MultiSelect = false;
 
             DataGridViewColumn col = new DataGridViewTextBoxColumn();
@@ -37,6 +38,12 @@ namespace DoomLauncher
             col.HeaderText = "Exclude";
             col.Name = "ExcludeFromOtherTabs";
             col.DataPropertyName = "ExcludeFromOtherTabs";
+            dgvTags.Columns.Add(col);
+
+            col = new DataGridViewTextBoxColumn();
+            col.HeaderText = "Favorite";
+            col.Name = "Favorite";
+            col.DataPropertyName = "Favorite";
             dgvTags.Columns.Add(col);
 
             col = new DataGridViewTextBoxColumn();
@@ -98,39 +105,47 @@ namespace DoomLauncher
                         m_addTags.Add(check.First());
                     }
                 }
+
+                if (dgvTags.Rows.Count > 0)
+                    dgvTags.Rows[dgvTags.Rows.Count - 1].Selected = true;
             }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dgvTags.SelectedRows.Count > 0)
+            if (dgvTags.SelectedRows.Count > 0 && dgvTags.SelectedRows[0].DataBoundItem is ITagData tag)
             {
-                ITagData tag = dgvTags.SelectedRows[0].DataBoundItem as ITagData;
+                TagEditForm form = new TagEditForm();
+                form.TagEditControl.SetDataSource(tag);
+                form.StartPosition = FormStartPosition.CenterParent;
 
-                if (tag != null)
+                if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    TagEditForm form = new TagEditForm();
-                    form.TagEditControl.SetDataSource(tag);
-                    form.StartPosition = FormStartPosition.CenterParent;
-                    
-                    if (form.ShowDialog(this) == DialogResult.OK)
+                    form.TagEditControl.GetDataSource(tag);
+
+                    if (!IsTagNameUnique(tag))
                     {
-                        form.TagEditControl.GetDataSource(tag);
+                        MessageBox.Show(this, "Tag name must be unique and not empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Init(m_adapter);
+                    }
+                    else
+                    {
+                        m_adapter.UpdateTag(tag);
+                        Init(m_adapter);
 
-                        if (!IsTagNameUnique(tag))
+                        if (m_editTags.Contains(tag))
+                            m_editTags.Remove(tag);
+
+                        m_editTags.Add(tag);
+                    }
+
+                    foreach (DataGridViewRow row in dgvTags.Rows)
+                    {
+                        if (row.DataBoundItem.Equals(tag))
                         {
-                            MessageBox.Show(this, "Tag name must be unique and not empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Init(m_adapter);
-                        }
-                        else
-                        {
-                            m_adapter.UpdateTag(tag);
-                            Init(m_adapter);
-
-                            if (m_editTags.Contains(tag))
-                                m_editTags.Remove(tag);
-
-                            m_editTags.Add(tag);
+                            dgvTags.FirstDisplayedScrollingRowIndex = row.Index;
+                            row.Selected = true;
+                            break;
                         }
                     }
                 }
@@ -145,23 +160,19 @@ namespace DoomLauncher
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dgvTags.SelectedRows.Count > 0 && MessageBox.Show(this, "Are you sure you want to delete this tag?", 
-                "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+            if (dgvTags.SelectedRows.Count > 0 && MessageBox.Show(this, "Are you sure you want to delete this tag?",
+                "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK && 
+                dgvTags.SelectedRows[0].DataBoundItem is ITagData tag)
             {
-                ITagData tag = dgvTags.SelectedRows[0].DataBoundItem as ITagData;
+                m_adapter.DeleteTag(tag);
+                m_adapter.DeleteTagMapping(tag.TagID);
 
-                if (tag != null)
-                {
-                    m_adapter.DeleteTag(tag);
-                    m_adapter.DeleteTagMapping(tag.TagID);
+                Init(m_adapter);
 
-                    Init(m_adapter);
+                if (m_deleteTags.Contains(tag))
+                    m_deleteTags.Remove(tag);
 
-                    if (m_deleteTags.Contains(tag))
-                        m_deleteTags.Remove(tag);
-
-                    m_deleteTags.Add(tag);
-                }
+                m_deleteTags.Add(tag);
             }
         }
     }

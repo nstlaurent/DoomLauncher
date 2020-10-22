@@ -4,6 +4,7 @@ using DoomLauncher.Interfaces;
 using DoomLauncher.DataSources;
 using System.Linq;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace DoomLauncher.Controls
 {
@@ -11,9 +12,11 @@ namespace DoomLauncher.Controls
     {
         public event EventHandler<ITagData> TagSelectionChanged;
         public event EventHandler<string> StaticSelectionChanged;
+        public event EventHandler PinChanged;
+
+        public bool Pinned { get; private set; }
 
         private TagSelectOptions m_options = new TagSelectOptions();
-        private readonly DataGridView[] m_views;
         private List<ITagData> m_checkedTags = new List<ITagData>();
         private bool m_loaded;
 
@@ -21,8 +24,10 @@ namespace DoomLauncher.Controls
         {
             InitializeComponent();
 
-            m_views = new DataGridView[] { dgvStatic, dgvCustom };
+            btnSearch.Image = Icons.Search;
+            btnPin.Image = Icons.Pin;
 
+            SetPinned(false);
             Load += TagSelectControl_Load;
         }
 
@@ -34,32 +39,13 @@ namespace DoomLauncher.Controls
             SetCheckedTags();
         }
 
-        private object GetStaticDataSource()
-        {
-            return TabKeys.KeyNames.Select(x => new TagData() { Name = x }).ToArray();
-        }
-
         public void Init(TagSelectOptions options)
         {
             m_options = options;
 
-            Array.ForEach(m_views, x => InitGrid(x));
-            dgvStatic.DataSource = GetStaticDataSource();
-            dgvStatic.ScrollBars = ScrollBars.None;
+            btnPin.Visible = options.ShowPin;
 
-            if (m_options.ShowStatic)
-            {
-                DpiScale dpiScale = new DpiScale(CreateGraphics());
-                int height = dpiScale.ScaleIntY(8);
-                foreach (DataGridViewRow row in dgvStatic.Rows)
-                    height += row.Height;
-
-                tblMain.RowStyles[1].Height = height;
-            }
-            else
-            {
-                tblMain.RowStyles[1].Height = 0;
-            }
+            InitGrid(dgvCustom);
 
             DataCache.Instance.TagsChanged += DataCache_TagsChanged;
             SetTags();
@@ -103,12 +89,34 @@ namespace DoomLauncher.Controls
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 tags = DataCache.Instance.Tags.Where(x => x.Name.IndexOf(txtSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0);
 
-            dgvCustom.DataSource = tags.ToArray();
+            List<ITagData> allTags;
+
+            if (m_options.ShowStatic)
+            {
+                allTags = GetStaticTags();
+                allTags.AddRange(tags);
+            }
+            else
+            {
+                allTags = tags.ToList();
+            }
+
+            dgvCustom.DataSource = allTags;
 
             SetCheckedTags();
 
             ClearSelections();
             EnableSelection();
+        }
+
+        private List<ITagData> GetStaticTags()
+        {
+            List<ITagData> tags = new List<ITagData>();
+
+            foreach (var key in TabKeys.KeyNames)
+                tags.Add(new StaticTagData() { Name = key, Favorite = true });
+
+            return tags;
         }
 
         private void DataCache_TagsChanged(object sender, EventArgs e)
@@ -129,14 +137,14 @@ namespace DoomLauncher.Controls
             view.AllowUserToResizeRows = false;
             view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
-            if (view != dgvStatic && m_options.ShowCheckBoxes)
+            if (m_options.ShowCheckBoxes)
                 view.Columns.Add(new DataGridViewCheckBoxColumn() { ReadOnly = false, Width = dpiScale.ScaleIntX(32) });
 
             view.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = string.Empty,
                 Name = nameof(ITagData.Name),
-                DataPropertyName = nameof(ITagData.Name)
+                DataPropertyName = nameof(ITagData.FavoriteName)
             });
 
             view.Columns[view.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -148,27 +156,21 @@ namespace DoomLauncher.Controls
             if (view.SelectedRows.Count == 0)
                 return;
 
-            if (view == dgvCustom)
+            if (m_options.ShowCheckBoxes && view.SelectedRows[0].Cells[0] is DataGridViewCheckBoxCell checkBoxCell && checkBoxCell.Value != null)
             {
-                if (m_options.ShowCheckBoxes && view.SelectedRows[0].Cells[0] is DataGridViewCheckBoxCell checkBoxCell && checkBoxCell.Value != null)
-                {
-                    bool set = !(bool)checkBoxCell.Value;
-                    checkBoxCell.Value = set;
+                bool set = !(bool)checkBoxCell.Value;
+                checkBoxCell.Value = set;
 
-                    if (set)
-                        m_checkedTags.Add(view.SelectedRows[0].DataBoundItem as ITagData);
-                    else
-                        m_checkedTags.Remove(view.SelectedRows[0].DataBoundItem as ITagData);
-                }
-
-                TagSelectionChanged?.Invoke(this, view.SelectedRows[0].DataBoundItem as ITagData);
-                dgvStatic.ClearSelection();
+                if (set)
+                    m_checkedTags.Add(view.SelectedRows[0].DataBoundItem as ITagData);
+                else
+                    m_checkedTags.Remove(view.SelectedRows[0].DataBoundItem as ITagData);
             }
+
+            if (dgvCustom.SelectedRows[0].DataBoundItem is StaticTagData staticTag)
+                StaticSelectionChanged?.Invoke(this, staticTag.Name);
             else
-            {
-                StaticSelectionChanged?.Invoke(this, ((ITagData)view.SelectedRows[0].DataBoundItem).Name);
-                dgvCustom.ClearSelection();
-            }
+                TagSelectionChanged?.Invoke(this, view.SelectedRows[0].DataBoundItem as ITagData);
 
             if (!m_options.AllowRowSelect)
                 view.ClearSelection();
@@ -179,13 +181,33 @@ namespace DoomLauncher.Controls
             SetTags();
         }
 
-        public void ClearSelections() => Array.ForEach(m_views, x => x.ClearSelection());
-        private void DisableSelection() => Array.ForEach(m_views, x => x.SelectionChanged -= View_SelectionChanged);
+        public void ClearSelections() => dgvCustom.ClearSelection();
+        private void DisableSelection() => dgvCustom.SelectionChanged -= View_SelectionChanged;
 
         private void EnableSelection()
         {
             if (m_loaded)
-                Array.ForEach(m_views, x => x.SelectionChanged += View_SelectionChanged);
+                dgvCustom.SelectionChanged += View_SelectionChanged;
+        }
+
+        private void btnPin_Click(object sender, EventArgs e)
+        {
+            SetPinned(!Pinned);
+            PinChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void SetPinned(bool pinned)
+        {
+            Pinned = pinned;
+
+            Image img = Icons.Pin;
+            if (!Pinned)
+                img = Util.RotateImage(img, 90);
+
+            btnPin.Image = img;
+            btnPin.Image = ThumbnailManager.FixedSize(img, (int)(img.Width * .8), (int)(img.Height * .8), Color.Transparent);
+            btnPin.Width = img.Width + 2;
+            btnPin.Height = img.Height + 4;
         }
     }
 
@@ -195,5 +217,6 @@ namespace DoomLauncher.Controls
         public bool HasTabOnly { get; set; }
         public bool ShowCheckBoxes { get; set; }
         public bool AllowRowSelect { get; set; }
+        public bool ShowPin { get; set; }
     }
 }

@@ -20,6 +20,7 @@ namespace DoomLauncher
         public static Image StepBack => GetIcon(Properties.Resources.StepBack);
         public static Image Video => GetIcon(Properties.Resources.Video);
         public static Image Tags => GetIcon(Properties.Resources.Tags);
+        public static Image Pin => GetIcon(Properties.Resources.Pin);
 
         private static Image GetIcon(Bitmap bitmap)
         {
@@ -28,17 +29,19 @@ namespace DoomLauncher
 
         private static Bitmap ColorizeIcon(Bitmap bitmap, Color color)
         {
+            Bitmap copy = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), bitmap.PixelFormat);
+
             for (int x = 0; x < bitmap.Width; x++)
             {
                 for (int y = 0; y < bitmap.Height; y++)
                 {
-                    var pixel = bitmap.GetPixel(x, y);
+                    var pixel = copy.GetPixel(x, y);
                     if (pixel.A != 0)
-                        bitmap.SetPixel(x, y, Color.FromArgb(pixel.A, color));
+                        copy.SetPixel(x, y, Color.FromArgb(pixel.A, color));
                 }
             }
 
-            return bitmap;
+            return copy;
         }
     }
 }

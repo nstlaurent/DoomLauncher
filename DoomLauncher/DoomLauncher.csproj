@@ -171,6 +171,7 @@
     <Compile Include="Forms\TagSelectForm.Designer.cs">
       <DependentUpon>TagSelectForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataSources\StaticTagData.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />
@@ -863,6 +864,7 @@
     <None Include="Resources\Play.png" />
     <None Include="Resources\Bars.png" />
     <None Include="Resources\Tags.png" />
+    <None Include="Resources\Pin.png" />
     <Content Include="TileImages\DoomLauncherTile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
