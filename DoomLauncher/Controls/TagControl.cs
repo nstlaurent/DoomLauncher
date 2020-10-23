@@ -29,7 +29,7 @@ namespace DoomLauncher
 
         private void SetTagData()
         {
-            tagSelectCtrl.SetDataSource(m_adapter.GetTags().OrderByDescending(x => x.Favorite).ThenBy(x => x.Name).ToList());
+            tagSelectCtrl.SetDataSource(DataCache.Instance.SortTags(m_adapter.GetTags()).ToList());
         }
 
         public ITagData[] AddedTags

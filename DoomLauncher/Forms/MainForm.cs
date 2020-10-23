@@ -726,8 +726,7 @@ namespace DoomLauncher
 
         private IEnumerable<ITagData> GetTagsFromFile(IGameFile gameFile)
         {
-            IEnumerable<ITagMapping> tagMapping = DataSourceAdapter.GetTagMappings(gameFile.GameFileID.Value);
-            return from tag in DataSourceAdapter.GetTags() join map in tagMapping on tag.TagID equals map.TagID select tag;
+            return DataCache.Instance.TagMapLookup.GetTags(gameFile);
         }
 
         private IGameFile[] SelectedItems(IGameFileView ctrl)

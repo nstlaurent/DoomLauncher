@@ -48,7 +48,7 @@ namespace DoomLauncher
                 ITagMapping[] tagMapping = m_fileTagMapping[gameFile.GameFileID.Value];
 
                 return tagMapping.Where(k => m_tags.ContainsKey(k.TagID))
-                     .Select(k => m_tags[k.TagID]).ToArray();
+                     .Select(k => m_tags[k.TagID]).OrderBy(x => x.Name).ToArray();
             }
 
             return new ITagData[] { };

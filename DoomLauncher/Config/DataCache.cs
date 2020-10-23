@@ -37,12 +37,15 @@ namespace DoomLauncher
             if (Tags != null)
                 PreviousTags = Tags.ToArray();
 
-            Tags = DataSourceAdapter.GetTags().OrderByDescending(x => x.Favorite).ThenBy(x => x.Name).ToArray();
+            Tags = SortTags(DataSourceAdapter.GetTags()).ToArray();
             if (PreviousTags == null)
                 PreviousTags = Tags;
 
             TagsChanged?.Invoke(this, EventArgs.Empty);
         }
+
+        // Sorts tags by Favorite, then by Name
+        public IEnumerable<ITagData> SortTags(IEnumerable<ITagData> tags) => tags.OrderByDescending(x => x.Favorite).ThenBy(x => x.Name);
 
         public void UpdateGameFileTags(IEnumerable<IGameFile> gameFiles, IEnumerable<ITagData> tags)
         {
