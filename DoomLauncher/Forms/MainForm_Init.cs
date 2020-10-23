@@ -408,7 +408,10 @@ namespace DoomLauncher
                 tagToolStrip.DropDownItems.RemoveAt(tagToolStrip.DropDownItems.Count - 1);
 
             foreach (ITagData tag in tags)
-                tagToolStrip.DropDownItems.Add(tag.FavoriteName, null, handler);
+            {
+                var item = tagToolStrip.DropDownItems.Add(tag.FavoriteName, null, handler);
+                item.Tag = tag.TagID;
+            }
         }
 
         private void SetGameFileViewEvents(IGameFileView ctrl, bool dragDrop)

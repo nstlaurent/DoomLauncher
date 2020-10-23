@@ -1960,7 +1960,7 @@ namespace DoomLauncher
             if (!(sender is ToolStripItem strip))
                 return;
 
-            ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
+            ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.TagID.Equals(strip.Tag));
             if (tag == null)
                 return;
 
@@ -1990,7 +1990,7 @@ namespace DoomLauncher
             if (!(sender is ToolStripItem strip))
                 return;
 
-            ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.Name == strip.Text);
+            ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.TagID.Equals(strip.Tag));
             if (tag == null)
                 return;
 
