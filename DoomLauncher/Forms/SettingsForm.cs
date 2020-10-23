@@ -19,7 +19,8 @@ namespace DoomLauncher
         private readonly IDataSourceAdapter m_adapter;
         private readonly AppConfiguration m_appConfig;
 
-        private static readonly int s_textBoxWidth = 190;
+        private static readonly int TextBoxWidth = 190;
+        private static readonly int FullControlWidth = 270;
 
         public SettingsForm(IDataSourceAdapter adapter, AppConfiguration appConfig)
         {
@@ -54,6 +55,12 @@ namespace DoomLauncher
             ControlBox = set;
         }
 
+        private int GetDefaultControlWidth()
+        {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            return dpiScale.ScaleIntX(FullControlWidth);
+        }
+
         private void PopulateConfiguration()
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
@@ -74,7 +81,7 @@ namespace DoomLauncher
                 GrowLabel lbl = new GrowLabel
                 {
                     Anchor = AnchorStyles.Left,
-                    Text = AddSpaceBetweenWords(config.Name)
+                    Text = AddSpaceBetweenWords(config.Name),
                 };
 
                 tblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, lbl.Height < height32 ? height32 : lbl.Height));
@@ -101,8 +108,9 @@ namespace DoomLauncher
         {
             TextBox txt = new TextBox
             {
-                Dock = DockStyle.Fill,
-                Text = config.Value
+                Anchor = AnchorStyles.Left,
+                Text = config.Value,
+                Width = GetDefaultControlWidth()
             };
             m_configValues.Add(new Tuple<IConfigurationData, object>(config, txt));
 
@@ -118,7 +126,8 @@ namespace DoomLauncher
         {
             ComboBox cmb = new ComboBox
             {
-                Dock = DockStyle.Fill
+                Anchor = AnchorStyles.Left,
+                Width = GetDefaultControlWidth()
             };
 
             string[] items = Util.SplitString(config.AvailableValues);
@@ -179,11 +188,12 @@ namespace DoomLauncher
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             m_screenshotDirectories = txt;
-            m_screenshotDirectories.Width = dpiScale.ScaleIntX(s_textBoxWidth);
+            m_screenshotDirectories.Width = dpiScale.ScaleIntX(TextBoxWidth);
             m_screenshotDirectories.Enabled = false;
             FlowLayoutPanel flp = new FlowLayoutPanel
             {
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0)
             };
             flp.Controls.Add(txt);
 
@@ -203,10 +213,11 @@ namespace DoomLauncher
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             m_gameFileDirectory = txt;
-            m_gameFileDirectory.Width = dpiScale.ScaleIntX(s_textBoxWidth);
+            m_gameFileDirectory.Width = dpiScale.ScaleIntX(TextBoxWidth);
             FlowLayoutPanel flp = new FlowLayoutPanel
             {
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0)
             };
             flp.Controls.Add(m_gameFileDirectory);
 
