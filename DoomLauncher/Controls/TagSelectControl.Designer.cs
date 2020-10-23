@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.dgvCustom = new System.Windows.Forms.DataGridView();
+            this.dgvTags = new System.Windows.Forms.DataGridView();
             this.tblTop = new System.Windows.Forms.TableLayoutPanel();
             this.flpSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnPin = new System.Windows.Forms.Button();
             this.tblMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCustom)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTags)).BeginInit();
             this.tblTop.SuspendLayout();
             this.flpSearch.SuspendLayout();
             this.SuspendLayout();
@@ -45,7 +45,7 @@
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.dgvCustom, 0, 1);
+            this.tblMain.Controls.Add(this.dgvTags, 0, 1);
             this.tblMain.Controls.Add(this.tblTop, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
@@ -57,17 +57,17 @@
             this.tblMain.Size = new System.Drawing.Size(217, 419);
             this.tblMain.TabIndex = 0;
             // 
-            // dgvCustom
+            // dgvTags
             // 
-            this.dgvCustom.AllowUserToAddRows = false;
-            this.dgvCustom.AllowUserToDeleteRows = false;
-            this.dgvCustom.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvCustom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvCustom.Location = new System.Drawing.Point(3, 35);
-            this.dgvCustom.Name = "dgvCustom";
-            this.dgvCustom.ReadOnly = true;
-            this.dgvCustom.Size = new System.Drawing.Size(211, 381);
-            this.dgvCustom.TabIndex = 2;
+            this.dgvTags.AllowUserToAddRows = false;
+            this.dgvTags.AllowUserToDeleteRows = false;
+            this.dgvTags.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTags.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvTags.Location = new System.Drawing.Point(3, 35);
+            this.dgvTags.Name = "dgvTags";
+            this.dgvTags.ReadOnly = true;
+            this.dgvTags.Size = new System.Drawing.Size(211, 381);
+            this.dgvTags.TabIndex = 2;
             // 
             // tblTop
             // 
@@ -144,7 +144,7 @@
             this.Name = "TagSelectControl";
             this.Size = new System.Drawing.Size(217, 419);
             this.tblMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCustom)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTags)).EndInit();
             this.tblTop.ResumeLayout(false);
             this.flpSearch.ResumeLayout(false);
             this.flpSearch.PerformLayout();
@@ -157,7 +157,7 @@
         private System.Windows.Forms.TableLayoutPanel tblMain;
         private System.Windows.Forms.FlowLayoutPanel flpSearch;
         private System.Windows.Forms.TextBox txtSearch;
-        private System.Windows.Forms.DataGridView dgvCustom;
+        private System.Windows.Forms.DataGridView dgvTags;
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.TableLayoutPanel tblTop;
         private System.Windows.Forms.Button btnPin;

@@ -28,39 +28,29 @@ namespace DoomLauncher.Controls
             btnPin.Image = Icons.Pin;
 
             SetPinned(false);
-            Load += TagSelectControl_Load;
             Resize += TagSelectControl_Resize;
         }
 
         private void TagSelectControl_Resize(object sender, EventArgs e)
         {
-            if (flpSearch.Width < txtSearch.MaximumSize.Width + offset)
-            {
-                DpiScale dpiScale = new DpiScale(CreateGraphics());
-                int offset = btnPin.Width + dpiScale.ScaleIntX(12);
-                txtSearch.Width = flpSearch.Width - offset;
-            }
-            else
-            {
-                txtSearch.Width = txtSearch.MaximumSize.Width;
-            }
-        }
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            int offset = btnPin.Width + dpiScale.ScaleIntX(12);
 
-        private void TagSelectControl_Load(object sender, EventArgs e)
-        {
-            m_loaded = true;
-            ClearSelections();
-            EnableSelection();
-            SetCheckedTags();
+            if (flpSearch.Width < txtSearch.MaximumSize.Width + offset)
+                txtSearch.Width = flpSearch.Width - offset;
+            else
+                txtSearch.Width = txtSearch.MaximumSize.Width;
         }
 
         public void Init(TagSelectOptions options)
         {
+            m_loaded = true;
             m_options = options;
 
             btnPin.Visible = options.ShowPin;
 
-            InitGrid(dgvCustom);
+            InitGrid(dgvTags);
+            EnableSelection();
 
             DataCache.Instance.TagsChanged += DataCache_TagsChanged;
             SetTags();
@@ -74,33 +64,48 @@ namespace DoomLauncher.Controls
 
         public void SetCheckedTags()
         {
-            if (dgvCustom.Columns.Count < 2)
+            int index = GetCheckBoxCellIndex();
+            if (index == -1)
                 return;
 
             HashSet<ITagData> tagHash = new HashSet<ITagData>(m_checkedTags);
-            foreach (DataGridViewRow row in dgvCustom.Rows)
+            foreach (DataGridViewRow row in dgvTags.Rows)
             {
                 ITagData tag = row.DataBoundItem as ITagData;
-                if (!(dgvCustom.Rows[row.Index].Cells[0] is DataGridViewCheckBoxCell checkCell))
+                if (!(dgvTags.Rows[row.Index].Cells[index] is DataGridViewCheckBoxCell checkCell))
                     continue;
 
                 checkCell.Value = tagHash.Contains(tag);
             }
         }
 
+        private int GetCheckBoxCellIndex()
+        {
+            int index = 0;
+
+            foreach(DataGridViewColumn column in dgvTags.Columns)
+            {
+                if (column is DataGridViewCheckBoxColumn)
+                    return index;
+                index++;
+            }
+
+            return -1;
+        }
+
         public List<ITagData> GetCheckedTags() => m_checkedTags;
 
-        public ITagData SelectedItem => dgvCustom.SelectedRows.Count == 0 ? null : dgvCustom.SelectedRows[0].DataBoundItem as ITagData;
+        public ITagData SelectedItem => dgvTags.SelectedRows.Count == 0 ? null : dgvTags.SelectedRows[0].DataBoundItem as ITagData;
 
         public void SetSelectedItem(ITagData tag)
         {
             ClearSelections();
 
-            foreach (DataGridViewRow row in dgvCustom.Rows)
+            foreach (DataGridViewRow row in dgvTags.Rows)
             {
                 if (row.DataBoundItem is ITagData tagData && tagData.Equals(tag))
                 {
-                    dgvCustom.FirstDisplayedScrollingRowIndex = row.Index;
+                    dgvTags.FirstDisplayedScrollingRowIndex = row.Index;
                     row.Selected = true;
                     break;
                 }
@@ -152,7 +157,7 @@ namespace DoomLauncher.Controls
                 allTags = tags.ToList();
             }
 
-            dgvCustom.DataSource = allTags;
+            dgvTags.DataSource = allTags;
 
             SetCheckedTags();
 
@@ -203,29 +208,29 @@ namespace DoomLauncher.Controls
                 view.Columns.Add(new DataGridViewTextBoxColumn
                 {
                     HeaderText = "Display Tab",
-                    Name = "HasTab",
-                    DataPropertyName = "HasTab"
+                    Name = nameof(ITagData.HasTab),
+                    DataPropertyName = nameof(ITagData.HasTab)
                 });
 
                 view.Columns.Add(new DataGridViewTextBoxColumn
                 {
                     HeaderText = "Exclude",
-                    Name = "ExcludeFromOtherTabs",
-                    DataPropertyName = "ExcludeFromOtherTabs"
+                    Name = nameof(ITagData.ExcludeFromOtherTabs),
+                    DataPropertyName = nameof(ITagData.ExcludeFromOtherTabs)
                 });
 
                 view.Columns.Add(new DataGridViewTextBoxColumn
                 {
                     HeaderText = "Favorite",
-                    Name = "Favorite",
-                    DataPropertyName = "Favorite"
+                    Name = nameof(ITagData.Favorite),
+                    DataPropertyName = nameof(ITagData.Favorite)
                 });                
 
                 view.Columns.Add(new DataGridViewTextBoxColumn
                 {
                     HeaderText = "Display Color",
-                    Name = "HasColor",
-                    DataPropertyName = "HasColor"
+                    Name = nameof(ITagData.HasColor),
+                    DataPropertyName = nameof(ITagData.HasColor)
                 });
             }
 
@@ -238,7 +243,10 @@ namespace DoomLauncher.Controls
             if (view.SelectedRows.Count == 0)
                 return;
 
-            if (m_options.ShowCheckBoxes && view.SelectedRows[0].Cells[0] is DataGridViewCheckBoxCell checkBoxCell && checkBoxCell.Value != null)
+            int checkIndex = GetCheckBoxCellIndex();
+
+            if (m_options.ShowCheckBoxes && checkIndex != -1 && view.SelectedRows[0].Cells[checkIndex] is DataGridViewCheckBoxCell checkBoxCell && 
+                checkBoxCell.Value != null)
             {
                 bool set = !(bool)checkBoxCell.Value;
                 checkBoxCell.Value = set;
@@ -249,7 +257,7 @@ namespace DoomLauncher.Controls
                     m_checkedTags.Remove(view.SelectedRows[0].DataBoundItem as ITagData);
             }
 
-            if (dgvCustom.SelectedRows[0].DataBoundItem is StaticTagData staticTag)
+            if (dgvTags.SelectedRows[0].DataBoundItem is StaticTagData staticTag)
                 StaticSelectionChanged?.Invoke(this, staticTag.Name);
             else
                 TagSelectionChanged?.Invoke(this, view.SelectedRows[0].DataBoundItem as ITagData);
@@ -263,13 +271,13 @@ namespace DoomLauncher.Controls
             SetTags();
         }
 
-        public void ClearSelections() => dgvCustom.ClearSelection();
-        private void DisableSelection() => dgvCustom.SelectionChanged -= View_SelectionChanged;
+        public void ClearSelections() => dgvTags.ClearSelection();
+        private void DisableSelection() => dgvTags.SelectionChanged -= View_SelectionChanged;
 
         private void EnableSelection()
         {
             if (m_loaded)
-                dgvCustom.SelectionChanged += View_SelectionChanged;
+                dgvTags.SelectionChanged += View_SelectionChanged;
         }
 
         private void btnPin_Click(object sender, EventArgs e)
@@ -282,14 +290,15 @@ namespace DoomLauncher.Controls
         {
             Pinned = pinned;
 
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
             Image img = Icons.Pin;
             if (!Pinned)
                 img = Util.RotateImage(img, 90);
 
             btnPin.Image = img;
             btnPin.Image = ThumbnailManager.FixedSize(img, (int)(img.Width * .8), (int)(img.Height * .8), Color.Transparent);
-            btnPin.Width = img.Width + 2;
-            btnPin.Height = img.Height + 4;
+            btnPin.Width = img.Width + dpiScale.ScaleIntX(2);
+            btnPin.Height = img.Height + dpiScale.ScaleIntY(4);
         }
     }
 
