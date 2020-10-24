@@ -36,6 +36,9 @@ namespace DoomLauncher.Controls
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             int offset = btnPin.Width + dpiScale.ScaleIntX(12);
 
+            if (flpSearch.Width < dpiScale.ScaleIntX(60))
+                return;
+
             if (flpSearch.Width < txtSearch.MaximumSize.Width + offset)
                 txtSearch.Width = flpSearch.Width - offset;
             else
