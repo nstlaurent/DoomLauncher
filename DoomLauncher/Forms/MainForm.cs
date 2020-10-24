@@ -1897,7 +1897,7 @@ namespace DoomLauncher
                 start--;
             }
 
-            m_tabHandler.InsertTab(start + 1, CreateTagTab(GameFileViewFactory.DefaultColumnTextFields, DataCache.Instance.GetColumnConfig(), tag.Name, tag, true));
+            m_tabHandler.InsertTab(start + 1, CreateTagTab(GameFileViewFactory.DefaultColumnTextFields, DataCache.Instance.GetColumnConfig(), tag.FavoriteName, tag, true));
         }
 
         private void utilityToolStripItem_Click(object sender, EventArgs e)
