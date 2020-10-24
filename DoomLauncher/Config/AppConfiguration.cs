@@ -22,7 +22,7 @@ namespace DoomLauncher
         public static string ColumnConfigName => "ColumnConfig";
         public static string ScreenshotPreviewSizeName => "ScreenshotPreviewSize";
         public static string ItemsPerPageName => "ItemsPerPage";
-        public static string LastSelectedTab => "LastSelectedTab";
+        public static string LastSelectedTabIndexName => "LastSelectedTabIndex";
         public static string TagSelectPinnedName => "TagSelectPinned";
         public static string ShowTabHeadersName => "ShowTabHeaders";
 
@@ -118,7 +118,7 @@ namespace DoomLauncher
                 FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
                 ItemsPerPage = Convert.ToInt32(GetValue(config, ItemsPerPageName));
                 DeleteScreenshotsAfterImport = Convert.ToBoolean(GetValue(config, "DeleteScreenshotsAfterImport"));
-                LastSelectedTabIndex = Convert.ToInt32(GetValue(config, LastSelectedTab));
+                LastSelectedTabIndex = Convert.ToInt32(GetValue(config, LastSelectedTabIndexName));
                 TagSelectPinned = Convert.ToBoolean(GetValue(config, TagSelectPinnedName));
                 ShowTabHeaders = Convert.ToBoolean(GetValue(config, ShowTabHeadersName));
 
@@ -240,6 +240,6 @@ namespace DoomLauncher
         public bool DeleteScreenshotsAfterImport { get; set; }
         public int LastSelectedTabIndex { get; set; }
         public bool TagSelectPinned { get; set; }
-        public bool ShowTabHeaders { get; set; }
+        public bool ShowTabHeaders { get; set; } = true;
     }
 }
