@@ -1126,7 +1126,7 @@ namespace DoomLauncher
             m_tagSelectControl.ClearSelections();
             m_tagPopup = new Popup(m_tagSelectControl)
             {
-                Width = dpiScale.ScaleIntX(300),
+                Width = dpiScale.ScaleIntX(AppConfiguration.SplitTagSelect),
                 Height = Height - PointToClient(btnTags.PointToScreen(btnTags.Location)).Y - btnTags.Height - dpiScale.ScaleIntY(40)
             };
             m_tagPopup.Show(btnTags);
