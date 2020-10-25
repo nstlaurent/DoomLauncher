@@ -1765,6 +1765,42 @@ namespace DoomLauncher
             view.DataSource = GetViewSort(view, view.DataSource);
         }
 
+        private void TabView_DataSourceChanging(object sender, GameFileListEventArgs e)
+        {
+            if (sender is ITabView tabView)
+            {
+                if (!(sender is IWadTabViewCtrl))
+                    e.GameFiles = RemoveExcludeTags(tabView, e.GameFiles);
+                e.GameFiles = GetViewSort(tabView.GameFileViewControl, e.GameFiles);
+            }
+        }
+
+        private IEnumerable<IGameFile> RemoveExcludeTags(ITabView tabView, IEnumerable<IGameFile> gameFiles)
+        {
+            ITagData currentTag = null;
+            if (tabView is TagTabView tagTabView)
+                currentTag = tagTabView.TagDataSource;
+
+            List<IGameFile> gameFilesInclude = new List<IGameFile>(gameFiles.Count());
+
+            foreach (IGameFile gameFile in gameFiles)
+            {
+                var tags = DataCache.Instance.TagMapLookup.GetTags(gameFile);
+
+                // This tab is for this tag, include it
+                if (currentTag != null && currentTag.ExcludeFromOtherTabs && tags.Any(x => x.TagID == currentTag.TagID))
+                {
+                    gameFilesInclude.Add(gameFile);
+                    continue;
+                }
+
+                if (!tags.Any(x => x.ExcludeFromOtherTabs))
+                    gameFilesInclude.Add(gameFile);
+            }
+
+            return gameFilesInclude;
+        }
+
         private IEnumerable<IGameFile> GetViewSort(IGameFileView view, IEnumerable<IGameFile> gameFiles)
         {
             if (!(view is IGameFileSortableView sortableView) || string.IsNullOrEmpty(sortableView.GetSortedColumnKey()))

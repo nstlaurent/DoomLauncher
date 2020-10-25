@@ -195,41 +195,6 @@ namespace DoomLauncher
             SetGameFileViewEvents(tabView.GameFileViewControl, dragDrop);
         }
 
-        private void TabView_DataSourceChanging(object sender, GameFileListEventArgs e)
-        {
-            if (sender is ITabView tabView)
-            {
-                e.GameFiles = RemoveExcludeTags(tabView, e.GameFiles);
-                e.GameFiles = GetViewSort(tabView.GameFileViewControl, e.GameFiles);
-            }
-        }
-
-        private IEnumerable<IGameFile> RemoveExcludeTags(ITabView tabView, IEnumerable<IGameFile> gameFiles)
-        {
-            ITagData currentTag = null;
-            if (tabView is TagTabView tagTabView)
-                currentTag = tagTabView.TagDataSource;
-
-            List<IGameFile> gameFilesExclude = new List<IGameFile>(gameFiles.Count());
-
-            foreach (IGameFile gameFile in gameFiles)
-            {
-                var tags = DataCache.Instance.TagMapLookup.GetTags(gameFile);
-
-                // This tab is for this tag, include it
-                if (currentTag != null && currentTag.ExcludeFromOtherTabs && tags.Any(x => x.TagID == currentTag.TagID))
-                {
-                    gameFilesExclude.Add(gameFile);
-                    continue;
-                }
-
-                if (!tags.Any(x => x.ExcludeFromOtherTabs))
-                    gameFilesExclude.Add(gameFile);
-            }
-
-            return gameFilesExclude;
-        }
-
         private void SetupTabs()
         {
             SetShowTabHeaders();
