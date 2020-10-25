@@ -52,6 +52,16 @@ namespace DoomLauncher
             txtDescription.Visible = true;
         }
 
+        public void PauseSlideshow()
+        {
+            pbImage.Stop();
+        }
+
+        public void ResumeSlideshow()
+        {
+            pbImage.Resume();
+        }
+
         public void SetPreviewImages(List<string> imagePaths)
         {
             pbImage.SetImages(imagePaths);

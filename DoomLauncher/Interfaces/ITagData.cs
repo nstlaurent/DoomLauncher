@@ -7,5 +7,8 @@
         bool HasTab { get; set; }
         bool HasColor { get; set; }
         int? Color { get; set; }
+        bool ExcludeFromOtherTabs { get; set; }
+        bool Favorite { get; set; }
+        string FavoriteName { get; }
     }
 }

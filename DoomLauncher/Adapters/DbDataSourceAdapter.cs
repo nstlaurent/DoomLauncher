@@ -546,16 +546,18 @@ namespace DoomLauncher
         public void UpdateTag(ITagData tag)
         {
             string query = @"update Tags set 
-            Name = @Name, HasTab = @HasTab, HasColor = @HasColor, Color = @Color
+            Name = @Name, HasTab = @HasTab, HasColor = @HasColor, Color = @Color, ExcludeFromOtherTabs = @ExcludeFromOtherTabs, Favorite = @Favorite
             where TagID = @TagID";
 
             List<DbParameter> parameters = new List<DbParameter>
             {
-                DataAccess.DbAdapter.CreateParameter("Name", tag.Name ?? string.Empty ),
+                DataAccess.DbAdapter.CreateParameter("Name", tag.Name ?? string.Empty),
                 DataAccess.DbAdapter.CreateParameter("HasTab", tag.HasTab),
                 DataAccess.DbAdapter.CreateParameter("HasColor", tag.HasColor),
                 DataAccess.DbAdapter.CreateParameter("Color", tag.Color.HasValue ? tag.Color : (object)DBNull.Value),
-                DataAccess.DbAdapter.CreateParameter("TagID", tag.TagID)
+                DataAccess.DbAdapter.CreateParameter("TagID", tag.TagID),
+                DataAccess.DbAdapter.CreateParameter("ExcludeFromOtherTabs", tag.ExcludeFromOtherTabs),
+                DataAccess.DbAdapter.CreateParameter("Favorite", tag.Favorite)
             };
 
             DataAccess.ExecuteNonQuery(query, parameters);

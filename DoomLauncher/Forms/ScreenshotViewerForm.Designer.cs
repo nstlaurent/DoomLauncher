@@ -33,10 +33,9 @@
             this.tblButtons = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnSave = new System.Windows.Forms.ToolStripButton();
+            this.btnSlideshow = new System.Windows.Forms.ToolStripButton();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnPrev = new System.Windows.Forms.Button();
-            this.btnSlideshow = new System.Windows.Forms.ToolStripButton();
-            this.pbMain = new DoomLauncher.SlideShowPictureBox();
             this.tblMain.SuspendLayout();
             this.tblButtons.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -48,7 +47,6 @@
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblMain.Controls.Add(this.tblButtons, 0, 1);
-            this.tblMain.Controls.Add(this.pbMain, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
@@ -94,12 +92,22 @@
             // btnSave
             // 
             this.btnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
+            this.btnSave.Image = global::DoomLauncher.Properties.Resources.Save;
             this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(23, 22);
             this.btnSave.Text = "Save Image";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnSlideshow
+            // 
+            this.btnSlideshow.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnSlideshow.Image = global::DoomLauncher.Properties.Resources.Video;
+            this.btnSlideshow.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnSlideshow.Name = "btnSlideshow";
+            this.btnSlideshow.Size = new System.Drawing.Size(23, 22);
+            this.btnSlideshow.Text = "Slideshow";
+            this.btnSlideshow.Click += new System.EventHandler(this.btnSlideshow_Click);
             // 
             // btnNext
             // 
@@ -130,24 +138,6 @@
             this.btnPrev.UseVisualStyleBackColor = false;
             this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
             // 
-            // btnSlideshow
-            // 
-            this.btnSlideshow.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnSlideshow.Image = ((System.Drawing.Image)(resources.GetObject("btnSlideshow.Image")));
-            this.btnSlideshow.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnSlideshow.Name = "btnSlideshow";
-            this.btnSlideshow.Size = new System.Drawing.Size(23, 22);
-            this.btnSlideshow.Text = "Slideshow";
-            this.btnSlideshow.Click += new System.EventHandler(this.btnSlideshow_Click);
-            // 
-            // pbMain
-            // 
-            this.pbMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbMain.Location = new System.Drawing.Point(3, 3);
-            this.pbMain.Name = "pbMain";
-            this.pbMain.Size = new System.Drawing.Size(618, 395);
-            this.pbMain.TabIndex = 2;
-            // 
             // ScreenshotViewerForm
             // 
             this.ClientSize = new System.Drawing.Size(624, 441);
@@ -172,6 +162,5 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton btnSave;
         private System.Windows.Forms.ToolStripButton btnSlideshow;
-        private SlideShowPictureBox pbMain;
     }
 }

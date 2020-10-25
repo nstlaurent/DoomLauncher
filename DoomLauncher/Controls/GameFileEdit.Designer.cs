@@ -31,7 +31,7 @@
         {
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.label9 = new System.Windows.Forms.Label();
-            this.lblTags = new System.Windows.Forms.Label();
+            this.lblTags = new System.Windows.Forms.LinkLabel();
             this.txtAuthor = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -41,6 +41,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.txtTitle = new System.Windows.Forms.TextBox();
             this.dtRelease = new System.Windows.Forms.DateTimePicker();
+            this.ctrlStarRating = new DoomLauncher.RatingControl();
             this.label7 = new System.Windows.Forms.Label();
             this.chkTitle = new System.Windows.Forms.CheckBox();
             this.chkAuthor = new System.Windows.Forms.CheckBox();
@@ -48,14 +49,13 @@
             this.chkRating = new System.Windows.Forms.CheckBox();
             this.chkDescription = new System.Windows.Forms.CheckBox();
             this.chkComments = new System.Windows.Forms.CheckBox();
-            this.chkTags = new System.Windows.Forms.CheckBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.lnkMapsEdit = new System.Windows.Forms.LinkLabel();
-            this.chkMaps = new System.Windows.Forms.CheckBox();
-            this.ctrlStarRating = new DoomLauncher.RatingControl();
             this.txtDescription = new DoomLauncher.Controls.CRichTextBox();
             this.txtComments = new DoomLauncher.Controls.CRichTextBox();
+            this.chkTags = new System.Windows.Forms.CheckBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.lblFile = new DoomLauncher.GrowLabel();
+            this.chkMaps = new System.Windows.Forms.CheckBox();
+            this.lnkMapsEdit = new System.Windows.Forms.LinkLabel();
             this.tblMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -126,7 +126,9 @@
             this.lblTags.Name = "lblTags";
             this.lblTags.Size = new System.Drawing.Size(31, 13);
             this.lblTags.TabIndex = 13;
+            this.lblTags.TabStop = true;
             this.lblTags.Text = "Tags";
+            this.lblTags.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblTags_LinkClicked);
             // 
             // txtAuthor
             // 
@@ -212,6 +214,15 @@
             this.dtRelease.ShowCheckBox = true;
             this.dtRelease.Size = new System.Drawing.Size(200, 20);
             this.dtRelease.TabIndex = 8;
+            // 
+            // ctrlStarRating
+            // 
+            this.ctrlStarRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ctrlStarRating.Location = new System.Drawing.Point(103, 120);
+            this.ctrlStarRating.Name = "ctrlStarRating";
+            this.ctrlStarRating.SelectedRating = 0;
+            this.ctrlStarRating.Size = new System.Drawing.Size(105, 20);
+            this.ctrlStarRating.TabIndex = 11;
             // 
             // label7
             // 
@@ -307,61 +318,6 @@
             this.chkComments.Text = "chkComments";
             this.chkComments.UseVisualStyleBackColor = true;
             // 
-            // chkTags
-            // 
-            this.chkTags.AutoSize = true;
-            this.chkTags.Checked = true;
-            this.chkTags.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTags.Location = new System.Drawing.Point(83, 151);
-            this.chkTags.Name = "chkTags";
-            this.chkTags.Size = new System.Drawing.Size(14, 14);
-            this.chkTags.TabIndex = 22;
-            this.chkTags.UseVisualStyleBackColor = true;
-            // 
-            // label8
-            // 
-            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 13);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(23, 13);
-            this.label8.TabIndex = 23;
-            this.label8.Text = "File";
-            // 
-            // lnkMapsEdit
-            // 
-            this.lnkMapsEdit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lnkMapsEdit.AutoSize = true;
-            this.lnkMapsEdit.Location = new System.Drawing.Point(103, 497);
-            this.lnkMapsEdit.Name = "lnkMapsEdit";
-            this.lnkMapsEdit.Size = new System.Drawing.Size(34, 13);
-            this.lnkMapsEdit.TabIndex = 26;
-            this.lnkMapsEdit.TabStop = true;
-            this.lnkMapsEdit.Text = "Edit...";
-            this.lnkMapsEdit.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkMapsEdit_LinkClicked);
-            // 
-            // chkMaps
-            // 
-            this.chkMaps.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.chkMaps.AutoSize = true;
-            this.chkMaps.Checked = true;
-            this.chkMaps.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkMaps.Location = new System.Drawing.Point(83, 498);
-            this.chkMaps.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
-            this.chkMaps.Name = "chkMaps";
-            this.chkMaps.Size = new System.Drawing.Size(14, 14);
-            this.chkMaps.TabIndex = 27;
-            this.chkMaps.UseVisualStyleBackColor = true;
-            // 
-            // ctrlStarRating
-            // 
-            this.ctrlStarRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStarRating.Location = new System.Drawing.Point(103, 120);
-            this.ctrlStarRating.Name = "ctrlStarRating";
-            this.ctrlStarRating.SelectedRating = 0;
-            this.ctrlStarRating.Size = new System.Drawing.Size(105, 20);
-            this.ctrlStarRating.TabIndex = 11;
-            // 
             // txtDescription
             // 
             this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -384,6 +340,27 @@
             this.txtComments.Text = "";
             this.txtComments.WarnLinkClick = true;
             // 
+            // chkTags
+            // 
+            this.chkTags.AutoSize = true;
+            this.chkTags.Checked = true;
+            this.chkTags.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTags.Location = new System.Drawing.Point(83, 151);
+            this.chkTags.Name = "chkTags";
+            this.chkTags.Size = new System.Drawing.Size(14, 14);
+            this.chkTags.TabIndex = 22;
+            this.chkTags.UseVisualStyleBackColor = true;
+            // 
+            // label8
+            // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 13);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(23, 13);
+            this.label8.TabIndex = 23;
+            this.label8.Text = "File";
+            // 
             // lblFile
             // 
             this.lblFile.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -395,6 +372,31 @@
             this.lblFile.Size = new System.Drawing.Size(23, 13);
             this.lblFile.TabIndex = 24;
             this.lblFile.Text = "File";
+            // 
+            // chkMaps
+            // 
+            this.chkMaps.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.chkMaps.AutoSize = true;
+            this.chkMaps.Checked = true;
+            this.chkMaps.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkMaps.Location = new System.Drawing.Point(83, 498);
+            this.chkMaps.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+            this.chkMaps.Name = "chkMaps";
+            this.chkMaps.Size = new System.Drawing.Size(14, 14);
+            this.chkMaps.TabIndex = 27;
+            this.chkMaps.UseVisualStyleBackColor = true;
+            // 
+            // lnkMapsEdit
+            // 
+            this.lnkMapsEdit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lnkMapsEdit.AutoSize = true;
+            this.lnkMapsEdit.Location = new System.Drawing.Point(103, 497);
+            this.lnkMapsEdit.Name = "lnkMapsEdit";
+            this.lnkMapsEdit.Size = new System.Drawing.Size(34, 13);
+            this.lnkMapsEdit.TabIndex = 26;
+            this.lnkMapsEdit.TabStop = true;
+            this.lnkMapsEdit.Text = "Edit...";
+            this.lnkMapsEdit.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkMapsEdit_LinkClicked);
             // 
             // GameFileEdit
             // 
@@ -422,7 +424,7 @@
         private System.Windows.Forms.TextBox txtTitle;
         private System.Windows.Forms.DateTimePicker dtRelease;
         private RatingControl ctrlStarRating;
-        private System.Windows.Forms.Label lblTags;
+        private System.Windows.Forms.LinkLabel lblTags;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox chkTitle;
         private System.Windows.Forms.CheckBox chkAuthor;

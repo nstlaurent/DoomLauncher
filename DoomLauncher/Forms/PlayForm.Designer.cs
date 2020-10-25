@@ -38,10 +38,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
             this.profileToolStrip = new System.Windows.Forms.ToolStrip();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.newProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label5 = new System.Windows.Forms.Label();
             this.cmbProfiles = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -69,7 +65,6 @@
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
-            this.pbInfo = new System.Windows.Forms.PictureBox();
             this.flp1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lnkSpecific = new System.Windows.Forms.LinkLabel();
             this.lnkCustomParameters = new System.Windows.Forms.LinkLabel();
@@ -80,6 +75,11 @@
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.ctrlFiles = new DoomLauncher.FilesCtrl();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.newProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pbInfo = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.tblProfile.SuspendLayout();
             this.profileToolStrip.SuspendLayout();
@@ -88,13 +88,13 @@
             this.groupBox3.SuspendLayout();
             this.tblFiles.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).BeginInit();
             this.flp1.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblInner.SuspendLayout();
             this.pnlLeft.SuspendLayout();
             this.pnlBottom.SuspendLayout();
             this.flpButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).BeginInit();
             this.SuspendLayout();
             // 
             // cmbSourcePorts
@@ -193,44 +193,6 @@
             this.profileToolStrip.Size = new System.Drawing.Size(32, 23);
             this.profileToolStrip.TabIndex = 12;
             this.profileToolStrip.Text = "Options";
-            // 
-            // toolStripDropDownButton1
-            // 
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newProfileToolStripMenuItem,
-            this.editProfileToolStripMenuItem,
-            this.deleteProfileToolStripMenuItem});
-            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 20);
-            this.toolStripDropDownButton1.Text = "Options";
-            // 
-            // newProfileToolStripMenuItem
-            // 
-            this.newProfileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newProfileToolStripMenuItem.Image")));
-            this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.newProfileToolStripMenuItem.Text = "New Profile...";
-            this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
-            // 
-            // editProfileToolStripMenuItem
-            // 
-            this.editProfileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("editProfileToolStripMenuItem.Image")));
-            this.editProfileToolStripMenuItem.Name = "editProfileToolStripMenuItem";
-            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.editProfileToolStripMenuItem.Text = "Rename Profile...";
-            this.editProfileToolStripMenuItem.Click += new System.EventHandler(this.editProfileToolStripMenuItem_Click);
-            // 
-            // deleteProfileToolStripMenuItem
-            // 
-            this.deleteProfileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteProfileToolStripMenuItem.Image")));
-            this.deleteProfileToolStripMenuItem.Name = "deleteProfileToolStripMenuItem";
-            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.deleteProfileToolStripMenuItem.Text = "Delete Profile";
-            this.deleteProfileToolStripMenuItem.Click += new System.EventHandler(this.deleteProfileToolStripMenuItem_Click);
             // 
             // label5
             // 
@@ -529,14 +491,6 @@
             this.lblInfo.TabIndex = 25;
             this.lblInfo.Text = "label";
             // 
-            // pbInfo
-            // 
-            this.pbInfo.Location = new System.Drawing.Point(3, 7);
-            this.pbInfo.Name = "pbInfo";
-            this.pbInfo.Size = new System.Drawing.Size(16, 16);
-            this.pbInfo.TabIndex = 24;
-            this.pbInfo.TabStop = false;
-            // 
             // flp1
             // 
             this.flp1.Controls.Add(this.lnkSpecific);
@@ -658,6 +612,55 @@
             this.ctrlFiles.Size = new System.Drawing.Size(224, 306);
             this.ctrlFiles.TabIndex = 20;
             // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newProfileToolStripMenuItem,
+            this.editProfileToolStripMenuItem,
+            this.deleteProfileToolStripMenuItem});
+            this.toolStripDropDownButton1.Image = global::DoomLauncher.Properties.Resources.Bars;
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 20);
+            this.toolStripDropDownButton1.Text = "Options";
+            // 
+            // newProfileToolStripMenuItem
+            // 
+            this.newProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.File;
+            this.newProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(182, 24);
+            this.newProfileToolStripMenuItem.Text = "New Profile...";
+            this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
+            // 
+            // editProfileToolStripMenuItem
+            // 
+            this.editProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Edit;
+            this.editProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.editProfileToolStripMenuItem.Name = "editProfileToolStripMenuItem";
+            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(182, 24);
+            this.editProfileToolStripMenuItem.Text = "Rename Profile...";
+            this.editProfileToolStripMenuItem.Click += new System.EventHandler(this.editProfileToolStripMenuItem_Click);
+            // 
+            // deleteProfileToolStripMenuItem
+            // 
+            this.deleteProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Delete;
+            this.deleteProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.deleteProfileToolStripMenuItem.Name = "deleteProfileToolStripMenuItem";
+            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(182, 24);
+            this.deleteProfileToolStripMenuItem.Text = "Delete Profile";
+            this.deleteProfileToolStripMenuItem.Click += new System.EventHandler(this.deleteProfileToolStripMenuItem_Click);
+            // 
+            // pbInfo
+            // 
+            this.pbInfo.Location = new System.Drawing.Point(3, 7);
+            this.pbInfo.Name = "pbInfo";
+            this.pbInfo.Size = new System.Drawing.Size(16, 16);
+            this.pbInfo.TabIndex = 24;
+            this.pbInfo.TabStop = false;
+            // 
             // PlayForm
             // 
             this.AcceptButton = this.btnOK;
@@ -683,7 +686,6 @@
             this.tblFiles.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).EndInit();
             this.flp1.ResumeLayout(false);
             this.flp1.PerformLayout();
             this.tblMain.ResumeLayout(false);
@@ -692,6 +694,7 @@
             this.pnlBottom.ResumeLayout(false);
             this.pnlBottom.PerformLayout();
             this.flpButtons.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).EndInit();
             this.ResumeLayout(false);
 
         }

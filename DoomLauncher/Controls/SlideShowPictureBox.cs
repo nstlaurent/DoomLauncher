@@ -25,7 +25,6 @@ namespace DoomLauncher
         private float m_alpha = 0.0F;
 
         private SlideshowState m_state = SlideshowState.SetImage;
-        private DateTime m_fadeOutTime;
         private Image m_currentImage;
         private Image m_drawImage;
         private Graphics m_currentGraphics;
@@ -51,6 +50,21 @@ namespace DoomLauncher
             Resize += SlideShowPictureBox_Resize;
         }
 
+        public void Stop()
+        {
+            if (m_images.Count > 0)
+            {
+                SetImages(m_images);
+                m_timer.Stop();
+            }
+        }
+
+        public void Resume()
+        {
+            if (m_images.Count > 0)
+                SetImages(m_images);
+        }
+
         public void SetImage(Image image)
         {
             ClearImage();
@@ -71,7 +85,6 @@ namespace DoomLauncher
             m_images = imagePaths;
             m_state = SlideshowState.Wait;
             m_fadeOut.Restart();
-            //m_fadeOutTime = GetFadeOutTime();
             m_timer.Stop();
             m_timer.Start();
 
@@ -80,12 +93,6 @@ namespace DoomLauncher
             InitBlendCache();
 
             return true;
-        }
-
-        public void SetImageIndex(int index)
-        {
-            if (index > 0 && index < m_images.Count)
-                m_index = index;
         }
 
         public void ClearImage()
@@ -109,7 +116,6 @@ namespace DoomLauncher
                     m_state = SlideshowState.FadeIn;
                     m_alpha = 0.0F;
                     m_fadeOut.Restart();
-                   // m_fadeOutTime = GetFadeOutTime();
                     SetImage();
 
                     m_fadeCount = FadeTimes;
@@ -205,7 +211,7 @@ namespace DoomLauncher
 
         private void InitBlendCache()
         {
-            m_currentImage = Util.FixedSize(Image.FromFile(m_images[m_index]), pbImage.Width, pbImage.Height);
+            m_currentImage = Util.FixedSize(Image.FromFile(m_images[m_index]), pbImage.Width, pbImage.Height, Color.Black);
             m_drawImage = new Bitmap(m_currentImage.Width, m_currentImage.Height);
             m_currentGraphics = Graphics.FromImage(m_drawImage);
         }

@@ -12,9 +12,15 @@ namespace DoomLauncher.Forms
         private int m_index;
         private bool m_slideshow;
 
+        private SlideShowPictureBox pbMain = new SlideShowPictureBox();
+
         public ScreenshotViewerForm()
         {
             InitializeComponent();
+            pbMain.Dock = DockStyle.Fill;
+            tblMain.Controls.Add(pbMain, 0, 0);
+
+            btnSave.Image = Icons.Save;
 
             KeyPreview = true;
             KeyUp += ScreenshotViewerForm_KeyUp;
