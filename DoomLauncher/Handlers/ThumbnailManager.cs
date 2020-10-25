@@ -82,13 +82,13 @@ namespace DoomLauncher
                 return null;
 
             Image image = Image.FromFile(file);
-            Image thumb = FixedSize(image, GameFileTile.ImageWidth, GameFileTile.ImageHeight);
+            Image thumb = FixedSize(image, GameFileTile.ImageWidth, GameFileTile.ImageHeight, Color.Black);
             string filename = Guid.NewGuid().ToString() + ".png";
             thumb.Save(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);
             return filename;
         }
 
-        static Image FixedSize(Image imgPhoto, int width, int height)
+        public static Image FixedSize(Image imgPhoto, int width, int height, Color backColor)
         {
             int sourceWidth = imgPhoto.Width;
             int sourceHeight = imgPhoto.Height;
@@ -115,11 +115,11 @@ namespace DoomLauncher
             int destWidth = (int)(sourceWidth * nPercent);
             int destHeight = (int)(sourceHeight * nPercent);
 
-            Bitmap bmPhoto = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            Bitmap bmPhoto = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
             bmPhoto.SetResolution(imgPhoto.HorizontalResolution, imgPhoto.VerticalResolution);
 
             Graphics grPhoto = Graphics.FromImage(bmPhoto);
-            grPhoto.Clear(Color.Black);
+            grPhoto.Clear(backColor);
             grPhoto.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
             grPhoto.DrawImage(imgPhoto,

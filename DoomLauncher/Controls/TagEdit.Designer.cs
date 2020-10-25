@@ -38,9 +38,11 @@
             this.flp = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlColor = new System.Windows.Forms.Panel();
             this.btnSelect = new System.Windows.Forms.Button();
+            this.cmbExclude = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cmbColor = new System.Windows.Forms.ComboBox();
-            this.cmbExclude = new System.Windows.Forms.ComboBox();
+            this.lblFavorite = new System.Windows.Forms.Label();
+            this.cmbFavorite = new System.Windows.Forms.ComboBox();
             this.tblMain.SuspendLayout();
             this.flp.SuspendLayout();
             this.SuspendLayout();
@@ -55,21 +57,24 @@
             this.tblMain.Controls.Add(this.txtName, 1, 0);
             this.tblMain.Controls.Add(this.cmbTab, 1, 1);
             this.tblMain.Controls.Add(this.label3, 0, 2);
-            this.tblMain.Controls.Add(this.flp, 1, 4);
-            this.tblMain.Controls.Add(this.label4, 0, 3);
-            this.tblMain.Controls.Add(this.cmbColor, 1, 3);
+            this.tblMain.Controls.Add(this.flp, 1, 5);
             this.tblMain.Controls.Add(this.cmbExclude, 1, 2);
+            this.tblMain.Controls.Add(this.label4, 0, 4);
+            this.tblMain.Controls.Add(this.cmbColor, 1, 4);
+            this.tblMain.Controls.Add(this.lblFavorite, 0, 3);
+            this.tblMain.Controls.Add(this.cmbFavorite, 1, 3);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 6;
+            this.tblMain.RowCount = 7;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblMain.Size = new System.Drawing.Size(294, 160);
+            this.tblMain.Size = new System.Drawing.Size(294, 178);
             this.tblMain.TabIndex = 0;
             // 
             // label1
@@ -128,7 +133,7 @@
             this.flp.Controls.Add(this.pnlColor);
             this.flp.Controls.Add(this.btnSelect);
             this.flp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp.Location = new System.Drawing.Point(136, 104);
+            this.flp.Location = new System.Drawing.Point(136, 130);
             this.flp.Margin = new System.Windows.Forms.Padding(0);
             this.flp.Name = "flp";
             this.flp.Size = new System.Drawing.Size(158, 32);
@@ -157,30 +162,6 @@
             this.btnSelect.UseVisualStyleBackColor = true;
             this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
             // 
-            // label4
-            // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 84);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(75, 13);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "Highlight Color";
-            // 
-            // cmbColor
-            // 
-            this.cmbColor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmbColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbColor.FormattingEnabled = true;
-            this.cmbColor.Items.AddRange(new object[] {
-            "Yes",
-            "No"});
-            this.cmbColor.Location = new System.Drawing.Point(139, 81);
-            this.cmbColor.Name = "cmbColor";
-            this.cmbColor.Size = new System.Drawing.Size(152, 21);
-            this.cmbColor.TabIndex = 6;
-            this.cmbColor.SelectedIndexChanged += new System.EventHandler(this.cmbColor_SelectedIndexChanged);
-            // 
             // cmbExclude
             // 
             this.cmbExclude.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -194,13 +175,60 @@
             this.cmbExclude.Size = new System.Drawing.Size(152, 21);
             this.cmbExclude.TabIndex = 8;
             // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 110);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(75, 13);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "Highlight Color";
+            // 
+            // cmbColor
+            // 
+            this.cmbColor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmbColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbColor.FormattingEnabled = true;
+            this.cmbColor.Items.AddRange(new object[] {
+            "Yes",
+            "No"});
+            this.cmbColor.Location = new System.Drawing.Point(139, 107);
+            this.cmbColor.Name = "cmbColor";
+            this.cmbColor.Size = new System.Drawing.Size(152, 21);
+            this.cmbColor.TabIndex = 6;
+            this.cmbColor.SelectedIndexChanged += new System.EventHandler(this.cmbColor_SelectedIndexChanged);
+            // 
+            // lblFavorite
+            // 
+            this.lblFavorite.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFavorite.AutoSize = true;
+            this.lblFavorite.Location = new System.Drawing.Point(3, 84);
+            this.lblFavorite.Name = "lblFavorite";
+            this.lblFavorite.Size = new System.Drawing.Size(45, 13);
+            this.lblFavorite.TabIndex = 10;
+            this.lblFavorite.Text = "Favorite";
+            // 
+            // cmbFavorite
+            // 
+            this.cmbFavorite.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmbFavorite.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFavorite.FormattingEnabled = true;
+            this.cmbFavorite.Items.AddRange(new object[] {
+            "Yes",
+            "No"});
+            this.cmbFavorite.Location = new System.Drawing.Point(139, 81);
+            this.cmbFavorite.Name = "cmbFavorite";
+            this.cmbFavorite.Size = new System.Drawing.Size(152, 21);
+            this.cmbFavorite.TabIndex = 11;
+            // 
             // TagEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tblMain);
             this.Name = "TagEdit";
-            this.Size = new System.Drawing.Size(294, 160);
+            this.Size = new System.Drawing.Size(294, 178);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
             this.flp.ResumeLayout(false);
@@ -222,5 +250,7 @@
         private System.Windows.Forms.Panel pnlColor;
         private System.Windows.Forms.ComboBox cmbExclude;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblFavorite;
+        private System.Windows.Forms.ComboBox cmbFavorite;
     }
 }

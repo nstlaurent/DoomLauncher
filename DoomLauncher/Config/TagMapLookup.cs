@@ -7,6 +7,8 @@ namespace DoomLauncher
 {
     public class TagMapLookup : ITagMapLookup
     {
+        public event EventHandler<ITagData[]> TagMappingChanged;
+
         private readonly IDataSourceAdapter m_adapter;
 
         private Dictionary<int, ITagMapping[]> m_fileTagMapping;
@@ -16,7 +18,7 @@ namespace DoomLauncher
         {
             m_adapter = adapter;
 
-            Refresh();
+            Refresh(new ITagData[] { });
         }
 
         private Dictionary<int, ITagMapping[]> BuildTagMappingDictionary(IEnumerable<ITagMapping> tagMapping)
@@ -29,25 +31,24 @@ namespace DoomLauncher
             return ret;
         }
 
-        public void Refresh()
+        public void Refresh(ITagData[] tags)
         {
             IEnumerable<ITagMapping> tagMapping = m_adapter.GetTagMappings().OrderBy(x => x.FileID);
             m_fileTagMapping = BuildTagMappingDictionary(tagMapping);
 
             m_tags = m_adapter.GetTags().ToDictionary(x => x.TagID, x => x);
+
+            TagMappingChanged?.Invoke(this, tags);
         }
 
         public ITagData[] GetTags(IGameFile gameFile)
         {
-            if (gameFile != null && gameFile.GameFileID.HasValue)
+            if (gameFile != null && gameFile.GameFileID.HasValue && m_fileTagMapping.ContainsKey(gameFile.GameFileID.Value))
             {
-                if (m_fileTagMapping.ContainsKey(gameFile.GameFileID.Value))
-                {
-                    ITagMapping[] tagMapping = m_fileTagMapping[gameFile.GameFileID.Value];
+                ITagMapping[] tagMapping = m_fileTagMapping[gameFile.GameFileID.Value];
 
-                    return tagMapping.Where(k => m_tags.ContainsKey(k.TagID))
-                         .Select(k => m_tags[k.TagID]).ToArray();
-                }
+                return tagMapping.Where(k => m_tags.ContainsKey(k.TagID))
+                     .Select(k => m_tags[k.TagID]).OrderBy(x => x.Name).ToArray();
             }
 
             return new ITagData[] { };

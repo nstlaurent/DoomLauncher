@@ -31,7 +31,7 @@
         {
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.label9 = new System.Windows.Forms.Label();
-            this.lblTags = new System.Windows.Forms.Label();
+            this.lblTags = new System.Windows.Forms.LinkLabel();
             this.txtAuthor = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -126,7 +126,9 @@
             this.lblTags.Name = "lblTags";
             this.lblTags.Size = new System.Drawing.Size(31, 13);
             this.lblTags.TabIndex = 13;
+            this.lblTags.TabStop = true;
             this.lblTags.Text = "Tags";
+            this.lblTags.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblTags_LinkClicked);
             // 
             // txtAuthor
             // 
@@ -422,7 +424,7 @@
         private System.Windows.Forms.TextBox txtTitle;
         private System.Windows.Forms.DateTimePicker dtRelease;
         private RatingControl ctrlStarRating;
-        private System.Windows.Forms.Label lblTags;
+        private System.Windows.Forms.LinkLabel lblTags;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox chkTitle;
         private System.Windows.Forms.CheckBox chkAuthor;

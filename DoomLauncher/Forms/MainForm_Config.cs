@@ -21,6 +21,7 @@ namespace DoomLauncher
                 {
                     UpdateConfig(config, AppConfiguration.SplitTopBottomName, splitTopBottom.SplitterDistance.ToString());
                     UpdateConfig(config, AppConfiguration.SplitLeftRightName, splitLeftRight.SplitterDistance.ToString());
+                    UpdateConfig(config, AppConfiguration.SplitTagSelectName, splitTagSelect.SplitterDistance.ToString());
 
                     UpdateConfig(config, AppConfiguration.AppWidthName, Size.Width.ToString());
                     UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
@@ -36,7 +37,8 @@ namespace DoomLauncher
 
                 UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
                 UpdateConfig(config, AppConfiguration.ItemsPerPageName, AppConfiguration.ItemsPerPage.ToString());
-                UpdateConfig(config, AppConfiguration.LastSelectedTab, tabControl.SelectedIndex.ToString());
+                UpdateConfig(config, AppConfiguration.LastSelectedTabIndexName, tabControl.SelectedIndex.ToString());
+                UpdateConfig(config, AppConfiguration.TagSelectPinnedName, m_tagSelectControl.Pinned.ToString());
             }
         }
 

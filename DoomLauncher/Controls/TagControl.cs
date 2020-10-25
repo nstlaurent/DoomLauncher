@@ -1,4 +1,5 @@
-﻿using DoomLauncher.DataSources;
+﻿using DoomLauncher.Controls;
+using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,42 +17,19 @@ namespace DoomLauncher
 
         public TagControl()
         {
-            InitializeComponent();
-
-            GameFileViewControl.StyleGrid(dgvTags);
-            dgvTags.MultiSelect = false;
-
-            DataGridViewColumn col = new DataGridViewTextBoxColumn();
-            col.HeaderText = "Name";
-            col.Name = "Name";
-            col.DataPropertyName = "Name";
-            dgvTags.Columns.Add(col);
-
-            col = new DataGridViewTextBoxColumn();
-            col.HeaderText = "Display Tab";
-            col.Name = "HasTab";
-            col.DataPropertyName = "HasTab";
-            dgvTags.Columns.Add(col);
-
-            col = new DataGridViewTextBoxColumn();
-            col.HeaderText = "Exclude";
-            col.Name = "ExcludeFromOtherTabs";
-            col.DataPropertyName = "ExcludeFromOtherTabs";
-            dgvTags.Columns.Add(col);
-
-            col = new DataGridViewTextBoxColumn();
-            col.HeaderText = "Display Color";
-            col.Name = "HasColor";
-            col.DataPropertyName = "HasColor";
-            dgvTags.Columns.Add(col);
-
-            col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            InitializeComponent();          
         }
 
         public void Init(IDataSourceAdapter adapter)
         {
             m_adapter = adapter;
-            dgvTags.DataSource = adapter.GetTags().OrderBy(x => x.Name).ToList();
+            tagSelectCtrl.Init(new TagSelectOptions() { AllowRowSelect = true, ShowTagData = true, CustomSetData = true });
+            SetTagData();
+        }
+
+        private void SetTagData()
+        {
+            tagSelectCtrl.SetDataSource(DataCache.Instance.SortTags(m_adapter.GetTags()).ToList());
         }
 
         public ITagData[] AddedTags
@@ -86,7 +64,7 @@ namespace DoomLauncher
                 else
                 {
                     m_adapter.InsertTag(tag);
-                    Init(m_adapter);
+                    SetTagData();
 
                     IEnumerable<ITagData> check = m_adapter.GetTags().Where(x => x.Name == tag.Name);
 
@@ -96,6 +74,7 @@ namespace DoomLauncher
                             m_addTags.Remove(check.First());
 
                         m_addTags.Add(check.First());
+                        tagSelectCtrl.SetSelectedItem(check.First());
                     }
                 }
             }
@@ -103,36 +82,34 @@ namespace DoomLauncher
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dgvTags.SelectedRows.Count > 0)
+            if (tagSelectCtrl.SelectedItem != null)
             {
-                ITagData tag = dgvTags.SelectedRows[0].DataBoundItem as ITagData;
+                ITagData tag = tagSelectCtrl.SelectedItem;
+                TagEditForm form = new TagEditForm();
+                form.TagEditControl.SetDataSource(tag);
+                form.StartPosition = FormStartPosition.CenterParent;
 
-                if (tag != null)
+                if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    TagEditForm form = new TagEditForm();
-                    form.TagEditControl.SetDataSource(tag);
-                    form.StartPosition = FormStartPosition.CenterParent;
-                    
-                    if (form.ShowDialog(this) == DialogResult.OK)
+                    form.TagEditControl.GetDataSource(tag);
+
+                    if (!IsTagNameUnique(tag))
                     {
-                        form.TagEditControl.GetDataSource(tag);
-
-                        if (!IsTagNameUnique(tag))
-                        {
-                            MessageBox.Show(this, "Tag name must be unique and not empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Init(m_adapter);
-                        }
-                        else
-                        {
-                            m_adapter.UpdateTag(tag);
-                            Init(m_adapter);
-
-                            if (m_editTags.Contains(tag))
-                                m_editTags.Remove(tag);
-
-                            m_editTags.Add(tag);
-                        }
+                        MessageBox.Show(this, "Tag name must be unique and not empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        SetTagData();
                     }
+                    else
+                    {
+                        m_adapter.UpdateTag(tag);
+                        SetTagData();
+
+                        if (m_editTags.Contains(tag))
+                            m_editTags.Remove(tag);
+
+                        m_editTags.Add(tag);
+                    }
+
+                    tagSelectCtrl.SetSelectedItem(tag);
                 }
             }
         }
@@ -140,28 +117,24 @@ namespace DoomLauncher
         private bool IsTagNameUnique(ITagData tag)
         {
             IEnumerable<ITagData> check = m_adapter.GetTags().Where(x => x.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase) && !x.Equals(tag));
-            return !(string.IsNullOrEmpty(tag.Name) || check.Any() || MainForm.GetBaseTabs().ToList().FindAll(x=> tag.Name.Equals(x, StringComparison.CurrentCultureIgnoreCase)).Any());
+            return !(string.IsNullOrEmpty(tag.Name) || check.Any() || TabKeys.KeyNames.ToList().FindAll(x=> tag.Name.Equals(x, StringComparison.CurrentCultureIgnoreCase)).Any());
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dgvTags.SelectedRows.Count > 0 && MessageBox.Show(this, "Are you sure you want to delete this tag?", 
+            if (tagSelectCtrl.SelectedItem != null && MessageBox.Show(this, "Are you sure you want to delete this tag?",
                 "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
-                ITagData tag = dgvTags.SelectedRows[0].DataBoundItem as ITagData;
+                ITagData tag = tagSelectCtrl.SelectedItem;
+                m_adapter.DeleteTag(tag);
+                m_adapter.DeleteTagMapping(tag.TagID);
 
-                if (tag != null)
-                {
-                    m_adapter.DeleteTag(tag);
-                    m_adapter.DeleteTagMapping(tag.TagID);
+                SetTagData();
 
-                    Init(m_adapter);
+                if (m_deleteTags.Contains(tag))
+                    m_deleteTags.Remove(tag);
 
-                    if (m_deleteTags.Contains(tag))
-                        m_deleteTags.Remove(tag);
-
-                    m_deleteTags.Add(tag);
-                }
+                m_deleteTags.Add(tag);
             }
         }
     }

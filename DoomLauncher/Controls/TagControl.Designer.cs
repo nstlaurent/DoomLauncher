@@ -29,15 +29,13 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.dgvTags = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
+            this.tagSelectCtrl = new DoomLauncher.Controls.TagSelectControl();
             this.tblMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTags)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,8 +43,8 @@
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.dgvTags, 0, 0);
             this.tblMain.Controls.Add(this.flowLayoutPanel1, 0, 1);
+            this.tblMain.Controls.Add(this.tagSelectCtrl, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
@@ -55,24 +53,6 @@
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.Size = new System.Drawing.Size(296, 150);
             this.tblMain.TabIndex = 0;
-            // 
-            // dgvTags
-            // 
-            this.dgvTags.AllowUserToAddRows = false;
-            this.dgvTags.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dgvTags.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvTags.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dgvTags.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.dgvTags.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTags.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvTags.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgvTags.GridColor = System.Drawing.SystemColors.ActiveBorder;
-            this.dgvTags.Location = new System.Drawing.Point(3, 3);
-            this.dgvTags.Name = "dgvTags";
-            this.dgvTags.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTags.Size = new System.Drawing.Size(290, 112);
-            this.dgvTags.TabIndex = 0;
             // 
             // flowLayoutPanel1
             // 
@@ -116,6 +96,14 @@
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
+            // tagSelectCtrl
+            // 
+            this.tagSelectCtrl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tagSelectCtrl.Location = new System.Drawing.Point(3, 3);
+            this.tagSelectCtrl.Name = "tagSelectCtrl";
+            this.tagSelectCtrl.Size = new System.Drawing.Size(290, 112);
+            this.tagSelectCtrl.TabIndex = 2;
+            // 
             // TagControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -124,7 +112,6 @@
             this.Name = "TagControl";
             this.Size = new System.Drawing.Size(296, 150);
             this.tblMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTags)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -133,10 +120,10 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tblMain;
-        private System.Windows.Forms.DataGridView dgvTags;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
+        private Controls.TagSelectControl tagSelectCtrl;
     }
 }
