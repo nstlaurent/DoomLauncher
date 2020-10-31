@@ -8,6 +8,6 @@
         public static readonly string IdGamesKey = "Id Games";
         public static readonly string UntaggedKey = "Untagged";
 
-        public static string[] KeyNames => new string[] { RecentKey, LocalKey, RecentKey, IdGamesKey, UntaggedKey };
-}
+        public static string[] KeyNames => new string[] { RecentKey, LocalKey, UntaggedKey, IWadsKey, IdGamesKey };
+    }
 }
