@@ -11,9 +11,15 @@ namespace DoomLauncher
     {
         private float m_labelHeight, m_imageHeight;
 
+        private SlideShowPictureBox pbImage = new SlideShowPictureBox();
+
         public GameFileSummary()
         {
             InitializeComponent();
+
+            tblMain.Controls.Add(pbImage, 0, 1);
+            pbImage.Dock = DockStyle.Fill;
+
             m_labelHeight = GetRowStyle(lblTitle).Height;
             m_imageHeight = GetRowStyle(pbImage).Height;
             ShowCommentsSection(false);
@@ -46,21 +52,25 @@ namespace DoomLauncher
             txtDescription.Visible = true;
         }
 
-        public void SetPreviewImage(Image image)
+        public void PauseSlideshow()
         {
-            pbImage.Image = image;
+            pbImage.Stop();
+        }
+
+        public void ResumeSlideshow()
+        {
+            pbImage.Resume();
+        }
+
+        public void SetPreviewImages(List<string> imagePaths)
+        {
+            pbImage.SetImages(imagePaths);
             ShowImageSection(true);
         }
 
-        public void SetPreviewImage(string source, bool isUrl)
+        public void SetPreviewImage(Image image)
         {
-            pbImage.CancelAsync();
-
-            if (isUrl)
-                pbImage.LoadAsync(source);
-            else
-                SetImageFromFile(source);
-
+            pbImage.SetImage(image);
             ShowImageSection(true);
         }
 
@@ -72,7 +82,7 @@ namespace DoomLauncher
 
         public void ClearPreviewImage()
         {
-            pbImage.ImageLocation = string.Empty;
+            pbImage.ClearImage();
             ShowImageSection(false);
         }
 
@@ -80,12 +90,6 @@ namespace DoomLauncher
         {
             txtComments.Text = string.Empty;
             ShowCommentsSection(false);
-        }
-
-        private void SetImageFromFile(string source)
-        {
-            pbImage.CancelAsync();
-            pbImage.ImageLocation = source;
         }
 
         private RowStyle GetRowStyle(Control ctrl)
@@ -156,7 +160,7 @@ namespace DoomLauncher
             double height = width / (m_aspectWidth / m_aspectHeight);
             m_imageHeight = Convert.ToSingle(height);
 
-            if (pbImage.Image != null || !string.IsNullOrEmpty(pbImage.ImageLocation))
+            if (pbImage.ImageCount > 0)
                 ShowImageSection(true);
         }
     }

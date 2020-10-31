@@ -30,14 +30,13 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScreenshotViewerForm));
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
-            this.pbMain = new System.Windows.Forms.PictureBox();
             this.tblButtons = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnSave = new System.Windows.Forms.ToolStripButton();
+            this.btnSlideshow = new System.Windows.Forms.ToolStripButton();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnPrev = new System.Windows.Forms.Button();
             this.tblMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbMain)).BeginInit();
             this.tblButtons.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -47,7 +46,6 @@
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblMain.Controls.Add(this.pbMain, 0, 0);
             this.tblMain.Controls.Add(this.tblButtons, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
@@ -57,18 +55,6 @@
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.Size = new System.Drawing.Size(624, 441);
             this.tblMain.TabIndex = 1;
-            // 
-            // pbMain
-            // 
-            this.pbMain.BackColor = System.Drawing.SystemColors.Control;
-            this.pbMain.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pbMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbMain.Location = new System.Drawing.Point(3, 3);
-            this.pbMain.Name = "pbMain";
-            this.pbMain.Size = new System.Drawing.Size(618, 395);
-            this.pbMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbMain.TabIndex = 0;
-            this.pbMain.TabStop = false;
             // 
             // tblButtons
             // 
@@ -95,10 +81,11 @@
             this.toolStrip1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnSave});
+            this.btnSave,
+            this.btnSlideshow});
             this.toolStrip1.Location = new System.Drawing.Point(0, 7);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(66, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(89, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -111,6 +98,16 @@
             this.btnSave.Size = new System.Drawing.Size(23, 22);
             this.btnSave.Text = "Save Image";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnSlideshow
+            // 
+            this.btnSlideshow.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnSlideshow.Image = global::DoomLauncher.Properties.Resources.Video;
+            this.btnSlideshow.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnSlideshow.Name = "btnSlideshow";
+            this.btnSlideshow.Size = new System.Drawing.Size(23, 22);
+            this.btnSlideshow.Text = "Slideshow";
+            this.btnSlideshow.Click += new System.EventHandler(this.btnSlideshow_Click);
             // 
             // btnNext
             // 
@@ -148,7 +145,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ScreenshotViewerForm";
             this.tblMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbMain)).EndInit();
             this.tblButtons.ResumeLayout(false);
             this.tblButtons.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -160,11 +156,11 @@
         #endregion
 
         private TableLayoutPanelDB tblMain;
-        private System.Windows.Forms.PictureBox pbMain;
         private System.Windows.Forms.TableLayoutPanel tblButtons;
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton btnSave;
+        private System.Windows.Forms.ToolStripButton btnSlideshow;
     }
 }

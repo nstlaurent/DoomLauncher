@@ -299,7 +299,7 @@ namespace DoomLauncher.Controls
                 img = Util.RotateImage(img, 90);
 
             btnPin.Image = img;
-            btnPin.Image = ThumbnailManager.FixedSize(img, (int)(img.Width * .8), (int)(img.Height * .8), Color.Transparent);
+            btnPin.Image = Util.FixedSize(img, (int)(img.Width * .8), (int)(img.Height * .8), Color.Transparent);
             btnPin.Width = img.Width + dpiScale.ScaleIntX(2);
             btnPin.Height = img.Height + dpiScale.ScaleIntY(4);
         }

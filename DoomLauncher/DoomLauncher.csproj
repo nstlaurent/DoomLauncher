@@ -164,6 +164,12 @@
     </Compile>
     <Compile Include="Handlers\ToolTipDisplayHandler.cs" />
     <Compile Include="Handlers\ThumbnailManager.cs" />
+    <Compile Include="Controls\SlideShowPictureBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SlideShowPictureBox.Designer.cs">
+      <DependentUpon>SlideShowPictureBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Handlers\TabKeys.cs" />
     <Compile Include="Forms\TagSelectForm.cs">
       <SubType>Form</SubType>
@@ -687,6 +693,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\GameFileTileExpanded.resx">
       <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SlideShowPictureBox.resx">
+      <DependentUpon>SlideShowPictureBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TabViews\BasicTabViewCtrl.resx">
       <DependentUpon>BasicTabViewCtrl.cs</DependentUpon>

@@ -61,6 +61,7 @@ namespace DoomLauncher
                             HandlePlaySettings(m_currentPlayForm, m_currentPlayForm.SelectedGameProfile);
                             if (m_currentPlayForm.SelectedSourcePort != null)
                                 m_playInProgress = StartPlay(launchData.GameFile, m_currentPlayForm.SelectedSourcePort, m_currentPlayForm.ScreenFilter);
+                            ctrlSummary.PauseSlideshow();
                         }
                         catch (IOException)
                         {
