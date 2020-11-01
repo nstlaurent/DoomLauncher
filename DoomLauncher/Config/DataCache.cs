@@ -113,12 +113,33 @@ namespace DoomLauncher
                 foreach (var colFix in columnsToFix)
                     colFix.Column = "filenamenopath";
 
+                var idGamesReleaseDate = ret.FirstOrDefault(x => x.Parent.Equals(TabKeys.IdGamesKey) && x.Column.Equals("releasedate", StringComparison.OrdinalIgnoreCase));
+                if (idGamesReleaseDate == null)
+                    return InsertIdGamesReleaseDate(ret);
+
                 return ret;
             }
             catch
             {
                 return new ColumnConfig[] { };
             }
+        }
+
+        private static ColumnConfig[] InsertIdGamesReleaseDate(ColumnConfig[] ret)
+        {
+            var columnList = ret.ToList();
+            var idGamesFirstCol = columnList.FirstOrDefault(x => x.Parent.Equals(TabKeys.IdGamesKey));
+            if (idGamesFirstCol != null)
+            {
+                columnList.Insert(columnList.IndexOf(idGamesFirstCol) + 2, new ColumnConfig()
+                {
+                    Parent = TabKeys.IdGamesKey,
+                    Column = "releasedate",
+                    Width = 100
+                });
+            }
+
+            return columnList.ToArray();
         }
     }
 }
