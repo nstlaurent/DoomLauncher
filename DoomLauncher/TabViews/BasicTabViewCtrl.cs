@@ -120,7 +120,7 @@ namespace DoomLauncher
         {
             List<ColumnField> ret = new List<ColumnField>();
             //Pre 1.1.0 update check. Without this maps will be thrown on the end of the column list
-            bool setMapLocation = config.Length > 0 && !config.Any(x => x.Column == "MapCount");
+            bool setMapLocation = config.Length > 0 && !config.Any(x => x.Column.Equals("mapcount", StringComparison.OrdinalIgnoreCase));
 
             foreach (ColumnConfig configItem in config)
             {
