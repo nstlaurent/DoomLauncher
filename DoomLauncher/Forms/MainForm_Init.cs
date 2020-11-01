@@ -237,6 +237,7 @@ namespace DoomLauncher
             {
                 new ColumnField("Title", "Title"),
                 new ColumnField("Author", "Author"),
+                new ColumnField("ReleaseDate", "Release Date"),
                 new ColumnField("Description", "Description"),
                 new ColumnField("Rating", "Rating"),
             };
