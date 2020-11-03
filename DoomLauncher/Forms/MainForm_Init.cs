@@ -471,6 +471,7 @@ namespace DoomLauncher
             DataCache.Instance.Init(DataSourceAdapter);
             DataCache.Instance.AppConfiguration.GameFileViewTypeChanged += AppConfiguration_GameFileViewTypeChanged;
             DataCache.Instance.TagMapLookup.TagMappingChanged += TagMapLookup_TagMappingChanged;
+            DataCache.Instance.TagsChanged += DataCache_TagsChanged;
 
             SetupTabs();
             RebuildUtilityToolStrip();
@@ -549,6 +550,22 @@ namespace DoomLauncher
             Array.ForEach(tags, x => UpdateTagTabData(x.TagID));
             if (tags.Any(x => x.ExcludeFromOtherTabs))
                 UpdateLocal();
+        }
+
+        private void DataCache_TagsChanged(object sender, EventArgs e)
+        {
+            if (m_tabHandler == null)
+                return;
+
+            foreach (var tabView in m_tabHandler.TabViews)
+            {
+                if (tabView is TagTabView tagTabView)
+                {
+                    ITagData findTag = DataCache.Instance.Tags.FirstOrDefault(x => x.TagID == tagTabView.TagDataSource.TagID);
+                    if (findTag != null)
+                        tagTabView.TagDataSource = findTag;
+                }
+            }
         }
 
         private void TagSelectCtrl_StaticSelectionChanged(object sender, string name)
