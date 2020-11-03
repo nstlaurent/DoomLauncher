@@ -139,14 +139,13 @@ namespace DoomLauncher.Controls
             }
             else
             {
-                if (m_options.HasTabOnly)
-                    tags = DataCache.Instance.Tags.Where(x => x.HasTab);
-                else
-                    tags = DataCache.Instance.Tags;
+                tags = DataCache.Instance.Tags;
             }
 
+            if (m_options.HasTabOnly)
+                tags = tags.Where(x => x.HasTab);
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                tags = DataCache.Instance.Tags.Where(x => x.Name.IndexOf(txtSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0);
+                tags = tags.Where(x => x.Name.IndexOf(txtSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0);
 
             List<ITagData> allTags;
 
