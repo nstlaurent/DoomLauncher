@@ -6,6 +6,7 @@ namespace DoomLauncher.Interfaces
     {
         event EventHandler<ITagData[]> TagMappingChanged;
         void Refresh(ITagData[] tags);
+        void RemoveGameFile(IGameFile gameFile);
         ITagData[] GetTags(IGameFile gameFile);
     }
 }

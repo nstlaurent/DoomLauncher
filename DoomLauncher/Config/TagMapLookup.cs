@@ -41,6 +41,12 @@ namespace DoomLauncher
             TagMappingChanged?.Invoke(this, tags);
         }
 
+        public void RemoveGameFile(IGameFile gameFile)
+        {
+            if (gameFile.GameFileID.HasValue)
+                m_fileTagMapping.Remove(gameFile.GameFileID.Value);
+        }
+
         public ITagData[] GetTags(IGameFile gameFile)
         {
             if (gameFile != null && gameFile.GameFileID.HasValue && m_fileTagMapping.ContainsKey(gameFile.GameFileID.Value))
