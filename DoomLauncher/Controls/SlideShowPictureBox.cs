@@ -84,12 +84,18 @@ namespace DoomLauncher
             m_index = startIndex;
             m_images = imagePaths;
             m_state = SlideshowState.Wait;
-            m_fadeOut.Restart();
             m_timer.Stop();
-            m_timer.Start();
 
             pbImage.CancelAsync();
             pbImage.ImageLocation = m_images[m_index];
+
+            // Don't cycle with one image
+            if (imagePaths.Count == 1)
+                return true;
+
+            m_timer.Start();
+            m_fadeOut.Restart();
+
             InitBlendCache();
 
             return true;
