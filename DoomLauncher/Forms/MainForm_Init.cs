@@ -1,5 +1,4 @@
 ﻿using DoomLauncher.Controls;
-using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
@@ -402,7 +401,7 @@ namespace DoomLauncher
 
         private ProgressBarForm m_progressBarUpdate;
 
-        private async void Initialize()
+        private async Task Initialize()
         {
             string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
             DataAccess access = new DataAccess(new SqliteDatabaseAdapter(), DbDataSourceAdapter.CreateConnectionString(dataSource));
@@ -416,52 +415,11 @@ namespace DoomLauncher
                 m_progressBarUpdate = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
                 ProgressBarStart(m_progressBarUpdate);
 
-                await Task.Run(() => ExecuteVersionUpdate());
+                ExecuteVersionUpdate();
 
                 ProgressBarEnd(m_progressBarUpdate);
 
                 AppConfiguration.Refresh(); //We have to refresh here because a column may have been added to the Configuration table
-            }
-
-            try
-            {
-                //Only set location and window state if the location is valid, either way we always set Width, Height, and splitter values
-                if (ValidatePosition(AppConfiguration))
-                {
-                    WindowState = AppConfiguration.WindowState;
-
-                    if (WindowState != FormWindowState.Maximized)
-                    {
-                        StartPosition = FormStartPosition.Manual;
-                        Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
-                    }
-                }
-
-                // Save the height and set after splitter, otherwise splitter resizing will be incorrect
-                int saveWidth = Width;
-                int saveHeight = Height;
-
-                Width = AppConfiguration.AppWidth;
-                Height = AppConfiguration.AppHeight;
-
-                splitTopBottom.SplitterDistance = AppConfiguration.SplitTopBottom;
-                splitLeftRight.SplitterDistance = AppConfiguration.SplitLeftRight;
-                splitTagSelect.SplitterDistance = AppConfiguration.SplitTagSelect;
-
-                // If the app was closed in the maximized state then the width and height are maxed out
-                // This causes the window to take up the full screen even when set to normal state
-                if (WindowState == FormWindowState.Maximized)
-                {
-                    Width = saveWidth;
-                    Height = saveHeight;
-                }
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                MessageBox.Show(this, string.Format("The directory specified in your settings was incorrect: '{0}'", ex.Message),
-                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                tblMain.Enabled = false;
-                return;
             }
 
             if (AppConfiguration.CleanTemp)
@@ -491,12 +449,6 @@ namespace DoomLauncher
             UpdateLocal();
 
             SetupSearchFilters();
-
-            int lastIndex = tabControl.SelectedIndex;
-            tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex;
-            // The event won't fire if the index didn't change, but there wasn't anything to load yet
-            if (lastIndex == AppConfiguration.LastSelectedTabIndex)
-                HandleTabSelectionChange();
 
             Task.Run(() => CheckForAppUpdate());
         }

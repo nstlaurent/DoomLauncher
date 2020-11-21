@@ -71,7 +71,7 @@ namespace DoomLauncher
 
                 if (VerifyGameFilesDirectory())
                 {
-                    Initialize();
+                    Initialize().Wait();
                     success = true;
                 }
             }
@@ -91,7 +91,42 @@ namespace DoomLauncher
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            
+            InitWindow();
+            HandleTabSelectionChange();
+        }
+
+        private void InitWindow()
+        {
+            //Only set location and window state if the location is valid, either way we always set Width, Height, and splitter values
+            if (ValidatePosition(AppConfiguration))
+            {
+                WindowState = AppConfiguration.WindowState;
+
+                if (WindowState != FormWindowState.Maximized)
+                {
+                    StartPosition = FormStartPosition.Manual;
+                    Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
+                }
+            }
+
+            // Save the height and set after splitter, otherwise splitter resizing will be incorrect
+            int saveWidth = Width;
+            int saveHeight = Height;
+
+            Width = AppConfiguration.AppWidth;
+            Height = AppConfiguration.AppHeight;
+
+            splitTopBottom.SplitterDistance = AppConfiguration.SplitTopBottom;
+            splitLeftRight.SplitterDistance = AppConfiguration.SplitLeftRight;
+            splitTagSelect.SplitterDistance = AppConfiguration.SplitTagSelect;
+
+            // If the app was closed in the maximized state then the width and height are maxed out
+            // This causes the window to take up the full screen even when set to normal state
+            if (WindowState == FormWindowState.Maximized)
+            {
+                Width = saveWidth;
+                Height = saveHeight;
+            }
         }
 
         private void KillRunningApps()
