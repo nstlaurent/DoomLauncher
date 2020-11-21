@@ -240,7 +240,8 @@ namespace DoomLauncher
             GameFilePlayAdapter playAdapter = CreatePlayAdapter(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
             m_saveGames = new IFileData[] { };
 
-            CopySaveGames(gameFile, sourcePort);
+            if (AppConfiguration.CopySaveFiles)
+                CopySaveGames(gameFile, sourcePort);
             CreateFileDetectors(sourcePort);
 
             if (m_currentPlayForm.PreviewLaunchParameters)
@@ -357,8 +358,11 @@ namespace DoomLauncher
             m_screenshotDetectors.Add(CreateScreenshotDetector(sourcePort.Directory.GetFullPath()));
             Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
 
-            m_saveFileDetectors = CreateDefaulSaveGameDetectors();
-            m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.Directory.GetFullPath()));
+            m_saveFileDetectors = CreateDefaultSaveGameDetectors();
+            if (!string.IsNullOrEmpty(sourcePort.AltSaveDirectory.GetFullPath()))
+                m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.AltSaveDirectory.GetFullPath()));
+            else
+                m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.Directory.GetFullPath()));
             Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
         }
 
@@ -539,7 +543,7 @@ namespace DoomLauncher
             return ret;
         }
 
-        private List<INewFileDetector> CreateDefaulSaveGameDetectors()
+        private List<INewFileDetector> CreateDefaultSaveGameDetectors()
         {
             return new List<INewFileDetector>();
         }
