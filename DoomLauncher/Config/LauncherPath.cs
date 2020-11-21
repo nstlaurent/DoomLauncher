@@ -9,6 +9,13 @@ namespace DoomLauncher
 
         public LauncherPath(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                m_path = string.Empty;
+                m_fullPath = string.Empty;
+                return;
+            }
+
             if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 path += Path.DirectorySeparatorChar;
 
@@ -55,8 +62,7 @@ namespace DoomLauncher
 
         public override bool Equals(object obj)
         {
-            LauncherPath path = obj as LauncherPath;
-            if (path != null)
+            if (obj is LauncherPath path)
                 return GetFullPath() == path.GetFullPath();
 
             return false;
