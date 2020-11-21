@@ -91,7 +91,7 @@ namespace DoomLauncher
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            HandleTabSelectionChange();
+            
         }
 
         private void KillRunningApps()

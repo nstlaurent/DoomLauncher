@@ -484,7 +484,6 @@ namespace DoomLauncher
             ctrlAssociationView.FileDeleted += ctrlAssociationView_FileDeleted;
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
-            tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex;
 
             m_splash.Close();
 
@@ -493,7 +492,13 @@ namespace DoomLauncher
 
             SetupSearchFilters();
 
-            await Task.Run(() => CheckForAppUpdate());
+            int lastIndex = tabControl.SelectedIndex;
+            tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex;
+            // The event won't fire if the index didn't change, but there wasn't anything to load yet
+            if (lastIndex == AppConfiguration.LastSelectedTabIndex)
+                HandleTabSelectionChange();
+
+            Task.Run(() => CheckForAppUpdate());
         }
 
         private void InitDownloadView()
