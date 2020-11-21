@@ -354,9 +354,8 @@
             // 
             // label10
             // 
-            this.label10.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(41, 185);
+            this.label10.Location = new System.Drawing.Point(41, 179);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(284, 13);
             this.label10.TabIndex = 6;
