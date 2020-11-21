@@ -11,6 +11,7 @@
         SourcePortLaunchType LaunchType { get; set; }
         string FileOption { get; set; }
         string ExtraParameters { get; set; }
+        LauncherPath AltSaveDirectory { get; set; }
         string GetFullExecutablePath();
     }
 }

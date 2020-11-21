@@ -77,6 +77,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_1_0, AppVersion.Version_3_1_0);
                 ExecuteUpdate(Pre_Version_3_2_0, AppVersion.Version_3_2_0);
                 ExecuteUpdate(Pre_Version_3_2_0_Update1, AppVersion.Version_3_2_0_Update1);
+                ExecuteUpdate(Pre_Version_3_2_0_Update2, AppVersion.Version_3_2_0_Update2);
             }
         }
 
@@ -612,6 +613,22 @@ namespace DoomLauncher
                 UserCanModify = true,
                 AvailableValues = "Yes;true;No;false"
             });
+        }
+
+        private void Pre_Version_3_2_0_Update2()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "CopySaveFiles",
+                Value = "true",
+                UserCanModify = true,
+                AvailableValues = "Yes;true;No;false"
+            });
+
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
+
+            if (!dt.Select("name = 'AltSaveDirectory'").Any())
+                DataAccess.ExecuteNonQuery(@"alter table SourcePorts add column 'AltSaveDirectory' TEXT;");
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)
