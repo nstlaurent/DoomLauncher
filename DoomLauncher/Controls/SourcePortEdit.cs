@@ -39,7 +39,7 @@ namespace DoomLauncher
             m_exec = sourcePort.Executable;
 
             txtName.Text = txtExec.Text = txtExtensions.Text = txtFileOption.Text
-                = txtParameters.Text = string.Empty;
+                = txtParameters.Text = txtAltSave.Text = string.Empty;
 
             if (!string.IsNullOrEmpty(sourcePort.Name)) 
                 txtName.Text = sourcePort.Name;
@@ -51,6 +51,8 @@ namespace DoomLauncher
                 txtFileOption.Text = sourcePort.FileOption;
             if (!string.IsNullOrEmpty(sourcePort.ExtraParameters))
                 txtParameters.Text = sourcePort.ExtraParameters;
+            if (sourcePort.AltSaveDirectory != null)
+                txtAltSave.Text = sourcePort.AltSaveDirectory.GetPossiblyRelativePath();
         }
 
         public void UpdateDataSource(ISourcePortData sourcePort)
@@ -61,6 +63,7 @@ namespace DoomLauncher
             sourcePort.SupportedExtensions = txtExtensions.Text;
             sourcePort.FileOption = txtFileOption.Text;
             sourcePort.ExtraParameters = txtParameters.Text;
+            sourcePort.AltSaveDirectory = new LauncherPath(txtAltSave.Text);
         }
 
         public string SourcePortName { get { return txtName.Text;  } }
@@ -82,6 +85,13 @@ namespace DoomLauncher
                 txtExec.Text = m_exec;
                 txtName.Text = Path.GetFileNameWithoutExtension(file);
             }
+        }
+
+        private void btnAltSaveBrowse_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+                txtAltSave.Text = GetRelativeDirectory(dialog.SelectedPath);
         }
 
         private string GetRelativeDirectory(string file)
