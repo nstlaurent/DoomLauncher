@@ -57,6 +57,24 @@ namespace DoomLauncher
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
+        }
+
+        private void InitIcons()
+        {
+            btnSearch.Image = Icons.Search;
+            btnPlay.Image = Icons.Play;
+            toolStripDropDownButton1.Image = Icons.Bars;
+            btnDownloads.Image = Icons.Download;
+            btnTags.Image = Icons.Tags;
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            HandleLoad();
+        }
+
+        private async void HandleLoad()
+        {
             bool success = false;
 
             if (VerifyDatabase())
@@ -71,27 +89,71 @@ namespace DoomLauncher
 
                 if (VerifyGameFilesDirectory())
                 {
-                    Initialize();
+                    await Initialize();
                     success = true;
                 }
             }
 
             if (!success)
                 Close();
-        }
 
-        private void InitIcons()
-        {
-            btnSearch.Image = Icons.Search;
-            btnPlay.Image = Icons.Play;
-            toolStripDropDownButton1.Image = Icons.Bars;
-            btnDownloads.Image = Icons.Download;
-            btnTags.Image = Icons.Tags;
-        }
+            await CheckFirstInit();
+            UpdateLocal();
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
+            SetupSearchFilters();
+
+            InitWindow();
             HandleTabSelectionChange();
+            InvokeHideSplashScreen();
+
+            Task.Run(() => CheckForAppUpdate());
+        }
+
+        private void InvokeHideSplashScreen()
+        {
+            if (InvokeRequired)
+                Invoke(new Action(HideSplashScreen));
+            else
+                HideSplashScreen();
+        }
+
+        private void HideSplashScreen()
+        {
+            m_splash?.Close();
+        }
+
+        private void InitWindow()
+        {
+            //Only set location and window state if the location is valid, either way we always set Width, Height, and splitter values
+            if (ValidatePosition(AppConfiguration))
+            {
+                WindowState = AppConfiguration.WindowState;
+
+                if (WindowState != FormWindowState.Maximized)
+                {
+                    StartPosition = FormStartPosition.Manual;
+                    Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
+                }
+            }
+
+            // Save the height and set after splitter, otherwise splitter resizing will be incorrect
+            int saveWidth = Width;
+            int saveHeight = Height;
+
+            Width = AppConfiguration.AppWidth;
+            Height = AppConfiguration.AppHeight;
+
+            splitTopBottom.SplitterDistance = AppConfiguration.SplitTopBottom;
+            splitLeftRight.SplitterDistance = AppConfiguration.SplitLeftRight;
+            splitTagSelect.SplitterDistance = AppConfiguration.SplitTagSelect;
+
+            // If the app was closed in the maximized state then the width and height are maxed out
+            // This causes the window to take up the full screen even when set to normal state
+            if (WindowState == FormWindowState.Maximized)
+            {
+                Width = saveWidth;
+                Height = saveHeight;
+            }
         }
 
         private void KillRunningApps()

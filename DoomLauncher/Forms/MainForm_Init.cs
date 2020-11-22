@@ -1,5 +1,4 @@
 ﻿using DoomLauncher.Controls;
-using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
@@ -402,7 +401,7 @@ namespace DoomLauncher
 
         private ProgressBarForm m_progressBarUpdate;
 
-        private async void Initialize()
+        private async Task Initialize()
         {
             string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
             DataAccess access = new DataAccess(new SqliteDatabaseAdapter(), DbDataSourceAdapter.CreateConnectionString(dataSource));
@@ -421,47 +420,6 @@ namespace DoomLauncher
                 ProgressBarEnd(m_progressBarUpdate);
 
                 AppConfiguration.Refresh(); //We have to refresh here because a column may have been added to the Configuration table
-            }
-
-            try
-            {
-                //Only set location and window state if the location is valid, either way we always set Width, Height, and splitter values
-                if (ValidatePosition(AppConfiguration))
-                {
-                    WindowState = AppConfiguration.WindowState;
-
-                    if (WindowState != FormWindowState.Maximized)
-                    {
-                        StartPosition = FormStartPosition.Manual;
-                        Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
-                    }
-                }
-
-                // Save the height and set after splitter, otherwise splitter resizing will be incorrect
-                int saveWidth = Width;
-                int saveHeight = Height;
-
-                Width = AppConfiguration.AppWidth;
-                Height = AppConfiguration.AppHeight;
-
-                splitTopBottom.SplitterDistance = AppConfiguration.SplitTopBottom;
-                splitLeftRight.SplitterDistance = AppConfiguration.SplitLeftRight;
-                splitTagSelect.SplitterDistance = AppConfiguration.SplitTagSelect;
-
-                // If the app was closed in the maximized state then the width and height are maxed out
-                // This causes the window to take up the full screen even when set to normal state
-                if (WindowState == FormWindowState.Maximized)
-                {
-                    Width = saveWidth;
-                    Height = saveHeight;
-                }
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                MessageBox.Show(this, string.Format("The directory specified in your settings was incorrect: '{0}'", ex.Message),
-                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                tblMain.Enabled = false;
-                return;
             }
 
             if (AppConfiguration.CleanTemp)
@@ -484,16 +442,7 @@ namespace DoomLauncher
             ctrlAssociationView.FileDeleted += ctrlAssociationView_FileDeleted;
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
-            tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex;
 
-            m_splash.Close();
-
-            await CheckFirstInit();
-            UpdateLocal();
-
-            SetupSearchFilters();
-
-            await Task.Run(() => CheckForAppUpdate());
         }
 
         private void InitDownloadView()
@@ -643,14 +592,16 @@ namespace DoomLauncher
         {
             if (!DataSourceAdapter.GetSourcePorts().Any()) //If no source ports setup then it's the first time setup, display welcome/setup info
             {
+                InvokeHideSplashScreen();
                 DisplayWelcome();
                 HandleEditSourcePorts(true);
             }
 
             if (!DataSourceAdapter.GetIWads().Any()) //If no iwads then prompt to add iwads
             {
+                InvokeHideSplashScreen();
                 await HandleAddIWads();
-                this.Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = 3; }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
+                Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = 3; }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
                 DisplayInitSettings(); //give user the change set default port, iwad, skill
             }
         }

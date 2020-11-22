@@ -102,7 +102,7 @@ namespace DoomLauncher
 
             foreach (IFileData file in files)
             {
-                string fileName = Path.Combine(sourcePort.Directory.GetFullPath(), file.OriginalFileName);
+                string fileName = Path.Combine(GetSourcePortSaveDir(sourcePort), file.OriginalFileName);
                 FileInfo fiFrom = new FileInfo(Path.Combine(SaveGameDirectory.GetFullPath(), file.FileName));
                 try
                 {
@@ -121,6 +121,14 @@ namespace DoomLauncher
                     //failed, nothing to do
                 }
             }
+        }
+
+        private static string GetSourcePortSaveDir(ISourcePortData sourcePort)
+        {
+            if (!string.IsNullOrEmpty(sourcePort.AltSaveDirectory.GetFullPath()))
+                return sourcePort.AltSaveDirectory.GetFullPath();
+
+            return sourcePort.Directory.GetFullPath();
         }
 
         public LauncherPath SaveGameDirectory { get; set; }

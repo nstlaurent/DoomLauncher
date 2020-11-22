@@ -25,6 +25,7 @@ namespace DoomLauncher
         public static string LastSelectedTabIndexName => "LastSelectedTabIndex";
         public static string TagSelectPinnedName => "TagSelectPinned";
         public static string ShowTabHeadersName => "ShowTabHeaders";
+        public static string CopySaveFilesName => "CopySaveFiles";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -121,6 +122,7 @@ namespace DoomLauncher
                 LastSelectedTabIndex = Convert.ToInt32(GetValue(config, LastSelectedTabIndexName));
                 TagSelectPinned = Convert.ToBoolean(GetValue(config, TagSelectPinnedName));
                 ShowTabHeaders = Convert.ToBoolean(GetValue(config, ShowTabHeadersName));
+                CopySaveFiles = Convert.ToBoolean(GetValue(config, CopySaveFilesName));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
@@ -241,5 +243,6 @@ namespace DoomLauncher
         public int LastSelectedTabIndex { get; set; }
         public bool TagSelectPinned { get; set; }
         public bool ShowTabHeaders { get; set; } = true;
+        public bool CopySaveFiles { get; set; }
     }
 }
