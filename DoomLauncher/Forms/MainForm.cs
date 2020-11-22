@@ -57,6 +57,24 @@ namespace DoomLauncher
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
+        }
+
+        private void InitIcons()
+        {
+            btnSearch.Image = Icons.Search;
+            btnPlay.Image = Icons.Play;
+            toolStripDropDownButton1.Image = Icons.Bars;
+            btnDownloads.Image = Icons.Download;
+            btnTags.Image = Icons.Tags;
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            HandleLoad();
+        }
+
+        private async void HandleLoad()
+        {
             bool success = false;
 
             if (VerifyDatabase())
@@ -71,28 +89,37 @@ namespace DoomLauncher
 
                 if (VerifyGameFilesDirectory())
                 {
-                    Initialize().Wait();
+                    await Initialize();
                     success = true;
                 }
             }
 
             if (!success)
                 Close();
-        }
 
-        private void InitIcons()
-        {
-            btnSearch.Image = Icons.Search;
-            btnPlay.Image = Icons.Play;
-            toolStripDropDownButton1.Image = Icons.Bars;
-            btnDownloads.Image = Icons.Download;
-            btnTags.Image = Icons.Tags;
-        }
+            await CheckFirstInit();
+            UpdateLocal();
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
+            SetupSearchFilters();
+
             InitWindow();
             HandleTabSelectionChange();
+            InvokeHideSplashScreen();
+
+            Task.Run(() => CheckForAppUpdate());
+        }
+
+        private void InvokeHideSplashScreen()
+        {
+            if (InvokeRequired)
+                Invoke(new Action(HideSplashScreen));
+            else
+                HideSplashScreen();
+        }
+
+        private void HideSplashScreen()
+        {
+            m_splash?.Close();
         }
 
         private void InitWindow()

@@ -415,7 +415,7 @@ namespace DoomLauncher
                 m_progressBarUpdate = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
                 ProgressBarStart(m_progressBarUpdate);
 
-                ExecuteVersionUpdate();
+                await Task.Run(() => ExecuteVersionUpdate());
 
                 ProgressBarEnd(m_progressBarUpdate);
 
@@ -443,14 +443,6 @@ namespace DoomLauncher
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
 
-            m_splash.Close();
-
-            await CheckFirstInit();
-            UpdateLocal();
-
-            SetupSearchFilters();
-
-            Task.Run(() => CheckForAppUpdate());
         }
 
         private void InitDownloadView()
@@ -600,14 +592,16 @@ namespace DoomLauncher
         {
             if (!DataSourceAdapter.GetSourcePorts().Any()) //If no source ports setup then it's the first time setup, display welcome/setup info
             {
+                InvokeHideSplashScreen();
                 DisplayWelcome();
                 HandleEditSourcePorts(true);
             }
 
             if (!DataSourceAdapter.GetIWads().Any()) //If no iwads then prompt to add iwads
             {
+                InvokeHideSplashScreen();
                 await HandleAddIWads();
-                this.Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = 3; }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
+                Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = 3; }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
                 DisplayInitSettings(); //give user the change set default port, iwad, skill
             }
         }
