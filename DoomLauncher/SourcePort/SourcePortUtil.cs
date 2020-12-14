@@ -15,6 +15,7 @@ namespace DoomLauncher.SourcePort
                 new CNDoomSourcePort(sourcePortData),
                 new ChocolateDoomSourcePort(sourcePortData),
                 new CrispyDoomSourcePort(sourcePortData),
+                new WoofSourcePort(sourcePortData),
                 new GenericSourcePort(sourcePortData)
             };
 
