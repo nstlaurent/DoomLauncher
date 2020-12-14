@@ -1303,7 +1303,7 @@ namespace DoomLauncher
 
         private IGameFile[] m_pendingZdlFiles;
 
-        private async Task HandleAddGameFiles(AddFileType type, string[] files)
+        private async Task HandleAddGameFiles(AddFileType type, string[] files, ITagData tag = null)
         {
             if (!VerifyAddFiles(type, files))
                 return;
@@ -1334,7 +1334,7 @@ namespace DoomLauncher
 
             if (libraryFiles.Count > 0)
             {
-                await HandleCopyFiles(type, libraryFiles.ToArray(), GetUserSelectedFileManagement());
+                await HandleCopyFiles(type, libraryFiles.ToArray(), GetUserSelectedFileManagement(), tag);
             }
             else if (m_zdlInvalidFiles.Count > 0)
             {
@@ -1389,7 +1389,7 @@ namespace DoomLauncher
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Await.Warning", "CS4014:Await.Warning")]
-        private async Task HandleCopyFiles(AddFileType type, string[] fileNames, FileManagement fileManagement)
+        private async Task HandleCopyFiles(AddFileType type, string[] fileNames, FileManagement fileManagement, ITagData tag)
         {
             ProgressBarForm progressBar = CreateProgressBar("Copying...", ProgressBarStyle.Marquee);
             progressBar.Cancelled += m_progressBarFormCopy_Cancelled;
@@ -1410,7 +1410,7 @@ namespace DoomLauncher
             switch (type)
             {
                 case AddFileType.GameFile:
-                    await SyncLocalDatabase(files, fileManagement, true);
+                    await SyncLocalDatabase(files, fileManagement, true, tag);
                     break;
                 case AddFileType.IWad:
                     await SyncLocalDatabase(files, fileManagement, false);
@@ -1726,15 +1726,16 @@ namespace DoomLauncher
 
         private void ctrlView_DragDrop(object sender, DragEventArgs e)
         {
-            IGameFileView ctrl = sender as IGameFileView;
-            string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
-
-            if (ctrl != null && files != null)
+            if (sender is IGameFileView ctrl && e.Data.GetData(DataFormats.FileDrop) is string[] files)
             {
+                ITagData tag = null;
+                if (m_tabHandler.TabViewForControl(ctrl) is TagTabView tagTabView)
+                    tag = tagTabView.TagDataSource;
+
                 if (ctrl.DoomLauncherParent != null && ctrl.DoomLauncherParent is IWadTabViewCtrl)
                     HandleAddGameFiles(AddFileType.IWad, files);
                 else
-                    HandleAddGameFiles(AddFileType.GameFile, files);
+                    HandleAddGameFiles(AddFileType.GameFile, files, tag);
             }
         }
 
