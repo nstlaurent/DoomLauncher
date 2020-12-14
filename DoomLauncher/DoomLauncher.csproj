@@ -178,6 +178,7 @@
       <DependentUpon>TagSelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DataSources\StaticTagData.cs" />
+    <Compile Include="SourcePort\WoofSourcePort.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />
