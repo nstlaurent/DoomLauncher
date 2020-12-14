@@ -43,6 +43,8 @@ namespace UnitTest.Tests
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
             handler.Execute(new string[] { "uroburos.zip" });
 
+            Assert.AreEqual(1, handler.AddedGameFiles.Count);
+            Assert.AreEqual(file, handler.AddedGameFiles[0].FileName);
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
 
@@ -66,6 +68,7 @@ namespace UnitTest.Tests
 
             handler.Execute(files);
 
+            Assert.AreEqual(2, handler.AddedGameFiles.Count);
             Assert.AreEqual(2, handler.DbDataSource.GetGameFilesCount());
 
             var gameFiles = handler.DbDataSource.GetGameFiles();
@@ -132,6 +135,7 @@ namespace UnitTest.Tests
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
             handler.Execute(new string[] { file });
 
+            Assert.AreEqual(1, handler.AddedGameFiles.Count);
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
 
@@ -144,6 +148,9 @@ namespace UnitTest.Tests
             File.Copy(Path.Combine("Resources", "uroburos.zip"), Path.Combine(s_filedir, file), true);
             handler.Execute(new string[] { file });
 
+            Assert.AreEqual(0, handler.AddedGameFiles.Count);
+            Assert.AreEqual(1, handler.UpdatedGameFiles.Count);
+            Assert.AreEqual("joymaps1.zip", handler.UpdatedGameFiles[0].FileName);
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             gameFile = handler.DbDataSource.GetGameFiles().First();
 
