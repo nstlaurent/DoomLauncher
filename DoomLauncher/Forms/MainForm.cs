@@ -1281,7 +1281,7 @@ namespace DoomLauncher
 
         private async Task HandleAddIWads()
         {
-            await HandleAddFiles(AddFileType.IWad, new string[] { "WAD" }, "Select IWADs");
+            await HandleAddFiles(AddFileType.IWad, new string[] { "WAD" "ipk3" }, "Select IWADs");
         }
 
         private void UpdateLocal()
