@@ -122,7 +122,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(94, 39);
             this.label6.TabIndex = 6;
-            this.label6.Text = "Chocolate Doom / Crispy Doom / Woof / CNDoom";
+            this.label6.Text = "Chocolate Doom / Crispy Doom / Woof! / CNDoom";
             // 
             // lblBoom
             // 

@@ -308,7 +308,7 @@ namespace DoomLauncher
 
         public static string[] GetSourcePortPkExtensions()
         {
-            return new string[] { ".pk3", ".pk7"};
+            return new string[] { ".pk3", ".ipk3", ".pk7"};
         }
 
         public static GameFileFieldType[] DefaultGameFileUpdateFields
