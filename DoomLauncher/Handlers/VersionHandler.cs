@@ -78,6 +78,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_2_0, AppVersion.Version_3_2_0);
                 ExecuteUpdate(Pre_Version_3_2_0_Update1, AppVersion.Version_3_2_0_Update1);
                 ExecuteUpdate(Pre_Version_3_2_0_Update2, AppVersion.Version_3_2_0_Update2);
+                ExecuteUpdate(Pre_Version_3_2_0_Update3, AppVersion.Version_3_2_0_Update3);
             }
         }
 
@@ -629,6 +630,26 @@ namespace DoomLauncher
 
             if (!dt.Select("name = 'AltSaveDirectory'").Any())
                 DataAccess.ExecuteNonQuery(@"alter table SourcePorts add column 'AltSaveDirectory' TEXT;");
+        }
+
+        private void Pre_Version_3_2_0_Update3()
+        {
+            IEnumerable<ISourcePortData> sourcePorts = m_adapter.GetSourcePorts();
+
+            foreach (ISourcePortData sourcePort in sourcePorts)
+            {
+                if (!sourcePort.SupportedExtensions.Contains(".pk3"))
+                    continue;
+                
+                sourcePort.SupportedExtensions = sourcePort.SupportedExtensions.Replace(".pk3", ".pk3,.ipk3");
+
+                List<DbParameter> parameters = new List<DbParameter>
+                {
+                    DataAccess.DbAdapter.CreateParameter("ext", sourcePort.SupportedExtensions),
+                    DataAccess.DbAdapter.CreateParameter("SourcePortID", sourcePort.SourcePortID)
+                };
+                DataAccess.ExecuteNonQuery("update SourcePorts set SupportedExtensions = @ext where SourcePortID = @SourcePortID", parameters);
+            }
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)

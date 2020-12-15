@@ -25,5 +25,6 @@
         Version_3_2_0,
         Version_3_2_0_Update1,
         Version_3_2_0_Update2,
+        Version_3_2_0_Update3,
     }
 }

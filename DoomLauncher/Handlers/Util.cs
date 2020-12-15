@@ -293,12 +293,12 @@ namespace DoomLauncher
 
         public static string[] GetPkExtenstions()
         {
-            return new string[] { ".pk3", ".pk7", ".zip" };
+            return new string[] { ".pk3", ".ipk3", ".pk7", ".zip" };
         }
 
         public static string[] GetReadablePkExtensions()
         {
-            return new string[] { ".pk3", ".zip" };
+            return new string[] { ".pk3", ".ipk3", ".zip" };
         }
 
         public static string[] GetDehackedExtensions()
