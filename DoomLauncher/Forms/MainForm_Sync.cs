@@ -101,6 +101,7 @@ namespace DoomLauncher
         {
             DataCache.Instance.AddGameFileTag(handler.AddedGameFiles, tag, out _);
             DataCache.Instance.AddGameFileTag(handler.UpdatedGameFiles, tag, out _);
+            DataCache.Instance.TagMapLookup.Refresh(new ITagData[] { tag });
         }
 
         private void SyncPendingZdlFiles()

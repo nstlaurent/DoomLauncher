@@ -496,6 +496,14 @@ namespace DoomLauncher
 
         private void TagMapLookup_TagMappingChanged(object sender, ITagData[] tags)
         {
+            if (InvokeRequired)
+                Invoke(new Action<ITagData[]>(HandleTagMappingChanged), new object[] { tags });
+            else
+                HandleTagMappingChanged(tags);
+        }
+
+        private void HandleTagMappingChanged(ITagData[] tags)
+        {
             Array.ForEach(tags, x => UpdateTagTabData(x.TagID));
             if (tags.Any(x => x.ExcludeFromOtherTabs))
                 UpdateLocal();
