@@ -103,7 +103,6 @@ namespace DoomLauncher
             SetupSearchFilters();
 
             InitWindow();
-            tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex;
             HandleTabSelectionChange();
             InvokeHideSplashScreen();
 

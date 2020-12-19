@@ -612,6 +612,10 @@ namespace DoomLauncher
                 Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = 3; }); //the user has only added iwads on setup, so set the tab to iwads on first launch so there is something to see
                 DisplayInitSettings(); //give user the change set default port, iwad, skill
             }
+            else
+            {
+                Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex; });
+            }
         }
 
         private void DisplayInitSettings()
