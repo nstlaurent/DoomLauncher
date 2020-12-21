@@ -226,7 +226,7 @@ namespace DoomLauncher
         private List<ITabView> GetAdditionalTabViews()
         {
             List<ITabView> views = new List<ITabView>();
-            views.AddRange(m_tabHandler.TabViews.Where(x => x.Title == TabKeys.LocalKey));
+            views.AddRange(m_tabHandler.TabViews.Where(x => TabKeys.LocalKey.Equals(x.Key)));
             views.AddRange(m_tabHandler.TabViews.Where(x => x is TagTabView));
             return views;
         }
