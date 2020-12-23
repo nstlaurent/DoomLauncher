@@ -13,6 +13,7 @@ namespace DoomLauncher
 
         public static string SplitTopBottomName => "SplitTopBottom";
         public static string SplitLeftRightName => "SplitLeftRight";
+        public static string SplitTagSelectName => "SplitTagSelect";
         public static string AppWidthName => "AppWidth";
         public static string AppHeightName => "AppHeight";
         public static string AppXName => "AppX";
@@ -21,6 +22,10 @@ namespace DoomLauncher
         public static string ColumnConfigName => "ColumnConfig";
         public static string ScreenshotPreviewSizeName => "ScreenshotPreviewSize";
         public static string ItemsPerPageName => "ItemsPerPage";
+        public static string LastSelectedTabIndexName => "LastSelectedTabIndex";
+        public static string TagSelectPinnedName => "TagSelectPinned";
+        public static string ShowTabHeadersName => "ShowTabHeaders";
+        public static string CopySaveFilesName => "CopySaveFiles";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -103,6 +108,7 @@ namespace DoomLauncher
                 SetChildDirectories(config);
                 SplitTopBottom = Convert.ToInt32(GetValue(config, SplitTopBottomName));
                 SplitLeftRight = Convert.ToInt32(GetValue(config, SplitLeftRightName));
+                SplitTagSelect = Convert.ToInt32(GetValue(config, SplitTagSelectName));
                 AppWidth = Convert.ToInt32(GetValue(config, AppWidthName));
                 AppHeight = Convert.ToInt32(GetValue(config, AppHeightName));
                 AppX = Convert.ToInt32(GetValue(config, AppXName));
@@ -113,6 +119,10 @@ namespace DoomLauncher
                 FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
                 ItemsPerPage = Convert.ToInt32(GetValue(config, ItemsPerPageName));
                 DeleteScreenshotsAfterImport = Convert.ToBoolean(GetValue(config, "DeleteScreenshotsAfterImport"));
+                LastSelectedTabIndex = Convert.ToInt32(GetValue(config, LastSelectedTabIndexName));
+                TagSelectPinned = Convert.ToBoolean(GetValue(config, TagSelectPinnedName));
+                ShowTabHeaders = Convert.ToBoolean(GetValue(config, ShowTabHeadersName));
+                CopySaveFiles = Convert.ToBoolean(GetValue(config, CopySaveFilesName));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
@@ -216,6 +226,7 @@ namespace DoomLauncher
         public bool CleanTemp { get; private set; }
         public int SplitTopBottom { get; private set; }
         public int SplitLeftRight { get; private set; }
+        public int SplitTagSelect { get; set; }
         public int AppWidth { get; private set; }
         public int AppHeight { get; private set; }
         public int AppX { get; private set; }
@@ -229,5 +240,9 @@ namespace DoomLauncher
         public GameFileViewType GameFileViewType { get; private set; }
         public int ItemsPerPage { get; set; }
         public bool DeleteScreenshotsAfterImport { get; set; }
+        public int LastSelectedTabIndex { get; set; }
+        public bool TagSelectPinned { get; set; }
+        public bool ShowTabHeaders { get; set; } = true;
+        public bool CopySaveFiles { get; set; }
     }
 }

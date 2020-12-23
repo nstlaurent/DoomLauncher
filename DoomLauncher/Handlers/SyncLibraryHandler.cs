@@ -14,6 +14,11 @@ namespace DoomLauncher
         public event EventHandler SyncFileChange;
         public event EventHandler GameFileDataNeeded;
 
+        public List<IGameFile> AddedGameFiles => m_addedFiles;
+        public List<IGameFile> UpdatedGameFiles => m_updatedFiles;
+
+        private readonly List<IGameFile> m_addedFiles = new List<IGameFile>();
+        private readonly List<IGameFile> m_updatedFiles = new List<IGameFile>();
         private readonly List<InvalidFile> m_invalidFiles = new List<InvalidFile>();
         private readonly FileManagement m_fileManagement;
 
@@ -32,6 +37,8 @@ namespace DoomLauncher
 
         public void Execute(string[] zipFiles)
         {
+            m_addedFiles.Clear();
+            m_updatedFiles.Clear();
             m_invalidFiles.Clear();
 
             SyncFileCount = zipFiles.Length;
@@ -85,9 +92,15 @@ namespace DoomLauncher
                     }
 
                     if (existing == null)
+                    {
                         DbDataSource.InsertGameFile(file);
+                        AddLatestGameFile(file.FileName, m_addedFiles);
+                    }
                     else
+                    {
                         DbDataSource.UpdateGameFile(file, Util.DefaultGameFileUpdateFields);
+                        m_updatedFiles.Add(file);
+                    }
                 }
                 else
                 {
@@ -107,6 +120,13 @@ namespace DoomLauncher
 
                 SyncFileCurrent++;
             }
+        }
+
+        private void AddLatestGameFile(string filename, List<IGameFile> gameFiles)
+        {
+            IGameFile gameFile = DbDataSource.GetGameFile(filename);
+            if (gameFile != null)
+                gameFiles.Add(gameFile);
         }
 
         private void FillMapInfo(IGameFile file, IArchiveReader reader)

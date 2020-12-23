@@ -37,7 +37,6 @@
             this.lblLastMap = new System.Windows.Forms.Label();
             this.lblLastMapText = new System.Windows.Forms.Label();
             this.lblTitle = new DoomLauncher.GrowLabel();
-            this.pbImage = new System.Windows.Forms.PictureBox();
             this.ctrlStats = new DoomLauncher.StatsControl();
             this.txtDescription = new DoomLauncher.Controls.CRichTextBox();
             this.txtComments = new DoomLauncher.Controls.CRichTextBox();
@@ -47,7 +46,6 @@
             this.tblMain.SuspendLayout();
             this.tableLayoutPanelDB2.SuspendLayout();
             this.tableLayoutPanelDB1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
             this.tbl2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,7 +57,6 @@
             this.tblMain.Controls.Add(this.tableLayoutPanelDB2, 0, 4);
             this.tblMain.Controls.Add(this.tableLayoutPanelDB1, 0, 3);
             this.tblMain.Controls.Add(this.lblTitle, 0, 0);
-            this.tblMain.Controls.Add(this.pbImage, 0, 1);
             this.tblMain.Controls.Add(this.ctrlStats, 0, 5);
             this.tblMain.Controls.Add(this.txtDescription, 0, 6);
             this.tblMain.Controls.Add(this.txtComments, 0, 7);
@@ -102,6 +99,7 @@
             // 
             this.lblTagsText.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTagsText.AutoSize = true;
+            this.lblTagsText.IsPath = false;
             this.lblTagsText.Location = new System.Drawing.Point(11, 3);
             this.lblTagsText.Name = "lblTagsText";
             this.lblTagsText.Size = new System.Drawing.Size(34, 13);
@@ -160,23 +158,13 @@
             this.lblTitle.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.IsPath = false;
             this.lblTitle.Location = new System.Drawing.Point(81, 11);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(41, 19);
             this.lblTitle.TabIndex = 4;
             this.lblTitle.Text = "Title";
             this.lblTitle.UseMnemonic = false;
-            // 
-            // pbImage
-            // 
-            this.pbImage.BackColor = System.Drawing.Color.Black;
-            this.pbImage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbImage.Location = new System.Drawing.Point(4, 45);
-            this.pbImage.Name = "pbImage";
-            this.pbImage.Size = new System.Drawing.Size(196, 194);
-            this.pbImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbImage.TabIndex = 2;
-            this.pbImage.TabStop = false;
             // 
             // ctrlStats
             // 
@@ -260,7 +248,6 @@
             this.tableLayoutPanelDB2.PerformLayout();
             this.tableLayoutPanelDB1.ResumeLayout(false);
             this.tableLayoutPanelDB1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbImage)).EndInit();
             this.tbl2.ResumeLayout(false);
             this.tbl2.PerformLayout();
             this.ResumeLayout(false);
@@ -270,7 +257,6 @@
         #endregion
 
         private DoomLauncher.TableLayoutPanelDB tblMain;
-        private System.Windows.Forms.PictureBox pbImage;
         private GrowLabel lblTitle;
         private GrowLabel lblTagsText;
         private StatsControl ctrlStats;

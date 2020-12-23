@@ -58,10 +58,10 @@
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 3;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 174F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
-            this.tblMain.Size = new System.Drawing.Size(356, 383);
+            this.tblMain.Size = new System.Drawing.Size(356, 405);
             this.tblMain.TabIndex = 2;
             // 
             // flowLayoutPanel1
@@ -70,7 +70,7 @@
             this.flowLayoutPanel1.Controls.Add(this.btnSave);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 353);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 377);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(356, 197);
@@ -103,7 +103,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(3, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(350, 144);
+            this.groupBox2.Size = new System.Drawing.Size(350, 168);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Properties";
@@ -113,7 +113,7 @@
             this.sourcePortEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sourcePortEdit1.Location = new System.Drawing.Point(3, 16);
             this.sourcePortEdit1.Name = "sourcePortEdit1";
-            this.sourcePortEdit1.Size = new System.Drawing.Size(344, 125);
+            this.sourcePortEdit1.Size = new System.Drawing.Size(344, 149);
             this.sourcePortEdit1.TabIndex = 0;
             // 
             // grpAdditionalFiles
@@ -121,7 +121,7 @@
             this.grpAdditionalFiles.Controls.Add(this.lblInfo);
             this.grpAdditionalFiles.Controls.Add(this.pbInfo);
             this.grpAdditionalFiles.Controls.Add(this.ctrlFiles);
-            this.grpAdditionalFiles.Location = new System.Drawing.Point(3, 153);
+            this.grpAdditionalFiles.Location = new System.Drawing.Point(3, 177);
             this.grpAdditionalFiles.Name = "grpAdditionalFiles";
             this.grpAdditionalFiles.Size = new System.Drawing.Size(350, 194);
             this.grpAdditionalFiles.TabIndex = 3;
@@ -158,7 +158,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button1;
-            this.ClientSize = new System.Drawing.Size(356, 383);
+            this.ClientSize = new System.Drawing.Size(356, 405);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SourcePortEditForm";

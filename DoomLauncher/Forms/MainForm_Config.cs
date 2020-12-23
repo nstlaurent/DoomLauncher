@@ -21,6 +21,7 @@ namespace DoomLauncher
                 {
                     UpdateConfig(config, AppConfiguration.SplitTopBottomName, splitTopBottom.SplitterDistance.ToString());
                     UpdateConfig(config, AppConfiguration.SplitLeftRightName, splitLeftRight.SplitterDistance.ToString());
+                    UpdateConfig(config, AppConfiguration.SplitTagSelectName, splitTagSelect.SplitterDistance.ToString());
 
                     UpdateConfig(config, AppConfiguration.AppWidthName, Size.Width.ToString());
                     UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
@@ -29,13 +30,11 @@ namespace DoomLauncher
                     UpdateConfig(config, AppConfiguration.WindowStateName, WindowState.ToString());
                 }
 
-                if (GameFileViewFactory.IsUsingColumnView)
-                    UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
-                else
-                    UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildTileColumnConfig());
-
+                UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
                 UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
                 UpdateConfig(config, AppConfiguration.ItemsPerPageName, AppConfiguration.ItemsPerPage.ToString());
+                UpdateConfig(config, AppConfiguration.LastSelectedTabIndexName, tabControl.SelectedIndex.ToString());
+                UpdateConfig(config, AppConfiguration.TagSelectPinnedName, m_tagSelectControl.Pinned.ToString());
             }
         }
 
@@ -65,21 +64,31 @@ namespace DoomLauncher
             }
         }
 
-        private string BuildTileColumnConfig()
+        private string BuildColumnConfig()
         {
-            if (m_tabHandler == null || GameFileViewFactory.IsUsingColumnView)
-                return string.Empty;
-
-            List<ColumnConfig> viewConfig = new List<ColumnConfig>();
+            List<ColumnConfig> columnViewConfig = new List<ColumnConfig>();
+            List<ColumnConfig> tileViewConfig = new List<ColumnConfig>();
+            HashSet<string> tileViewKeys = new HashSet<string>();
 
             foreach (ITabView tab in m_tabHandler.TabViews)
-                viewConfig.AddRange(tab.GetColumnConfig());
+            {
+                if (tab.GameFileViewControl is IGameFileColumnView)
+                {
+                    columnViewConfig.AddRange(tab.GetColumnConfig());
+                }
+                else
+                {
+                    tileViewConfig.AddRange(tab.GetColumnConfig());
+                    tileViewKeys.Add(tab.Key.ToString());
+                }
+            }
 
-            List<ColumnConfig> config = DataCache.Instance.GetColumnConfig().ToList();
+            // Only select columns from views that are tile views
+            List<ColumnConfig> config = DataCache.Instance.GetColumnConfig().Where(x => tileViewKeys.Contains(x.Parent)).ToList();
             // Tile views use IGameFileSortableView which only stores the single column that is sorted, so clear all sorting on all columns
             config.ForEach(x => x.Sort = SortOrder.None);
 
-            foreach (ColumnConfig viewColumn in viewConfig)
+            foreach (ColumnConfig viewColumn in tileViewConfig)
             {
                 ColumnConfig existingColumn = config.FirstOrDefault(x => x.Parent == viewColumn.Parent && x.Column == viewColumn.Column);
                 if (existingColumn != null)
@@ -88,18 +97,7 @@ namespace DoomLauncher
                     config.Add(viewColumn);
             }
 
-            return SerializeColumnConfig(config);
-        }
-
-        private string BuildColumnConfig()
-        {
-            if (m_tabHandler == null || !GameFileViewFactory.IsUsingColumnView)
-                return string.Empty;
-
-            List<ColumnConfig> config = new List<ColumnConfig>();
-
-            foreach (ITabView tab in m_tabHandler.TabViews)
-                config.AddRange(tab.GetColumnConfig());
+            config.AddRange(columnViewConfig);
 
             return SerializeColumnConfig(config);
         }

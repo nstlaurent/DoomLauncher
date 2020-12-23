@@ -13,7 +13,7 @@ namespace DoomLauncher
     {
         private ProgressBarForm m_progressBarSync;
 
-        private async Task SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews)
+        private async Task SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
         {
             if (m_progressBarSync == null)
             {
@@ -21,7 +21,7 @@ namespace DoomLauncher
                 ProgressBarStart(m_progressBarSync);
             }
 
-            SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement));
+            SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
 
             ProgressBarEnd(m_progressBarSync);
             m_progressBarSync = null;
@@ -67,7 +67,7 @@ namespace DoomLauncher
                 sb.ToString(), true);
         }
 
-        private SyncLibraryHandler ExecuteSyncHandler(string[] files, FileManagement fileManagement)
+        private SyncLibraryHandler ExecuteSyncHandler(string[] files, FileManagement fileManagement, ITagData tag = null)
         {
             SyncLibraryHandler handler = null;
 
@@ -85,13 +85,23 @@ namespace DoomLauncher
                     SyncPendingZdlFiles();
                     m_pendingZdlFiles = null;
                 }
-            }
+
+                if (tag != null)
+                    TagSyncFiles(handler, tag);
+        }
             catch (Exception ex)
             {
                 Util.DisplayUnexpectedException(this, ex);
-            }
+        }
 
             return handler;
+        }
+
+        private void TagSyncFiles(SyncLibraryHandler handler, ITagData tag)
+        {
+            DataCache.Instance.AddGameFileTag(handler.AddedGameFiles, tag, out _);
+            DataCache.Instance.AddGameFileTag(handler.UpdatedGameFiles, tag, out _);
+            DataCache.Instance.TagMapLookup.Refresh(new ITagData[] { tag });
         }
 
         private void SyncPendingZdlFiles()

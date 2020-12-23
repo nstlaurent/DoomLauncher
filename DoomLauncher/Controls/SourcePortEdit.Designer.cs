@@ -38,12 +38,17 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtExtensions = new System.Windows.Forms.TextBox();
-            this.lblFileOption = new System.Windows.Forms.Label();
             this.txtFileOption = new System.Windows.Forms.TextBox();
+            this.lblFileOption = new System.Windows.Forms.Label();
             this.lblParameters = new System.Windows.Forms.Label();
             this.txtParameters = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tblAltSave = new System.Windows.Forms.TableLayoutPanel();
+            this.txtAltSave = new System.Windows.Forms.TextBox();
+            this.btnAltSaveBrowse = new System.Windows.Forms.Button();
             this.tblMain.SuspendLayout();
             this.tblExec.SuspendLayout();
+            this.tblAltSave.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblMain
@@ -57,21 +62,23 @@
             this.tblMain.Controls.Add(this.label3, 0, 1);
             this.tblMain.Controls.Add(this.label2, 0, 2);
             this.tblMain.Controls.Add(this.txtExtensions, 1, 2);
-            this.tblMain.Controls.Add(this.txtFileOption, 1, 4);
-            this.tblMain.Controls.Add(this.lblFileOption, 0, 4);
             this.tblMain.Controls.Add(this.lblParameters, 0, 3);
             this.tblMain.Controls.Add(this.txtParameters, 1, 3);
+            this.tblMain.Controls.Add(this.lblFileOption, 0, 5);
+            this.tblMain.Controls.Add(this.txtFileOption, 1, 5);
+            this.tblMain.Controls.Add(this.label4, 0, 4);
+            this.tblMain.Controls.Add(this.tblAltSave, 1, 4);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 6;
+            this.tblMain.RowCount = 7;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblMain.Size = new System.Drawing.Size(310, 471);
             this.tblMain.TabIndex = 0;
             // 
@@ -156,23 +163,23 @@
             this.txtExtensions.Size = new System.Drawing.Size(184, 20);
             this.txtExtensions.TabIndex = 6;
             // 
+            // txtFileOption
+            // 
+            this.txtFileOption.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtFileOption.Location = new System.Drawing.Point(123, 123);
+            this.txtFileOption.Name = "txtFileOption";
+            this.txtFileOption.Size = new System.Drawing.Size(184, 20);
+            this.txtFileOption.TabIndex = 7;
+            // 
             // lblFileOption
             // 
             this.lblFileOption.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblFileOption.AutoSize = true;
-            this.lblFileOption.Location = new System.Drawing.Point(3, 101);
+            this.lblFileOption.Location = new System.Drawing.Point(3, 125);
             this.lblFileOption.Name = "lblFileOption";
             this.lblFileOption.Size = new System.Drawing.Size(57, 13);
             this.lblFileOption.TabIndex = 3;
             this.lblFileOption.Text = "File Option";
-            // 
-            // txtFileOption
-            // 
-            this.txtFileOption.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtFileOption.Location = new System.Drawing.Point(123, 99);
-            this.txtFileOption.Name = "txtFileOption";
-            this.txtFileOption.Size = new System.Drawing.Size(184, 20);
-            this.txtFileOption.TabIndex = 7;
             // 
             // lblParameters
             // 
@@ -192,6 +199,51 @@
             this.txtParameters.Size = new System.Drawing.Size(184, 20);
             this.txtParameters.TabIndex = 9;
             // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 101);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(92, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Alt Save Directory";
+            // 
+            // tblAltSave
+            // 
+            this.tblAltSave.ColumnCount = 2;
+            this.tblAltSave.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblAltSave.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tblAltSave.Controls.Add(this.txtAltSave, 0, 0);
+            this.tblAltSave.Controls.Add(this.btnAltSaveBrowse, 1, 0);
+            this.tblAltSave.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblAltSave.Location = new System.Drawing.Point(120, 96);
+            this.tblAltSave.Margin = new System.Windows.Forms.Padding(0);
+            this.tblAltSave.Name = "tblAltSave";
+            this.tblAltSave.RowCount = 1;
+            this.tblAltSave.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblAltSave.Size = new System.Drawing.Size(190, 24);
+            this.tblAltSave.TabIndex = 11;
+            // 
+            // txtAltSave
+            // 
+            this.txtAltSave.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtAltSave.Location = new System.Drawing.Point(3, 3);
+            this.txtAltSave.Name = "txtAltSave";
+            this.txtAltSave.Size = new System.Drawing.Size(104, 20);
+            this.txtAltSave.TabIndex = 0;
+            // 
+            // btnAltSaveBrowse
+            // 
+            this.btnAltSaveBrowse.Location = new System.Drawing.Point(110, 0);
+            this.btnAltSaveBrowse.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAltSaveBrowse.Name = "btnAltSaveBrowse";
+            this.btnAltSaveBrowse.Size = new System.Drawing.Size(66, 24);
+            this.btnAltSaveBrowse.TabIndex = 1;
+            this.btnAltSaveBrowse.Text = "Browse";
+            this.btnAltSaveBrowse.UseVisualStyleBackColor = true;
+            this.btnAltSaveBrowse.Click += new System.EventHandler(this.btnAltSaveBrowse_Click);
+            // 
             // SourcePortEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -203,6 +255,8 @@
             this.tblMain.PerformLayout();
             this.tblExec.ResumeLayout(false);
             this.tblExec.PerformLayout();
+            this.tblAltSave.ResumeLayout(false);
+            this.tblAltSave.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -222,5 +276,9 @@
         private System.Windows.Forms.TextBox txtFileOption;
         private System.Windows.Forms.Label lblParameters;
         private System.Windows.Forms.TextBox txtParameters;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TableLayoutPanel tblAltSave;
+        private System.Windows.Forms.TextBox txtAltSave;
+        private System.Windows.Forms.Button btnAltSaveBrowse;
     }
 }

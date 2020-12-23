@@ -1,6 +1,4 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
-using Equin.ApplicationFramework;
+﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -57,12 +55,14 @@ namespace DoomLauncher
 
         public List<ColumnConfig> GetColumnConfig()
         {
+            string tabKey = Key.ToString();
+
             if (GameFileViewControl is IGameFileColumnView columnView)
             {
                 List<ColumnConfig> config = new List<ColumnConfig>();
 
                 foreach (string key in columnView.GetColumnKeyOrder())
-                    config.Add(new ColumnConfig(Title, key, columnView.GetColumnWidth(key), columnView.GetColumnSort(key)));
+                    config.Add(new ColumnConfig(tabKey, key, columnView.GetColumnWidth(key), columnView.GetColumnSort(key)));
 
                 return config;
             }
@@ -72,7 +72,7 @@ namespace DoomLauncher
                 string key = sortableView.GetSortedColumnKey();
 
                 if (!string.IsNullOrEmpty(key) && sortableView.GetColumnSort(key) != SortOrder.None)
-                    config.Add(new ColumnConfig(Title, key, 0, sortableView.GetColumnSort(key)));
+                    config.Add(new ColumnConfig(tabKey, key, 0, sortableView.GetColumnSort(key)));
 
                 return config;
             }
@@ -84,14 +84,16 @@ namespace DoomLauncher
 
         public void SetColumnConfig(ColumnField[] columnTextFields, ColumnConfig[] colConfig)
         {
+            string key = Key.ToString();
+
             if (GameFileViewControl is IGameFileColumnView columnView)
             {
                 columnView.SuspendLayout();
 
-                var sortedColumns = SortColumns(Title, columnTextFields, colConfig);
+                var sortedColumns = SortColumns(key, columnTextFields, colConfig);
                 columnView.SetColumnFields(sortedColumns);
-                SetSortedColumn(Title, columnView, colConfig);
-                SetColumnWidths(Title, columnView, colConfig);
+                SetSortedColumn(key, columnView, colConfig);
+                SetColumnWidths(key, columnView, colConfig);
 
                 columnView.SetColumnFormat("ReleaseDate", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
                 columnView.SetColumnFormat("Downloaded", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
@@ -101,10 +103,10 @@ namespace DoomLauncher
             }
             else if (GameFileViewControl is IGameFileSortableView sortableView)
             {
-                var sortedColumns = SortColumns(Title, columnTextFields, colConfig);
+                var sortedColumns = SortColumns(key, columnTextFields, colConfig);
                 foreach (var sortColumn in sortedColumns)
                 {
-                    ColumnConfig config = colConfig.FirstOrDefault(x => x.Sort != SortOrder.None && x.Parent == Title && sortColumn.DataKey.Equals(x.Column, StringComparison.InvariantCultureIgnoreCase));
+                    ColumnConfig config = colConfig.FirstOrDefault(x => x.Sort != SortOrder.None && x.Parent == key && sortColumn.DataKey.Equals(x.Column, StringComparison.InvariantCultureIgnoreCase));
                     if (config != null)
                     {
                         sortableView.SetSortedColumn(config.Column, config.Sort);
@@ -118,7 +120,7 @@ namespace DoomLauncher
         {
             List<ColumnField> ret = new List<ColumnField>();
             //Pre 1.1.0 update check. Without this maps will be thrown on the end of the column list
-            bool setMapLocation = config.Length > 0 && !config.Any(x => x.Column == "MapCount");
+            bool setMapLocation = config.Length > 0 && !config.Any(x => x.Column.Equals("mapcount", StringComparison.OrdinalIgnoreCase));
 
             foreach (ColumnConfig configItem in config)
             {

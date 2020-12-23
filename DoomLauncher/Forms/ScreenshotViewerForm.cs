@@ -10,10 +10,15 @@ namespace DoomLauncher.Forms
     {
         private string[] m_images = new string[] { };
         private int m_index;
+        private bool m_slideshow;
+
+        private SlideShowPictureBox pbMain = new SlideShowPictureBox();
 
         public ScreenshotViewerForm()
         {
             InitializeComponent();
+            pbMain.Dock = DockStyle.Fill;
+            tblMain.Controls.Add(pbMain, 0, 0);
 
             btnSave.Image = Icons.Save;
 
@@ -101,11 +106,11 @@ namespace DoomLauncher.Forms
 
         private void SetImage()
         {
+            SetSlideshow(false);
+
             if (m_images.Length > 0)
             {
-                if (pbMain.Image != null)
-                    pbMain.Image.Dispose();
-                pbMain.Image = Image.FromFile(GetImageFilename());
+                pbMain.SetImage(Image.FromFile(GetImageFilename()));
                 Text = string.Format("Screenshot Viewer - {0}/{1}", m_index + 1, m_images.Length);
             }
         }
@@ -155,6 +160,30 @@ namespace DoomLauncher.Forms
                     MessageBox.Show(this, "Unable to save file.", "Unable to Save", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void btnSlideshow_Click(object sender, EventArgs e)
+        {
+            SetSlideshow(!m_slideshow);
+
+            if (m_slideshow)
+            {
+                Text = "Slideshow";
+                pbMain.SetImages(m_images.ToList(), m_index);
+            }
+            else
+            {
+                SetImage();
+            }
+        }
+
+        private void SetSlideshow(bool set)
+        {
+            m_slideshow = set;
+            if (set)
+                btnSlideshow.BackColor = SystemColors.Highlight;
+            else
+                btnSlideshow.BackColor = SystemColors.Control;
         }
     }
 }

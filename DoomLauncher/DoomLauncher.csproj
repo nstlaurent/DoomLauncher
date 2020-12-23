@@ -102,6 +102,12 @@
     <Compile Include="Controls\GlowButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TagSelectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TagSelectControl.Designer.cs">
+      <DependentUpon>TagSelectControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UpdateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -158,6 +164,21 @@
     </Compile>
     <Compile Include="Handlers\ToolTipDisplayHandler.cs" />
     <Compile Include="Handlers\ThumbnailManager.cs" />
+    <Compile Include="Controls\SlideShowPictureBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SlideShowPictureBox.Designer.cs">
+      <DependentUpon>SlideShowPictureBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers\TabKeys.cs" />
+    <Compile Include="Forms\TagSelectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TagSelectForm.Designer.cs">
+      <DependentUpon>TagSelectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSources\StaticTagData.cs" />
+    <Compile Include="SourcePort\WoofSourcePort.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />
@@ -614,6 +635,9 @@
     <EmbeddedResource Include="Controls\StatsControl.resx">
       <DependentUpon>StatsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TagSelectControl.resx">
+      <DependentUpon>TagSelectControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FileManagementSelect.resx">
       <DependentUpon>FileManagementSelect.cs</DependentUpon>
     </EmbeddedResource>
@@ -670,6 +694,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\GameFileTileExpanded.resx">
       <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SlideShowPictureBox.resx">
+      <DependentUpon>SlideShowPictureBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TabViews\BasicTabViewCtrl.resx">
       <DependentUpon>BasicTabViewCtrl.cs</DependentUpon>
@@ -759,6 +786,9 @@
     <EmbeddedResource Include="Controls\UpdateControl.resx">
       <DependentUpon>UpdateControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TagSelectForm.resx">
+      <DependentUpon>TagSelectForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="DoomLauncher.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -843,6 +873,8 @@
     <None Include="Resources\Search.png" />
     <None Include="Resources\Play.png" />
     <None Include="Resources\Bars.png" />
+    <None Include="Resources\Tags.png" />
+    <None Include="Resources\Pin.png" />
     <Content Include="TileImages\DoomLauncherTile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
