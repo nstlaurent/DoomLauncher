@@ -327,11 +327,13 @@ namespace DoomLauncher
                 LaunchType = (SourcePortLaunchType)Convert.ToInt32(dr["LaunchType"]),
                 FileOption = (string)CheckDBNull(dr["FileOption"], string.Empty),
                 ExtraParameters = (string)CheckDBNull(dr["ExtraParameters"], string.Empty),
-                AltSaveDirectory = new LauncherPath((string)CheckDBNull(dr["AltSaveDirectory"], string.Empty)),
+                AltSaveDirectory = new LauncherPath(string.Empty)
             };
 
             if (dt.Columns.Contains("SettingsFiles"))
                 sourcePort.SettingsFiles = (string)CheckDBNull(dr["SettingsFiles"], string.Empty);
+            if (dt.Columns.Contains("AltSaveDirectory"))
+                sourcePort.AltSaveDirectory = new LauncherPath((string)CheckDBNull(dr["AltSaveDirectory"], string.Empty));
 
             return sourcePort;
         }
