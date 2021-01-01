@@ -20,6 +20,26 @@ namespace DoomLauncher
 {
     public static class Util
     {
+        public static string GetTrimmedNulTerminatedString(byte[] data)
+        {
+            int index = data.ToList().IndexOf(0);
+            if (index == -1)
+                index = data.Length;
+            if (index > 0)
+                return Encoding.UTF8.GetString(data.Take(index).ToArray());
+            return null;
+        }
+
+        public static int ReadIntFromSavegame(Stream stream, ref int offset)
+        {
+            byte[] bArray = new byte[4];
+            stream.Seek(offset, SeekOrigin.Begin);
+            stream.Read(bArray, 0, 4);
+
+            offset += 4;
+            return BitConverter.ToInt32(bArray, 0);
+        }
+
         public static IEnumerable<object> TableToStructure(DataTable dt, Type type)
         {
             List<object> ret = new List<object>();

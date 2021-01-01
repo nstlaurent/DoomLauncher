@@ -155,6 +155,7 @@
     <Compile Include="Interfaces\IGameFileColumnView.cs" />
     <Compile Include="Interfaces\IGameFileView.cs" />
     <Compile Include="Interfaces\IGameProfile.cs" />
+    <Compile Include="Interfaces\ISaveGameFile.cs" />
     <Compile Include="IWad\IWadInfo.cs" />
     <Compile Include="Controls\PagingControl.cs">
       <SubType>UserControl</SubType>
@@ -178,6 +179,8 @@
       <DependentUpon>TagSelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DataSources\StaticTagData.cs" />
+    <Compile Include="SaveGame\GZDoomSaveGameReader.cs" />
+    <Compile Include="SaveGame\SaveGameFile.cs" />
     <Compile Include="SourcePort\WoofSourcePort.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
