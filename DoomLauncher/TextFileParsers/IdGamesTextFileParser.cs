@@ -49,8 +49,10 @@ namespace DoomLauncher.TextFileParsers
 
         private bool ParseDate1(string date, string[] dateParseFormats, out DateTime dt)
         {
-            if (DateTime.TryParse(date, out dt))
+            if (DateTime.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+            {
                 return true;
+            }   
             else if (DateTime.TryParseExact(date, dateParseFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
                 return true;
 

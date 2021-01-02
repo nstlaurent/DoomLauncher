@@ -1,6 +1,7 @@
 ﻿using DoomLauncher.TextFileParsers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Globalization;
 
 namespace UnitTest.Tests
 {
@@ -57,7 +58,7 @@ namespace UnitTest.Tests
                 "Release date: junk 5 April 2016 junk",
             };
 
-            DateTime assert = DateTime.Parse("4/5/2016");
+            DateTime assert = DateTime.Parse("4/5/2016", CultureInfo.InvariantCulture);
 
             foreach (string date in dates)
             {
@@ -82,14 +83,14 @@ namespace UnitTest.Tests
             parser.Parse(test);
 
             Assert.AreEqual("Onslaught DM 3 (v.1.1)", parser.Title);
-            Assert.AreEqual(DateTime.Parse("01/17/07"), parser.ReleaseDate);
+            Assert.AreEqual(DateTime.Parse("01/17/07", CultureInfo.InvariantCulture), parser.ReleaseDate);
             Assert.AreEqual("Hobomaster22, Ak-01", parser.Author); //Could be Author: or Authors:
             Assert.AreEqual("21 head to head deathmatch maps with faced paced action.  This is a 1on1 specific mapset. For FFA more than 4 players is not recommended.", parser.Description);
 
             test = test.Replace("AUTHORS", "AUTHOR");
             parser.Parse(test);
             Assert.AreEqual("Onslaught DM 3 (v.1.1)", parser.Title);
-            Assert.AreEqual(DateTime.Parse("01/17/07"), parser.ReleaseDate);
+            Assert.AreEqual(DateTime.Parse("01/17/07", CultureInfo.InvariantCulture), parser.ReleaseDate);
             Assert.AreEqual("Hobomaster22, Ak-01", parser.Author); //Could be Author: or Authors:
             Assert.AreEqual("21 head to head deathmatch maps with faced paced action.  This is a 1on1 specific mapset. For FFA more than 4 players is not recommended.", parser.Description);
 
