@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 
 namespace DoomLauncher
@@ -39,7 +40,7 @@ namespace DoomLauncher
             if (item.DataSourceProperty == "LevelTime") //speical case, need to split out ':' and calculate time
             {
                 string[] time = value.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                pi.SetValue(stats, (Convert.ToSingle(time[0]) * 60) + Convert.ToSingle(time[1]));
+                pi.SetValue(stats, (Convert.ToSingle(time[0], CultureInfo.InvariantCulture) * 60) + Convert.ToSingle(time[1], CultureInfo.InvariantCulture));
             }
             else
             {
