@@ -68,7 +68,7 @@ namespace DoomLauncher
                     SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
             }
 
-            cmbSkill.DataSource = Util.GetSkills();
+            SetAutoCompleteCustomSource(cmbSkill, Util.GetSkills().ToList(), null, null);
             cmbSkill.SelectedItem = "3";
 
             LoadProfiles();
