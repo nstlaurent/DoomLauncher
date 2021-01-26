@@ -125,8 +125,8 @@ namespace DoomLauncher
 
         private static string GetLoadLatestSave(IGameFile gameFile, ISourcePortData sourcePortData, ISourcePort sourcePort)
         {
-            var files = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).OrderByDescending(x => x.DateCreated);
-            var saveFile = files.FirstOrDefault();
+            var saveFile = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePortData.SourcePortID)
+                .OrderByDescending(x => x.DateCreated).FirstOrDefault();
             if (saveFile != null)
             {
                 string saveFilePath = saveFile.OriginalFileName;
