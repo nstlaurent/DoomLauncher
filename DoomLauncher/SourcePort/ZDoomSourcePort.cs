@@ -23,7 +23,17 @@ namespace DoomLauncher.SourcePort
             return false;
         }
 
+        public override string LoadSaveParameter(SpData data)
+        {
+            return $"-loadgame {data.Value}";
+        }
+
         public override bool StatisticsSupported()
+        {
+            return true;
+        }
+
+        public override bool LoadSaveGameSupported()
         {
             return true;
         }

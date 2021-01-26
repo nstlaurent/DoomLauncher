@@ -88,6 +88,7 @@ namespace DoomLauncher
             if (GameFile != null)
             {
                 chkSaveStats.Checked = gameProfile.SettingsStat;
+                chkLoadLatestSave.Checked = gameProfile.SettingsLoadLatestSave;
 
                 IIWadData iwad = m_adapter.GetIWad(gameProfile.GameFileID.Value);
 
@@ -343,6 +344,11 @@ namespace DoomLauncher
             get { return chkSaveStats.Enabled && chkSaveStats.Checked; }
         }
 
+        public bool LoadLatestSave
+        {
+            get { return chkLoadLatestSave.Enabled && chkLoadLatestSave.Checked; }
+        }
+
         public bool PreviewLaunchParameters
         {
             get { return chkPreview.Checked; }
@@ -388,6 +394,7 @@ namespace DoomLauncher
             {
                 ISourcePortData sourcePort = cmbSourcePorts.SelectedItem as ISourcePortData;
                 chkSaveStats.Enabled = SaveStatisticsSupported(sourcePort);
+                chkLoadLatestSave.Enabled = LoadLatestSaveSupported(sourcePort);
                 SetAdditionalFiles(resetAdditionalFiles);
                 PopulateDemos();
             }
@@ -411,6 +418,11 @@ namespace DoomLauncher
         private bool SaveStatisticsSupported(ISourcePortData sourcePort)
         {
             return SourcePortUtil.CreateSourcePort(sourcePort).StatisticsSupported();
+        }
+
+        private bool LoadLatestSaveSupported(ISourcePortData sourcePort)
+        {
+            return SourcePortUtil.CreateSourcePort(sourcePort).LoadSaveGameSupported();
         }
 
         private void chkMap_CheckedChanged(object sender, EventArgs e)
@@ -842,6 +854,7 @@ namespace DoomLauncher
             if (ExtraParameters != null) gameProfile.SettingsExtraParams = ExtraParameters;
 
             gameProfile.SettingsStat = SaveStatistics;
+            gameProfile.SettingsLoadLatestSave = LoadLatestSave;
 
             if (ShouldSaveAdditionalFiles())
             {

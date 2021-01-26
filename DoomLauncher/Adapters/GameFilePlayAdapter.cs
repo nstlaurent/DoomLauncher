@@ -117,7 +117,25 @@ namespace DoomLauncher
             if (SaveStatistics && statsReader != null && !string.IsNullOrEmpty(statsReader.LaunchParameter))
                 sb.Append(" " + statsReader.LaunchParameter);
 
+            if (LoadLatestSave && sourcePort.LoadSaveGameSupported())
+                sb.Append(" " + GetLoadLatestSave(gameFile, sourcePortData, sourcePort));
+
             return sb.ToString();
+        }
+
+        private static string GetLoadLatestSave(IGameFile gameFile, ISourcePortData sourcePortData, ISourcePort sourcePort)
+        {
+            var files = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).OrderByDescending(x => x.DateCreated);
+            var saveFile = files.FirstOrDefault();
+            if (saveFile != null)
+            {
+                string saveFilePath = saveFile.OriginalFileName;
+                if (!string.IsNullOrEmpty(sourcePortData.AltSaveDirectory.GetFullPath()))
+                    saveFilePath = Path.Combine(sourcePortData.AltSaveDirectory.GetFullPath(), saveFile.OriginalFileName);
+                return sourcePort.LoadSaveParameter(new SpData(saveFilePath));
+            }
+
+            return string.Empty;
         }
 
         private bool HandleGameFileIWad(IGameFile gameFile, ISourcePort sourcePort, StringBuilder sb, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
@@ -319,6 +337,7 @@ namespace DoomLauncher
         public string ExtraParameters { get; set; }
         public string[] SpecificFiles { get; set; }
         public bool SaveStatistics { get; set; }
+        public bool LoadLatestSave { get; set; }
 
         public ISourcePortData SourcePort { get; private set; }
         public IGameFile GameFile { get; private set; }

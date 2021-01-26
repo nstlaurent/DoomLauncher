@@ -38,6 +38,10 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
             this.profileToolStrip = new System.Windows.Forms.ToolStrip();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.newProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label5 = new System.Windows.Forms.Label();
             this.cmbProfiles = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -63,8 +67,10 @@
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
+            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
+            this.pbInfo = new System.Windows.Forms.PictureBox();
             this.flp1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lnkSpecific = new System.Windows.Forms.LinkLabel();
             this.lnkCustomParameters = new System.Windows.Forms.LinkLabel();
@@ -74,12 +80,7 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.ctrlFiles = new DoomLauncher.FilesCtrl();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.newProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pbInfo = new System.Windows.Forms.PictureBox();
+            this.chkLoadLatestSave = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.tblProfile.SuspendLayout();
             this.profileToolStrip.SuspendLayout();
@@ -88,13 +89,13 @@
             this.groupBox3.SuspendLayout();
             this.tblFiles.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).BeginInit();
             this.flp1.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblInner.SuspendLayout();
             this.pnlLeft.SuspendLayout();
             this.pnlBottom.SuspendLayout();
             this.flpButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).BeginInit();
             this.SuspendLayout();
             // 
             // cmbSourcePorts
@@ -193,6 +194,47 @@
             this.profileToolStrip.Size = new System.Drawing.Size(32, 23);
             this.profileToolStrip.TabIndex = 12;
             this.profileToolStrip.Text = "Options";
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newProfileToolStripMenuItem,
+            this.editProfileToolStripMenuItem,
+            this.deleteProfileToolStripMenuItem});
+            this.toolStripDropDownButton1.Image = global::DoomLauncher.Properties.Resources.Bars;
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 20);
+            this.toolStripDropDownButton1.Text = "Options";
+            // 
+            // newProfileToolStripMenuItem
+            // 
+            this.newProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.File;
+            this.newProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.newProfileToolStripMenuItem.Text = "New Profile...";
+            this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
+            // 
+            // editProfileToolStripMenuItem
+            // 
+            this.editProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Edit;
+            this.editProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.editProfileToolStripMenuItem.Name = "editProfileToolStripMenuItem";
+            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.editProfileToolStripMenuItem.Text = "Rename Profile...";
+            this.editProfileToolStripMenuItem.Click += new System.EventHandler(this.editProfileToolStripMenuItem_Click);
+            // 
+            // deleteProfileToolStripMenuItem
+            // 
+            this.deleteProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Delete;
+            this.deleteProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.deleteProfileToolStripMenuItem.Name = "deleteProfileToolStripMenuItem";
+            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.deleteProfileToolStripMenuItem.Text = "Delete Profile";
+            this.deleteProfileToolStripMenuItem.Click += new System.EventHandler(this.deleteProfileToolStripMenuItem_Click);
             // 
             // label5
             // 
@@ -365,7 +407,7 @@
             // chkPreview
             // 
             this.chkPreview.AutoSize = true;
-            this.chkPreview.Location = new System.Drawing.Point(6, 68);
+            this.chkPreview.Location = new System.Drawing.Point(6, 90);
             this.chkPreview.Name = "chkPreview";
             this.chkPreview.Size = new System.Drawing.Size(159, 17);
             this.chkPreview.TabIndex = 21;
@@ -397,22 +439,23 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.chkLoadLatestSave);
             this.groupBox4.Controls.Add(this.lnkFilterSettings);
             this.groupBox4.Controls.Add(this.chkScreenFilter);
             this.groupBox4.Controls.Add(this.lnkPreviewLaunchParameters);
             this.groupBox4.Controls.Add(this.chkPreview);
             this.groupBox4.Controls.Add(this.chkSaveStats);
             this.groupBox4.Controls.Add(this.lnkMore);
-            this.groupBox4.Location = new System.Drawing.Point(3, 301);
+            this.groupBox4.Location = new System.Drawing.Point(3, 294);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(256, 93);
+            this.groupBox4.Size = new System.Drawing.Size(256, 121);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             // 
             // lnkFilterSettings
             // 
             this.lnkFilterSettings.AutoSize = true;
-            this.lnkFilterSettings.Location = new System.Drawing.Point(171, 44);
+            this.lnkFilterSettings.Location = new System.Drawing.Point(171, 66);
             this.lnkFilterSettings.Name = "lnkFilterSettings";
             this.lnkFilterSettings.Size = new System.Drawing.Size(45, 13);
             this.lnkFilterSettings.TabIndex = 24;
@@ -423,7 +466,7 @@
             // chkScreenFilter
             // 
             this.chkScreenFilter.AutoSize = true;
-            this.chkScreenFilter.Location = new System.Drawing.Point(6, 44);
+            this.chkScreenFilter.Location = new System.Drawing.Point(6, 66);
             this.chkScreenFilter.Name = "chkScreenFilter";
             this.chkScreenFilter.Size = new System.Drawing.Size(85, 17);
             this.chkScreenFilter.TabIndex = 23;
@@ -434,7 +477,7 @@
             // lnkPreviewLaunchParameters
             // 
             this.lnkPreviewLaunchParameters.AutoSize = true;
-            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(171, 68);
+            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(171, 90);
             this.lnkPreviewLaunchParameters.Name = "lnkPreviewLaunchParameters";
             this.lnkPreviewLaunchParameters.Size = new System.Drawing.Size(34, 13);
             this.lnkPreviewLaunchParameters.TabIndex = 22;
@@ -448,7 +491,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(265, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(236, 395);
+            this.groupBox3.Size = new System.Drawing.Size(236, 413);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Additional Files / Load Order";
@@ -468,8 +511,16 @@
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tblFiles.Size = new System.Drawing.Size(230, 376);
+            this.tblFiles.Size = new System.Drawing.Size(230, 394);
             this.tblFiles.TabIndex = 0;
+            // 
+            // ctrlFiles
+            // 
+            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
+            this.ctrlFiles.Name = "ctrlFiles";
+            this.ctrlFiles.Size = new System.Drawing.Size(224, 324);
+            this.ctrlFiles.TabIndex = 20;
             // 
             // panel1
             // 
@@ -491,12 +542,20 @@
             this.lblInfo.TabIndex = 25;
             this.lblInfo.Text = "label";
             // 
+            // pbInfo
+            // 
+            this.pbInfo.Location = new System.Drawing.Point(3, 7);
+            this.pbInfo.Name = "pbInfo";
+            this.pbInfo.Size = new System.Drawing.Size(16, 16);
+            this.pbInfo.TabIndex = 24;
+            this.pbInfo.TabStop = false;
+            // 
             // flp1
             // 
             this.flp1.Controls.Add(this.lnkSpecific);
             this.flp1.Controls.Add(this.lnkCustomParameters);
             this.flp1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp1.Location = new System.Drawing.Point(0, 352);
+            this.flp1.Location = new System.Drawing.Point(0, 370);
             this.flp1.Margin = new System.Windows.Forms.Padding(0);
             this.flp1.Name = "flp1";
             this.flp1.Size = new System.Drawing.Size(230, 24);
@@ -539,7 +598,7 @@
             this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tblMain.Size = new System.Drawing.Size(504, 433);
+            this.tblMain.Size = new System.Drawing.Size(504, 451);
             this.tblMain.TabIndex = 21;
             // 
             // tblInner
@@ -555,7 +614,7 @@
             this.tblInner.Name = "tblInner";
             this.tblInner.RowCount = 1;
             this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblInner.Size = new System.Drawing.Size(504, 401);
+            this.tblInner.Size = new System.Drawing.Size(504, 419);
             this.tblInner.TabIndex = 0;
             // 
             // pnlLeft
@@ -567,7 +626,7 @@
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
             this.pnlLeft.Margin = new System.Windows.Forms.Padding(0);
             this.pnlLeft.Name = "pnlLeft";
-            this.pnlLeft.Size = new System.Drawing.Size(262, 401);
+            this.pnlLeft.Size = new System.Drawing.Size(262, 419);
             this.pnlLeft.TabIndex = 0;
             // 
             // pnlBottom
@@ -576,7 +635,7 @@
             this.pnlBottom.Controls.Add(this.flpButtons);
             this.pnlBottom.Controls.Add(this.chkRemember);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 401);
+            this.pnlBottom.Location = new System.Drawing.Point(0, 419);
             this.pnlBottom.Margin = new System.Windows.Forms.Padding(0);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.Size = new System.Drawing.Size(504, 32);
@@ -604,62 +663,15 @@
             this.flpButtons.Size = new System.Drawing.Size(200, 32);
             this.flpButtons.TabIndex = 5;
             // 
-            // ctrlFiles
+            // chkLoadLatestSave
             // 
-            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
-            this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(224, 306);
-            this.ctrlFiles.TabIndex = 20;
-            // 
-            // toolStripDropDownButton1
-            // 
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newProfileToolStripMenuItem,
-            this.editProfileToolStripMenuItem,
-            this.deleteProfileToolStripMenuItem});
-            this.toolStripDropDownButton1.Image = global::DoomLauncher.Properties.Resources.Bars;
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 20);
-            this.toolStripDropDownButton1.Text = "Options";
-            // 
-            // newProfileToolStripMenuItem
-            // 
-            this.newProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.File;
-            this.newProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(182, 24);
-            this.newProfileToolStripMenuItem.Text = "New Profile...";
-            this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
-            // 
-            // editProfileToolStripMenuItem
-            // 
-            this.editProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Edit;
-            this.editProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.editProfileToolStripMenuItem.Name = "editProfileToolStripMenuItem";
-            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(182, 24);
-            this.editProfileToolStripMenuItem.Text = "Rename Profile...";
-            this.editProfileToolStripMenuItem.Click += new System.EventHandler(this.editProfileToolStripMenuItem_Click);
-            // 
-            // deleteProfileToolStripMenuItem
-            // 
-            this.deleteProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Delete;
-            this.deleteProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.deleteProfileToolStripMenuItem.Name = "deleteProfileToolStripMenuItem";
-            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(182, 24);
-            this.deleteProfileToolStripMenuItem.Text = "Delete Profile";
-            this.deleteProfileToolStripMenuItem.Click += new System.EventHandler(this.deleteProfileToolStripMenuItem_Click);
-            // 
-            // pbInfo
-            // 
-            this.pbInfo.Location = new System.Drawing.Point(3, 7);
-            this.pbInfo.Name = "pbInfo";
-            this.pbInfo.Size = new System.Drawing.Size(16, 16);
-            this.pbInfo.TabIndex = 24;
-            this.pbInfo.TabStop = false;
+            this.chkLoadLatestSave.AutoSize = true;
+            this.chkLoadLatestSave.Location = new System.Drawing.Point(6, 43);
+            this.chkLoadLatestSave.Name = "chkLoadLatestSave";
+            this.chkLoadLatestSave.Size = new System.Drawing.Size(110, 17);
+            this.chkLoadLatestSave.TabIndex = 25;
+            this.chkLoadLatestSave.Text = "Load Latest Save";
+            this.chkLoadLatestSave.UseVisualStyleBackColor = true;
             // 
             // PlayForm
             // 
@@ -667,7 +679,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(504, 433);
+            this.ClientSize = new System.Drawing.Size(504, 451);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PlayForm";
@@ -686,6 +698,7 @@
             this.tblFiles.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).EndInit();
             this.flp1.ResumeLayout(false);
             this.flp1.PerformLayout();
             this.tblMain.ResumeLayout(false);
@@ -694,7 +707,6 @@
             this.pnlBottom.ResumeLayout(false);
             this.pnlBottom.PerformLayout();
             this.flpButtons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -751,5 +763,6 @@
         private System.Windows.Forms.ToolStripMenuItem newProfileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editProfileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteProfileToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chkLoadLatestSave;
     }
 }
