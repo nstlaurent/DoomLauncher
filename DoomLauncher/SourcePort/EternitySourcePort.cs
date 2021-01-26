@@ -2,9 +2,9 @@
 
 namespace DoomLauncher.SourcePort
 {
-    public class WoofSourcePort : ChocolateDoomSourcePort
+    public class EternitySourcePort : ChocolateDoomSourcePort
     {
-        public WoofSourcePort(ISourcePortData sourcePortData)
+        public EternitySourcePort(ISourcePortData sourcePortData)
             : base(sourcePortData)
         {
 
@@ -12,7 +12,7 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            return CheckFileNameWithoutExtension("woof");
+            return CheckFileNameWithoutExtension("eternity");
         }
     }
 }

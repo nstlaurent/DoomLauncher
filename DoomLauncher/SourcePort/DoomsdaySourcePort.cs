@@ -83,7 +83,7 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            return Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals("DOOMSDAY", StringComparison.InvariantCultureIgnoreCase);
+            return CheckFileNameWithoutExtension("doomsday");
         }
     }
 }

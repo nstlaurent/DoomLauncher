@@ -16,7 +16,7 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            return Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals("chocolate-doom", StringComparison.InvariantCultureIgnoreCase);
+            return CheckFileNameWithoutExtension("chocolate-doom");
         }
 
         public override bool StatisticsSupported()
