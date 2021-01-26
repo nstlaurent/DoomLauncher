@@ -41,6 +41,7 @@ namespace DoomLauncher
 
         private string m_launchFile;
         private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
+        private FormWindowState m_windowState;
 
         public MainForm(string launchFile)
         {
@@ -57,6 +58,21 @@ namespace DoomLauncher
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
+        }
+
+        protected override void OnClientSizeChanged(EventArgs e)
+        {
+            if (WindowState != m_windowState)
+            {
+                if (m_windowState != FormWindowState.Minimized && WindowState == FormWindowState.Minimized)
+                    ctrlSummary.PauseSlideshow();
+                else if (m_windowState == FormWindowState.Minimized && WindowState != FormWindowState.Minimized)
+                    ctrlSummary.ResumeSlideshow();
+
+                m_windowState = WindowState;
+            }
+
+            base.OnClientSizeChanged(e);
         }
 
         private void InitIcons()
@@ -154,6 +170,8 @@ namespace DoomLauncher
                 Width = saveWidth;
                 Height = saveHeight;
             }
+
+            m_windowState = WindowState;
         }
 
         private void KillRunningApps()
