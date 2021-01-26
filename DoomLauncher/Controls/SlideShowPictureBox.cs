@@ -224,24 +224,37 @@ namespace DoomLauncher
 
         private void SetTransparency()
         {
-            ColorMatrix colorMatrix = new ColorMatrix(new float[][]
+            try
             {
-                new [] { 1.0F, 0.0F, 0.0F, 0.0F, 0.0F },
-                new [] { 0.0F, 1.0F, 0.0F, 0.0F, 0.0F },
-                new [] { 0.0F, 0.0F, 1.0F, 0.0F, 0.0F },
-                new [] { 0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
-                new [] { 0.0F, 0.0F, 0.0F, m_alpha, 1.0F },
-            });
+                if (m_alpha >= 1.0F)
+                {
+                    pbImage.Image = m_currentImage;
+                    return;
+                }
 
-            m_currentGraphics.FillRectangle(m_bgBrush, 0, 0, m_currentImage.Width, m_currentImage.Height);
+                ColorMatrix colorMatrix = new ColorMatrix(new float[][]
+                {
+                    new [] { 1.0F, 0.0F, 0.0F, 0.0F, 0.0F },
+                    new [] { 0.0F, 1.0F, 0.0F, 0.0F, 0.0F },
+                    new [] { 0.0F, 0.0F, 1.0F, 0.0F, 0.0F },
+                    new [] { 0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
+                    new [] { 0.0F, 0.0F, 0.0F, m_alpha, 1.0F },
+                });
 
-            ImageAttributes imageAttrs = new ImageAttributes();
-            imageAttrs.SetColorMatrix(colorMatrix);
+                m_currentGraphics.FillRectangle(m_bgBrush, 0, 0, m_currentImage.Width, m_currentImage.Height);
 
-            m_currentGraphics.DrawImage(m_currentImage, new Rectangle(0, 0, m_currentImage.Width, m_currentImage.Height), 0, 0,
-                m_drawImage.Width, m_drawImage.Height, GraphicsUnit.Pixel, imageAttrs);
-            pbImage.Image = m_drawImage;
-            pbImage.Refresh();
+                ImageAttributes imageAttrs = new ImageAttributes();
+                imageAttrs.SetColorMatrix(colorMatrix);
+
+                m_currentGraphics.DrawImage(m_currentImage, new Rectangle(0, 0, m_currentImage.Width, m_currentImage.Height), 0, 0,
+                    m_drawImage.Width, m_drawImage.Height, GraphicsUnit.Pixel, imageAttrs);
+                pbImage.Image = m_drawImage;
+                pbImage.Refresh();
+            }
+            catch
+            {
+                // Sometimes this can randomly fail, can be timing or whatever... just ignore
+            }
         }
     }
 }
