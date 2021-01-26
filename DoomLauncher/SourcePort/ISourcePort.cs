@@ -13,9 +13,11 @@ namespace DoomLauncher.SourcePort
         string SkillParameter(SpData data);
         string RecordParameter(SpData data);
         string PlayDemoParameter(SpData data);
+        string LoadSaveParameter(SpData data);
 
         bool Supported(); //if the exe is supported by this implementation
         bool StatisticsSupported();
+        bool LoadSaveGameSupported();
         IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats);
         ISaveGameReader CreateSaveGameReader(FileInfo file);
     }

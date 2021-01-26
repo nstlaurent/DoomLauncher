@@ -15,6 +15,7 @@
         string SettingsFilesIWAD { get; set; }
         string SettingsSpecificFiles { get; set; }
         bool SettingsStat { get; set; }
+        bool SettingsLoadLatestSave { get; set; }
         bool SettingsSaved { get; set; }
     }
 }

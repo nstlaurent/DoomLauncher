@@ -50,6 +50,11 @@ namespace DoomLauncher.SourcePort
             return string.Format(" -playdemo \"{0}\"", data.Value);
         }
 
+        public virtual string LoadSaveParameter(SpData data)
+        {
+            return string.Empty;
+        }
+
         public static string BuildWarpParameter(string map)
         {
             if (Regex.IsMatch(map, @"^E\dM\d$") || Regex.IsMatch(map, @"^MAP\d\d$"))
@@ -64,6 +69,11 @@ namespace DoomLauncher.SourcePort
         }
 
         public virtual bool StatisticsSupported()
+        {
+            return false;
+        }
+
+        public virtual bool LoadSaveGameSupported()
         {
             return false;
         }

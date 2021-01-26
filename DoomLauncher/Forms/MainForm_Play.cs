@@ -176,7 +176,7 @@ namespace DoomLauncher
                 {
                     DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap,
                     GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
-                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved });
+                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave });
                 }
                 else
                 {
@@ -378,6 +378,7 @@ namespace DoomLauncher
             playAdapter.PlayDemo = form.PlayDemo;
             playAdapter.ExtraParameters = form.ExtraParameters;
             playAdapter.SaveStatistics = form.SaveStatistics;
+            playAdapter.LoadLatestSave = form.LoadLatestSave;
             playAdapter.ProcessExited += processExited;
             if (form.SelectedDemo != null) playAdapter.PlayDemoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
             return playAdapter;
