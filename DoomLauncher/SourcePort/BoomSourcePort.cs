@@ -14,8 +14,7 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            string exe = m_sourcePortData.Executable.ToLower();
-            return exe.Contains("prboom") || exe.Contains("glboom");
+            return CheckFileNameContains("prboom") || CheckFileNameContains("glboom");
         }
 
         public override bool StatisticsSupported()

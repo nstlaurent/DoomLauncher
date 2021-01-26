@@ -2,6 +2,7 @@
 using DoomLauncher.SaveGame;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,16 @@ namespace DoomLauncher.SourcePort
         public GenericSourcePort(ISourcePortData sourcePortData)
         {
             m_sourcePortData = sourcePortData;
+        }
+
+        public bool CheckFileNameWithoutExtension(string name)
+        {
+            return Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals(name, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public bool CheckFileNameContains(string name)
+        {
+            return CultureInfo.CurrentCulture.CompareInfo.IndexOf(m_sourcePortData.Executable, name) >= 0;
         }
 
         public virtual string IwadParameter(SpData data)
