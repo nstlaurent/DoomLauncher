@@ -578,6 +578,13 @@ namespace DoomLauncher
             form.ShowDialog(this);
         }
 
+        private void lnkLoadSaveMore_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            SaveInfo form = new SaveInfo();
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.ShowDialog(this);
+        }
+
         public bool SettingsValid(out string error)
         {
             error = null;
