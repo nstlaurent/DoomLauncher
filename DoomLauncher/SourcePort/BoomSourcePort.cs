@@ -23,6 +23,11 @@ namespace DoomLauncher.SourcePort
             return true;
         }
 
+        public override bool LoadSaveGameSupported()
+        {
+            return true;
+        }
+
         public override IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats)
         {
             return new BoomStatsReader(gameFile, Path.Combine(m_sourcePortData.Directory.GetFullPath(), "levelstat.txt"));

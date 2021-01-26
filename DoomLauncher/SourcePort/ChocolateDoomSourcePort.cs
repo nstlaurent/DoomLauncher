@@ -24,6 +24,11 @@ namespace DoomLauncher.SourcePort
             return true;
         }
 
+        public override bool LoadSaveGameSupported()
+        {
+            return true;
+        }
+
         public override IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats)
         {
             return new ChocolateDoomStatsReader(gameFile, Path.Combine(m_sourcePortData.Directory.GetFullPath(), "stats.txt"));
