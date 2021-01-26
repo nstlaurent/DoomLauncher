@@ -62,6 +62,7 @@
             this.lnkMore = new System.Windows.Forms.LinkLabel();
             this.chkSaveStats = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.chkLoadLatestSave = new System.Windows.Forms.CheckBox();
             this.lnkFilterSettings = new System.Windows.Forms.LinkLabel();
             this.chkScreenFilter = new System.Windows.Forms.CheckBox();
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
@@ -80,7 +81,7 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkLoadLatestSave = new System.Windows.Forms.CheckBox();
+            this.lnkLoadSaveMore = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.tblProfile.SuspendLayout();
             this.profileToolStrip.SuspendLayout();
@@ -439,6 +440,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.lnkLoadSaveMore);
             this.groupBox4.Controls.Add(this.chkLoadLatestSave);
             this.groupBox4.Controls.Add(this.lnkFilterSettings);
             this.groupBox4.Controls.Add(this.chkScreenFilter);
@@ -451,6 +453,16 @@
             this.groupBox4.Size = new System.Drawing.Size(256, 121);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
+            // 
+            // chkLoadLatestSave
+            // 
+            this.chkLoadLatestSave.AutoSize = true;
+            this.chkLoadLatestSave.Location = new System.Drawing.Point(6, 43);
+            this.chkLoadLatestSave.Name = "chkLoadLatestSave";
+            this.chkLoadLatestSave.Size = new System.Drawing.Size(110, 17);
+            this.chkLoadLatestSave.TabIndex = 25;
+            this.chkLoadLatestSave.Text = "Load Latest Save";
+            this.chkLoadLatestSave.UseVisualStyleBackColor = true;
             // 
             // lnkFilterSettings
             // 
@@ -663,15 +675,16 @@
             this.flpButtons.Size = new System.Drawing.Size(200, 32);
             this.flpButtons.TabIndex = 5;
             // 
-            // chkLoadLatestSave
+            // lnkLoadSaveMore
             // 
-            this.chkLoadLatestSave.AutoSize = true;
-            this.chkLoadLatestSave.Location = new System.Drawing.Point(6, 43);
-            this.chkLoadLatestSave.Name = "chkLoadLatestSave";
-            this.chkLoadLatestSave.Size = new System.Drawing.Size(110, 17);
-            this.chkLoadLatestSave.TabIndex = 25;
-            this.chkLoadLatestSave.Text = "Load Latest Save";
-            this.chkLoadLatestSave.UseVisualStyleBackColor = true;
+            this.lnkLoadSaveMore.AutoSize = true;
+            this.lnkLoadSaveMore.Location = new System.Drawing.Point(171, 44);
+            this.lnkLoadSaveMore.Name = "lnkLoadSaveMore";
+            this.lnkLoadSaveMore.Size = new System.Drawing.Size(61, 13);
+            this.lnkLoadSaveMore.TabIndex = 26;
+            this.lnkLoadSaveMore.TabStop = true;
+            this.lnkLoadSaveMore.Text = "More Info...";
+            this.lnkLoadSaveMore.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkLoadSaveMore_LinkClicked);
             // 
             // PlayForm
             // 
@@ -764,5 +777,6 @@
         private System.Windows.Forms.ToolStripMenuItem editProfileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteProfileToolStripMenuItem;
         private System.Windows.Forms.CheckBox chkLoadLatestSave;
+        private System.Windows.Forms.LinkLabel lnkLoadSaveMore;
     }
 }
