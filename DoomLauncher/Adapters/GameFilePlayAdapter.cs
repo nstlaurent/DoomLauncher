@@ -129,9 +129,7 @@ namespace DoomLauncher
                 .OrderByDescending(x => x.DateCreated).FirstOrDefault();
             if (saveFile != null)
             {
-                string saveFilePath = saveFile.OriginalFileName;
-                if (!string.IsNullOrEmpty(sourcePortData.AltSaveDirectory.GetFullPath()))
-                    saveFilePath = Path.Combine(sourcePortData.AltSaveDirectory.GetFullPath(), saveFile.OriginalFileName);
+                string saveFilePath = Path.Combine(sourcePortData.GetSavePath().GetFullPath(), saveFile.OriginalFileName);
                 return sourcePort.LoadSaveParameter(new SpData(saveFilePath));
             }
 

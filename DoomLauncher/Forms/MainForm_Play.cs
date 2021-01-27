@@ -359,10 +359,7 @@ namespace DoomLauncher
             Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
 
             m_saveFileDetectors = CreateDefaultSaveGameDetectors();
-            if (!string.IsNullOrEmpty(sourcePort.AltSaveDirectory.GetFullPath()))
-                m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.AltSaveDirectory.GetFullPath()));
-            else
-                m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.Directory.GetFullPath()));
+            m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.GetSavePath().GetFullPath()));
             Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
         }
 
