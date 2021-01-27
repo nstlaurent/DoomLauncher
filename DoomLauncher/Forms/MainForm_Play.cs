@@ -363,7 +363,7 @@ namespace DoomLauncher
             Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
         }
 
-        private static GameFilePlayAdapter CreatePlayAdapter(PlayForm form, EventHandler processExited, AppConfiguration appConfig)
+        private GameFilePlayAdapter CreatePlayAdapter(PlayForm form, EventHandler processExited, AppConfiguration appConfig)
         {
             GameFilePlayAdapter playAdapter = new GameFilePlayAdapter();
             playAdapter.IWad = form.SelectedIWad;
@@ -375,10 +375,23 @@ namespace DoomLauncher
             playAdapter.PlayDemo = form.PlayDemo;
             playAdapter.ExtraParameters = form.ExtraParameters;
             playAdapter.SaveStatistics = form.SaveStatistics;
-            playAdapter.LoadLatestSave = form.LoadLatestSave;
+
+            if (form.LoadLatestSave)
+                playAdapter.LoadSaveFile = GetLoadLatestSave(form.GameFile, form.SelectedSourcePort);
+
             playAdapter.ProcessExited += processExited;
             if (form.SelectedDemo != null) playAdapter.PlayDemoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
             return playAdapter;
+        }
+
+        private string GetLoadLatestSave(IGameFile gameFile, ISourcePortData sourcePortData)
+        {
+            var saveFile = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePortData.SourcePortID)
+                .OrderByDescending(x => x.DateCreated).FirstOrDefault();
+            if (saveFile != null)
+                return Path.Combine(sourcePortData.GetSavePath().GetFullPath(), saveFile.OriginalFileName);
+
+            return string.Empty;
         }
 
         private IStatisticsReader CreateStatisticsReader(ISourcePortData sourcePort, IGameFile gameFile)

@@ -117,23 +117,10 @@ namespace DoomLauncher
             if (SaveStatistics && statsReader != null && !string.IsNullOrEmpty(statsReader.LaunchParameter))
                 sb.Append(" " + statsReader.LaunchParameter);
 
-            if (LoadLatestSave && sourcePort.LoadSaveGameSupported())
-                sb.Append(" " + GetLoadLatestSave(gameFile, sourcePortData, sourcePort));
+            if (!string.IsNullOrEmpty(LoadSaveFile) && sourcePort.LoadSaveGameSupported())
+                sb.Append(" " + sourcePort.LoadSaveParameter(new SpData(LoadSaveFile)));
 
             return sb.ToString();
-        }
-
-        private static string GetLoadLatestSave(IGameFile gameFile, ISourcePortData sourcePortData, ISourcePort sourcePort)
-        {
-            var saveFile = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePortData.SourcePortID)
-                .OrderByDescending(x => x.DateCreated).FirstOrDefault();
-            if (saveFile != null)
-            {
-                string saveFilePath = Path.Combine(sourcePortData.GetSavePath().GetFullPath(), saveFile.OriginalFileName);
-                return sourcePort.LoadSaveParameter(new SpData(saveFilePath));
-            }
-
-            return string.Empty;
         }
 
         private bool HandleGameFileIWad(IGameFile gameFile, ISourcePort sourcePort, StringBuilder sb, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
@@ -335,7 +322,7 @@ namespace DoomLauncher
         public string ExtraParameters { get; set; }
         public string[] SpecificFiles { get; set; }
         public bool SaveStatistics { get; set; }
-        public bool LoadLatestSave { get; set; }
+        public string LoadSaveFile { get; set; }
 
         public ISourcePortData SourcePort { get; private set; }
         public IGameFile GameFile { get; private set; }
