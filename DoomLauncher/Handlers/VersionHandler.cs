@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace DoomLauncher
 {
-    class VersionHandler
+    public class VersionHandler
     {
         private readonly IDataSourceAdapter m_adapter;
         private readonly AppConfiguration m_appConfig;
