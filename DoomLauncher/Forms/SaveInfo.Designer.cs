@@ -61,9 +61,9 @@ namespace DoomLauncher.Forms
             this.lblSave.AutoSize = true;
             this.lblSave.Location = new System.Drawing.Point(35, 40);
             this.lblSave.Name = "lblSave";
-            this.lblSave.Size = new System.Drawing.Size(162, 13);
+            this.lblSave.Size = new System.Drawing.Size(262, 13);
             this.lblSave.TabIndex = 3;
-            this.lblSave.Text = "Supported for the following ports:";
+            this.lblSave.Text = "Loading a save file is supported for the following ports:";
             // 
             // pbInfo1
             // 
@@ -86,7 +86,7 @@ namespace DoomLauncher.Forms
             this.label3.Size = new System.Drawing.Size(343, 26);
             this.label3.TabIndex = 2;
             this.label3.Text = "The \'Load Latest Save\' option will become available when a supported source port " +
-    "is selected";
+    "is selected.";
             // 
             // SaveInfo
             // 
