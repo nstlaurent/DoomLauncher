@@ -67,10 +67,10 @@ namespace DoomLauncher.SourcePort
                 return string.Empty;
 
             string file = Path.GetFileNameWithoutExtension(data.Value);
-            if (!char.IsDigit(data.Value[file.Length - 1]))
+            if (!char.IsDigit(file[file.Length - 1]))
                 return string.Empty;
 
-            return $"-loadgame {data.Value[file.Length - 1]}";
+            return $"-loadgame {file[file.Length - 1]}";
         }
 
         public static string BuildWarpParameter(string map)
