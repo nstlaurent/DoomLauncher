@@ -1,6 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
 using DoomLauncher.Statistics;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
