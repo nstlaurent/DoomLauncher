@@ -142,7 +142,9 @@ namespace DoomLauncher
 
                 ctrlStats.SetStatistics(gameFile, stats);
 
-                lblLastMap.Text = stats.OrderByDescending(x => x.RecordTime).First().MapName;
+                // Many maps can be saved at the same time, ordering by record time is not guaranteed to preserve the original order
+                // Order by StatID to ensure the latest one is used
+                lblLastMap.Text = stats.OrderByDescending(x => x.RecordTime).ThenByDescending(x => x.StatID).First().MapName;
             }
             else
             {
