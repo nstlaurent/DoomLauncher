@@ -210,6 +210,7 @@ namespace DoomLauncher
             }
             catch
             {
+                m_timer.Stop();
                 m_images.Clear();
                 SetImage();
             }
