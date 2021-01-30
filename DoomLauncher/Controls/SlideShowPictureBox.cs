@@ -75,7 +75,12 @@ namespace DoomLauncher
         {
             imagePaths = imagePaths.Where(x => File.Exists(x)).ToList();
             if (imagePaths.Count == 0)
+            {
+                ClearImage();
+                m_images.Clear();
+                m_timer.Stop();
                 return false;
+            }
 
             if (startIndex < 0 || startIndex > imagePaths.Count)
                 startIndex = imagePaths.Count - 1;
@@ -210,9 +215,7 @@ namespace DoomLauncher
             }
             catch
             {
-                m_timer.Stop();
-                m_images.Clear();
-                SetImage();
+                // File data is not accessible, ignore for now
             }
         }
 
