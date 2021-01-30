@@ -783,14 +783,18 @@ namespace DoomLauncher
 
         private void SetPreviewImages(List<string> imagePaths)
         {
+            bool success;
             try
             {
-                ctrlSummary.SetPreviewImages(imagePaths);
+                success = ctrlSummary.SetPreviewImages(imagePaths);
             }
             catch
             {
-                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
+                success = false;
             }
+
+            if (!success)
+                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
         }
 
         private string BuildTagText(IGameFile gameFile)

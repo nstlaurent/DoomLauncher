@@ -62,10 +62,11 @@ namespace DoomLauncher
             pbImage.Resume();
         }
 
-        public void SetPreviewImages(List<string> imagePaths)
+        public bool SetPreviewImages(List<string> imagePaths)
         {
-            pbImage.SetImages(imagePaths);
+            bool success = pbImage.SetImages(imagePaths);
             ShowImageSection(true);
+            return success;
         }
 
         public void SetPreviewImage(Image image)
