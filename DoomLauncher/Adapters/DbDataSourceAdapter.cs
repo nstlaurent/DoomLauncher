@@ -463,7 +463,7 @@ namespace DoomLauncher
         public void UpdateFile(IFileData file)
         {
             string query = @"update Files set 
-            SourcePortID = @SourcePortID, Description = @Description, FileOrder = @FileOrder
+            SourcePortID = @SourcePortID, Description = @Description, FileOrder = @FileOrder, DateCreated = @DateCreated
             where FileID = @FileID";
 
             List<DbParameter> parameters = new List<DbParameter>
@@ -471,7 +471,8 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("SourcePortID", file.SourcePortID),
                 DataAccess.DbAdapter.CreateParameter("Description", file.Description),
                 DataAccess.DbAdapter.CreateParameter("FileID", file.FileID),
-                DataAccess.DbAdapter.CreateParameter("FileOrder", file.FileOrder)
+                DataAccess.DbAdapter.CreateParameter("FileOrder", file.FileOrder),
+                DataAccess.DbAdapter.CreateParameter("DateCreated", file.DateCreated)
             };
 
             DataAccess.ExecuteNonQuery(query, parameters);
