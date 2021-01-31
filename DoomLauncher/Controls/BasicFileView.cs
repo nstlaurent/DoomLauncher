@@ -25,7 +25,7 @@ namespace DoomLauncher
 
                 var items = from file in files
                             join sp in sourcePorts on file.SourcePortID equals sp.SourcePortID
-                            select new { file.Description, file.DateCreated, SourcePortName = sp.Name, FileData = file };
+                            select new { file.OriginalFileName, file.Description, file.DateCreated, SourcePortName = sp.Name, FileData = file };
 
                 dgvMain.DataSource = items.ToList();
                 dgvMain.ContextMenuStrip = m_menu;
