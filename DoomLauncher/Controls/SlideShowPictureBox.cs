@@ -92,16 +92,18 @@ namespace DoomLauncher
             m_timer.Stop();
 
             pbImage.CancelAsync();
-            pbImage.ImageLocation = m_images[m_index];
 
             // Don't cycle with one image
             if (imagePaths.Count == 1)
+            {
+                pbImage.ImageLocation = m_images[m_index];
                 return true;
+            }
 
             m_timer.Start();
             m_fadeOut.Restart();
 
-            InitBlendCache();
+            SetImage();
 
             return true;
         }
@@ -198,9 +200,6 @@ namespace DoomLauncher
 
         private void SetImage()
         {
-            m_currentImage?.Dispose();
-            m_currentGraphics?.Dispose();
-
             if (m_images.Count == 0)
             {
                 pbImage.ImageLocation = string.Empty;
@@ -209,6 +208,7 @@ namespace DoomLauncher
 
             try
             {
+                pbImage.Image = null;
                 InitBlendCache();
                 pbImage.Image = m_drawImage;
                 SetTransparency();
@@ -221,6 +221,9 @@ namespace DoomLauncher
 
         private void InitBlendCache()
         {
+            m_currentImage?.Dispose();
+            m_currentGraphics?.Dispose();
+
             m_currentImage = Util.FixedSize(Image.FromFile(m_images[m_index]), pbImage.Width, pbImage.Height, Color.Black);
             m_drawImage = new Bitmap(m_currentImage.Width, m_currentImage.Height);
             m_currentGraphics = Graphics.FromImage(m_drawImage);
