@@ -104,8 +104,9 @@ namespace DoomLauncher
             foreach (IFileData file in files)
             {
                 string savePath = sourcePort.GetSavePath().GetFullPath();
-                string fileName = Path.Combine(savePath, file.OriginalFileName);
+                string fileName = Path.Combine(sourcePort.GetSavePath().GetFullPath(), file.OriginalFileName);
                 FileInfo fiFrom = new FileInfo(Path.Combine(SaveGameDirectory.GetFullPath(), file.FileName));
+
                 try
                 {
                     if (fiFrom.Exists)

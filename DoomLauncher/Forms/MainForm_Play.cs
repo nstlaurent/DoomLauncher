@@ -381,7 +381,7 @@ namespace DoomLauncher
             {
                 if (!AppConfiguration.CopySaveFiles)
                 {
-                    MessageCheckBox message = new MessageCheckBox("Copy Save Files Disabled", 
+                    MessageCheckBox message = new MessageCheckBox("Copy Save Files Disabled",
                         "Copy save files is disabled and the load latest save feature will not always work correctly.",
                         "Enable setting", SystemIcons.Warning);
                     message.StartPosition = FormStartPosition.CenterParent;
