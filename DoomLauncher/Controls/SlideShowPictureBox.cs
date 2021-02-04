@@ -215,7 +215,7 @@ namespace DoomLauncher
             }
             catch
             {
-                // File data is not accessible, ignore for now
+                // File data is not accessible or out of memory, ignore for now
             }
         }
 
@@ -223,6 +223,9 @@ namespace DoomLauncher
         {
             m_currentImage?.Dispose();
             m_currentGraphics?.Dispose();
+            m_drawImage?.Dispose();
+
+            //GC.Collect();
 
             m_currentImage = Util.FixedSize(Image.FromFile(m_images[m_index]), pbImage.Width, pbImage.Height, Color.Black);
             m_drawImage = new Bitmap(m_currentImage.Width, m_currentImage.Height);
