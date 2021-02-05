@@ -2,10 +2,11 @@
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -18,13 +19,13 @@ namespace DoomLauncher
 
     public partial class ScreenshotView : BasicFileView
     {
-        private Dictionary<PictureBox, IFileData> m_lookup = new Dictionary<PictureBox, IFileData>();
+        private readonly Dictionary<PictureBox, IFileData> m_lookup = new Dictionary<PictureBox, IFileData>();
         private readonly double m_aspectWidth = 16;
         private readonly double m_aspectHeight = 9;
         private readonly List<PictureBox> m_pictureBoxes = new List<PictureBox>();
         private List<IFileData> m_screenshots = new List<IFileData>();
         private int m_pictureWidth;
-        private BackgroundWorker m_imageWorker = new BackgroundWorker();
+        private CancellationTokenSource m_ct = new CancellationTokenSource();
         private bool m_imageWorkerComplete = true;
 
         public event EventHandler<RequestScreenshotsEventArgs> RequestScreenshots;
@@ -33,14 +34,6 @@ namespace DoomLauncher
         {
             InitializeComponent();
             flpScreenshots.Click += FlpScreenshots_Click;
-            CreateImageWorker();
-        }
-
-        private void CreateImageWorker()
-        {
-            m_imageWorker = new BackgroundWorker();
-            m_imageWorker.WorkerSupportsCancellation = true;
-            m_imageWorker.DoWork += ImageWorker_DoWork;
         }
 
         public void SetPictureWidth(int pictureWidth)
@@ -165,11 +158,12 @@ namespace DoomLauncher
 
         public void SetScreenshots(List<IFileData> screenshots)
         {
-            m_imageWorker.CancelAsync();
+            m_ct.Cancel();
             while (!m_imageWorkerComplete)
-                System.Threading.Thread.Sleep(10);
+                Thread.Sleep(10);
             m_imageWorkerComplete = false;
-            CreateImageWorker();
+            m_ct = new CancellationTokenSource();
+
             flpScreenshots.SuspendLayout();
 
             foreach (var pb in m_pictureBoxes)
@@ -216,18 +210,17 @@ namespace DoomLauncher
                 m_lookup.Add(pbScreen, screen);
             }
 
-            m_imageWorker.RunWorkerAsync();
+            var thread = new Thread(new ThreadStart(SetImages));
+            thread.Start();
             flpScreenshots.ResumeLayout();
         }
 
-        private void ImageWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void SetImages()
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
             List<PictureBox>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
-
             foreach (var screen in m_screenshots)
             {
-                if (worker.CancellationPending)
+                if (m_ct.IsCancellationRequested)
                     break;
 
                 enumerator.MoveNext();
@@ -237,15 +230,10 @@ namespace DoomLauncher
                 PictureBox pbScreen = enumerator.Current;
                 try
                 {
-                    pbScreen.Image = Util.FixedSize(Image.FromFile(Path.Combine(DataDirectory.GetFullPath(), screen.FileName)),
-                        pbScreen.Width, pbScreen.Height, Color.Black);
-
-                    // If the user has very large images then the original image will use tons of memory before scaling,
-                    // Compound this with lots of images and the memory will skyrocket and apparently the C# VM isn't smart enough to
-                    // try to run garbage collection before throwing an out of memory exception...
-                    //GC.Collect();
+                    using (var image = Image.FromFile(Path.Combine(DataDirectory.GetFullPath(), screen.FileName)))
+                        pbScreen.Image = Util.FixedSize(image, pbScreen.Width, pbScreen.Height, Color.Black);
                 }
-                catch (Exception ex)
+                catch
                 {
                     // Most likely file doesn't exist...
                     // Can also be out of memory exception

@@ -71,6 +71,8 @@ namespace DoomLauncher
             pbImage.Image = image;
         }
 
+        public Image GetImage() => pbImage.Image;
+
         public bool SetImages(List<string> imagePaths, int startIndex = 0)
         {
             imagePaths = imagePaths.Where(x => File.Exists(x)).ToList();
@@ -225,9 +227,8 @@ namespace DoomLauncher
             m_currentGraphics?.Dispose();
             m_drawImage?.Dispose();
 
-            //GC.Collect();
-
-            m_currentImage = Util.FixedSize(Image.FromFile(m_images[m_index]), pbImage.Width, pbImage.Height, Color.Black);
+            using (var image = Image.FromFile(m_images[m_index]))
+                m_currentImage = Util.FixedSize(image, pbImage.Width, pbImage.Height, Color.Black);
             m_drawImage = new Bitmap(m_currentImage.Width, m_currentImage.Height);
             m_currentGraphics = Graphics.FromImage(m_drawImage);
         }
