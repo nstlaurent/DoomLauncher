@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -15,14 +16,28 @@ namespace DoomLauncher
         public IGameFile GameFile { get; private set; }
     }
 
+    class PictureItem
+    {
+        public PictureItem(PictureBox pb)
+        {
+            PictureBox = pb;
+        }
+
+        public PictureBox PictureBox { get; private set; }
+        public IFileData CurrentFile { get; set; }
+        public bool Skip { get; set; }
+    }
+
     public partial class ScreenshotView : BasicFileView
     {
-        private Dictionary<PictureBox, IFileData> m_lookup = new Dictionary<PictureBox, IFileData>();
-        private readonly double m_aspectWidth = 16;
-        private readonly double m_aspectHeight = 9;
-        private readonly List<PictureBox> m_pictureBoxes = new List<PictureBox>();
+        private const double AspectWidth = 16;
+        private const double AspectHeight = 9;
+        private readonly Dictionary<PictureBox, IFileData> m_lookup = new Dictionary<PictureBox, IFileData>();
+        private readonly List<PictureItem> m_pictureBoxes = new List<PictureItem>();
         private List<IFileData> m_screenshots = new List<IFileData>();
         private int m_pictureWidth;
+        private CancellationTokenSource m_ct = new CancellationTokenSource();
+        private bool m_imageWorkerComplete = true;
 
         public event EventHandler<RequestScreenshotsEventArgs> RequestScreenshots;
 
@@ -129,8 +144,9 @@ namespace DoomLauncher
 
         private void InitPictureBoxes()
         {
-            foreach (var pb in m_pictureBoxes)
+            foreach (var item in m_pictureBoxes)
             {
+                PictureBox pb = item.PictureBox;
                 if (flpScreenshots.Controls.Contains(pb))
                     flpScreenshots.Controls.Remove(pb);
                 if (pb.Image != null)
@@ -145,19 +161,22 @@ namespace DoomLauncher
         private void ExpandPictureBoxes(int count)
         {
             for (int i = 0; i < count; i++)
-                m_pictureBoxes.Add(CreatePictureBox());
+                m_pictureBoxes.Add(new PictureItem(CreatePictureBox()));
 
             ToolTip tt = new ToolTip();
             foreach (var pb in m_pictureBoxes)
-                tt.SetToolTip(pb, "Double-click to view");
+                tt.SetToolTip(pb.PictureBox, "Double-click to view");
         }
 
         public void SetScreenshots(List<IFileData> screenshots)
         {
-            flpScreenshots.SuspendLayout();
+            m_ct.Cancel();
+            while (!m_imageWorkerComplete)
+                Thread.Sleep(10);
+            m_imageWorkerComplete = false;
+            m_ct = new CancellationTokenSource();
 
-            foreach (var pb in m_pictureBoxes)
-                pb.ImageLocation = string.Empty;
+            flpScreenshots.SuspendLayout();
 
             m_screenshots = screenshots.ToList();
             m_lookup.Clear();
@@ -165,15 +184,19 @@ namespace DoomLauncher
             if (m_screenshots.Count > m_pictureBoxes.Count)
                 ExpandPictureBoxes(m_screenshots.Count - m_pictureBoxes.Count);
 
-            List<PictureBox>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
+            List<PictureItem>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
 
             foreach (IFileData screen in screenshots)
             {
                 enumerator.MoveNext();
-                if (enumerator.Current == null) break;
+                if (enumerator.Current == null)
+                    break;
 
-                PictureBox pbScreen = enumerator.Current;
+                PictureBox pbScreen = enumerator.Current.PictureBox;
+                enumerator.Current.Skip = true;
                 flpScreenshots.Controls.Add(pbScreen);
+
+                m_lookup.Add(pbScreen, screen);
 
                 try
                 {
@@ -185,19 +208,63 @@ namespace DoomLauncher
                     }
                     else
                     {
-                        pbScreen.ImageLocation = Path.Combine(DataDirectory.GetFullPath(), screen.FileName);
-                    }
+                        if (screen.Equals(enumerator.Current.CurrentFile))
+                            continue;
 
+                        enumerator.Current.Skip = false;
+                        Image image = pbScreen.Image;
+                        pbScreen.Image = null;
+                        if (image != null)
+                            image.Dispose();
+                    }
                 }
                 catch
                 {
                     pbScreen.ImageLocation = string.Empty;
                 }
-
-                m_lookup.Add(pbScreen, screen);
             }
 
+            var thread = new Thread(new ThreadStart(SetImages));
+            thread.Start();
             flpScreenshots.ResumeLayout();
+        }
+
+        private void SetImages()
+        {
+            List<PictureItem>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
+            foreach (var screen in m_screenshots)
+            {
+                enumerator.MoveNext();
+                if (m_ct.IsCancellationRequested || enumerator.Current == null)
+                    break;
+                if (enumerator.Current.Skip)
+                    continue;
+
+                PictureBox pbScreen = enumerator.Current.PictureBox;
+                string file = Path.Combine(DataDirectory.GetFullPath(), screen.FileName);
+
+                try
+                {
+                    using (var image = Image.FromFile(file))
+                        pbScreen.Image = Util.FixedSize(image, pbScreen.Width, pbScreen.Height, Color.Black);
+                }
+                catch
+                {
+                    // Most likely file doesn't exist...
+                    // Can also be out of memory exception
+                }
+
+                enumerator.Current.CurrentFile = screen;
+            }
+
+            enumerator.MoveNext();
+            while (enumerator.Current != null)
+            {
+                enumerator.Current.CurrentFile = null;
+                enumerator.MoveNext();
+            }
+
+            m_imageWorkerComplete = true;
         }
 
         private PictureBox CreatePictureBox()
@@ -209,7 +276,7 @@ namespace DoomLauncher
                 Width = m_pictureWidth
             };
 
-            pbScreen.Height = Convert.ToInt32(pbScreen.Width / (m_aspectWidth / m_aspectHeight));
+            pbScreen.Height = Convert.ToInt32(pbScreen.Width / (AspectWidth / AspectHeight));
             pbScreen.SizeMode = PictureBoxSizeMode.Zoom;
             pbScreen.Margin = new Padding(7);
             pbScreen.MouseDown += pbScreen_MouseDown;
