@@ -23,5 +23,26 @@ namespace DoomLauncher
         public int FileOrder { get; set; }
 
         public virtual bool IsUrl { get { return false; } }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is IFileData file && file.IsUrl == IsUrl)
+            {
+                if (FileID.HasValue)
+                    return FileID.Value == file.FileID;
+                else
+                    return FileName.Equals(file.FileName);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            if (FileID.HasValue)
+                return FileID.Value;
+
+            return FileName.GetHashCode();
+        }
     }
 }

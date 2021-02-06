@@ -265,12 +265,14 @@ namespace DoomLauncher
             if (string.IsNullOrEmpty(prefix))
                 prefix = file.FileTypeID.ToString().ToLower();
 
-            string sourcePortName = "N/A";
+            string sourcePortName = "NA";
             var sourcePort = sourcePorts.FirstOrDefault(x => x.SourcePortID == file.SourcePortID);
             if (sourcePort != null)
                 sourcePortName = sourcePort.Name;
 
-            return $"{prefix}_{sourcePortName}_{Path.GetFileNameWithoutExtension(GameFile.FileNameNoPath)}{Path.GetExtension(file.FileName)}";
+            string fileName = $"{prefix}_{sourcePortName}_{Path.GetFileNameWithoutExtension(GameFile.FileNameNoPath)}{Path.GetExtension(file.FileName)}";
+            Array.ForEach(Path.GetInvalidFileNameChars(), x => fileName = fileName.Replace(x, ' '));
+            return fileName;
         }
 
         public virtual void View()
