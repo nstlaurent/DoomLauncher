@@ -78,9 +78,19 @@ namespace DoomLauncher
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 string file = GetRelativeDirectory(dialog.FileName);
-                m_exec = m_directory = string.Empty;
-                m_exec = Path.GetFileName(file);
-                m_directory = file.Replace(m_exec, string.Empty);
+                
+                string exec = Path.GetFileName(file);
+                string directory = file.Replace(exec, string.Empty);
+
+                if (string.IsNullOrEmpty(directory))
+                {
+                    MessageBox.Show(this, "The source port can't be in the same directory as Doom Launcher.", "Invalid Path", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                m_exec = exec;
+                m_directory = directory;
 
                 txtExec.Text = m_exec;
                 txtName.Text = Path.GetFileNameWithoutExtension(file);
