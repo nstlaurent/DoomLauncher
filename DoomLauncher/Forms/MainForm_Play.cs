@@ -283,7 +283,7 @@ namespace DoomLauncher
 
         private void CopySaveGames(IGameFile gameFile, ISourcePortData sourcePort)
         {
-            if (gameFile != null) //BUG: what if it's iwad?
+            if (gameFile != null)
             {
                 HandleCopySaveGames(gameFile, sourcePort);
             }
@@ -296,7 +296,7 @@ namespace DoomLauncher
 
         private void HandleCopySaveGames(IGameFile gameFile, ISourcePortData sourcePort)
         {
-            m_saveGames = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == gameFile.SourcePortID).ToArray();
+            m_saveGames = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
             SaveGameHandler saveGameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
             saveGameHandler.CopySaveGamesToSourcePort(sourcePort, m_saveGames);
         }
