@@ -90,17 +90,17 @@ namespace DoomLauncher
                 chkSaveStats.Checked = gameProfile.SettingsStat;
                 chkLoadLatestSave.Checked = gameProfile.SettingsLoadLatestSave;
 
-                IIWadData iwad = m_adapter.GetIWad(gameProfile.GameFileID.Value);
-
-                if (iwad != null)
-                    SelectedIWad = GameFile;
-
                 if (gameProfile.SourcePortID.HasValue)
                     SelectedSourcePort = m_adapter.GetSourcePort(gameProfile.SourcePortID.Value);
 
-                if (gameProfile.IWadID.HasValue)
+                // Selected GameFile is an IWAD so lock the IWAD selection
+                if (IsIwad(GameFile))
                 {
+                    cmbIwad.Enabled = false;
                     SelectedIWad = GameFile;
+                }
+                else if (gameProfile.IWadID.HasValue)
+                {
                     SelectedIWad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == gameProfile.IWadID);
                 }
 
@@ -115,10 +115,7 @@ namespace DoomLauncher
             HandleIwadSelectionChanged(reset);
             SetAdditionalFiles(reset);
             HandleDemoChange();
-            RegisterEvents();
-
-            if (SelectedIWad != null && SelectedIWad.Equals(GameFile))
-                cmbIwad.Enabled = false;
+            RegisterEvents();               
         }
 
         private void SetIwadInfoLabel()
@@ -895,6 +892,9 @@ namespace DoomLauncher
                     GameProfile gameProfile = new GameProfile(GameFile.GameFileID.Value, form.DisplayText);
 
                     GameProfile.ApplyDefaultsToProfile(gameProfile, m_appConfig);
+                    if (GameFile != null && IsIwad(GameFile))
+                        gameProfile.IWadID = GameFile.IWadID.Value;
+
                     if (form.CheckBoxChecked)
                         UpdateGameProfile(gameProfile);
                     
