@@ -146,6 +146,12 @@
       <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
     </Compile>
     <Compile Include="Config\GameFileListEventArgs.cs" />
+    <Compile Include="Forms\SaveInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SaveInfo.Designer.cs">
+      <DependentUpon>SaveInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
@@ -178,6 +184,7 @@
       <DependentUpon>TagSelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DataSources\StaticTagData.cs" />
+    <Compile Include="SourcePort\EternitySourcePort.cs" />
     <Compile Include="SourcePort\WoofSourcePort.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
@@ -661,6 +668,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MetaDataForm.resx">
       <DependentUpon>MetaDataForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SaveInfo.resx">
+      <DependentUpon>SaveInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScreenshotViewerForm.resx">
       <DependentUpon>ScreenshotViewerForm.cs</DependentUpon>

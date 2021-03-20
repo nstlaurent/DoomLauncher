@@ -27,6 +27,7 @@
         SettingsFilesIWAD,
         SettingsFilesSourcePort,
         SettingsGameProfileID,
-        SettingsSaved
+        SettingsSaved,
+        SettingsLoadLatestSave
     }
 }

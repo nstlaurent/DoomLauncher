@@ -18,71 +18,88 @@ namespace DoomLauncher
         {
             IdGamesDataAdapater adapter = new IdGamesDataAdapater(AppConfiguration.IdGamesUrl, AppConfiguration.ApiPage, AppConfiguration.MirrorUrl);
             IGameFile[] localFiles = SelectedItems(GetCurrentViewControl());
+            if (localFiles.Length == 0)
+                return;
 
-            if (localFiles.Length > 0)
+            bool showForm = true, showError = true, updateView = false;
+            m_cancelMetaUpdate = false;
+            DialogResult result = DialogResult.Cancel;
+            MetaDataForm form = CreateMetaForm();
+            ProgressBarForm progress = InitMetaProgressBar();
+            List<string> iwadWarn = new List<string>();
+            HashSet<int> iwads = new HashSet<int>(DataSourceAdapter.GetGameFileIWads().Select(x => x.GameFileID.Value));
+
+            foreach (IGameFile localFile in localFiles)
             {
-                bool showForm = true, showError = true, updateView = false;
-                m_cancelMetaUpdate = false;
-                DialogResult result = DialogResult.Cancel;
-                MetaDataForm form = CreateMetaForm();
-                ProgressBarForm progress = InitMetaProgressBar();
-
-                foreach (IGameFile localFile in localFiles)
+                if (iwads.Contains(localFile.GameFileID.Value))
                 {
-                    try
+                    IWadInfo info = IWadInfo.GetIWadInfo(localFile.FileNameNoPath);
+                    if (info != null && !info.HasMetadata)
                     {
-
-                        Enabled = false;
-                        progress.DisplayText = string.Format("Searching for {0}...", localFile.FileNameNoPath);
-                        progress.Show(this);
-
-                        IEnumerable<IGameFile> remoteFiles = await Task.Run(() => GetMetaFiles(adapter, localFile.FileNameNoPath));
-
-                        Enabled = true;
-                        progress.Hide();
-
-                        if (remoteFiles == null || m_cancelMetaUpdate)
-                            break;
-
-                        if (!remoteFiles.Any())
-                        {
-                            if (showError)
-                                showError = HandleMetaError(localFile);
-                        }
-                        else
-                        {
-                            IGameFile remoteFile = HandleMultipleMetaFilesFound(localFile, remoteFiles);
-
-                            if (remoteFile != null)
-                            {
-                                form.GameFileEdit.SetDataSource(remoteFile, new ITagData[] { });
-
-                                if (showForm) //OK = Accept current file, Yes = Accept All files
-                                    result = form.ShowDialog(this);
-
-                                if (result != DialogResult.Cancel)
-                                {
-                                    List<GameFileFieldType> fields = form.GameFileEdit.UpdateDataSource(localFile);
-                                    showForm = (result == DialogResult.OK);
-
-                                    if (fields.Count > 0)
-                                        updateView = HandleUpdateMetaFields(localFile, fields);
-                                }
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        Enabled = true;
-                        progress.Hide();
-
-                        MessageBox.Show(this, "Failed to fetch metadata from the id games mirror.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        break; //not expected, break from loop
+                        iwadWarn.Add(localFile.FileNameNoPath);
+                        continue;
                     }
                 }
 
-                if (updateView)
-                    HandleSelectionChange(GetCurrentViewControl(), true);
+                try
+                {
+
+                    Enabled = false;
+                    progress.DisplayText = string.Format("Searching for {0}...", localFile.FileNameNoPath);
+                    progress.Show(this);
+
+                    IEnumerable<IGameFile> remoteFiles = await Task.Run(() => GetMetaFiles(adapter, localFile.FileNameNoPath));
+
+                    Enabled = true;
+                    progress.Hide();
+
+                    if (remoteFiles == null || m_cancelMetaUpdate)
+                        break;
+
+                    if (!remoteFiles.Any())
+                    {
+                        if (showError)
+                            showError = HandleMetaError(localFile);
+                    }
+                    else
+                    {
+                        IGameFile remoteFile = HandleMultipleMetaFilesFound(localFile, remoteFiles);
+
+                        if (remoteFile != null)
+                        {
+                            form.GameFileEdit.SetDataSource(remoteFile, new ITagData[] { });
+
+                            if (showForm) //OK = Accept current file, Yes = Accept All files
+                                result = form.ShowDialog(this);
+
+                            if (result != DialogResult.Cancel)
+                            {
+                                List<GameFileFieldType> fields = form.GameFileEdit.UpdateDataSource(localFile);
+                                showForm = (result == DialogResult.OK);
+
+                                if (fields.Count > 0)
+                                    updateView = HandleUpdateMetaFields(localFile, fields);
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    Enabled = true;
+                    progress.Hide();
+
+                    MessageBox.Show(this, "Failed to fetch metadata from the id games mirror.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break; //not expected, break from loop
+                }
+            }
+
+            if (updateView)
+                HandleSelectionChange(GetCurrentViewControl(), true);
+
+            if (iwadWarn.Count > 0)
+            {
+                MessageBox.Show(this, "The following are IWADs and will not exist in idgames: " + string.Join(", ", iwadWarn), 
+                    "IWAD Files", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

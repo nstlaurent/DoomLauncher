@@ -110,7 +110,9 @@ namespace DoomLauncher.Forms
 
             if (m_images.Length > 0)
             {
+                Image image = pbMain.GetImage();
                 pbMain.SetImage(Image.FromFile(GetImageFilename()));
+                image?.Dispose();
                 Text = string.Format("Screenshot Viewer - {0}/{1}", m_index + 1, m_images.Length);
             }
         }

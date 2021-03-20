@@ -70,12 +70,15 @@ namespace DoomLauncher
 
         public void HandleUpdateSaveGames(ISourcePortData sourcePort, IGameFile gameFile, IFileData[] files)
         {
-            foreach(IFileData file in files)
+            foreach (IFileData file in files)
             {
-                FileInfo fi = new FileInfo(Path.Combine(sourcePort.Directory.GetFullPath(), file.OriginalFileName));
+                FileInfo fi = new FileInfo(Path.Combine(sourcePort.GetSavePath().GetFullPath(), file.OriginalFileName));
 
                 if (fi.Exists)
                 {
+                    if (file.DateCreated == fi.LastWriteTime)
+                        continue;
+
                     try
                     {
                         fi.CopyTo(Path.Combine(SaveGameDirectory.GetFullPath(), file.FileName), true);
@@ -88,32 +91,32 @@ namespace DoomLauncher
                     //check to see if the save name changed
                     string saveName = GetSaveGameName(sourcePort, fi);
                     if (saveName != file.Description)
-                    {
                         file.Description = saveName;
-                        DataSourceAdapter.UpdateFile(file);
-                    }
+
+                    file.DateCreated = fi.LastWriteTime;
+                    DataSourceAdapter.UpdateFile(file);
                 }
             }
         }
 
         public void CopySaveGamesToSourcePort(ISourcePortData sourcePort, IFileData[] files)
         {
-            files = files.Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
-
             foreach (IFileData file in files)
             {
-                string fileName = Path.Combine(GetSourcePortSaveDir(sourcePort), file.OriginalFileName);
+                string savePath = sourcePort.GetSavePath().GetFullPath();
+                string fileName = Path.Combine(sourcePort.GetSavePath().GetFullPath(), file.OriginalFileName);
                 FileInfo fiFrom = new FileInfo(Path.Combine(SaveGameDirectory.GetFullPath(), file.FileName));
+
                 try
                 {
                     if (fiFrom.Exists)
                     {
-                        DirectoryInfo di = new DirectoryInfo(Path.Combine(sourcePort.Directory.GetFullPath(), file.OriginalFilePath));
+                        DirectoryInfo di = new DirectoryInfo(Path.Combine(savePath, file.OriginalFilePath));
 
                         if (!di.Exists)
                             di.Create();
 
-                        fiFrom.CopyTo(fileName);
+                        fiFrom.CopyTo(fileName, true);
                     }
                 }
                 catch
@@ -121,14 +124,6 @@ namespace DoomLauncher
                     //failed, nothing to do
                 }
             }
-        }
-
-        private static string GetSourcePortSaveDir(ISourcePortData sourcePort)
-        {
-            if (!string.IsNullOrEmpty(sourcePort.AltSaveDirectory.GetFullPath()))
-                return sourcePort.AltSaveDirectory.GetFullPath();
-
-            return sourcePort.Directory.GetFullPath();
         }
 
         public LauncherPath SaveGameDirectory { get; set; }

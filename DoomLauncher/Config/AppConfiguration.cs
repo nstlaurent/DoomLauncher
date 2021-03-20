@@ -192,6 +192,17 @@ namespace DoomLauncher
             ColumnConfig = GetValue(config, ColumnConfigName);
         }
 
+        public void EnableCopySaveFiles()
+        {
+            CopySaveFiles = true;
+            IConfigurationData config = DataSourceAdapter.GetConfiguration().FirstOrDefault(x => x.Name == CopySaveFilesName);
+            if (config != null)
+            {
+                config.Value = "true";
+                DataSourceAdapter.UpdateConfiguration(config);
+            }
+        }
+
         private void VerifyPaths(bool throwErrors)
         {
             VerifyPath(GameFileDirectory, throwErrors);

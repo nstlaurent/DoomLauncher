@@ -223,7 +223,8 @@ namespace DoomLauncher
                     IWadID = @IWadID, LastPlayed = @LastPlayed, Downloaded = @Downloaded, 
                     SettingsMap = @SettingsMap, SettingsSkill = @SettingsSkill, SettingsExtraParams = @SettingsExtraParams, SettingsFiles = @SettingsFiles,
                     SettingsFilesSourcePort = @SettingsFilesSourcePort, SettingsFilesIWAD = @SettingsFilesIWAD,
-                    SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, FileName = @FileName, MapCount = @MapCount, 
+                    SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, SettingsLoadLatestSave = @SettingsLoadLatestSave, 
+                    FileName = @FileName, MapCount = @MapCount, 
                     MinutesPlayed = @MinutesPlayed, SettingsGameProfileID = @SettingsGameProfileID, SettingsSaved = @SettingsSaved
                     where GameFileID = @gameFileID");
             }
@@ -252,6 +253,7 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("SettingsFilesIWAD", gameFile.SettingsFilesIWAD ?? (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("SettingsSpecificFiles", gameFile.SettingsSpecificFiles ?? (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("SettingsStat", gameFile.SettingsStat),
+                DataAccess.DbAdapter.CreateParameter("SettingsLoadLatestSave", gameFile.SettingsLoadLatestSave),
                 DataAccess.DbAdapter.CreateParameter("SettingsSaved", gameFile.SettingsSaved),
                 DataAccess.DbAdapter.CreateParameter("SettingsGameProfileID", gameFile.SettingsGameProfileID ?? (object)DBNull.Value),
 
@@ -461,7 +463,7 @@ namespace DoomLauncher
         public void UpdateFile(IFileData file)
         {
             string query = @"update Files set 
-            SourcePortID = @SourcePortID, Description = @Description, FileOrder = @FileOrder
+            SourcePortID = @SourcePortID, Description = @Description, FileOrder = @FileOrder, DateCreated = @DateCreated
             where FileID = @FileID";
 
             List<DbParameter> parameters = new List<DbParameter>
@@ -469,7 +471,8 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("SourcePortID", file.SourcePortID),
                 DataAccess.DbAdapter.CreateParameter("Description", file.Description),
                 DataAccess.DbAdapter.CreateParameter("FileID", file.FileID),
-                DataAccess.DbAdapter.CreateParameter("FileOrder", file.FileOrder)
+                DataAccess.DbAdapter.CreateParameter("FileOrder", file.FileOrder),
+                DataAccess.DbAdapter.CreateParameter("DateCreated", file.DateCreated)
             };
 
             DataAccess.ExecuteNonQuery(query, parameters);
@@ -662,7 +665,7 @@ namespace DoomLauncher
             string query = @"update GameProfiles set Name = @Name, SourcePortID = @SourcePortID, IWadID = @IWadID,
                     SettingsMap = @SettingsMap, SettingsSkill = @SettingsSkill, SettingsExtraParams = @SettingsExtraParams, SettingsFiles = @SettingsFiles,
                     SettingsFilesSourcePort = @SettingsFilesSourcePort, SettingsFilesIWAD = @SettingsFilesIWAD,
-                    SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, SettingsSaved = @SettingsSaved
+                    SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, SettingsLoadLatestSave =@SettingsLoadLatestSave, SettingsSaved = @SettingsSaved
                     where GameProfileID = @gameProfileID";
 
             List<DbParameter> parameters = new List<DbParameter>
@@ -677,6 +680,7 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("SettingsFilesSourcePort", gameProfile.SettingsFilesSourcePort ?? (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("SettingsFilesIWAD", gameProfile.SettingsFilesIWAD ?? (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("SettingsSpecificFiles", gameProfile.SettingsSpecificFiles ?? (object)DBNull.Value),
+                DataAccess.DbAdapter.CreateParameter("SettingsLoadLatestSave", gameProfile.SettingsLoadLatestSave),
                 DataAccess.DbAdapter.CreateParameter("SettingsStat", gameProfile.SettingsStat),
                 DataAccess.DbAdapter.CreateParameter("SettingsSaved", gameProfile.SettingsSaved),
                 DataAccess.DbAdapter.CreateParameter("GameProfileID", gameProfile.GameProfileID),

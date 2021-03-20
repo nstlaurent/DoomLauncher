@@ -68,7 +68,7 @@ namespace DoomLauncher
                     SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
             }
 
-            cmbSkill.DataSource = Util.GetSkills();
+            SetAutoCompleteCustomSource(cmbSkill, Util.GetSkills().ToList(), null, null);
             cmbSkill.SelectedItem = "3";
 
             LoadProfiles();
@@ -88,18 +88,19 @@ namespace DoomLauncher
             if (GameFile != null)
             {
                 chkSaveStats.Checked = gameProfile.SettingsStat;
-
-                IIWadData iwad = m_adapter.GetIWad(gameProfile.GameFileID.Value);
-
-                if (iwad != null)
-                    SelectedIWad = GameFile;
+                chkLoadLatestSave.Checked = gameProfile.SettingsLoadLatestSave;
 
                 if (gameProfile.SourcePortID.HasValue)
                     SelectedSourcePort = m_adapter.GetSourcePort(gameProfile.SourcePortID.Value);
 
-                if (gameProfile.IWadID.HasValue)
+                // Selected GameFile is an IWAD so lock the IWAD selection
+                if (IsIwad(GameFile))
                 {
+                    cmbIwad.Enabled = false;
                     SelectedIWad = GameFile;
+                }
+                else if (gameProfile.IWadID.HasValue)
+                {
                     SelectedIWad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == gameProfile.IWadID);
                 }
 
@@ -114,10 +115,7 @@ namespace DoomLauncher
             HandleIwadSelectionChanged(reset);
             SetAdditionalFiles(reset);
             HandleDemoChange();
-            RegisterEvents();
-
-            if (SelectedIWad != null && SelectedIWad.Equals(GameFile))
-                cmbIwad.Enabled = false;
+            RegisterEvents();               
         }
 
         private void SetIwadInfoLabel()
@@ -343,6 +341,11 @@ namespace DoomLauncher
             get { return chkSaveStats.Enabled && chkSaveStats.Checked; }
         }
 
+        public bool LoadLatestSave
+        {
+            get { return chkLoadLatestSave.Enabled && chkLoadLatestSave.Checked; }
+        }
+
         public bool PreviewLaunchParameters
         {
             get { return chkPreview.Checked; }
@@ -388,6 +391,7 @@ namespace DoomLauncher
             {
                 ISourcePortData sourcePort = cmbSourcePorts.SelectedItem as ISourcePortData;
                 chkSaveStats.Enabled = SaveStatisticsSupported(sourcePort);
+                chkLoadLatestSave.Enabled = LoadLatestSaveSupported(sourcePort);
                 SetAdditionalFiles(resetAdditionalFiles);
                 PopulateDemos();
             }
@@ -411,6 +415,11 @@ namespace DoomLauncher
         private bool SaveStatisticsSupported(ISourcePortData sourcePort)
         {
             return SourcePortUtil.CreateSourcePort(sourcePort).StatisticsSupported();
+        }
+
+        private bool LoadLatestSaveSupported(ISourcePortData sourcePort)
+        {
+            return SourcePortUtil.CreateSourcePort(sourcePort).LoadSaveGameSupported();
         }
 
         private void chkMap_CheckedChanged(object sender, EventArgs e)
@@ -562,6 +571,13 @@ namespace DoomLauncher
         private void lnkMore_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             StatsInfo form = new StatsInfo();
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.ShowDialog(this);
+        }
+
+        private void lnkLoadSaveMore_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            SaveInfo form = new SaveInfo();
             form.StartPosition = FormStartPosition.CenterParent;
             form.ShowDialog(this);
         }
@@ -842,6 +858,7 @@ namespace DoomLauncher
             if (ExtraParameters != null) gameProfile.SettingsExtraParams = ExtraParameters;
 
             gameProfile.SettingsStat = SaveStatistics;
+            gameProfile.SettingsLoadLatestSave = LoadLatestSave;
 
             if (ShouldSaveAdditionalFiles())
             {
@@ -875,6 +892,9 @@ namespace DoomLauncher
                     GameProfile gameProfile = new GameProfile(GameFile.GameFileID.Value, form.DisplayText);
 
                     GameProfile.ApplyDefaultsToProfile(gameProfile, m_appConfig);
+                    if (GameFile != null && IsIwad(GameFile))
+                        gameProfile.IWadID = GameFile.IWadID.Value;
+
                     if (form.CheckBoxChecked)
                         UpdateGameProfile(gameProfile);
                     

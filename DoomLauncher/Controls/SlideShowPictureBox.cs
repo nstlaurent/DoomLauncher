@@ -71,11 +71,18 @@ namespace DoomLauncher
             pbImage.Image = image;
         }
 
+        public Image GetImage() => pbImage.Image;
+
         public bool SetImages(List<string> imagePaths, int startIndex = 0)
         {
             imagePaths = imagePaths.Where(x => File.Exists(x)).ToList();
             if (imagePaths.Count == 0)
+            {
+                ClearImage();
+                m_images.Clear();
+                m_timer.Stop();
                 return false;
+            }
 
             if (startIndex < 0 || startIndex > imagePaths.Count)
                 startIndex = imagePaths.Count - 1;
@@ -87,16 +94,18 @@ namespace DoomLauncher
             m_timer.Stop();
 
             pbImage.CancelAsync();
-            pbImage.ImageLocation = m_images[m_index];
 
             // Don't cycle with one image
             if (imagePaths.Count == 1)
+            {
+                pbImage.ImageLocation = m_images[m_index];
                 return true;
+            }
 
             m_timer.Start();
             m_fadeOut.Restart();
 
-            InitBlendCache();
+            SetImage();
 
             return true;
         }
@@ -193,9 +202,6 @@ namespace DoomLauncher
 
         private void SetImage()
         {
-            m_currentImage?.Dispose();
-            m_currentGraphics?.Dispose();
-
             if (m_images.Count == 0)
             {
                 pbImage.ImageLocation = string.Empty;
@@ -204,44 +210,62 @@ namespace DoomLauncher
 
             try
             {
+                pbImage.Image = null;
                 InitBlendCache();
                 pbImage.Image = m_drawImage;
                 SetTransparency();
             }
             catch
             {
-                m_images.Clear();
-                SetImage();
+                // File data is not accessible or out of memory, ignore for now
             }
         }
 
         private void InitBlendCache()
         {
-            m_currentImage = Util.FixedSize(Image.FromFile(m_images[m_index]), pbImage.Width, pbImage.Height, Color.Black);
+            m_currentImage?.Dispose();
+            m_currentGraphics?.Dispose();
+            m_drawImage?.Dispose();
+
+            using (var image = Image.FromFile(m_images[m_index]))
+                m_currentImage = Util.FixedSize(image, pbImage.Width, pbImage.Height, Color.Black);
             m_drawImage = new Bitmap(m_currentImage.Width, m_currentImage.Height);
             m_currentGraphics = Graphics.FromImage(m_drawImage);
         }
 
         private void SetTransparency()
         {
-            ColorMatrix colorMatrix = new ColorMatrix(new float[][]
+            try
             {
-                new [] { 1.0F, 0.0F, 0.0F, 0.0F, 0.0F },
-                new [] { 0.0F, 1.0F, 0.0F, 0.0F, 0.0F },
-                new [] { 0.0F, 0.0F, 1.0F, 0.0F, 0.0F },
-                new [] { 0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
-                new [] { 0.0F, 0.0F, 0.0F, m_alpha, 1.0F },
-            });
+                if (m_alpha >= 1.0F)
+                {
+                    pbImage.Image = m_currentImage;
+                    return;
+                }
 
-            m_currentGraphics.FillRectangle(m_bgBrush, 0, 0, m_currentImage.Width, m_currentImage.Height);
+                ColorMatrix colorMatrix = new ColorMatrix(new float[][]
+                {
+                    new [] { 1.0F, 0.0F, 0.0F, 0.0F, 0.0F },
+                    new [] { 0.0F, 1.0F, 0.0F, 0.0F, 0.0F },
+                    new [] { 0.0F, 0.0F, 1.0F, 0.0F, 0.0F },
+                    new [] { 0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
+                    new [] { 0.0F, 0.0F, 0.0F, m_alpha, 1.0F },
+                });
 
-            ImageAttributes imageAttrs = new ImageAttributes();
-            imageAttrs.SetColorMatrix(colorMatrix);
+                m_currentGraphics.FillRectangle(m_bgBrush, 0, 0, m_currentImage.Width, m_currentImage.Height);
 
-            m_currentGraphics.DrawImage(m_currentImage, new Rectangle(0, 0, m_currentImage.Width, m_currentImage.Height), 0, 0,
-                m_drawImage.Width, m_drawImage.Height, GraphicsUnit.Pixel, imageAttrs);
-            pbImage.Image = m_drawImage;
-            pbImage.Refresh();
+                ImageAttributes imageAttrs = new ImageAttributes();
+                imageAttrs.SetColorMatrix(colorMatrix);
+
+                m_currentGraphics.DrawImage(m_currentImage, new Rectangle(0, 0, m_currentImage.Width, m_currentImage.Height), 0, 0,
+                    m_drawImage.Width, m_drawImage.Height, GraphicsUnit.Pixel, imageAttrs);
+                pbImage.Image = m_drawImage;
+                pbImage.Refresh();
+            }
+            catch
+            {
+                // Sometimes this can randomly fail, can be timing or whatever... just ignore
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using DoomLauncher.SaveGame;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,16 @@ namespace DoomLauncher.SourcePort
         public GenericSourcePort(ISourcePortData sourcePortData)
         {
             m_sourcePortData = sourcePortData;
+        }
+
+        public bool CheckFileNameWithoutExtension(string name)
+        {
+            return Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals(name, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public bool CheckFileNameContains(string name)
+        {
+            return CultureInfo.CurrentCulture.CompareInfo.IndexOf(m_sourcePortData.Executable, name) >= 0;
         }
 
         public virtual string IwadParameter(SpData data)
@@ -50,6 +61,18 @@ namespace DoomLauncher.SourcePort
             return string.Format(" -playdemo \"{0}\"", data.Value);
         }
 
+        public virtual string LoadSaveParameter(SpData data)
+        {
+            if (string.IsNullOrEmpty(data.Value))
+                return string.Empty;
+
+            string file = Path.GetFileNameWithoutExtension(data.Value);
+            if (!char.IsDigit(file[file.Length - 1]))
+                return string.Empty;
+
+            return $"-loadgame {file[file.Length - 1]}";
+        }
+
         public static string BuildWarpParameter(string map)
         {
             if (Regex.IsMatch(map, @"^E\dM\d$") || Regex.IsMatch(map, @"^MAP\d\d$"))
@@ -64,6 +87,11 @@ namespace DoomLauncher.SourcePort
         }
 
         public virtual bool StatisticsSupported()
+        {
+            return false;
+        }
+
+        public virtual bool LoadSaveGameSupported()
         {
             return false;
         }

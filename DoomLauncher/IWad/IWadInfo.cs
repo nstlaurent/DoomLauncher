@@ -5,10 +5,12 @@ namespace DoomLauncher
     class IWadInfo
     {
         public readonly string Title;
+        public readonly bool HasMetadata;
 
-        public IWadInfo(string title)
+        public IWadInfo(string title, bool hasMeta = false)
         {
             Title = title;
+            HasMetadata = hasMeta;
         }
 
         public static IWadInfo GetIWadInfo(string fileName)

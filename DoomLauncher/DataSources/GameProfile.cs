@@ -41,6 +41,7 @@ namespace DoomLauncher.DataSources
         public string SettingsFilesIWAD { get; set; }
         public string SettingsSpecificFiles { get; set; }
         public bool SettingsStat { get; set; }
+        public bool SettingsLoadLatestSave { get; set; }
         public bool SettingsSaved { get; set; }
     }
 }

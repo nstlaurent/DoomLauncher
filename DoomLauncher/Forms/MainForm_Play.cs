@@ -4,6 +4,7 @@ using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -176,7 +177,7 @@ namespace DoomLauncher
                 {
                     DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap,
                     GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
-                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved });
+                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave });
                 }
                 else
                 {
@@ -282,7 +283,7 @@ namespace DoomLauncher
 
         private void CopySaveGames(IGameFile gameFile, ISourcePortData sourcePort)
         {
-            if (gameFile != null) //BUG: what if it's iwad?
+            if (gameFile != null)
             {
                 HandleCopySaveGames(gameFile, sourcePort);
             }
@@ -295,7 +296,7 @@ namespace DoomLauncher
 
         private void HandleCopySaveGames(IGameFile gameFile, ISourcePortData sourcePort)
         {
-            m_saveGames = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).ToArray();
+            m_saveGames = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
             SaveGameHandler saveGameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
             saveGameHandler.CopySaveGamesToSourcePort(sourcePort, m_saveGames);
         }
@@ -359,14 +360,11 @@ namespace DoomLauncher
             Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
 
             m_saveFileDetectors = CreateDefaultSaveGameDetectors();
-            if (!string.IsNullOrEmpty(sourcePort.AltSaveDirectory.GetFullPath()))
-                m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.AltSaveDirectory.GetFullPath()));
-            else
-                m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.Directory.GetFullPath()));
+            m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.GetSavePath().GetFullPath()));
             Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
         }
 
-        private static GameFilePlayAdapter CreatePlayAdapter(PlayForm form, EventHandler processExited, AppConfiguration appConfig)
+        private GameFilePlayAdapter CreatePlayAdapter(PlayForm form, EventHandler processExited, AppConfiguration appConfig)
         {
             GameFilePlayAdapter playAdapter = new GameFilePlayAdapter();
             playAdapter.IWad = form.SelectedIWad;
@@ -378,9 +376,35 @@ namespace DoomLauncher
             playAdapter.PlayDemo = form.PlayDemo;
             playAdapter.ExtraParameters = form.ExtraParameters;
             playAdapter.SaveStatistics = form.SaveStatistics;
+
+            if (form.LoadLatestSave)
+            {
+                if (!AppConfiguration.CopySaveFiles)
+                {
+                    MessageCheckBox message = new MessageCheckBox("Copy Save Files Disabled",
+                        "Copy save files is disabled and the load latest save feature may not function.\n\nSelect the check box below to enable this setting.",
+                        "Enable Setting", SystemIcons.Warning);
+                    message.StartPosition = FormStartPosition.CenterParent;
+                    message.ShowDialog(this);
+                    if (message.Checked)
+                        AppConfiguration.EnableCopySaveFiles();
+                }
+                playAdapter.LoadSaveFile = GetLoadLatestSave(form.GameFile, form.SelectedSourcePort);
+            }
+
             playAdapter.ProcessExited += processExited;
             if (form.SelectedDemo != null) playAdapter.PlayDemoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
             return playAdapter;
+        }
+
+        private string GetLoadLatestSave(IGameFile gameFile, ISourcePortData sourcePortData)
+        {
+            var saveFile = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePortData.SourcePortID)
+                .OrderByDescending(x => x.DateCreated).FirstOrDefault();
+            if (saveFile != null)
+                return Path.Combine(sourcePortData.GetSavePath().GetFullPath(), saveFile.OriginalFileName);
+
+            return string.Empty;
         }
 
         private IStatisticsReader CreateStatisticsReader(ISourcePortData sourcePort, IGameFile gameFile)
@@ -508,7 +532,8 @@ namespace DoomLauncher
             ScreenshotHandler screenshotHandler = new ScreenshotHandler();
             screenshotHandler.HandleNewScreenshots(adapter.SourcePort, gameFile, GetNewScreenshots());
             SaveGameHandler savegameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
-            savegameHandler.HandleNewSaveGames(adapter.SourcePort, gameFile, GetNewSaveGames());
+
+            savegameHandler.HandleNewSaveGames(adapter.SourcePort, gameFile, GetNewSaveGames(m_saveFileDetectors, m_saveGames));
             savegameHandler.HandleUpdateSaveGames(adapter.SourcePort, gameFile, m_saveGames);
         }
 
@@ -565,17 +590,17 @@ namespace DoomLauncher
             return newFiles.ToArray();
         }
 
-        private string[] GetNewSaveGames()
+        private static string[] GetNewSaveGames(List<INewFileDetector> saveFileDetectors, IFileData[] existingSaves)
         {
             IEnumerable<string> newFiles = new string[] { };
-            m_saveFileDetectors.ForEach(x => newFiles = newFiles.Union(x.GetNewFiles()));
+            saveFileDetectors.ForEach(x => newFiles = newFiles.Union(x.GetNewFiles()));
 
             IEnumerable<string> modifiedFiles = new string[] { };
-            m_saveFileDetectors.ForEach(x => modifiedFiles = modifiedFiles.Union(x.GetModifiedFiles()));
+            saveFileDetectors.ForEach(x => modifiedFiles = modifiedFiles.Union(x.GetModifiedFiles()));
 
             //modified files uses full path, m_saveGames does not. This section checks for modified files that were not part of the gamefile's save games
             //e.g save0.zds was a save game for this gamefile. User overwrites save1.zds for this gamefile. We now need to keep track of save1.zds as well.
-            IEnumerable<string> saveFiles = m_saveGames.Select(x => x.OriginalFileName);
+            IEnumerable<string> saveFiles = existingSaves.Select(x => x.OriginalFileName);
             List<string> ret = newFiles.ToList();
             foreach(string modifiedFile in modifiedFiles)
             {

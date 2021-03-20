@@ -1,6 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
 using DoomLauncher.Statistics;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -16,10 +15,15 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            return Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals("chocolate-doom", StringComparison.InvariantCultureIgnoreCase);
+            return CheckFileNameWithoutExtension("chocolate-doom");
         }
 
         public override bool StatisticsSupported()
+        {
+            return true;
+        }
+
+        public override bool LoadSaveGameSupported()
         {
             return true;
         }

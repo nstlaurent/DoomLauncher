@@ -57,20 +57,23 @@ namespace DoomLauncher
             double percent = 0;
             if (total > 0)
                 percent = count / (double)total;
-            width = (int)((Width - offsetX) * percent);
+
+            width = Width - offsetX;
+            if (total != 0)
+                width = (int)(width * percent);
 
             pt.Offset(offsetX, offsetY);
             rect = new Rectangle(pt, new Size(rect.Width - offsetX, rect.Height - offsetY));
             Brush bgBrush = new LinearGradientBrush(rect, Color.DarkGray, Color.LightGray, 90.0f);
             Rectangle percentRect = new Rectangle(rect.Location, new Size(width, rect.Height));
-            Brush brush = GetPercentBrush(rect, percent);
+            Brush brush = GetPercentBrush(rect, percent, total);
 
             g.FillRectangle(bgBrush, rect);
-            if (percent > 0)
+            if (width > 0)
             {
                 g.FillRectangle(brush, percentRect);
                 pt.Offset(-offsetX, -offsetY);
-                g.DrawRectangle(GetPrecentPen(percent), new Rectangle(pt, new Size(percentRect.Width + offsetX, percentRect.Height + offsetY)));
+                g.DrawRectangle(GetPrecentPen(percent, total), new Rectangle(pt, new Size(percentRect.Width + offsetX, percentRect.Height + offsetY)));
             }
 
             Brush fontBrush = new SolidBrush(Color.Black);
@@ -78,17 +81,17 @@ namespace DoomLauncher
             g.DrawString(text, new Font(FontFamily.GenericSerif, 10.0f, FontStyle.Bold), fontBrush, position);
         }
 
-        private static Brush GetPercentBrush(Rectangle rect, double percent)
+        private static Brush GetPercentBrush(Rectangle rect, double percent, int total)
         {
-            if (percent >= 1.0)
+            if (percent >= 1.0 || total == 0)
                 return new LinearGradientBrush(rect, Color.LightGreen, Color.Green, LinearGradientMode.ForwardDiagonal);
             else
                 return new LinearGradientBrush(rect, Color.LightBlue, Color.Blue, LinearGradientMode.ForwardDiagonal);
         }
 
-        private static Pen GetPrecentPen(double percent)
+        private static Pen GetPrecentPen(double percent, int total)
         {
-            if (percent >= 1.0)
+            if (percent >= 1.0 || total == 0)
                 return new Pen(Color.Green);
             else
                 return new Pen(Color.Blue);

@@ -21,6 +21,7 @@ namespace DoomLauncher
             SetColumnFields(new Tuple<string, string>[]
             {
                 new Tuple<string, string>("Description", "Description"),
+                new Tuple<string, string>("OriginalFileName", "File"),
                 new Tuple<string, string>(s_dateColumn, "Created"),
                 new Tuple<string, string>("SourcePortName", "SourcePort")
             });

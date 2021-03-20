@@ -1,6 +1,7 @@
 ﻿using DoomLauncher;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -143,7 +144,7 @@ namespace UnitTest.Tests
             Assert.AreEqual("The Joy of Mapping #1", gameFile.Title);
             Assert.AreEqual("Jimmy & Various", gameFile.Author);
             Assert.IsTrue(gameFile.Description.StartsWith("This was a livestreamed communal mapping session"));
-            Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("8/1/2016"));
+            Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("8/1/2016", CultureInfo.InvariantCulture));
 
             File.Copy(Path.Combine("Resources", "uroburos.zip"), Path.Combine(s_filedir, file), true);
             handler.Execute(new string[] { file });
@@ -159,7 +160,7 @@ namespace UnitTest.Tests
             Assert.AreEqual("Uroburos", gameFile.Title);
             Assert.AreEqual("hobomaster22", gameFile.Author);
             Assert.IsTrue(gameFile.Description.StartsWith("A 1on1 map"));
-            Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("3/5/2005"));
+            Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("3/5/2005", CultureInfo.InvariantCulture));
         }
 
         [TestMethod]

@@ -25,7 +25,7 @@ namespace DoomLauncher
 
                 var items = from file in files
                             join sp in sourcePorts on file.SourcePortID equals sp.SourcePortID
-                            select new { file.Description, file.DateCreated, SourcePortName = sp.Name, FileData = file };
+                            select new { file.OriginalFileName, file.Description, file.DateCreated, SourcePortName = sp.Name, FileData = file };
 
                 dgvMain.DataSource = items.ToList();
                 dgvMain.ContextMenuStrip = m_menu;
@@ -265,12 +265,14 @@ namespace DoomLauncher
             if (string.IsNullOrEmpty(prefix))
                 prefix = file.FileTypeID.ToString().ToLower();
 
-            string sourcePortName = "N/A";
+            string sourcePortName = "NA";
             var sourcePort = sourcePorts.FirstOrDefault(x => x.SourcePortID == file.SourcePortID);
             if (sourcePort != null)
                 sourcePortName = sourcePort.Name;
 
-            return $"{prefix}_{sourcePortName}_{Path.GetFileNameWithoutExtension(GameFile.FileNameNoPath)}{Path.GetExtension(file.FileName)}";
+            string fileName = $"{prefix}_{sourcePortName}_{Path.GetFileNameWithoutExtension(GameFile.FileNameNoPath)}{Path.GetExtension(file.FileName)}";
+            Array.ForEach(Path.GetInvalidFileNameChars(), x => fileName = fileName.Replace(x, ' '));
+            return fileName;
         }
 
         public virtual void View()

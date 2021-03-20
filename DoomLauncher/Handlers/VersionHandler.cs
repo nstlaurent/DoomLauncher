@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace DoomLauncher
 {
-    class VersionHandler
+    public class VersionHandler
     {
         private readonly IDataSourceAdapter m_adapter;
         private readonly AppConfiguration m_appConfig;
@@ -79,6 +79,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_2_0_Update1, AppVersion.Version_3_2_0_Update1);
                 ExecuteUpdate(Pre_Version_3_2_0_Update2, AppVersion.Version_3_2_0_Update2);
                 ExecuteUpdate(Pre_Version_3_2_0_Update3, AppVersion.Version_3_2_0_Update3);
+                ExecuteUpdate(Pre_Version_3_3_0, AppVersion.Version_3_3_0);
             }
         }
 
@@ -649,6 +650,25 @@ namespace DoomLauncher
                     DataAccess.DbAdapter.CreateParameter("SourcePortID", sourcePort.SourcePortID)
                 };
                 DataAccess.ExecuteNonQuery("update SourcePorts set SupportedExtensions = @ext where SourcePortID = @SourcePortID", parameters);
+            }
+        }
+
+        private void Pre_Version_3_3_0()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
+
+            if (!dt.Select("name = 'SettingsLoadLatestSave'").Any())
+            {
+                DataAccess.ExecuteNonQuery(@"alter table GameFiles add column 'SettingsLoadLatestSave' INTEGER;");
+                DataAccess.ExecuteNonQuery("update GameFiles set SettingsLoadLatestSave = 0");
+            }
+
+            dt = DataAccess.ExecuteSelect("pragma table_info(GameProfiles);").Tables[0];
+
+            if (!dt.Select("name = 'SettingsLoadLatestSave'").Any())
+            {
+                DataAccess.ExecuteNonQuery(@"alter table GameProfiles add column 'SettingsLoadLatestSave' INTEGER;");
+                DataAccess.ExecuteNonQuery("update GameProfiles set SettingsLoadLatestSave = 0");
             }
         }
 

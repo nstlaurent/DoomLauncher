@@ -13,5 +13,6 @@
         string ExtraParameters { get; set; }
         LauncherPath AltSaveDirectory { get; set; }
         string GetFullExecutablePath();
+        LauncherPath GetSavePath();
     }
 }

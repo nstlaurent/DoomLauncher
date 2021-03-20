@@ -13,17 +13,23 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            string exe = m_sourcePortData.Executable.ToLower();
-
-            if (exe.Contains("zdoom.exe"))
-                return true;
-            if (exe.Contains("zandronum.exe"))
+            if (CheckFileNameContains("zdoom.exe"))
                 return true;
 
-            return false;
+            return CheckFileNameWithoutExtension("zandronum");
+        }
+
+        public override string LoadSaveParameter(SpData data)
+        {
+            return $"-loadgame {data.Value}";
         }
 
         public override bool StatisticsSupported()
+        {
+            return true;
+        }
+
+        public override bool LoadSaveGameSupported()
         {
             return true;
         }

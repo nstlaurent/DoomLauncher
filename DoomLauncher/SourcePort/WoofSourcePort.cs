@@ -1,6 +1,4 @@
 ﻿using DoomLauncher.Interfaces;
-using System;
-using System.IO;
 
 namespace DoomLauncher.SourcePort
 {
@@ -14,7 +12,7 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            return Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals("woof", StringComparison.InvariantCultureIgnoreCase);
+            return CheckFileNameWithoutExtension("woof");
         }
     }
 }

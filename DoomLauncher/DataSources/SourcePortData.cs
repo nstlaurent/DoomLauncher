@@ -21,6 +21,14 @@ namespace DoomLauncher.DataSources
             return Path.Combine(Directory.GetFullPath(), Executable);
         }
 
+        public LauncherPath GetSavePath()
+        {
+            if (!string.IsNullOrEmpty(AltSaveDirectory.GetFullPath()))
+                return AltSaveDirectory;
+
+            return Directory;
+        }
+
         public LauncherPath Directory
         {
             get;
