@@ -535,6 +535,7 @@ namespace DoomLauncher
 
             savegameHandler.HandleNewSaveGames(adapter.SourcePort, gameFile, GetNewSaveGames(m_saveFileDetectors, m_saveGames));
             savegameHandler.HandleUpdateSaveGames(adapter.SourcePort, gameFile, m_saveGames);
+            savegameHandler.HandleDeleteSaveGames(GetDeletedSaveGames(m_saveFileDetectors), m_saveGames);
         }
 
         private void HandleRecordedDemo(GameFilePlayAdapter adapter, IGameFile gameFile)
@@ -610,6 +611,13 @@ namespace DoomLauncher
             }
 
             return ret.ToArray();
+        }
+
+        private static string[] GetDeletedSaveGames(List<INewFileDetector> saveFileDetectors)
+        {
+            IEnumerable<string> deletedFiles = new string[] { };
+            saveFileDetectors.ForEach(x => deletedFiles = deletedFiles.Union(x.GetDeletedFiles()));
+            return deletedFiles.ToArray();
         }
     }
 }

@@ -59,6 +59,19 @@ namespace DoomLauncher
             return new string[] { };
         }
 
+        public string[] GetDeletedFiles()
+        {
+            if (BaseFiles != null && Directory != null)
+            {
+                string[] baseFiles = BaseFiles.Select(x => x.FullName).ToArray();
+                string[] currentFiles = GetFiles(Directory).Select(x => x.FullName).ToArray();
+
+                return baseFiles.Except(currentFiles).ToArray();
+            }
+
+            return new string[] { };
+        }
+
         private FileInfo[] GetFiles(string directory)
         {
             try
