@@ -80,6 +80,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_2_0_Update2, AppVersion.Version_3_2_0_Update2);
                 ExecuteUpdate(Pre_Version_3_2_0_Update3, AppVersion.Version_3_2_0_Update3);
                 ExecuteUpdate(Pre_Version_3_3_0, AppVersion.Version_3_3_0);
+                ExecuteUpdate(Pre_Version_3_3_1, AppVersion.Version_3_3_1);
             }
         }
 
@@ -669,6 +670,19 @@ namespace DoomLauncher
             {
                 DataAccess.ExecuteNonQuery(@"alter table GameProfiles add column 'SettingsLoadLatestSave' INTEGER;");
                 DataAccess.ExecuteNonQuery("update GameProfiles set SettingsLoadLatestSave = 0");
+            }
+        }
+
+        private void Pre_Version_3_3_1()
+        {
+            var sourcePorts = m_adapter.GetSourcePorts();
+            foreach (var sourcePort in sourcePorts)
+            {
+                if (sourcePort.SupportedExtensions.Contains(".pke"))
+                    continue;
+
+                sourcePort.SupportedExtensions += ",.pke";
+                m_adapter.UpdateSourcePort(sourcePort);
             }
         }
 

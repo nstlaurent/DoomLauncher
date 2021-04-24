@@ -298,7 +298,7 @@ namespace DoomLauncher
 
         public static string[] GetReadablePkExtensions()
         {
-            return new string[] { ".pk3", ".ipk3", ".zip" };
+            return new string[] { ".pk3", ".ipk3", ".pke", ".zip" };
         }
 
         public static string[] GetDehackedExtensions()
@@ -308,7 +308,7 @@ namespace DoomLauncher
 
         public static string[] GetSourcePortPkExtensions()
         {
-            return new string[] { ".pk3", ".ipk3", ".pk7"};
+            return new string[] { ".pk3", ".ipk3", ".pk7", ".pke"};
         }
 
         public static GameFileFieldType[] DefaultGameFileUpdateFields
