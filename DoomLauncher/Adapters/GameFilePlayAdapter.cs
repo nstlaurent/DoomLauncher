@@ -248,23 +248,29 @@ namespace DoomLauncher
             }
         }
 
-        private List<string> GetFilesFromGameFileSettings(IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory, bool checkSpecific, string[] extensions)
+        private List<string> GetFilesFromGameFileSettings(IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
+            bool checkSpecific, string[] extensions)
         {
             List<string> files = new List<string>();
 
             using (IArchiveReader reader = CreateArchiveReader(gameFile, gameFileDirectory))
             {
-                var entries = reader.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains('.') &&
-                    extensions.Any(y => y.Equals(Path.GetExtension(x.Name), StringComparison.OrdinalIgnoreCase)));
+                IEnumerable<IArchiveEntry> entries;
+                if (checkSpecific && SpecificFiles != null && SpecificFiles.Length > 0)
+                {
+                    entries = reader.Entries;
+                }
+                else
+                {
+                    entries = reader.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains('.') &&
+                        extensions.Any(y => y.Equals(Path.GetExtension(x.Name), StringComparison.OrdinalIgnoreCase)));
+                }
 
                 foreach (IArchiveEntry entry in entries)
                 {
                     bool useFile = true;
-
                     if (checkSpecific && SpecificFiles != null && SpecificFiles.Length > 0)
-                    {
                         useFile = SpecificFiles.Contains(entry.FullName);
-                    }
 
                     if (useFile)
                     {
