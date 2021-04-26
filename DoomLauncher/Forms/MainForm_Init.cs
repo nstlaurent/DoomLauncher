@@ -458,11 +458,18 @@ namespace DoomLauncher
             m_tagSelectControl.TagSelectionChanged += TagSelectCtrl_TagSelectionChanged;
             m_tagSelectControl.StaticSelectionChanged += TagSelectCtrl_StaticSelectionChanged;
             m_tagSelectControl.PinChanged += TagSelectControl_PinChanged;
-            m_tagSelectControl.Init(new TagSelectOptions() { HasTabOnly = true, ShowStatic = true, AllowRowSelect = true, ShowPin = true });
+            m_tagSelectControl.ManageTags += TagSelectControl_ManageTags;
+            m_tagSelectControl.Init(new TagSelectOptions() { HasTabOnly = true, ShowStatic = true, AllowRowSelect = true, 
+                ShowPin = true, ShowMenu = true });
             m_tagSelectControl.SetPinned(AppConfiguration.TagSelectPinned);
 
             if (AppConfiguration.TagSelectPinned)
                 SetTagControlPinned();
+        }
+
+        private void TagSelectControl_ManageTags(object sender, EventArgs e)
+        {
+            HandleManageTags();
         }
 
         private void TagSelectControl_PinChanged(object sender, EventArgs e)

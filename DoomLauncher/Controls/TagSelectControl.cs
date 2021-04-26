@@ -12,6 +12,7 @@ namespace DoomLauncher.Controls
         public event EventHandler<ITagData> TagSelectionChanged;
         public event EventHandler<string> StaticSelectionChanged;
         public event EventHandler PinChanged;
+        public event EventHandler ManageTags;
 
         public bool Pinned { get; private set; }
 
@@ -51,6 +52,9 @@ namespace DoomLauncher.Controls
             m_options = options;
 
             btnPin.Visible = options.ShowPin;
+
+            if (options.ShowMenu)
+                dgvTags.ContextMenuStrip = menu;
 
             InitGrid(dgvTags);
             EnableSelection();
@@ -302,6 +306,11 @@ namespace DoomLauncher.Controls
             btnPin.Width = img.Width + dpiScale.ScaleIntX(2);
             btnPin.Height = img.Height + dpiScale.ScaleIntY(4);
         }
+
+        private void manageTagsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageTags?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public class TagSelectOptions
@@ -313,5 +322,6 @@ namespace DoomLauncher.Controls
         public bool ShowPin { get; set; }
         public bool ShowTagData { get; set; }
         public bool CustomSetData { get; set; }
+        public bool ShowMenu { get; set; }
     }
 }
