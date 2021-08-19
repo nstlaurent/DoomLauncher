@@ -168,6 +168,9 @@ namespace DoomLauncher
 
         public override void SetImageLocation(string file)
         {
+            if (file.Equals(pb.ImageLocation))
+                return;
+
             ClearImage();
 
             if (!string.IsNullOrEmpty(file))

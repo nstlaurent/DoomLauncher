@@ -431,6 +431,8 @@ namespace DoomLauncher
             DataCache.Instance.TagMapLookup.TagMappingChanged += TagMapLookup_TagMappingChanged;
             DataCache.Instance.TagsChanged += DataCache_TagsChanged;
 
+            CleanUpFiles();
+
             SetupTabs();
             RebuildUtilityToolStrip();
             BuildUtilityToolStrip();
@@ -442,7 +444,23 @@ namespace DoomLauncher
             ctrlAssociationView.FileDeleted += ctrlAssociationView_FileDeleted;
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
+        }
 
+        private void CleanUpFiles()
+        {
+            var cleanupFiles = DataSourceAdapter.GetCleanupFiles();
+            foreach (var cleanupFile in cleanupFiles)
+            {
+                try
+                {
+                    File.Delete(cleanupFile.FileName);
+                    DataSourceAdapter.DeleteCleanupFile(cleanupFile);
+                }
+                catch
+                {
+                    // Try again next time...
+                }
+            }
         }
 
         private void InitDownloadView()

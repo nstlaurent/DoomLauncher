@@ -82,5 +82,12 @@ namespace DoomLauncher.DataSources
 
             return 0;
         }
+
+        public override string ToString()
+        {
+            if (FileName == null)
+                return string.Empty;
+            return FileName;
+        }
     }
 }

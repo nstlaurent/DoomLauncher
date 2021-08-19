@@ -81,6 +81,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_2_0_Update3, AppVersion.Version_3_2_0_Update3);
                 ExecuteUpdate(Pre_Version_3_3_0, AppVersion.Version_3_3_0);
                 ExecuteUpdate(Pre_Version_3_3_1, AppVersion.Version_3_3_1);
+                ExecuteUpdate(Pre_Version_3_3_2, AppVersion.Version_3_3_2);
             }
         }
 
@@ -683,6 +684,20 @@ namespace DoomLauncher
 
                 sourcePort.SupportedExtensions += ",.pke";
                 m_adapter.UpdateSourcePort(sourcePort);
+            }
+        }
+
+        private void Pre_Version_3_3_2()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("select name from sqlite_master where type='table' and name='CleanupFiles';").Tables[0];
+
+            if (dt.Rows.Count == 0)
+            {
+                string query = @"CREATE TABLE 'CleanupFiles' (
+                    'CleanupFileID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	                'FileName' TEXT NOT NULL);";
+
+                DataAccess.ExecuteNonQuery(query);
             }
         }
 
