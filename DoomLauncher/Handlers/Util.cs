@@ -570,5 +570,20 @@ namespace DoomLauncher
                 if (ymax < point.Y) ymax = point.Y;
             }
         }
+
+        public static IEnumerable<T> GetChildElements<T>(this Control control) where T : class
+        {
+            foreach (Control subControl in control.Controls)
+            {
+                if (subControl is T subControlType)
+                    yield return subControlType;
+
+                if (subControl.HasChildren)
+                {
+                    foreach (T child in GetChildElements<T>(subControl))
+                        yield return child;
+                }
+            }
+        }
     }
 }

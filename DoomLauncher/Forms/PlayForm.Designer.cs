@@ -62,13 +62,13 @@
             this.lnkMore = new System.Windows.Forms.LinkLabel();
             this.chkSaveStats = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.lnkLoadSaveMore = new System.Windows.Forms.LinkLabel();
             this.chkLoadLatestSave = new System.Windows.Forms.CheckBox();
             this.lnkFilterSettings = new System.Windows.Forms.LinkLabel();
             this.chkScreenFilter = new System.Windows.Forms.CheckBox();
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
-            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
             this.pbInfo = new System.Windows.Forms.PictureBox();
@@ -81,7 +81,7 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.lnkLoadSaveMore = new System.Windows.Forms.LinkLabel();
+            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.groupBox1.SuspendLayout();
             this.tblProfile.SuspendLayout();
             this.profileToolStrip.SuspendLayout();
@@ -107,6 +107,7 @@
             this.cmbSourcePorts.Name = "cmbSourcePorts";
             this.cmbSourcePorts.Size = new System.Drawing.Size(197, 21);
             this.cmbSourcePorts.TabIndex = 0;
+            this.cmbSourcePorts.TabStop = false;
             // 
             // btnOK
             // 
@@ -115,6 +116,7 @@
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 1;
+            this.btnOK.TabStop = false;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -126,6 +128,7 @@
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
+            this.btnCancel.TabStop = false;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -137,6 +140,7 @@
             this.cmbIwad.Name = "cmbIwad";
             this.cmbIwad.Size = new System.Drawing.Size(197, 21);
             this.cmbIwad.TabIndex = 3;
+            this.cmbIwad.TabStop = false;
             this.cmbIwad.ValueMember = "GameFileID";
             // 
             // chkRemember
@@ -148,6 +152,7 @@
             this.chkRemember.Name = "chkRemember";
             this.chkRemember.Size = new System.Drawing.Size(118, 17);
             this.chkRemember.TabIndex = 4;
+            this.chkRemember.TabStop = false;
             this.chkRemember.Text = "Remember Settings";
             this.chkRemember.UseVisualStyleBackColor = true;
             // 
@@ -257,6 +262,7 @@
             this.cmbProfiles.Name = "cmbProfiles";
             this.cmbProfiles.Size = new System.Drawing.Size(165, 21);
             this.cmbProfiles.TabIndex = 9;
+            this.cmbProfiles.TabStop = false;
             this.cmbProfiles.ValueMember = "GameProfileID";
             // 
             // label2
@@ -286,6 +292,7 @@
             this.cmbMap.Name = "cmbMap";
             this.cmbMap.Size = new System.Drawing.Size(160, 21);
             this.cmbMap.TabIndex = 6;
+            this.cmbMap.TabStop = false;
             // 
             // label4
             // 
@@ -305,6 +312,7 @@
             this.cmbSkill.Name = "cmbSkill";
             this.cmbSkill.Size = new System.Drawing.Size(160, 21);
             this.cmbSkill.TabIndex = 10;
+            this.cmbSkill.TabStop = false;
             // 
             // chkRecord
             // 
@@ -313,6 +321,7 @@
             this.chkRecord.Name = "chkRecord";
             this.chkRecord.Size = new System.Drawing.Size(61, 17);
             this.chkRecord.TabIndex = 12;
+            this.chkRecord.TabStop = false;
             this.chkRecord.Text = "Record";
             this.chkRecord.UseVisualStyleBackColor = true;
             this.chkRecord.CheckedChanged += new System.EventHandler(this.chkRecord_CheckedChanged);
@@ -320,10 +329,11 @@
             // txtDescription
             // 
             this.txtDescription.Enabled = false;
-            this.txtDescription.Location = new System.Drawing.Point(85, 113);
+            this.txtDescription.Location = new System.Drawing.Point(86, 112);
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.Size = new System.Drawing.Size(160, 20);
             this.txtDescription.TabIndex = 13;
+            this.txtDescription.TabStop = false;
             // 
             // cmbDemo
             // 
@@ -334,6 +344,7 @@
             this.cmbDemo.Name = "cmbDemo";
             this.cmbDemo.Size = new System.Drawing.Size(160, 21);
             this.cmbDemo.TabIndex = 14;
+            this.cmbDemo.TabStop = false;
             this.cmbDemo.ValueMember = "FileID";
             // 
             // chkDemo
@@ -343,6 +354,7 @@
             this.chkDemo.Name = "chkDemo";
             this.chkDemo.Size = new System.Drawing.Size(77, 17);
             this.chkDemo.TabIndex = 15;
+            this.chkDemo.TabStop = false;
             this.chkDemo.Text = "Play Demo";
             this.chkDemo.UseVisualStyleBackColor = true;
             this.chkDemo.CheckedChanged += new System.EventHandler(this.chkDemo_CheckedChanged);
@@ -354,6 +366,7 @@
             this.chkMap.Name = "chkMap";
             this.chkMap.Size = new System.Drawing.Size(47, 17);
             this.chkMap.TabIndex = 16;
+            this.chkMap.TabStop = false;
             this.chkMap.Text = "Map";
             this.chkMap.UseVisualStyleBackColor = true;
             this.chkMap.CheckedChanged += new System.EventHandler(this.chkMap_CheckedChanged);
@@ -399,10 +412,11 @@
             // 
             // txtParameters
             // 
-            this.txtParameters.Location = new System.Drawing.Point(84, 139);
+            this.txtParameters.Location = new System.Drawing.Point(86, 139);
             this.txtParameters.Name = "txtParameters";
             this.txtParameters.Size = new System.Drawing.Size(160, 20);
             this.txtParameters.TabIndex = 17;
+            this.txtParameters.TabStop = false;
             this.txtParameters.Click += new System.EventHandler(this.TxtParameters_Click);
             // 
             // chkPreview
@@ -412,6 +426,7 @@
             this.chkPreview.Name = "chkPreview";
             this.chkPreview.Size = new System.Drawing.Size(159, 17);
             this.chkPreview.TabIndex = 21;
+            this.chkPreview.TabStop = false;
             this.chkPreview.Text = "Preview Launch Parameters";
             this.chkPreview.UseVisualStyleBackColor = true;
             // 
@@ -435,6 +450,7 @@
             this.chkSaveStats.Name = "chkSaveStats";
             this.chkSaveStats.Size = new System.Drawing.Size(96, 17);
             this.chkSaveStats.TabIndex = 19;
+            this.chkSaveStats.TabStop = false;
             this.chkSaveStats.Text = "Save Statistics";
             this.chkSaveStats.UseVisualStyleBackColor = true;
             // 
@@ -454,6 +470,17 @@
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             // 
+            // lnkLoadSaveMore
+            // 
+            this.lnkLoadSaveMore.AutoSize = true;
+            this.lnkLoadSaveMore.Location = new System.Drawing.Point(171, 44);
+            this.lnkLoadSaveMore.Name = "lnkLoadSaveMore";
+            this.lnkLoadSaveMore.Size = new System.Drawing.Size(61, 13);
+            this.lnkLoadSaveMore.TabIndex = 26;
+            this.lnkLoadSaveMore.TabStop = true;
+            this.lnkLoadSaveMore.Text = "More Info...";
+            this.lnkLoadSaveMore.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkLoadSaveMore_LinkClicked);
+            // 
             // chkLoadLatestSave
             // 
             this.chkLoadLatestSave.AutoSize = true;
@@ -461,6 +488,7 @@
             this.chkLoadLatestSave.Name = "chkLoadLatestSave";
             this.chkLoadLatestSave.Size = new System.Drawing.Size(110, 17);
             this.chkLoadLatestSave.TabIndex = 25;
+            this.chkLoadLatestSave.TabStop = false;
             this.chkLoadLatestSave.Text = "Load Latest Save";
             this.chkLoadLatestSave.UseVisualStyleBackColor = true;
             // 
@@ -482,6 +510,7 @@
             this.chkScreenFilter.Name = "chkScreenFilter";
             this.chkScreenFilter.Size = new System.Drawing.Size(85, 17);
             this.chkScreenFilter.TabIndex = 23;
+            this.chkScreenFilter.TabStop = false;
             this.chkScreenFilter.Text = "Screen Filter";
             this.chkScreenFilter.UseVisualStyleBackColor = true;
             this.chkScreenFilter.CheckedChanged += new System.EventHandler(this.chkScreenFilter_CheckedChanged);
@@ -525,14 +554,6 @@
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tblFiles.Size = new System.Drawing.Size(230, 394);
             this.tblFiles.TabIndex = 0;
-            // 
-            // ctrlFiles
-            // 
-            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
-            this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(224, 324);
-            this.ctrlFiles.TabIndex = 20;
             // 
             // panel1
             // 
@@ -659,6 +680,7 @@
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(82, 23);
             this.btnSaveSettings.TabIndex = 6;
+            this.btnSaveSettings.TabStop = false;
             this.btnSaveSettings.Text = "Save Settings";
             this.btnSaveSettings.UseVisualStyleBackColor = true;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
@@ -675,16 +697,13 @@
             this.flpButtons.Size = new System.Drawing.Size(200, 32);
             this.flpButtons.TabIndex = 5;
             // 
-            // lnkLoadSaveMore
+            // ctrlFiles
             // 
-            this.lnkLoadSaveMore.AutoSize = true;
-            this.lnkLoadSaveMore.Location = new System.Drawing.Point(171, 44);
-            this.lnkLoadSaveMore.Name = "lnkLoadSaveMore";
-            this.lnkLoadSaveMore.Size = new System.Drawing.Size(61, 13);
-            this.lnkLoadSaveMore.TabIndex = 26;
-            this.lnkLoadSaveMore.TabStop = true;
-            this.lnkLoadSaveMore.Text = "More Info...";
-            this.lnkLoadSaveMore.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkLoadSaveMore_LinkClicked);
+            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
+            this.ctrlFiles.Name = "ctrlFiles";
+            this.ctrlFiles.Size = new System.Drawing.Size(224, 324);
+            this.ctrlFiles.TabIndex = 20;
             // 
             // PlayForm
             // 
