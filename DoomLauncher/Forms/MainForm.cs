@@ -2169,11 +2169,13 @@ namespace DoomLauncher
                 gameFile = DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
 
                 tabControl.SelectedTab = tabControl.TabPages[1];
-                ITabView tabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Title == TabKeys.LocalKey);
-                tabView.GameFileViewControl.SelectedItem = gameFile;
-
-                if (gameFile != null)
-                    HandlePlay(new IGameFile[] { gameFile });
+                ITabView tabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(TabKeys.LocalKey));
+                if (tabView != null)
+                {
+                    tabView.GameFileViewControl.SelectedItem = gameFile;
+                    if (gameFile != null)
+                        HandlePlay(new IGameFile[] { gameFile });
+                }
             }
             else
             {
