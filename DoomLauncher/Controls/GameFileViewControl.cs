@@ -45,14 +45,9 @@ namespace DoomLauncher
             view.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
 
             if (SystemInformation.HighContrast)
-            {
                 view.AlternatingRowsDefaultCellStyle.BackColor = view.DefaultCellStyle.BackColor;
-            }
             else
-            {
-                Color color = view.DefaultCellStyle.BackColor;
-                view.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(color.R - 32, color.G - 32, color.B - 32);
-            }
+                view.AlternatingRowsDefaultCellStyle.BackColor = SystemColors.ControlLightLight;
 
             view.DefaultCellStyle.NullValue = "N/A";
             view.RowHeadersVisible = false;
