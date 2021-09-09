@@ -108,7 +108,7 @@ namespace DoomLauncher
 
             SizeF maxLabelSize = new SizeF(pnlData.ClientRectangle.Width - xPos + dpiScale.ScaleIntX(8), 16);
 
-            e.Graphics.DrawString(GameFile.FileNameNoPath, DisplayFont, Brushes.Black, xPos, yPos);
+            e.Graphics.DrawString(GameFile.FileNameNoPath, DisplayFont, TextBrush, xPos, yPos);
             yPos += offset;
             e.Graphics.DrawString(Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Title, maxLabelSize), DisplayFont, TextBrush, xPos, yPos);
             yPos += offset;
