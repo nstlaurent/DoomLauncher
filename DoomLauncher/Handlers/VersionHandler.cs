@@ -699,6 +699,58 @@ namespace DoomLauncher
 
                 DataAccess.ExecuteNonQuery(query);
             }
+
+            string urls = "Germany;https://www.quaddicted.com/files/idgames/;Idaho;ftp://mirrors.syringanetworks.net/idgames/;New York;https://youfailit.net/pub/idgames/;Sweden;https://ftpmirror1.infania.net/pub/idgames/;Virginia;http://www.gamers.org/pub/idgames/;";
+            UpdateMirrorUrls(urls, "New York");
+        }
+
+        private void UpdateMirrorUrls(string urls, string defaultUrl)
+        { 
+            var configuration = m_adapter.GetConfiguration().FirstOrDefault(x => x.Name.Equals("MirrorUrl"));
+            if (configuration == null)
+                return;
+
+            var newUrls = GetConfigItems(urls);
+            var oldUrls = GetConfigItems(configuration.AvailableValues);
+
+            if (!GetConfigKey(configuration.Value, oldUrls, out string urlKey) || !newUrls.Any(x => x.Item1.Equals(urlKey)))
+                urlKey = defaultUrl;
+
+            if (GetConfigValue(urlKey, newUrls, out string value))
+                configuration.Value = value;
+            configuration.AvailableValues = urls;
+            m_adapter.UpdateConfiguration(configuration);
+        }
+
+        private static List<Tuple<string,string>> GetConfigItems(string text)
+        {    
+            List<Tuple<string, string>> configItems = new List<Tuple<string, string>>();
+            var items = text.Split(new char[] { ';' });
+
+            for (int i = 0; i < items.Length - 1; i+=2)
+                configItems.Add(new Tuple<string, string>(items[i], items[i + 1]));
+
+            return configItems;
+        }
+
+        private static bool GetConfigKey(string data, List<Tuple<string, string>> items, out string key)
+        {
+            key = string.Empty;
+            var item = items.FirstOrDefault(x => x.Item2.Equals(data));
+            if (item == null)
+                return false;
+            key = item.Item1;
+            return true;
+        }
+
+        private static bool GetConfigValue(string data, List<Tuple<string, string>> items, out string value)
+        {
+            value = string.Empty;
+            var item = items.FirstOrDefault(x => x.Item1.Equals(data));
+            if (item == null)
+                return false;
+            value = item.Item2;
+            return true;
         }
 
         private static T GetDictionaryData<T>(int? id, Dictionary<int, T> values)
