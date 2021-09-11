@@ -42,17 +42,12 @@ namespace DoomLauncher
         {
             view.RowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
             view.AlternatingRowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
+            view.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
 
             if (SystemInformation.HighContrast)
-            {
                 view.AlternatingRowsDefaultCellStyle.BackColor = view.DefaultCellStyle.BackColor;
-                view.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
-            }
             else
-            {
-                view.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(224, 224, 224);
-                view.DefaultCellStyle.SelectionBackColor = Color.Gray;
-            }
+                view.AlternatingRowsDefaultCellStyle.BackColor = SystemColors.ControlLight;
 
             view.DefaultCellStyle.NullValue = "N/A";
             view.RowHeadersVisible = false;

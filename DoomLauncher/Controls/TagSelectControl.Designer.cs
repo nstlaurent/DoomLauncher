@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.dgvTags = new System.Windows.Forms.DataGridView();
             this.tblTop = new System.Windows.Forms.TableLayoutPanel();
@@ -35,10 +36,13 @@
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnPin = new System.Windows.Forms.Button();
+            this.menu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.manageTagsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tblMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTags)).BeginInit();
             this.tblTop.SuspendLayout();
             this.flpSearch.SuspendLayout();
+            this.menu.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblMain
@@ -136,6 +140,20 @@
             this.btnPin.UseVisualStyleBackColor = true;
             this.btnPin.Click += new System.EventHandler(this.btnPin_Click);
             // 
+            // menu
+            // 
+            this.menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.manageTagsToolStripMenuItem});
+            this.menu.Name = "contextMenuStrip1";
+            this.menu.Size = new System.Drawing.Size(181, 48);
+            // 
+            // manageTagsToolStripMenuItem
+            // 
+            this.manageTagsToolStripMenuItem.Name = "manageTagsToolStripMenuItem";
+            this.manageTagsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.manageTagsToolStripMenuItem.Text = "Manage Tags...";
+            this.manageTagsToolStripMenuItem.Click += new System.EventHandler(this.manageTagsToolStripMenuItem_Click);
+            // 
             // TagSelectControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -148,6 +166,7 @@
             this.tblTop.ResumeLayout(false);
             this.flpSearch.ResumeLayout(false);
             this.flpSearch.PerformLayout();
+            this.menu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -161,5 +180,7 @@
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.TableLayoutPanel tblTop;
         private System.Windows.Forms.Button btnPin;
+        private System.Windows.Forms.ContextMenuStrip menu;
+        private System.Windows.Forms.ToolStripMenuItem manageTagsToolStripMenuItem;
     }
 }

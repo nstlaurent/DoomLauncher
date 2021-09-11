@@ -115,6 +115,7 @@
       <DependentUpon>UpdateControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Config\DataCache.cs" />
+    <Compile Include="DataSources\CleanupFile.cs" />
     <Compile Include="DataSources\GameProfile.cs" />
     <Compile Include="Config\FileManagement.cs" />
     <Compile Include="Controls\FlowLayoutPanelDB.cs">
@@ -184,6 +185,7 @@
       <DependentUpon>TagSelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DataSources\StaticTagData.cs" />
+    <Compile Include="SourcePort\DsdaDoomSourcePort.cs" />
     <Compile Include="SourcePort\EternitySourcePort.cs" />
     <Compile Include="SourcePort\WoofSourcePort.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />

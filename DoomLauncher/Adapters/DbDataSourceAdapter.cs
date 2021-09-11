@@ -694,6 +694,22 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(string.Format("delete from GameProfiles where GameProfileID = {0}", gameProfileID));
         }
 
+        public IEnumerable<CleanupFile> GetCleanupFiles()
+        {
+            return Util.TableToStructure(DataAccess.ExecuteSelect("select * from CleanupFiles").Tables[0], typeof(CleanupFile)).Cast<CleanupFile>();
+        }
+
+        public void InsertCleanupFile(CleanupFile file)
+        {
+            string insert = InsertStatement("CleanupFiles", file, new string[] { "CleanupFileID" }, out List<DbParameter> parameters);
+            DataAccess.ExecuteNonQuery(insert, parameters);
+        }
+
+        public void DeleteCleanupFile(CleanupFile file)
+        {
+            DataAccess.ExecuteNonQuery(string.Format("delete from CleanupFiles where CleanupFileID = {0}", file.CleanupFileID));
+        }
+
         private string InsertStatement(string tableName, object obj, out List<DbParameter> parameters)
         {
             return InsertStatement(tableName, obj, new string[] { }, out parameters);

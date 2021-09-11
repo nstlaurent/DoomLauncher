@@ -431,6 +431,8 @@ namespace DoomLauncher
             DataCache.Instance.TagMapLookup.TagMappingChanged += TagMapLookup_TagMappingChanged;
             DataCache.Instance.TagsChanged += DataCache_TagsChanged;
 
+            CleanUpFiles();
+
             SetupTabs();
             RebuildUtilityToolStrip();
             BuildUtilityToolStrip();
@@ -442,7 +444,23 @@ namespace DoomLauncher
             ctrlAssociationView.FileDeleted += ctrlAssociationView_FileDeleted;
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
+        }
 
+        private void CleanUpFiles()
+        {
+            var cleanupFiles = DataSourceAdapter.GetCleanupFiles();
+            foreach (var cleanupFile in cleanupFiles)
+            {
+                try
+                {
+                    File.Delete(cleanupFile.FileName);
+                    DataSourceAdapter.DeleteCleanupFile(cleanupFile);
+                }
+                catch
+                {
+                    // Try again next time...
+                }
+            }
         }
 
         private void InitDownloadView()
@@ -458,11 +476,18 @@ namespace DoomLauncher
             m_tagSelectControl.TagSelectionChanged += TagSelectCtrl_TagSelectionChanged;
             m_tagSelectControl.StaticSelectionChanged += TagSelectCtrl_StaticSelectionChanged;
             m_tagSelectControl.PinChanged += TagSelectControl_PinChanged;
-            m_tagSelectControl.Init(new TagSelectOptions() { HasTabOnly = true, ShowStatic = true, AllowRowSelect = true, ShowPin = true });
+            m_tagSelectControl.ManageTags += TagSelectControl_ManageTags;
+            m_tagSelectControl.Init(new TagSelectOptions() { HasTabOnly = true, ShowStatic = true, AllowRowSelect = true, 
+                ShowPin = true, ShowMenu = true });
             m_tagSelectControl.SetPinned(AppConfiguration.TagSelectPinned);
 
             if (AppConfiguration.TagSelectPinned)
                 SetTagControlPinned();
+        }
+
+        private void TagSelectControl_ManageTags(object sender, EventArgs e)
+        {
+            HandleManageTags();
         }
 
         private void TagSelectControl_PinChanged(object sender, EventArgs e)

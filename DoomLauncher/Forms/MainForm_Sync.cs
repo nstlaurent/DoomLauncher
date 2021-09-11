@@ -34,6 +34,9 @@ namespace DoomLauncher
             {
                 UpdateLocal();
                 HandleTabSelectionChange();
+
+                foreach (IGameFile updateGameFile in handler.UpdatedGameFiles)
+                    UpdateDataSourceViews(updateGameFile);
             }
 
             if (handler != null &&

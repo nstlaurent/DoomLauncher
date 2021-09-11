@@ -30,6 +30,8 @@ namespace DoomLauncher
         private readonly IDataSourceAdapter m_adapter;
         private ScreenFilter m_filterSettings;
 
+        private readonly Control[] m_tabControls;
+
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
             InitializeComponent();
@@ -37,6 +39,7 @@ namespace DoomLauncher
             ctrlFiles.CellFormatting += ctrlFiles_CellFormatting;
             ctrlFiles.NewItemNeeded += ctrlFiles_NewItemNeeded;
             ctrlFiles.ItemRemoving += CtrlFiles_ItemRemoving;
+            Load += PlayForm_Load;
 
             lnkCustomParameters.Visible = false;
 
@@ -50,6 +53,60 @@ namespace DoomLauncher
             deleteProfileToolStripMenuItem.Image = Icons.Delete;
             editProfileToolStripMenuItem.Image = Icons.Edit;
             toolStripDropDownButton1.Image = Icons.Bars;
+
+            m_tabControls = new Control[]
+            {
+                cmbProfiles,
+                cmbSourcePorts,
+                cmbIwad,
+                chkMap,
+                cmbMap,
+                cmbSkill,
+                chkDemo,
+                cmbDemo,
+                chkRecord,
+                txtDescription,
+                txtParameters,
+                chkSaveStats,
+                chkLoadLatestSave,
+                chkScreenFilter,
+                chkPreview,
+                chkRemember,
+                btnSaveSettings,
+                ctrlFiles,
+                lnkSpecific,
+                lnkCustomParameters,
+                btnOK,
+                btnCancel
+            };
+
+            InitTabIndicies();
+        }
+
+        private void InitTabIndicies()
+        {
+            foreach (var control in this.GetChildElements<Control>())
+                control.TabStop = false;
+
+            // Another user had an issue with tab indicies starting 0
+            // Starting at 100 mostly fixes it... ugh
+            // This still isn't 100% but it's way better than it was
+            // The built in functionality for this is very screwed up, about ready to entirely write a custom one
+            int index = 100;
+            foreach (var control in m_tabControls)
+            {
+                control.TabStop = true;
+                control.TabIndex = index++;
+            }
+        }
+
+        private void PlayForm_Load(object sender, EventArgs e)
+        {
+            if (m_tabControls.Length > 0)
+            {
+                ActiveControl = m_tabControls[0];
+                m_tabControls[0].Focus();
+            }
         }
 
         public void Initialize(IEnumerable<ITabView> additionalFileViews, IGameFile gameFile)

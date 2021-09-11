@@ -99,6 +99,17 @@ namespace DoomLauncher
             }
         }
 
+        public void HandleDeleteSaveGames(string[] deletedFiles, IFileData[] previousFiles)
+        {
+            foreach (var file in deletedFiles)
+            {
+                FileInfo fi = new FileInfo(file);
+                IFileData saveFile = previousFiles.FirstOrDefault(x => x.OriginalFileName == fi.Name);
+                if (saveFile != null)
+                    DataSourceAdapter.DeleteFile(saveFile);
+            }
+        }
+
         public void CopySaveGamesToSourcePort(ISourcePortData sourcePort, IFileData[] files)
         {
             foreach (IFileData file in files)

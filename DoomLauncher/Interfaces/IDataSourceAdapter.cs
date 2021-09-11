@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DoomLauncher.DataSources;
+using System.Collections.Generic;
 
 namespace DoomLauncher.Interfaces
 {
@@ -26,6 +27,10 @@ namespace DoomLauncher.Interfaces
 
         IEnumerable<IGameFile> GetGameFiles(ITagData tag);
         IEnumerable<IGameFile> GetGameFiles(IGameFileGetOptions options, ITagData tag);
+
+        IEnumerable<CleanupFile> GetCleanupFiles();
+        void InsertCleanupFile(CleanupFile file);
+        void DeleteCleanupFile(CleanupFile file);
 
         //IEnumerable<ICustomParamDataSource> GetCustomParameters(int gameFileID);
         //void InsertCustomParameter(ICustomParamDataSource data);

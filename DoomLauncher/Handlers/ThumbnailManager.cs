@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,8 +27,16 @@ namespace DoomLauncher
             if (delete)
             {
                 string file = Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName);
-                if (File.Exists(file))
-                    File.Delete(file);
+                try
+                {
+                    if (File.Exists(file))
+                        File.Delete(file);
+                }
+                catch (IOException)
+                {
+                    // File is in use, insert to delete on next startup
+                    DataCache.Instance.DataSourceAdapter.InsertCleanupFile(new CleanupFile() { FileName = file });
+                }
 
                 DataCache.Instance.DataSourceAdapter.DeleteFile(thumbnail);
             }

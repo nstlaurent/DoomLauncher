@@ -5,5 +5,6 @@
         void StartDetection();
         string[] GetNewFiles();
         string[] GetModifiedFiles();
+        string[] GetDeletedFiles();
     }
 }

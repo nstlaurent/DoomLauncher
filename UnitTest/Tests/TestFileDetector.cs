@@ -38,6 +38,11 @@ namespace UnitTest.Tests
             File.WriteAllText(Path.Combine(s_testFileDir, filename), "test");
         }
 
+        private static void DeleteTestFile(string filename)
+        {
+            File.Delete(Path.Combine(s_testFileDir, filename));
+        }
+
         private static bool ContainsFile(string[] filenames, string filename)
         {
             return filenames.Any(x => Path.GetFileName(x) == filename);
@@ -106,6 +111,24 @@ namespace UnitTest.Tests
             Assert.AreEqual(2, m_detector.GetModifiedFiles().Length);
             Assert.IsTrue(ContainsFile(m_detector.GetModifiedFiles(), "test1.dsg"));
             Assert.IsTrue(ContainsFile(m_detector.GetNewFiles(), "test2.zds"));
+        }
+
+        [TestMethod]
+        public void TestDelete()
+        {
+            CreateTestFile("test1.zds");
+            CreateTestFile("test1.dsg");
+
+            m_detector.StartDetection();
+            Assert.AreEqual(0, m_detector.GetNewFiles().Length);
+
+            DeleteTestFile("test1.zds");
+            Assert.AreEqual(1, m_detector.GetDeletedFiles().Length);
+            Assert.IsTrue(ContainsFile(m_detector.GetDeletedFiles(), "test1.zds"));
+
+            DeleteTestFile("test1.dsg");
+            Assert.AreEqual(2, m_detector.GetDeletedFiles().Length);
+            Assert.IsTrue(ContainsFile(m_detector.GetDeletedFiles(), "test1.dsg"));
         }
     }
 }

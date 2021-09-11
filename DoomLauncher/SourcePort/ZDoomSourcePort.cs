@@ -21,7 +21,7 @@ namespace DoomLauncher.SourcePort
 
         public override string LoadSaveParameter(SpData data)
         {
-            return $"-loadgame {data.Value}";
+            return $"-loadgame \"{data.Value}\"";
         }
 
         public override bool StatisticsSupported()

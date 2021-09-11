@@ -11,6 +11,8 @@ namespace DoomLauncher.Forms
             InitializeComponent();
             lstDirectories.HeaderStyle = ColumnHeaderStyle.None;
             lstDirectories.Columns[0].Width = lstDirectories.Width;
+            btnAdd.Image = Icons.File;
+            btnDelete.Image = Icons.Delete;
         }
 
         public void SetDirectories(string[] directories)

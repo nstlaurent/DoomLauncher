@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_01F85AACD2436237C191511D0316D991"
-        "OwnerKey" = "8:_FECC9E8503254BEAAAEB23AD08285AF7"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_052D30EE65FE8B35A075FC4BA0D0ED82"
         "OwnerKey" = "8:_FECC9E8503254BEAAAEB23AD08285AF7"
         "MsmSig" = "8:_UNDEFINED"
@@ -28,6 +22,12 @@
         "Entry"
         {
         "MsmKey" = "8:_0FB3199A196BA23A52D3C92233C963C4"
+        "OwnerKey" = "8:_FECC9E8503254BEAAAEB23AD08285AF7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_230B433F76350298D8F4760F9FEAC1B6"
         "OwnerKey" = "8:_FECC9E8503254BEAAAEB23AD08285AF7"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -41,12 +41,6 @@
         {
         "MsmKey" = "8:_479240C90A1AB95CCDB99654C1DB312A"
         "OwnerKey" = "8:_0FB3199A196BA23A52D3C92233C963C4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_57F0CEBAB42B494BACBB5E5969DDD470"
-        "OwnerKey" = "8:_FECC9E8503254BEAAAEB23AD08285AF7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -69,19 +63,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_73665D759F69430F8F184B206EDF4C2C"
-        "OwnerKey" = "8:_FECC9E8503254BEAAAEB23AD08285AF7"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_96F6698AADF846BC8304AE597FD426CE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_BB74F915C0E4F1E9E221B6EE7AD3F897"
+        "OwnerKey" = "8:_FECC9E8503254BEAAAEB23AD08285AF7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D22D2FD5D35AC248A87C8B8C3CB28B39"
+        "OwnerKey" = "8:_FECC9E8503254BEAAAEB23AD08285AF7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D2371DAE49B05878EA05A5394216C8AA"
         "OwnerKey" = "8:_FECC9E8503254BEAAAEB23AD08285AF7"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -124,7 +124,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_57F0CEBAB42B494BACBB5E5969DDD470"
+        "OwnerKey" = "8:_BB74F915C0E4F1E9E221B6EE7AD3F897"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -148,13 +148,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_01F85AACD2436237C191511D0316D991"
+        "OwnerKey" = "8:_D2371DAE49B05878EA05A5394216C8AA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_73665D759F69430F8F184B206EDF4C2C"
+        "OwnerKey" = "8:_230B433F76350298D8F4760F9FEAC1B6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -270,37 +270,6 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_01F85AACD2436237C191511D0316D991"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CheckBoxComboBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_01F85AACD2436237C191511D0316D991"
-                    {
-                    "Name" = "8:CheckBoxComboBox.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:CheckBoxComboBox.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_FBFCC08B40C94547A700104B2C2BD264"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_052D30EE65FE8B35A075FC4BA0D0ED82"
             {
             "AssemblyRegister" = "3:1"
@@ -363,20 +332,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_479240C90A1AB95CCDB99654C1DB312A"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_230B433F76350298D8F4760F9FEAC1B6"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+            "AssemblyAsmDisplayName" = "8:Equin.ApplicationFramework.BindingListView, Version=1.4.7653.12856, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_479240C90A1AB95CCDB99654C1DB312A"
+                    "_230B433F76350298D8F4760F9FEAC1B6"
                     {
-                    "Name" = "8:System.Net.Http.dll"
+                    "Name" = "8:Equin.ApplicationFramework.BindingListView.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:System.Net.Http.dll"
+            "SourcePath" = "8:Equin.ApplicationFramework.BindingListView.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FBFCC08B40C94547A700104B2C2BD264"
@@ -394,20 +363,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_57F0CEBAB42B494BACBB5E5969DDD470"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_479240C90A1AB95CCDB99654C1DB312A"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:WadReader, Version=3.2.1.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_57F0CEBAB42B494BACBB5E5969DDD470"
+                    "_479240C90A1AB95CCDB99654C1DB312A"
                     {
-                    "Name" = "8:WadReader.dll"
+                    "Name" = "8:System.Net.Http.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:WadReader.dll"
+            "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FBFCC08B40C94547A700104B2C2BD264"
@@ -496,37 +465,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_73665D759F69430F8F184B206EDF4C2C"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Equin.ApplicationFramework.BindingListView, Version=1.4.7653.10743, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_73665D759F69430F8F184B206EDF4C2C"
-                    {
-                    "Name" = "8:Equin.ApplicationFramework.BindingListView.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Equin.ApplicationFramework.BindingListView.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_FBFCC08B40C94547A700104B2C2BD264"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_96F6698AADF846BC8304AE597FD426CE"
             {
             "SourcePath" = "8:..\\DoomLauncher\\TileImages\\DoomLauncherTileSmall.png"
@@ -547,6 +485,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BB74F915C0E4F1E9E221B6EE7AD3F897"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:WadReader, Version=3.3.1.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_BB74F915C0E4F1E9E221B6EE7AD3F897"
+                    {
+                    "Name" = "8:WadReader.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:WadReader.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_FBFCC08B40C94547A700104B2C2BD264"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D22D2FD5D35AC248A87C8B8C3CB28B39"
             {
             "AssemblyRegister" = "3:1"
@@ -561,6 +530,37 @@
                     }
                 }
             "SourcePath" = "8:System.IO.Compression.FileSystem.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_FBFCC08B40C94547A700104B2C2BD264"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D2371DAE49B05878EA05A5394216C8AA"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CheckBoxComboBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_D2371DAE49B05878EA05A5394216C8AA"
+                    {
+                    "Name" = "8:CheckBoxComboBox.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:CheckBoxComboBox.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FBFCC08B40C94547A700104B2C2BD264"
@@ -738,15 +738,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Doom Launcher"
-        "ProductCode" = "8:{E2CF8D8B-85C7-4FE5-8611-D53D86FBA6F3}"
-        "PackageCode" = "8:{E20A1772-0AFC-4775-8B35-2218AE557AB5}"
+        "ProductCode" = "8:{2BF963A6-03D1-4997-9E0D-5DEDD0AF4CB7}"
+        "PackageCode" = "8:{ABA3DFE8-B084-4ED7-83EC-92FCBE81DEBE}"
         "UpgradeCode" = "8:{CAFDF197-4B50-4AFE-BCFE-0432710657F1}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.3.0"
+        "ProductVersion" = "8:3.3.2"
         "Manufacturer" = "8:Doom Launcher"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/nstlaurent/DoomLauncher"
