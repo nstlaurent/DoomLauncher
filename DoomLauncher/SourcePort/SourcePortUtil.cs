@@ -18,6 +18,7 @@ namespace DoomLauncher.SourcePort
                 new WoofSourcePort(sourcePortData),
                 new EternitySourcePort(sourcePortData),
                 new DsdaDoomSourcePort(sourcePortData),
+                new FdwlSourcePort(sourcePortData),
                 new GenericSourcePort(sourcePortData)
             };
 
