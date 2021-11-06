@@ -138,7 +138,7 @@ namespace DoomLauncher
             m_new = gameFile.Downloaded.HasValue && (DateTime.Now - gameFile.Downloaded.Value).TotalHours < 24;
 
             var colorTag = tags.FirstOrDefault(x => x.HasColor);
-            if (colorTag != null)
+            if (colorTag != null && colorTag.Color != null)
                 m_titleColor = Color.FromArgb(colorTag.Color.Value);
             else
                 m_titleColor = SystemColors.WindowText;
