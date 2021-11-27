@@ -41,7 +41,7 @@ namespace DoomLauncher
             int labelHeight = dpiScale.ScaleIntY(LabelHeight);
 
             Width = imageWidth;
-            Height = imageHeight + labelHeight;
+            Height = GetStandardHeight(dpiScale);
 
             pb.Width = Width;
             pb.Height = Height - labelHeight;
@@ -60,6 +60,11 @@ namespace DoomLauncher
             Paint += GameFileTile_Paint;
         }
 
+        public int GetStandardHeight(DpiScale dpiScale)
+        {
+            return dpiScale.ScaleIntY(ImageHeight) + dpiScale.ScaleIntY(LabelHeight);
+        }
+
         private void Pb_LoadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             m_loadingImage = false;
@@ -76,7 +81,7 @@ namespace DoomLauncher
                 return;
 
             DpiScale dpiScale = new DpiScale(e.Graphics);
-            int labelHeight = dpiScale.ScaleIntX(LabelHeight);
+            int labelHeight = dpiScale.ScaleIntY(LabelHeight);
             int pad = dpiScale.ScaleIntX(1);
 
             SizeF layout = new SizeF(Width, 16);
