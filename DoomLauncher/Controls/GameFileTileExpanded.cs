@@ -36,6 +36,8 @@ namespace DoomLauncher
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             gameTile.Width = dpiScale.ScaleIntX(GameFileTile.ImageWidth);
 
+            // Something in the designer is messing up the height, forcing it here
+            gameTile.Height = gameTile.GetStandardHeight(dpiScale);
             Height = gameTile.Height + dpiScale.ScaleIntX(2);
             int pad = dpiScale.ScaleIntX(1);
             gameTile.DrawBorder = false;
