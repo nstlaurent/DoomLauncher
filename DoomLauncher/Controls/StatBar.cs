@@ -7,6 +7,9 @@ namespace DoomLauncher
 {
     class StatBar : UserControl
     {
+        private static readonly Font DisplayFont = new Font(FontFamily.GenericSerif, 10.0f, FontStyle.Bold);
+        private static readonly Brush FontBrush = new SolidBrush(Color.Black);
+
         private int m_count, m_total, m_maxHeight;
         private string m_text;
 
@@ -47,8 +50,8 @@ namespace DoomLauncher
             int offsetX = dpiScale.ScaleIntX(1);
             int offsetY = dpiScale.ScaleIntY(1);
 
-            int height = Height - offsetX;
-            int width = Width - offsetY;
+            int height = Height - offsetY;
+            int width = Width - offsetX;
             Pen pen = new Pen(Color.Black, 1.0f);
             Rectangle rect = new Rectangle(pt, new Size(width, height));
 
@@ -76,9 +79,10 @@ namespace DoomLauncher
                 g.DrawRectangle(GetPrecentPen(percent, total), new Rectangle(pt, new Size(percentRect.Width + offsetX, percentRect.Height + offsetY)));
             }
 
-            Brush fontBrush = new SolidBrush(Color.Black);
-            PointF position = new PointF(pt.X + dpiScale.ScaleIntX(8), pt.Y + dpiScale.ScaleFloatY(2.5f));
-            g.DrawString(text, new Font(FontFamily.GenericSerif, 10.0f, FontStyle.Bold), fontBrush, position);
+            SizeF size = g.MeasureDisplayString(text, DisplayFont);
+            var offset = (height - size.Height) / 2;
+            PointF position = new PointF(pt.X + dpiScale.ScaleIntX(8), pt.Y + offset + dpiScale.ScaleFloatY(2.5f));
+            g.DrawString(text, DisplayFont, FontBrush, position);
         }
 
         private static Brush GetPercentBrush(Rectangle rect, double percent, int total)
