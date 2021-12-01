@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.452
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoomLauncher", "DoomLauncher\DoomLauncher.csproj", "{938B529A-9AFD-4AE0-9F0F-5CB9527AD2F1}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -11,8 +11,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckBoxComboBox", "CheckBoxComboBox\CheckBoxComboBox.csproj", "{70A25201-8EA4-48F8-A4A6-ED13ADF8823C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WadReader", "WadReader\WadReader.csproj", "{15A9A8FC-096E-4458-AB7F-02386740CF4E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoomLauncherRelease", "DoomLauncherRelease\DoomLauncherRelease.csproj", "{52357DD1-59A8-4412-98CA-6601D84B66B4}"
 EndProject
@@ -60,18 +58,6 @@ Global
 		{15A9A8FC-096E-4458-AB7F-02386740CF4E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{15A9A8FC-096E-4458-AB7F-02386740CF4E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{15A9A8FC-096E-4458-AB7F-02386740CF4E}.Release|x86.ActiveCfg = Release|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Debug|x86.Build.0 = Debug|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Release|x86.ActiveCfg = Release|Any CPU
-		{2E593D49-B240-49BE-9E9D-5DD1250EEDF3}.Release|x86.Build.0 = Release|Any CPU
 		{52357DD1-59A8-4412-98CA-6601D84B66B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{52357DD1-59A8-4412-98CA-6601D84B66B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52357DD1-59A8-4412-98CA-6601D84B66B4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
