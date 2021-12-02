@@ -14,7 +14,7 @@ build_script:
 - msbuild DoomLauncher.sln /target:UnitTest /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test:
-    off
+    on
 
 after_build:
 - '%APPVEYOR_BUILD_FOLDER%\DoomLauncherRelease\bin\Release\DoomLauncherRelease.exe %APPVEYOR_BUILD_FOLDER%'

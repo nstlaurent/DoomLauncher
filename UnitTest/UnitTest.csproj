@@ -153,6 +153,13 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist $(TargetDir)x86 mkdir $(TargetDir)x86
+xcopy /y /d  "$(SolutionDir)DoomLauncher\bin\$(Configuration)\x86\*.*" "$(TargetDir)x86"
+
+if not exist $(TargetDir)x64 mkdir $(TargetDir)x64
+xcopy /y /d  "$(SolutionDir)DoomLauncher\bin\$(Configuration)\x64\*.*" "$(TargetDir)x64"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
