@@ -169,6 +169,41 @@ Player 1 (Green):
             Assert.AreEqual(399.0f, m_args[0].Statistics.LevelTime);
         }
 
+        [TestMethod]
+        public void TestChocolateDoomStatNegative()
+        {
+            string file = @"===========================================
+MAP11
+===========================================
+
+Time: 88:18 (par: 0:00)
+
+Player 1 (Green):
+	Kills: 620 / 601 (-5%)
+	Items: 502 / 551 (-27%)
+	Secrets: 10 / 11 (90%)
+";
+
+            ChocolateDoomStatsReader statsReader = new ChocolateDoomStatsReader(new GameFile() { GameFileID = 1 }, "stats.txt");
+            statsReader.NewStastics += statsReader_NewStastics;
+
+            File.WriteAllText("stats.txt", file);
+            statsReader.ReadNow();
+
+            Assert.AreEqual(1, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
+
+            //Check that the kill count does not exceed total kills
+            Assert.AreEqual("MAP11", m_args[0].Statistics.MapName);
+            Assert.AreEqual(601, m_args[0].Statistics.KillCount);
+            Assert.AreEqual(601, m_args[0].Statistics.TotalKills); // Total kills are capped
+            Assert.AreEqual(502, m_args[0].Statistics.ItemCount);
+            Assert.AreEqual(551, m_args[0].Statistics.TotalItems);
+            Assert.AreEqual(10, m_args[0].Statistics.SecretCount);
+            Assert.AreEqual(11, m_args[0].Statistics.TotalSecrets);
+            Assert.AreEqual(5298.0f, m_args[0].Statistics.LevelTime);
+        }
+
         private void statsReader_NewStastics(object sender, DoomLauncher.NewStatisticsEventArgs e)
         {
             m_args.Add(e);
