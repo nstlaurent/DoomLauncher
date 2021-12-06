@@ -1,15 +1,13 @@
 version: '{build}'
 configuration: Release
 platform: Any CPU
-image: Visual Studio 2019
+image: Visual Studio 2022
 before_build:
 - cmd: nuget restore
 
 build_script:
 - ps: |
-    $env:DevenvPath = 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE'
-    if (test-path "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE") { $env:DevenvPath = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE" }
-    if (test-path "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE") { $env:DevenvPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE" }
+    $env:DevenvPath = 'C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE'
 - '"%DevenvPath%\devenv.com" DoomLauncher.sln /build Release /project Setup\Setup.vdproj /projectconfig Release /Out errorFile.txt'
 - msbuild DoomLauncher.sln /target:UnitTest /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
@@ -22,3 +20,4 @@ after_build:
 artifacts:
   path: ReleaseBuild/DoomLauncher*.zip
   name: BuiltZip
+  
