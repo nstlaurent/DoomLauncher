@@ -72,6 +72,9 @@ namespace DoomLauncherRelease
 
         private static void CopyBuildFiles(string outputdir)
         {
+            foreach (string dir in GetDirectoriesToCreate())
+                Directory.CreateDirectory(Path.Combine(outputdir, dir));
+
             var files = GetFilesToCopy();
             string buildDir = Path.Combine(GetDoomLauncherDir(), GetBuildBinOutputDir());
 
@@ -89,6 +92,9 @@ namespace DoomLauncherRelease
             Array.ForEach(imagefiles, x => File.Copy(x, Path.Combine(dest, Path.GetFileName(x))));
         }
 
+        static string[] GetDirectoriesToCreate() =>
+            new string[] { "x86", "x64" };
+
         static string[] GetFilesToCopy()
         {
             return new string[]
@@ -105,7 +111,9 @@ namespace DoomLauncherRelease
                 "System.Data.SQLite.dll",
                 "WadReader.dll",
                 "Octokit.dll",
-                "Octokit.xml"
+                "Octokit.xml",
+                "x64\\SQLite.Interop.dll",
+                "x86\\SQLite.Interop.dll"
             };
         }
 
