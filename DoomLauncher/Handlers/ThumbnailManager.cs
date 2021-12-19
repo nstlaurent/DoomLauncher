@@ -89,11 +89,15 @@ namespace DoomLauncher
             if (!File.Exists(file))
                 return null;
 
-            Image image = Image.FromFile(file);
-            Image thumb = Util.FixedSize(image, GameFileTile.ImageWidth, GameFileTile.ImageHeight, Color.Black);
-            string filename = Guid.NewGuid().ToString() + ".png";
-            thumb.Save(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);
-            return filename;
+            using (Image image = Image.FromFile(file))
+            {
+                using (Image thumb = Util.FixedSize(image, GameFileTile.ImageWidth, GameFileTile.ImageHeight, Color.Black))
+                {
+                    string filename = Guid.NewGuid().ToString() + ".png";
+                    thumb.Save(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);
+                    return filename;
+                }
+            }
         }
     }
 }
