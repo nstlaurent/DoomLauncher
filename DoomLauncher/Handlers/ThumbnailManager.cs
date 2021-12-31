@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace DoomLauncher
 {
@@ -60,24 +61,33 @@ namespace DoomLauncher
                 screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
 
             var screenshot = screenshots.FirstOrDefault(x => x.GameFileID == gameFile.GameFileID.Value);
-
-            if (screenshot != null)
+            try
             {
-                string thumbnailFile = CreateThumbnail(screenshot);
-                if (thumbnailFile == null)
-                    return null;
-
-                // Store the FileID of the screenshot in SourcePortID so we can use it to keep track of screenshot re-ordering / deletes
-                FileData fileData = new FileData()
+                if (screenshot != null)
                 {
-                    GameFileID = gameFile.GameFileID.Value,
-                    FileName = thumbnailFile,
-                    FileTypeID = FileType.Thumbnail,
-                    SourcePortID = screenshot.FileID.Value
-                };
+                    string thumbnailFile = CreateThumbnail(screenshot);
+                    if (thumbnailFile == null)
+                        return null;
 
-                DataCache.Instance.DataSourceAdapter.InsertFile(fileData);
-                return fileData;
+                    // Store the FileID of the screenshot in SourcePortID so we can use it to keep track of screenshot re-ordering / deletes
+                    FileData fileData = new FileData()
+                    {
+                        GameFileID = gameFile.GameFileID.Value,
+                        FileName = thumbnailFile,
+                        FileTypeID = FileType.Thumbnail,
+                        SourcePortID = screenshot.FileID.Value
+                    };
+
+                    DataCache.Instance.DataSourceAdapter.InsertFile(fileData);
+                    return fileData;
+                }
+            }
+            catch (Exception ex)
+            {
+                StringBuilder sb = new StringBuilder(Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), screenshot.FileName));
+                sb.AppendLine();
+                sb.AppendLine(ex.ToString());
+                File.WriteAllText("errorlog.txt", sb.ToString());
             }
 
             return null;
