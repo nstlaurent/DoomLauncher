@@ -2,7 +2,7 @@
 
 namespace DoomLauncher.SourcePort
 {
-    public class DsdaDoomSourcePort : ChocolateDoomSourcePort
+    public class DsdaDoomSourcePort : BoomSourcePort
     {
         public DsdaDoomSourcePort(ISourcePortData sourcePortData)
             : base(sourcePortData)
