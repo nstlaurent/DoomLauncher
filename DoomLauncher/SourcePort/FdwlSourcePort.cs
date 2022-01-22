@@ -2,9 +2,9 @@
 
 namespace DoomLauncher.SourcePort
 {
-    public class DsdaDoomSourcePort : BoomSourcePort
+    class FdwlSourcePort : BoomSourcePort
     {
-        public DsdaDoomSourcePort(ISourcePortData sourcePortData)
+        public FdwlSourcePort(ISourcePortData sourcePortData)
             : base(sourcePortData)
         {
 
@@ -12,7 +12,7 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            return CheckFileNameWithoutExtension("dsda-doom");
+            return CheckFileNameWithoutExtension("fdwl");
         }
     }
 }

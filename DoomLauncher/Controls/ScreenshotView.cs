@@ -144,18 +144,20 @@ namespace DoomLauncher
 
         private void InitPictureBoxes()
         {
-            foreach (var item in m_pictureBoxes)
+            lock (m_pictureBoxes)
             {
-                PictureBox pb = item.PictureBox;
-                if (flpScreenshots.Controls.Contains(pb))
-                    flpScreenshots.Controls.Remove(pb);
-                if (pb.Image != null)
-                    pb.Image.Dispose();
+                foreach (var item in m_pictureBoxes)
+                {
+                    PictureBox pb = item.PictureBox;
+                    if (flpScreenshots.Controls.Contains(pb))
+                        flpScreenshots.Controls.Remove(pb);
+                    if (pb.Image != null)
+                        pb.Image.Dispose();
+                }
+
+                m_pictureBoxes.Clear();
+                ExpandPictureBoxes(50);
             }
-
-            m_pictureBoxes.Clear();
-
-            ExpandPictureBoxes(50);
         }
 
         private void ExpandPictureBoxes(int count)
@@ -181,46 +183,49 @@ namespace DoomLauncher
             m_screenshots = screenshots.ToList();
             m_lookup.Clear();
 
-            if (m_screenshots.Count > m_pictureBoxes.Count)
-                ExpandPictureBoxes(m_screenshots.Count - m_pictureBoxes.Count);
-
-            List<PictureItem>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
-
-            foreach (IFileData screen in screenshots)
+            lock (m_pictureBoxes)
             {
-                enumerator.MoveNext();
-                if (enumerator.Current == null)
-                    break;
+                if (m_screenshots.Count > m_pictureBoxes.Count)
+                    ExpandPictureBoxes(m_screenshots.Count - m_pictureBoxes.Count);
 
-                PictureBox pbScreen = enumerator.Current.PictureBox;
-                enumerator.Current.Skip = true;
-                flpScreenshots.Controls.Add(pbScreen);
+                List<PictureItem>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
 
-                m_lookup.Add(pbScreen, screen);
-
-                try
+                foreach (IFileData screen in screenshots)
                 {
-                    if (screen.IsUrl)
-                    {
-                        pbScreen.CancelAsync();
-                        pbScreen.Image = null;
-                        pbScreen.LoadAsync(screen.FileName);
-                    }
-                    else
-                    {
-                        if (screen.Equals(enumerator.Current.CurrentFile))
-                            continue;
+                    enumerator.MoveNext();
+                    if (enumerator.Current == null)
+                        break;
 
-                        enumerator.Current.Skip = false;
-                        Image image = pbScreen.Image;
-                        pbScreen.Image = null;
-                        if (image != null)
-                            image.Dispose();
+                    PictureBox pbScreen = enumerator.Current.PictureBox;
+                    enumerator.Current.Skip = true;
+                    flpScreenshots.Controls.Add(pbScreen);
+
+                    m_lookup.Add(pbScreen, screen);
+
+                    try
+                    {
+                        if (screen.IsUrl)
+                        {
+                            pbScreen.CancelAsync();
+                            pbScreen.Image = null;
+                            pbScreen.LoadAsync(screen.FileName);
+                        }
+                        else
+                        {
+                            if (screen.Equals(enumerator.Current.CurrentFile))
+                                continue;
+
+                            enumerator.Current.Skip = false;
+                            Image image = pbScreen.Image;
+                            pbScreen.Image = null;
+                            if (image != null)
+                                image.Dispose();
+                        }
                     }
-                }
-                catch
-                {
-                    pbScreen.ImageLocation = string.Empty;
+                    catch
+                    {
+                        pbScreen.ImageLocation = string.Empty;
+                    }
                 }
             }
 
@@ -231,40 +236,43 @@ namespace DoomLauncher
 
         private void SetImages()
         {
-            List<PictureItem>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
-            foreach (var screen in m_screenshots)
+            lock (m_pictureBoxes)
             {
-                enumerator.MoveNext();
-                if (m_ct.IsCancellationRequested || enumerator.Current == null)
-                    break;
-                if (enumerator.Current.Skip)
-                    continue;
-
-                PictureBox pbScreen = enumerator.Current.PictureBox;
-                string file = Path.Combine(DataDirectory.GetFullPath(), screen.FileName);
-
-                try
+                List<PictureItem>.Enumerator enumerator = m_pictureBoxes.GetEnumerator();
+                foreach (var screen in m_screenshots)
                 {
-                    using (var image = Image.FromFile(file))
-                        pbScreen.Image = Util.FixedSize(image, pbScreen.Width, pbScreen.Height, Color.Black);
-                }
-                catch
-                {
-                    // Most likely file doesn't exist...
-                    // Can also be out of memory exception
+                    enumerator.MoveNext();
+                    if (m_ct.IsCancellationRequested || enumerator.Current == null)
+                        break;
+                    if (enumerator.Current.Skip)
+                        continue;
+
+                    PictureBox pbScreen = enumerator.Current.PictureBox;
+                    string file = Path.Combine(DataDirectory.GetFullPath(), screen.FileName);
+
+                    try
+                    {
+                        using (var image = Image.FromFile(file))
+                            pbScreen.Image = Util.FixedSize(image, pbScreen.Width, pbScreen.Height, Color.Black);
+                    }
+                    catch
+                    {
+                        // Most likely file doesn't exist...
+                        // Can also be out of memory exception
+                    }
+
+                    enumerator.Current.CurrentFile = screen;
                 }
 
-                enumerator.Current.CurrentFile = screen;
-            }
-
-            enumerator.MoveNext();
-            while (enumerator.Current != null)
-            {
-                enumerator.Current.CurrentFile = null;
                 enumerator.MoveNext();
-            }
+                while (enumerator.Current != null)
+                {
+                    enumerator.Current.CurrentFile = null;
+                    enumerator.MoveNext();
+                }
 
-            m_imageWorkerComplete = true;
+                m_imageWorkerComplete = true;
+            }
         }
 
         private PictureBox CreatePictureBox()

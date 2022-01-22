@@ -20,6 +20,7 @@ namespace DoomLauncher
             cmbColor.SelectedIndex = 1;
             cmbExclude.SelectedIndex = 1;
             cmbFavorite.SelectedIndex = 1;
+            m_color = Color.Black;
 
             Load += TagEdit_Load;
         }

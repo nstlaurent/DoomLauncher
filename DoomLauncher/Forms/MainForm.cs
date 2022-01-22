@@ -92,6 +92,7 @@ namespace DoomLauncher
         private async void HandleLoad()
         {
             bool success = false;
+            CleanOldLibraries();
 
             if (VerifyDatabase())
             {
@@ -123,6 +124,22 @@ namespace DoomLauncher
             InvokeHideSplashScreen();
 
             Task.Run(() => CheckForAppUpdate());
+        }
+
+        private void CleanOldLibraries()
+        {
+            // Need to remove the old sqlite interop, only if it wasn't done through the installer
+            // The installer doesn't really support x86/x64 folders so the x64 dll is dumped in the main for now
+            if (LauncherPath.IsInstalled())
+                return;
+
+            string[] libraries = new string[] { "SQLite.Interop.dll", "SQLite.Interop.dll.bak" };
+            foreach (string library in libraries)
+            {
+                if (!File.Exists(library))
+                    continue;
+                File.Delete(library);
+            }
         }
 
         private void InvokeHideSplashScreen()

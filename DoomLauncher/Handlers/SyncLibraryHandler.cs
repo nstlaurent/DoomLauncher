@@ -20,6 +20,7 @@ namespace DoomLauncher
         private readonly List<IGameFile> m_addedFiles = new List<IGameFile>();
         private readonly List<IGameFile> m_updatedFiles = new List<IGameFile>();
         private readonly List<InvalidFile> m_invalidFiles = new List<InvalidFile>();
+        private readonly HashSet<string> m_includeFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly FileManagement m_fileManagement;
 
         public SyncLibraryHandler(IGameFileDataSourceAdapter dbDataSource, IGameFileDataSourceAdapter syncDataSource,
@@ -40,6 +41,7 @@ namespace DoomLauncher
             m_addedFiles.Clear();
             m_updatedFiles.Clear();
             m_invalidFiles.Clear();
+            m_includeFiles.Clear();
 
             SyncFileCount = zipFiles.Length;
             SyncFileCurrent = 0;
@@ -190,10 +192,10 @@ namespace DoomLauncher
         {
             var txtEntries = GetEntriesByExtension(reader, ".txt").Where(x => x.Name.Equals("mapinfo.txt", StringComparison.InvariantCultureIgnoreCase));
             if (txtEntries.Any())
-                return MapStringFromMapInfo(txtEntries.First());
+                return MapStringFromMapInfo(reader, txtEntries.First());
 
             StringBuilder sb = new StringBuilder();
-            sb.Append(MapStringFromGameFile(reader));
+            AppendMapSet(sb, MapStringFromGameFile(reader));
 
             IEnumerable<IArchiveEntry> pk3Entries = Util.GetEntriesByExtension(reader, Util.GetReadablePkExtensions());
 
@@ -201,25 +203,63 @@ namespace DoomLauncher
             {
                 string extractedFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), entry);
                 using (var extractedZip = ArchiveReader.Create(extractedFile))
-                    sb.Append(GetMaps(extractedZip));
+                    AppendMapSet(sb, GetMaps(extractedZip));
             }
 
             return sb.ToString();
         }
 
-        private string MapStringFromMapInfo(IArchiveEntry entry)
+        private string MapStringFromMapInfo(IArchiveReader reader, IArchiveEntry entry)
         {
+            StringBuilder sb = new StringBuilder();
             string extractedFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), entry);
 
             if (File.Exists(extractedFile))
             {
                 string mapinfo = File.ReadAllText(extractedFile);
+                AppendMapSet(sb, ParseMapInfoInclude(reader, mapinfo));
                 if (entry.ExtractRequired)
                     File.Delete(extractedFile);
-                return GetMapStringFromMapInfo(mapinfo);
+                AppendMapSet(sb, GetMapStringFromMapInfo(mapinfo));
             }
 
-            return string.Empty;
+            return sb.ToString();
+        }
+
+        private string ParseMapInfoInclude(IArchiveReader reader, string mapinfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            Regex mapRegex = new Regex(@"\s*include\s+(\S+)");
+            MatchCollection matches = mapRegex.Matches(mapinfo);
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count < 2)
+                    continue;
+
+                string file = match.Groups[1].Value.Trim();
+                if (m_includeFiles.Contains(file))
+                    continue;
+
+                m_includeFiles.Add(file);
+
+                var entry = reader.Entries.FirstOrDefault(x => x.FullName.Equals(file, StringComparison.OrdinalIgnoreCase));
+                if (entry == null)
+                    continue;
+
+                AppendMapSet(sb, MapStringFromMapInfo(reader, entry));
+            }
+
+            return sb.ToString();
+        }
+
+        private static void AppendMapSet(StringBuilder sb, string maps)
+        {
+            if (string.IsNullOrWhiteSpace(maps))
+                return;
+
+            if (sb.Length > 0)
+                sb.Append(", ");
+            sb.Append(maps);
         }
 
         private static string GetMapStringFromMapInfo(string mapinfo)
