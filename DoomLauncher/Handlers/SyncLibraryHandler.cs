@@ -20,6 +20,7 @@ namespace DoomLauncher
         private readonly List<IGameFile> m_addedFiles = new List<IGameFile>();
         private readonly List<IGameFile> m_updatedFiles = new List<IGameFile>();
         private readonly List<InvalidFile> m_invalidFiles = new List<InvalidFile>();
+        private readonly HashSet<string> m_includeFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly FileManagement m_fileManagement;
 
         public SyncLibraryHandler(IGameFileDataSourceAdapter dbDataSource, IGameFileDataSourceAdapter syncDataSource,
@@ -40,6 +41,7 @@ namespace DoomLauncher
             m_addedFiles.Clear();
             m_updatedFiles.Clear();
             m_invalidFiles.Clear();
+            m_includeFiles.Clear();
 
             SyncFileCount = zipFiles.Length;
             SyncFileCurrent = 0;
@@ -235,6 +237,11 @@ namespace DoomLauncher
                     continue;
 
                 string file = match.Groups[1].Value.Trim();
+                if (m_includeFiles.Contains(file))
+                    continue;
+
+                m_includeFiles.Add(file);
+
                 var entry = reader.Entries.FirstOrDefault(x => x.FullName.Equals(file, StringComparison.OrdinalIgnoreCase));
                 if (entry == null)
                     continue;
@@ -247,6 +254,9 @@ namespace DoomLauncher
 
         private static void AppendMapSet(StringBuilder sb, string maps)
         {
+            if (string.IsNullOrWhiteSpace(maps))
+                return;
+
             if (sb.Length > 0)
                 sb.Append(", ");
             sb.Append(maps);
