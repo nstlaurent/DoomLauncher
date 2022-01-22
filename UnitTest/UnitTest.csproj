@@ -105,6 +105,9 @@
     <None Include="Resources\joymaps1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\mapinfo.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\prboomsave1.dsg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
