@@ -9,7 +9,7 @@ namespace DoomLauncher
 {
     public partial class UpdateControl : UserControl
     {
-        private static readonly string s_appUpdateFileName = "AppUpdate.zip";
+        public static readonly string AppUpdateFileName = "AppUpdate.zip";
 
         private ApplicationUpdateInfo m_info;
         private AppConfiguration m_appConfig;
@@ -66,7 +66,7 @@ namespace DoomLauncher
 
         private string GetUpdateArchive()
         {
-            return Path.Combine(m_appConfig.TempDirectory.GetFullPath(), s_appUpdateFileName);
+            return Path.Combine(m_appConfig.TempDirectory.GetFullPath(), AppUpdateFileName);
         }
 
         private void ShowUpdateDownloadProgress()

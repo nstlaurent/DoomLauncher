@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -444,6 +445,30 @@ namespace DoomLauncher
             ctrlAssociationView.FileDeleted += ctrlAssociationView_FileDeleted;
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
+        }
+
+        private void Check_340Update()
+        {
+            if (LauncherPath.IsInstalled())
+                return;
+
+            string[] dirs = new string[] { "x86", "x64" };
+            string updateFile = Path.Combine("GameFiles\\Temp", UpdateControl.AppUpdateFileName);
+            if (!File.Exists(updateFile) || dirs.Any(x => Directory.Exists(x)))
+                return;
+
+            using (ZipArchive za = ZipFile.OpenRead(updateFile))
+            {
+                foreach (string dir in dirs)
+                {
+                    if (!Directory.Exists(dir))
+                        Directory.CreateDirectory(dir);
+
+                    var entries = za.Entries.Where(x => x.FullName.Contains(dir));
+                    foreach (var entry in entries)
+                        entry.ExtractToFile(Path.Combine(Directory.GetCurrentDirectory(), dir, entry.Name));
+                }
+            }
         }
 
         private void CleanUpFiles()

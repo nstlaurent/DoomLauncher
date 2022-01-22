@@ -93,6 +93,7 @@ namespace DoomLauncher
         {
             bool success = false;
             CleanOldLibraries();
+            Check_340Update();
 
             if (VerifyDatabase())
             {
