@@ -66,8 +66,8 @@ namespace DoomLauncher
                 if (file != null)
                 {
                     CurrentGameFile = file;
-                    GameFileDataNeeded?.Invoke(this, new EventArgs());
-                    file.Downloaded = DateTime.Now;
+                    GameFileDataNeeded?.Invoke(this, EventArgs.Empty);
+                    file.Downloaded = existing == null ? DateTime.Now : existing.Downloaded;
 
                     try
                     {
