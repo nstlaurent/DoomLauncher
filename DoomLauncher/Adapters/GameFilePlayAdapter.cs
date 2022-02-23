@@ -80,7 +80,7 @@ namespace DoomLauncher
 
             foreach (IGameFile loadFile in loadFiles)
             {
-                if (!AssertGameFile(gameFile, gameFileDirectory, tempDirectory, sourcePort, sb)) return null;
+                if (!AssertGameFile(loadFile, gameFileDirectory, tempDirectory, sourcePort, sb)) return null;
                 if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePortData, true)) return null;
             }
 
