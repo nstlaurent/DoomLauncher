@@ -27,8 +27,10 @@ namespace DoomLauncher
 
         public IGameFile GetGameFile(string fileName)
         {
-            FileInfo fi = new FileInfo(Path.Combine(GameFileDirectory.GetFullPath(), fileName));
+            if (Util.IsDirectory(fileName))
+                return CreateGameFileFromDirectory(fileName);
 
+            FileInfo fi = new FileInfo(Path.Combine(GameFileDirectory.GetFullPath(), fileName));
             if (fi.Exists)
                 return CreateGameFile(fi);
 
@@ -116,14 +118,6 @@ namespace DoomLauncher
             throw new NotSupportedException();
         }
 
-        private IGameFile CreateGameFile(FileInfo fi)
-        {
-            return new GameFile()
-            {
-                FileName = fi.Name
-            };
-        }
-
         public void InsertGameFile(IGameFile gameFile)
         {
             throw new NotSupportedException();
@@ -149,6 +143,22 @@ namespace DoomLauncher
         {
             get;
             set;
+        }
+
+        private IGameFile CreateGameFile(FileInfo fi)
+        {
+            return new GameFile()
+            {
+                FileName = fi.Name
+            };
+        }
+
+        private IGameFile CreateGameFileFromDirectory(string dir)
+        {
+            return new GameFile()
+            {
+                FileName = dir
+            };
         }
     }
 }

@@ -74,8 +74,8 @@ namespace DoomLauncher
         {
             SyncLibraryHandler handler = null;
 
-            try
-            {
+            //try
+            //{
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter,
                     AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats, fileManagement);
                 handler.SyncFileChange += syncHandler_SyncFileChange;
@@ -91,11 +91,11 @@ namespace DoomLauncher
 
                 if (tag != null)
                     TagSyncFiles(handler, tag);
-        }
-            catch (Exception ex)
-            {
-                Util.DisplayUnexpectedException(this, ex);
-        }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Util.DisplayUnexpectedException(this, ex);
+            //}
 
             return handler;
         }

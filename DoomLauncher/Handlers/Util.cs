@@ -585,5 +585,14 @@ namespace DoomLauncher
                 }
             }
         }
+
+        public static bool IsDirectory(string path)
+        {
+            if (!File.Exists(path) && !Directory.Exists(path))
+                return false;
+
+            FileAttributes attr = File.GetAttributes(path);
+            return (attr & FileAttributes.Directory) == FileAttributes.Directory;
+        }
     }
 }

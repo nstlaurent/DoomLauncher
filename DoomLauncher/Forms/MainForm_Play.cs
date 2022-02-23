@@ -22,7 +22,12 @@ namespace DoomLauncher
 
         private bool AssertFile(string file)
         {
-            bool exists = File.Exists(file);
+            bool exists;
+            if (Util.IsDirectory(file))
+                exists = Directory.Exists(file);
+            else
+                exists = File.Exists(file);
+
             if (!exists)
                 MessageBox.Show(this, string.Format("The file {0} does not exist.", file), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 

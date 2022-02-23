@@ -111,16 +111,11 @@ namespace DoomLauncher
 
             foreach (IGameFile gameFile in m_gameFiles)
             {
+                if (gameFile.IsDirectory())
+                    continue;
+
                 string file = Path.Combine(m_directory.GetFullPath(), gameFile.FileName);
-                if (!File.Exists(file)) continue;
-
-                IArchiveReader reader;
-                if (Path.GetExtension(file).Equals(".zip", StringComparison.OrdinalIgnoreCase))
-                    reader = new ZipArchiveReader(file);
-                else
-                    reader = new FileArchiveReader(file);
-
-                using (reader)
+                using (IArchiveReader reader = ArchiveReader.Create(file, ignorePk3: true))
                 {
                     if (m_ct.IsCancellationRequested)
                         break;
@@ -130,18 +125,17 @@ namespace DoomLauncher
                         if (m_specificFiles == null || m_specificFiles.Length == 0)
                         {
                             HandleDefaultSelection(file, reader);
+                            continue;
                         }
-                        else
+
+                        foreach (IArchiveEntry entry in reader.Entries)
                         {
-                            foreach (IArchiveEntry entry in reader.Entries)
-                            {
-                                if (!string.IsNullOrEmpty(entry.Name))
-                                {
-                                    if (m_ct.IsCancellationRequested)
-                                        break;
-                                    HandleAddItem(file, entry.FullName, entry.Name, m_specificFiles.Contains(entry.FullName));
-                                }
-                            }
+                            if (string.IsNullOrEmpty(entry.Name))
+                                continue;
+
+                            if (m_ct.IsCancellationRequested)
+                                break;
+                            HandleAddItem(file, entry.FullName, entry.Name, m_specificFiles.Contains(entry.FullName));
                         }
                     }
                     catch

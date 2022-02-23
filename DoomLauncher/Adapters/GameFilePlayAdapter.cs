@@ -72,7 +72,7 @@ namespace DoomLauncher
 
             if (IWad != null)
             {
-                if (!AssertFile(gameFileDirectory.GetFullPath(), gameFile.FileName, "game file")) return null;
+                if (!AssertGameFile(gameFile, gameFileDirectory, tempDirectory, sourcePort, sb)) return null;
                 if (!HandleGameFileIWad(IWad, sourcePort, sb, gameFileDirectory, tempDirectory)) return null;
             }
 
@@ -80,7 +80,7 @@ namespace DoomLauncher
 
             foreach (IGameFile loadFile in loadFiles)
             {
-                if (!AssertFile(gameFileDirectory.GetFullPath(), loadFile.FileName, "game file")) return null;
+                if (!AssertGameFile(gameFile, gameFileDirectory, tempDirectory, sourcePort, sb)) return null;
                 if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePortData, true)) return null;
             }
 
@@ -123,6 +123,26 @@ namespace DoomLauncher
             return sb.ToString();
         }
 
+        private bool AssertGameFile(IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory, ISourcePort sourcePort, StringBuilder sb)
+        {
+            if (gameFile.IsDirectory())
+                return AssertDirectory(gameFile.FileName);
+
+            if (!AssertFile(gameFileDirectory.GetFullPath(), gameFile.FileName, "game file"))
+                return false;
+
+            return true;
+        }
+
+        private bool AssertDirectory(string dir)
+        {
+            if (Directory.Exists(dir))
+                return true;
+
+            LastError = $"Directory {dir} does not exist.";
+            return false;
+        }
+
         private bool HandleGameFileIWad(IGameFile gameFile, ISourcePort sourcePort, StringBuilder sb, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
             try
@@ -162,6 +182,12 @@ namespace DoomLauncher
         private bool HandleGameFile(IGameFile gameFile, List<string> launchFiles, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
             ISourcePortData sourcePort, bool checkSpecific)
         {
+            if (gameFile.IsDirectory())
+            {
+                launchFiles.Add(gameFile.FileName);
+                return true;
+            }
+
             try
             {
                 string[] extensions = sourcePort.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -295,11 +321,12 @@ namespace DoomLauncher
         private IArchiveReader CreateArchiveReader(IGameFile gameFile, LauncherPath gameFileDirectory)
         {
             string file = Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName);
+
             // If the unmanaged file is a pk3 then ArchiveReader.Create will read it as a zip and try to unpack
             // Return FileArchiveReader instead so the pk3 will be added as a file
             // Zip extensions are ignored in this case since Doom Launcher's base functionality revovles around reading zip contents
             // SpecificFilesForm will also read zip files explicitly to allow user to select files in the archive
-            if (gameFile.IsUnmanaged() && !Path.GetExtension(gameFile.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+            if (!gameFile.IsDirectory() && gameFile.IsUnmanaged() && !Path.GetExtension(gameFile.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
                 return new FileArchiveReader(file);
 
             return ArchiveReader.Create(file);

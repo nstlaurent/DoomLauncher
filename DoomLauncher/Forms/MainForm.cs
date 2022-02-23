@@ -20,6 +20,11 @@ namespace DoomLauncher
 {
     public partial class MainForm : Form
     {
+        public static readonly string Rename = "Rename...";
+        public static readonly string OpenZip = "Open Zip File...";
+        public static readonly string Utility = "Utility";
+        public static readonly string Resync = "Resync";
+
         public bool ShouldShowToolTip { get; private set; } = true;
 
         private readonly string m_workingDirectory;
@@ -557,7 +562,9 @@ namespace DoomLauncher
         private IEnumerable<string> GetSortedTextFiles(IGameFile item, IEnumerable<IArchiveEntry> entries)
         {
             FileInfo fi = new FileInfo(item.FileName);
-            string baseFile = fi.Name.Replace(fi.Extension, string.Empty);
+            string baseFile = fi.Name;
+            if (fi.Extension.Length > 0)
+                baseFile = fi.Name.Replace(fi.Extension, string.Empty);
 
             var find = entries.Select(x => x.Name).ToList();
             var first = find.FirstOrDefault(x => x.StartsWith(baseFile, StringComparison.InvariantCultureIgnoreCase));
@@ -610,13 +617,17 @@ namespace DoomLauncher
                 if (tabView != null && tabView.IsDeleteAllowed && tabView.IsLocal)
                 {
                     IGameFile[] items = SelectedItems(GetCurrentViewControl());
-
+                    bool hasUnmanaged = items.Any(x => x.IsUnmanaged());
                     foreach (IGameFile gameFile in items)
                     {
                         if (showDialog)
                         {
-                            messageBox = new MessageCheckBox("Confirm", string.Format("Delete {0} and all associated data?", gameFile.FileName),
-                                string.Format("Do this for all {0} items", items.Length), SystemIcons.Question, MessageBoxButtons.OKCancel);
+                            string text = $"Delete {gameFile.FileName} and all associated data?";
+                            if (hasUnmanaged)
+                                text += "\n\n(Unmanaged files will only be removed from Doom Launcher)";
+
+                            messageBox = new MessageCheckBox("Confirm", text,
+                                $"Do this for all {items.Length} items", SystemIcons.Question, MessageBoxButtons.OKCancel);
                             messageBox.SetShowCheckBox(items.Length > 1);
                         }
 
@@ -1309,6 +1320,16 @@ namespace DoomLauncher
             HandleAddFiles();
         }
 
+        private void addDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HandleAddDirectory();
+        }
+
+        private void HandleAddDirectory()
+        {
+            HandleAddFiles(AddFileType.GameFile, Array.Empty<string>(), "Select Folder", browseDirectory: true);
+        }
+
         private void HandleAddFiles()
         {
             HandleAddFiles(AddFileType.GameFile, new string[] { "Zip", "WAD", "pk3", "txt", "zdl" }, "Select Game Files");
@@ -1343,7 +1364,7 @@ namespace DoomLauncher
 
         private IGameFile[] m_pendingZdlFiles;
 
-        private async Task HandleAddGameFiles(AddFileType type, string[] files, ITagData tag = null)
+        private async Task HandleAddGameFiles(AddFileType type, string[] files, ITagData tag = null, FileManagement? overrideManagement = null)
         {
             if (!VerifyAddFiles(type, files))
                 return;
@@ -1361,7 +1382,7 @@ namespace DoomLauncher
                 m_launchFile = fi.Name.Replace(fi.Extension, ".zip");
             }
 
-            string[] missingFiles = libraryFiles.Where(x => !File.Exists(x)).ToArray();
+            string[] missingFiles = libraryFiles.Where(x => !File.Exists(x) && !Directory.Exists(x)).ToArray();
 
             if (missingFiles.Length > 0)
             {
@@ -1372,9 +1393,15 @@ namespace DoomLauncher
                 libraryFiles = libraryFiles.Except(missingFiles).ToList();
             }
 
+            string[] libraryFilesAsDirectories = libraryFiles.Where(x => Util.IsDirectory(x)).ToArray();
+            string[] libraryFilesAsFiles = libraryFiles.Except(libraryFilesAsDirectories).ToArray();
+
             if (libraryFiles.Count > 0)
             {
-                await HandleCopyFiles(type, libraryFiles.ToArray(), GetUserSelectedFileManagement(), tag);
+                if (libraryFilesAsFiles.Length > 0)
+                    await HandleCopyFiles(type, libraryFilesAsFiles, overrideManagement ?? GetUserSelectedFileManagement(), tag);
+                if (libraryFilesAsDirectories.Length > 0)
+                    await HandleCopyFiles(type, libraryFilesAsDirectories, FileManagement.Unmanaged, tag);
             }
             else if (m_zdlInvalidFiles.Count > 0)
             {
@@ -1417,8 +1444,16 @@ namespace DoomLauncher
             return true;
         }
 
-        private async Task HandleAddFiles(AddFileType type, string[] extensions, string dialogTitle)
+        private async Task HandleAddFiles(AddFileType type, string[] extensions, string dialogTitle, bool browseDirectory = false)
         {
+            if (browseDirectory)
+            {
+                FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+                if (folderDialog.ShowDialog(this) == DialogResult.OK)
+                    await HandleAddGameFiles(type, new string[] { folderDialog.SelectedPath });
+                return;
+            }
+
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Title = dialogTitle;
             dialog.Multiselect = true;
@@ -1488,12 +1523,10 @@ namespace DoomLauncher
                 }
                 else if (existingGameFile != null)
                 {
-                    if (Path.IsPathRooted(existingGameFile.FileName))
+                    if (!existingGameFile.IsUnmanaged() && Path.IsPathRooted(existingGameFile.FileName))
                         results.Errors.Add(new FileError { FileName = fileName, Error = unmanagedError });
                     else
                         results.NewFiles.Add(fileName);
-                    //else
-                    //    results.Errors.Add(new FileError { FileName = fileName, Error = managedError });
                 }
                 else
                 {
@@ -1803,9 +1836,11 @@ namespace DoomLauncher
             if (!(GetCurrentViewControl() is IGameFileSortableView sortableView))
                 return;
 
-            ToolStripMenuItem sortToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
+            ToolStripMenuItem sortToolStrip = GetToolStripItem(mnuLocal, "Sort By");
             IGameFileView view = GetCurrentViewControl();
             sortToolStrip.Visible = view is GameFileTileViewControl;
+
+            SetVisibleLocalMenuItems(view);
 
             for (int i = 0; i < GameFileViewFactory.DefaultColumnTextFields.Length; i++)
             {
@@ -1823,6 +1858,54 @@ namespace DoomLauncher
                 sortToolStrip.DropDownItems[i].Text = text;
             }
         }
+
+        private void SetVisibleLocalMenuItems(IGameFileView view)
+        {
+            IGameFile[] gameFiles = SelectedItems(view);
+            if (gameFiles.Length == 0)
+                return;
+
+            bool visible = gameFiles.All(x => !x.IsDirectory());
+            foreach (var item in GetNonDirectoryMenuItems())
+                item.Visible = visible;
+
+            visible = gameFiles.All(x => x.IsUnmanaged());
+            foreach (var item in GetUnmanagedMenuItems())
+                item.Visible = visible;
+
+            foreach (var item in GetManagedMenuItems())
+                item.Visible = !visible;
+        }
+
+        private ToolStripMenuItem[] GetNonDirectoryMenuItems()
+        {
+            return new ToolStripMenuItem[]
+            {
+                GetToolStripItem(mnuLocal, Rename),
+                GetToolStripItem(mnuLocal, OpenZip),
+                GetToolStripItem(mnuLocal, Utility)
+            };
+        }
+
+        private ToolStripMenuItem[] GetManagedMenuItems()
+        {
+            return new ToolStripMenuItem[]
+            {
+                GetToolStripItem(mnuLocal, Rename),
+                GetToolStripItem(mnuLocal, Utility)
+            };
+        }
+
+        private ToolStripMenuItem[] GetUnmanagedMenuItems()
+        {
+            return new ToolStripMenuItem[]
+            {
+                GetToolStripItem(mnuLocal, Resync),
+            };
+        }
+
+        ToolStripMenuItem GetToolStripItem(ContextMenuStrip strip, string text) =>
+            strip.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == text) as ToolStripMenuItem;
 
         private void newTagToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2533,6 +2616,16 @@ namespace DoomLauncher
 
                 HandleAddGameFiles(AddFileType.GameFile, files.ToArray());
             }
+        }
+
+        private void resyncToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IGameFileView view = GetCurrentViewControl();
+            if (view == null)
+                return;
+
+            var gameFiles = SelectedItems(view).Where(x => x.IsUnmanaged()).Select(x => x.FileName).ToArray();
+            HandleAddGameFiles(AddFileType.GameFile, gameFiles, overrideManagement: FileManagement.Unmanaged);
         }
 
         private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;

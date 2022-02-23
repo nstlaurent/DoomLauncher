@@ -54,6 +54,14 @@ namespace DoomLauncher.DataSources
 
         public bool IsUnmanaged() => Path.IsPathRooted(FileName);
 
+        public bool IsDirectory()
+        {
+            if (!IsUnmanaged())
+                return false;
+
+            return Util.IsDirectory(FileName);
+        }
+
         public object Clone()
         {
             GameFile gameFile = new GameFile();

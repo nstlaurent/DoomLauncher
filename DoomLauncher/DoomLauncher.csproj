@@ -103,7 +103,10 @@
   <ItemGroup>
     <Compile Include="Adapters\WadArchiveDataAdapter.cs" />
     <Compile Include="Archive\ArchiveReader.cs" />
+    <Compile Include="Archive\DirectoryArchiveEntry.cs" />
+    <Compile Include="Archive\EmptyArchiveReader.cs" />
     <Compile Include="Archive\FileArchiveReader.cs" />
+    <Compile Include="Archive\DirectoryArchiveReader.cs" />
     <Compile Include="Archive\IArchiveEntry.cs" />
     <Compile Include="Archive\ZipArchiveReader.cs" />
     <Compile Include="Archive\ZipArchiveReaderEntry.cs" />

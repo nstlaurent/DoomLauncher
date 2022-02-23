@@ -37,5 +37,6 @@ namespace DoomLauncher.Interfaces
         int FileSizeBytes { get; set; }
 
         bool IsUnmanaged();
+        bool IsDirectory();
     }
 }

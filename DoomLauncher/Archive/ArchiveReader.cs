@@ -5,12 +5,20 @@ namespace DoomLauncher
 {
     public static class ArchiveReader
     {
-        public static IArchiveReader Create(string file)
+        public static IArchiveReader EmptyArchiveReader = new EmptyArchiveReader();
+
+        public static IArchiveReader Create(string path, bool ignorePk3 = false)
         {
-            if (IsPk(Path.GetExtension(file)))
-                return new ZipArchiveReader(file);
+            if (!File.Exists(path) && !Directory.Exists(path))
+                return EmptyArchiveReader;
+
+            if (Util.IsDirectory(path))
+                return new DirectoryArchiveReader(path);
+
+            if (!ignorePk3 && IsPk(Path.GetExtension(path)))
+                return new ZipArchiveReader(path);
             else
-                return new FileArchiveReader(file);
+                return new FileArchiveReader(path);
         }
 
         private static bool IsPk(string fileExtension)
