@@ -20,11 +20,6 @@ namespace DoomLauncher
 {
     public partial class MainForm : Form
     {
-        public static readonly string Rename = "Rename...";
-        public static readonly string OpenZip = "Open Zip File...";
-        public static readonly string Utility = "Utility";
-        public static readonly string Resync = "Resync";
-
         public bool ShouldShowToolTip { get; private set; } = true;
 
         private readonly string m_workingDirectory;
@@ -1881,9 +1876,9 @@ namespace DoomLauncher
         {
             return new ToolStripMenuItem[]
             {
-                GetToolStripItem(mnuLocal, Rename),
-                GetToolStripItem(mnuLocal, OpenZip),
-                GetToolStripItem(mnuLocal, Utility)
+                GetToolStripItem(mnuLocal, MenuConstants.Rename),
+                GetToolStripItem(mnuLocal, MenuConstants.OpenZip),
+                GetToolStripItem(mnuLocal, MenuConstants.Utility)
             };
         }
 
@@ -1891,8 +1886,8 @@ namespace DoomLauncher
         {
             return new ToolStripMenuItem[]
             {
-                GetToolStripItem(mnuLocal, Rename),
-                GetToolStripItem(mnuLocal, Utility)
+                GetToolStripItem(mnuLocal, MenuConstants.Rename),
+                GetToolStripItem(mnuLocal, MenuConstants.Utility)
             };
         }
 
@@ -1900,7 +1895,7 @@ namespace DoomLauncher
         {
             return new ToolStripMenuItem[]
             {
-                GetToolStripItem(mnuLocal, Resync),
+                GetToolStripItem(mnuLocal, MenuConstants.Resync),
             };
         }
 
