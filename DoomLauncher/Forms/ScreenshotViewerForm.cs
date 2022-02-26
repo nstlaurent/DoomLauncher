@@ -149,7 +149,7 @@ namespace DoomLauncher.Forms
             SaveFileDialog dialog = new SaveFileDialog();
             string ext = Path.GetExtension(GetImageFilename());
             if (!string.IsNullOrEmpty(ext))
-                dialog.Filter = string.Format("{0}|*.{0}", ext);
+                dialog.Filter = string.Format("{0}|*{0}", ext);
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
