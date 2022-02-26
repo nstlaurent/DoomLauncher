@@ -2144,38 +2144,39 @@ namespace DoomLauncher
 
         private void selectTagsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            IGameFile gameFile = SelectedItems(GetCurrentViewControl()).FirstOrDefault();
+            IGameFile[] gameFiles = SelectedItems(GetCurrentViewControl());
+            if (gameFiles.Length == 0)
+                return;
 
-            if (gameFile != null)
+            TagSelectForm form = new TagSelectForm();
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.TagSelectControl.Init(new TagSelectOptions() { ShowCheckBoxes = true });
+
+            if (gameFiles.Length == 1)
             {
+                IGameFile gameFile = gameFiles[0];
                 ITagData[] existingTags = DataCache.Instance.TagMapLookup.GetTags(gameFile);
 
-                TagSelectForm form = new TagSelectForm();
-                form.StartPosition = FormStartPosition.CenterParent;
-                form.TagSelectControl.Init(new TagSelectOptions() { ShowCheckBoxes = true });
                 form.TagSelectControl.SetCheckedTags(existingTags);
-
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    DataCache.Instance.UpdateGameFileTags(new IGameFile[] { gameFile }, form.TagSelectControl.GetCheckedTags());
-
-                    var updatedTags = form.TagSelectControl.GetCheckedTags();
-
-                    var addTags = updatedTags.Except(existingTags);
-                    var removeTags = existingTags.Except(updatedTags);
-
-                    foreach (var tag in addTags)
-                        DataCache.Instance.AddGameFileTag(new IGameFile[] { gameFile }, tag, out _);
-
-                    foreach (var tag in removeTags)
-                        DataCache.Instance.RemoveGameFileTag(new IGameFile[] { gameFile }, tag);
-
-                    var changedTags = addTags.Union(removeTags).ToArray();
-                    DataCache.Instance.TagMapLookup.Refresh(changedTags);
+                    IGameFile[] updateGameFiles = new IGameFile[] { gameFile };
+                    DataCache.Instance.UpdateGameFileTags(updateGameFiles, form.TagSelectControl.GetCheckedTags());
 
                     GetCurrentViewControl().UpdateGameFile(gameFile);
                     HandleSelectionChange(GetCurrentViewControl(), true);
                 }
+
+                return;
+            }
+
+            if (form.ShowDialog(this) == DialogResult.OK)
+            {
+                DataCache.Instance.UpdateGameFileTags(gameFiles, form.TagSelectControl.GetCheckedTags());
+
+                foreach (var gameFile in gameFiles)
+                    GetCurrentViewControl().UpdateGameFile(gameFile);
+                HandleSelectionChange(GetCurrentViewControl(), true);
             }
         }
 

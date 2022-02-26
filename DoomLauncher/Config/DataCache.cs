@@ -49,20 +49,21 @@ namespace DoomLauncher
 
         public void UpdateGameFileTags(IEnumerable<IGameFile> gameFiles, IEnumerable<ITagData> tags)
         {
-            ITagData[] changedTagsAll = new ITagData[] { };
+            ITagData[] changedTagsAll = Array.Empty<ITagData>();
 
             foreach (IGameFile gameFile in gameFiles)
             {
-                ITagData[] existingTags = DataCache.Instance.TagMapLookup.GetTags(gameFile);
+                ITagData[] existingTags = Instance.TagMapLookup.GetTags(gameFile);
 
                 var addTags = tags.Except(existingTags);
                 var removeTags = existingTags.Except(tags);
+                var updateFiles = new IGameFile[] { gameFile };
 
                 foreach (var tag in addTags)
-                    AddGameFileTag(new IGameFile[] { gameFile }, tag, out _);
+                    AddGameFileTag(updateFiles, tag, out _);
 
                 foreach (var tag in removeTags)
-                    RemoveGameFileTag(new IGameFile[] { gameFile }, tag);
+                    RemoveGameFileTag(updateFiles, tag);
 
                 changedTagsAll = changedTagsAll.Union(addTags.Union(removeTags)).ToArray();
             }
