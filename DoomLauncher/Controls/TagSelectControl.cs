@@ -195,7 +195,6 @@ namespace DoomLauncher.Controls
 
             view.ColumnHeadersVisible = m_options.ShowTagData;
             view.MultiSelect = false;
-            view.AllowUserToResizeColumns = false;
             view.AllowUserToResizeRows = false;
             view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
@@ -206,7 +205,8 @@ namespace DoomLauncher.Controls
             {
                 HeaderText = "Name",
                 Name = nameof(ITagData.Name),
-                DataPropertyName = nameof(ITagData.FavoriteName)
+                DataPropertyName = nameof(ITagData.FavoriteName),
+                Width = dpiScale.ScaleIntX(200)
             });
 
             if (m_options.ShowTagData)
