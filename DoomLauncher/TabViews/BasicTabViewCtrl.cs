@@ -166,7 +166,7 @@ namespace DoomLauncher
 
         public object Key { get { return m_key; } }
 
-        protected virtual bool FilterIWads { get { return true; } }
+        protected virtual bool FilterIWads { get; set; } = true;
 
         public virtual void SetGameFiles()
         {

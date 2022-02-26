@@ -20,6 +20,7 @@ namespace DoomLauncher
             InitializeComponent();
             TagDataSource = tag;
             m_tagAdapter = adapter;
+            FilterIWads = false;
         }
 
         public override object Clone()
@@ -27,9 +28,7 @@ namespace DoomLauncher
             TagTabView view = new TagTabView(m_key, Title, m_tagAdapter, m_selectFields, TagDataSource, GameFileViewFactory.CreateGameFileViewGrid());
             SetBaseCloneProperties(view);
             return view;
-        }
-
-        
+        }        
 
         public override void SetGameFiles()
         {
