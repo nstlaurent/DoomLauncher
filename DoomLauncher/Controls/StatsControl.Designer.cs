@@ -86,6 +86,7 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(53, 29);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(28, 13);
             this.label1.TabIndex = 0;
@@ -96,6 +97,7 @@
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(53, 53);
+            this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(46, 13);
             this.label2.TabIndex = 1;
@@ -106,6 +108,7 @@
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(53, 77);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(35, 13);
             this.label3.TabIndex = 2;
@@ -182,6 +185,7 @@
             this.lblMaps.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMaps.AutoSize = true;
             this.lblMaps.Location = new System.Drawing.Point(53, 5);
+            this.lblMaps.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.lblMaps.Name = "lblMaps";
             this.lblMaps.Size = new System.Drawing.Size(36, 13);
             this.lblMaps.TabIndex = 13;
