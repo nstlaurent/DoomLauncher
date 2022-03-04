@@ -79,9 +79,13 @@ namespace DoomLauncher
                 g.DrawRectangle(GetPrecentPen(percent, total), new Rectangle(pt, new Size(percentRect.Width + offsetX, percentRect.Height + offsetY)));
             }
 
+            // Not exactly sure what is going on here, have to fudge the value below 125% DPI
+            float fudgeY = dpiScale.DpiScaleY > 1.25f ? 0 : dpiScale.ScaleFloatY(2.5f);
+
             SizeF size = g.MeasureDisplayString(text, DisplayFont);
-            var offset = (height - size.Height) / 2;
-            PointF position = new PointF(pt.X + dpiScale.ScaleIntX(8), pt.Y + offset + dpiScale.ScaleFloatY(2.5f));
+            float stringOffsetY = dpiScale.ScaleFloatY((height - size.Height) / 2);
+
+            PointF position = new PointF(pt.X + dpiScale.ScaleIntX(8), pt.Y + stringOffsetY + fudgeY);
             g.DrawString(text, DisplayFont, FontBrush, position);
         }
 
