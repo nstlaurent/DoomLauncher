@@ -13,8 +13,7 @@ namespace DoomLauncher
         public DirectoryArchiveReader(string directory)
         {
             m_directory = directory;
-            foreach (string file in Directory.EnumerateFiles(m_directory))
-                m_entries.Add(new DirectoryArchiveEntry(file));
+            RecursivelyIterateDirectory(m_directory);
         }
 
         void RecursivelyIterateDirectory(string directory)

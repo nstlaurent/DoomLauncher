@@ -63,6 +63,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="TestInit.cs" />
+    <Compile Include="Tests\TestDirectoryArchive.cs" />
     <Compile Include="Tests\TestFileDetector.cs" />
     <Compile Include="Tests\TestGameFile.cs" />
     <Compile Include="Tests\TestIdGamesFileParser.cs" />
@@ -100,6 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\chocosave1.dsg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Directory.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\joymaps1.zip">
