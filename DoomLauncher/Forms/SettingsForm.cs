@@ -18,6 +18,7 @@ namespace DoomLauncher
 
         private readonly IDataSourceAdapter m_adapter;
         private readonly AppConfiguration m_appConfig;
+        private Padding m_controlMargin = new Padding(4, 0, 0, 0);
 
         private static readonly int TextBoxWidth = 190;
         private static readonly int FullControlWidth = 270;
@@ -64,17 +65,21 @@ namespace DoomLauncher
         private void PopulateConfiguration()
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
+            m_controlMargin = new Padding(dpiScale.ScaleIntX(4), 0, 0, 0);
             IEnumerable<IConfigurationData> configItems = m_adapter.GetConfiguration().Where(x => x.UserCanModify);
 
             TableLayoutPanel tblMain = new TableLayoutPanel
             {
-                Dock = DockStyle.Top
+                Dock = DockStyle.Top,
+                CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset,
             };
 
             int height = dpiScale.ScaleIntY(8);
-            tblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, height));
+            int labelWidth = dpiScale.ScaleIntX(134);
+            tblMain.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, labelWidth));
 
             int height32 = dpiScale.ScaleIntY(32);
+            int rowPadding = dpiScale.ScaleIntX(1);
 
             foreach (IConfigurationData config in configItems)
             {
@@ -82,6 +87,7 @@ namespace DoomLauncher
                 {
                     Anchor = AnchorStyles.Left,
                     Text = AddSpaceBetweenWords(config.Name),
+                    Width = labelWidth
                 };
 
                 tblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, lbl.Height < height32 ? height32 : lbl.Height));
@@ -94,14 +100,15 @@ namespace DoomLauncher
                 else
                     HandleTextBox(tblMain, config);
 
-                height += height32;
+                height += height32 + rowPadding;
             }
 
             tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             tblMain.Height = height + dpiScale.ScaleIntY(8);
 
             tabControl.TabPages[0].Controls.Add(tblMain);
-            Height = tblMain.Height + dpiScale.ScaleIntY(110);
+            Height = tblMain.Height + dpiScale.ScaleIntY(108);
+            Width = dpiScale.ScaleIntX(452);
         }
 
         private void HandleTextBox(TableLayoutPanel tblMain, IConfigurationData config)
@@ -110,7 +117,8 @@ namespace DoomLauncher
             {
                 Anchor = AnchorStyles.Left,
                 Text = config.Value,
-                Width = GetDefaultControlWidth()
+                Width = GetDefaultControlWidth(),
+                Margin = m_controlMargin
             };
             m_configValues.Add(new Tuple<IConfigurationData, object>(config, txt));
 
@@ -127,7 +135,8 @@ namespace DoomLauncher
             ComboBox cmb = new ComboBox
             {
                 Anchor = AnchorStyles.Left,
-                Width = GetDefaultControlWidth()
+                Width = GetDefaultControlWidth(),
+                Margin = m_controlMargin
             };
 
             string[] items = Util.SplitString(config.AvailableValues);
@@ -151,7 +160,7 @@ namespace DoomLauncher
             {
                 Width = dpiScale.ScaleIntX(68),
                 Height = dpiScale.ScaleIntY(16),
-                Margin = new Padding(0, dpiScale.ScaleIntX(8), 0, 0)
+                Margin = new Padding(dpiScale.ScaleIntX(4), dpiScale.ScaleIntX(8), 0, 0)
             };
 
             m_screenshotTrackBar = new TrackBar
