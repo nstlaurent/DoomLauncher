@@ -26,6 +26,7 @@ namespace DoomLauncher
         public static string TagSelectPinnedName => "TagSelectPinned";
         public static string ShowTabHeadersName => "ShowTabHeaders";
         public static string CopySaveFilesName => "CopySaveFiles";
+        public static string AllowMultiplePlaySessionsName => "AllowMultiplePlaySessions";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -123,6 +124,7 @@ namespace DoomLauncher
                 TagSelectPinned = Convert.ToBoolean(GetValue(config, TagSelectPinnedName));
                 ShowTabHeaders = Convert.ToBoolean(GetValue(config, ShowTabHeadersName));
                 CopySaveFiles = Convert.ToBoolean(GetValue(config, CopySaveFilesName));
+                AllowMultiplePlaySessions = Convert.ToBoolean(GetValue(config, AllowMultiplePlaySessionsName));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
@@ -255,5 +257,6 @@ namespace DoomLauncher
         public bool TagSelectPinned { get; set; }
         public bool ShowTabHeaders { get; set; } = true;
         public bool CopySaveFiles { get; set; }
+        public bool AllowMultiplePlaySessions { get; set; }
     }
 }

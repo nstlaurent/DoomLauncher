@@ -6,6 +6,7 @@ using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -29,6 +30,7 @@ namespace DoomLauncher
         private readonly AppConfiguration m_appConfig;
         private readonly IDataSourceAdapter m_adapter;
         private ScreenFilter m_filterSettings;
+        private bool m_playSessionInProgress;
 
         private readonly Control[] m_tabControls;
 
@@ -109,8 +111,9 @@ namespace DoomLauncher
             }
         }
 
-        public void Initialize(IEnumerable<ITabView> additionalFileViews, IGameFile gameFile)
+        public void Initialize(IEnumerable<ITabView> additionalFileViews, IGameFile gameFile, bool playSessionInProgress)
         {
+            m_playSessionInProgress = playSessionInProgress;
             m_additionalFileViews = additionalFileViews.ToArray();
 
             GameFile = gameFile;
@@ -177,10 +180,24 @@ namespace DoomLauncher
 
         private void SetIwadInfoLabel()
         {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            float infoHeight = dpiScale.ScaleFloatY(40);
+            lblInfo.BackColor = SystemColors.Control;
+            lblInfo.ForeColor = SystemColors.ControlText;
+
+            if (m_playSessionInProgress)
+            {
+                tblFiles.RowStyles[0].Height = infoHeight;
+                pbInfo.Image = Properties.Resources.bon2b;
+                lblInfo.BackColor = SystemColors.Highlight;
+                lblInfo.ForeColor = SystemColors.HighlightText;
+                lblInfo.Text = string.Format("Play session already in progress. Features{0}like statistics tracking may not function.", Environment.NewLine);
+                return;
+            }
+
             if (GameFile != null && IsIwad(GameFile) && SelectedGameProfile is GameFile)
             {
-                DpiScale dpiScale = new DpiScale(CreateGraphics());
-                tblFiles.RowStyles[0].Height = dpiScale.ScaleFloatY(40);
+                tblFiles.RowStyles[0].Height = infoHeight;
                 pbInfo.Image = Properties.Resources.bon2b;
                 lblInfo.Text = string.Format("These files will automatically be added{0} when this IWAD is selected for play.", Environment.NewLine);
             }

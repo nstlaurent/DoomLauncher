@@ -42,7 +42,7 @@
             this.newProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label5 = new System.Windows.Forms.Label();
+            this.lblProfile = new System.Windows.Forms.Label();
             this.cmbProfiles = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -103,18 +103,20 @@
             // 
             this.cmbSourcePorts.DisplayMember = "Name";
             this.cmbSourcePorts.FormattingEnabled = true;
-            this.cmbSourcePorts.Location = new System.Drawing.Point(47, 43);
+            this.cmbSourcePorts.Location = new System.Drawing.Point(68, 57);
+            this.cmbSourcePorts.Margin = new System.Windows.Forms.Padding(4);
             this.cmbSourcePorts.Name = "cmbSourcePorts";
-            this.cmbSourcePorts.Size = new System.Drawing.Size(197, 21);
+            this.cmbSourcePorts.Size = new System.Drawing.Size(256, 24);
             this.cmbSourcePorts.TabIndex = 0;
             this.cmbSourcePorts.TabStop = false;
             // 
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(41, 5);
+            this.btnOK.Location = new System.Drawing.Point(55, 6);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.Size = new System.Drawing.Size(100, 28);
             this.btnOK.TabIndex = 1;
             this.btnOK.TabStop = false;
             this.btnOK.Text = "OK";
@@ -124,9 +126,10 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(122, 5);
+            this.btnCancel.Location = new System.Drawing.Point(163, 6);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.Size = new System.Drawing.Size(100, 28);
             this.btnCancel.TabIndex = 2;
             this.btnCancel.TabStop = false;
             this.btnCancel.Text = "Cancel";
@@ -136,9 +139,10 @@
             // 
             this.cmbIwad.DisplayMember = "FileName";
             this.cmbIwad.FormattingEnabled = true;
-            this.cmbIwad.Location = new System.Drawing.Point(47, 70);
+            this.cmbIwad.Location = new System.Drawing.Point(68, 91);
+            this.cmbIwad.Margin = new System.Windows.Forms.Padding(4);
             this.cmbIwad.Name = "cmbIwad";
-            this.cmbIwad.Size = new System.Drawing.Size(197, 21);
+            this.cmbIwad.Size = new System.Drawing.Size(256, 24);
             this.cmbIwad.TabIndex = 3;
             this.cmbIwad.TabStop = false;
             this.cmbIwad.ValueMember = "GameFileID";
@@ -148,9 +152,10 @@
             this.chkRemember.AutoSize = true;
             this.chkRemember.Checked = true;
             this.chkRemember.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkRemember.Location = new System.Drawing.Point(9, 9);
+            this.chkRemember.Location = new System.Drawing.Point(12, 11);
+            this.chkRemember.Margin = new System.Windows.Forms.Padding(4);
             this.chkRemember.Name = "chkRemember";
-            this.chkRemember.Size = new System.Drawing.Size(118, 17);
+            this.chkRemember.Size = new System.Drawing.Size(148, 20);
             this.chkRemember.TabIndex = 4;
             this.chkRemember.TabStop = false;
             this.chkRemember.Text = "Remember Settings";
@@ -163,27 +168,29 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cmbSourcePorts);
             this.groupBox1.Controls.Add(this.cmbIwad);
-            this.groupBox1.Location = new System.Drawing.Point(3, 7);
+            this.groupBox1.Location = new System.Drawing.Point(4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(256, 102);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Size = new System.Drawing.Size(341, 131);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             // 
             // tblProfile
             // 
             this.tblProfile.ColumnCount = 3;
-            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 44F));
-            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 168F));
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 214F));
             this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblProfile.Controls.Add(this.profileToolStrip, 2, 0);
-            this.tblProfile.Controls.Add(this.label5, 0, 0);
+            this.tblProfile.Controls.Add(this.lblProfile, 0, 0);
             this.tblProfile.Controls.Add(this.cmbProfiles, 1, 0);
-            this.tblProfile.Location = new System.Drawing.Point(0, 12);
+            this.tblProfile.Location = new System.Drawing.Point(4, 19);
             this.tblProfile.Margin = new System.Windows.Forms.Padding(0);
             this.tblProfile.Name = "tblProfile";
             this.tblProfile.RowCount = 1;
             this.tblProfile.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblProfile.Size = new System.Drawing.Size(244, 25);
+            this.tblProfile.Size = new System.Drawing.Size(321, 31);
             this.tblProfile.TabIndex = 9;
             // 
             // profileToolStrip
@@ -191,13 +198,14 @@
             this.profileToolStrip.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.profileToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.profileToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.profileToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.profileToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1});
-            this.profileToolStrip.Location = new System.Drawing.Point(212, 2);
+            this.profileToolStrip.Location = new System.Drawing.Point(274, 3);
             this.profileToolStrip.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.profileToolStrip.Name = "profileToolStrip";
             this.profileToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.profileToolStrip.Size = new System.Drawing.Size(32, 23);
+            this.profileToolStrip.Size = new System.Drawing.Size(39, 27);
             this.profileToolStrip.TabIndex = 12;
             this.profileToolStrip.Text = "Options";
             // 
@@ -212,7 +220,7 @@
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 20);
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(34, 24);
             this.toolStripDropDownButton1.Text = "Options";
             // 
             // newProfileToolStripMenuItem
@@ -220,7 +228,7 @@
             this.newProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.File;
             this.newProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(202, 26);
             this.newProfileToolStripMenuItem.Text = "New Profile...";
             this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
             // 
@@ -229,7 +237,7 @@
             this.editProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Edit;
             this.editProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.editProfileToolStripMenuItem.Name = "editProfileToolStripMenuItem";
-            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(202, 26);
             this.editProfileToolStripMenuItem.Text = "Rename Profile...";
             this.editProfileToolStripMenuItem.Click += new System.EventHandler(this.editProfileToolStripMenuItem_Click);
             // 
@@ -238,29 +246,30 @@
             this.deleteProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Delete;
             this.deleteProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.deleteProfileToolStripMenuItem.Name = "deleteProfileToolStripMenuItem";
-            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(202, 26);
             this.deleteProfileToolStripMenuItem.Text = "Delete Profile";
             this.deleteProfileToolStripMenuItem.Click += new System.EventHandler(this.deleteProfileToolStripMenuItem_Click);
             // 
-            // label5
+            // lblProfile
             // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 6);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(36, 13);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "Profile";
+            this.lblProfile.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblProfile.AutoSize = true;
+            this.lblProfile.Location = new System.Drawing.Point(4, 7);
+            this.lblProfile.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblProfile.Name = "lblProfile";
+            this.lblProfile.Size = new System.Drawing.Size(45, 16);
+            this.lblProfile.TabIndex = 10;
+            this.lblProfile.Text = "Profile";
             // 
             // cmbProfiles
             // 
             this.cmbProfiles.DisplayMember = "Name";
             this.cmbProfiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmbProfiles.FormattingEnabled = true;
-            this.cmbProfiles.Location = new System.Drawing.Point(47, 3);
-            this.cmbProfiles.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.cmbProfiles.Location = new System.Drawing.Point(64, 4);
+            this.cmbProfiles.Margin = new System.Windows.Forms.Padding(4, 4, 0, 4);
             this.cmbProfiles.Name = "cmbProfiles";
-            this.cmbProfiles.Size = new System.Drawing.Size(165, 21);
+            this.cmbProfiles.Size = new System.Drawing.Size(210, 24);
             this.cmbProfiles.TabIndex = 9;
             this.cmbProfiles.TabStop = false;
             this.cmbProfiles.ValueMember = "GameProfileID";
@@ -268,18 +277,20 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 73);
+            this.label2.Location = new System.Drawing.Point(8, 95);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(36, 13);
+            this.label2.Size = new System.Drawing.Size(42, 16);
             this.label2.TabIndex = 8;
             this.label2.Text = "IWAD";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 46);
+            this.label1.Location = new System.Drawing.Point(8, 61);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(26, 13);
+            this.label1.Size = new System.Drawing.Size(31, 16);
             this.label1.TabIndex = 7;
             this.label1.Text = "Port";
             // 
@@ -288,18 +299,20 @@
             this.cmbMap.DisplayMember = "Name";
             this.cmbMap.Enabled = false;
             this.cmbMap.FormattingEnabled = true;
-            this.cmbMap.Location = new System.Drawing.Point(86, 19);
+            this.cmbMap.Location = new System.Drawing.Point(115, 23);
+            this.cmbMap.Margin = new System.Windows.Forms.Padding(4);
             this.cmbMap.Name = "cmbMap";
-            this.cmbMap.Size = new System.Drawing.Size(160, 21);
+            this.cmbMap.Size = new System.Drawing.Size(212, 24);
             this.cmbMap.TabIndex = 6;
             this.cmbMap.TabStop = false;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 49);
+            this.label4.Location = new System.Drawing.Point(31, 60);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(26, 13);
+            this.label4.Size = new System.Drawing.Size(32, 16);
             this.label4.TabIndex = 11;
             this.label4.Text = "Skill";
             // 
@@ -308,18 +321,20 @@
             this.cmbSkill.DisplayMember = "Name";
             this.cmbSkill.Enabled = false;
             this.cmbSkill.FormattingEnabled = true;
-            this.cmbSkill.Location = new System.Drawing.Point(86, 46);
+            this.cmbSkill.Location = new System.Drawing.Point(115, 57);
+            this.cmbSkill.Margin = new System.Windows.Forms.Padding(4);
             this.cmbSkill.Name = "cmbSkill";
-            this.cmbSkill.Size = new System.Drawing.Size(160, 21);
+            this.cmbSkill.Size = new System.Drawing.Size(212, 24);
             this.cmbSkill.TabIndex = 10;
             this.cmbSkill.TabStop = false;
             // 
             // chkRecord
             // 
             this.chkRecord.AutoSize = true;
-            this.chkRecord.Location = new System.Drawing.Point(6, 115);
+            this.chkRecord.Location = new System.Drawing.Point(8, 142);
+            this.chkRecord.Margin = new System.Windows.Forms.Padding(4);
             this.chkRecord.Name = "chkRecord";
-            this.chkRecord.Size = new System.Drawing.Size(61, 17);
+            this.chkRecord.Size = new System.Drawing.Size(74, 20);
             this.chkRecord.TabIndex = 12;
             this.chkRecord.TabStop = false;
             this.chkRecord.Text = "Record";
@@ -329,9 +344,10 @@
             // txtDescription
             // 
             this.txtDescription.Enabled = false;
-            this.txtDescription.Location = new System.Drawing.Point(86, 112);
+            this.txtDescription.Location = new System.Drawing.Point(115, 138);
+            this.txtDescription.Margin = new System.Windows.Forms.Padding(4);
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(160, 20);
+            this.txtDescription.Size = new System.Drawing.Size(212, 22);
             this.txtDescription.TabIndex = 13;
             this.txtDescription.TabStop = false;
             // 
@@ -340,9 +356,10 @@
             this.cmbDemo.DisplayMember = "Description";
             this.cmbDemo.Enabled = false;
             this.cmbDemo.FormattingEnabled = true;
-            this.cmbDemo.Location = new System.Drawing.Point(86, 73);
+            this.cmbDemo.Location = new System.Drawing.Point(115, 90);
+            this.cmbDemo.Margin = new System.Windows.Forms.Padding(4);
             this.cmbDemo.Name = "cmbDemo";
-            this.cmbDemo.Size = new System.Drawing.Size(160, 21);
+            this.cmbDemo.Size = new System.Drawing.Size(212, 24);
             this.cmbDemo.TabIndex = 14;
             this.cmbDemo.TabStop = false;
             this.cmbDemo.ValueMember = "FileID";
@@ -350,9 +367,10 @@
             // chkDemo
             // 
             this.chkDemo.AutoSize = true;
-            this.chkDemo.Location = new System.Drawing.Point(7, 75);
+            this.chkDemo.Location = new System.Drawing.Point(9, 92);
+            this.chkDemo.Margin = new System.Windows.Forms.Padding(4);
             this.chkDemo.Name = "chkDemo";
-            this.chkDemo.Size = new System.Drawing.Size(77, 17);
+            this.chkDemo.Size = new System.Drawing.Size(96, 20);
             this.chkDemo.TabIndex = 15;
             this.chkDemo.TabStop = false;
             this.chkDemo.Text = "Play Demo";
@@ -362,9 +380,10 @@
             // chkMap
             // 
             this.chkMap.AutoSize = true;
-            this.chkMap.Location = new System.Drawing.Point(7, 21);
+            this.chkMap.Location = new System.Drawing.Point(9, 26);
+            this.chkMap.Margin = new System.Windows.Forms.Padding(4);
             this.chkMap.Name = "chkMap";
-            this.chkMap.Size = new System.Drawing.Size(47, 17);
+            this.chkMap.Size = new System.Drawing.Size(56, 20);
             this.chkMap.TabIndex = 16;
             this.chkMap.TabStop = false;
             this.chkMap.Text = "Map";
@@ -384,18 +403,21 @@
             this.groupBox2.Controls.Add(this.cmbDemo);
             this.groupBox2.Controls.Add(this.chkRecord);
             this.groupBox2.Controls.Add(this.txtDescription);
-            this.groupBox2.Location = new System.Drawing.Point(3, 115);
+            this.groupBox2.Location = new System.Drawing.Point(4, 142);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(256, 173);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox2.Size = new System.Drawing.Size(341, 213);
             this.groupBox2.TabIndex = 17;
             this.groupBox2.TabStop = false;
             // 
             // lnkOpenDemo
             // 
             this.lnkOpenDemo.AutoSize = true;
-            this.lnkOpenDemo.Location = new System.Drawing.Point(83, 97);
+            this.lnkOpenDemo.Location = new System.Drawing.Point(111, 119);
+            this.lnkOpenDemo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkOpenDemo.Name = "lnkOpenDemo";
-            this.lnkOpenDemo.Size = new System.Drawing.Size(92, 13);
+            this.lnkOpenDemo.Size = new System.Drawing.Size(114, 16);
             this.lnkOpenDemo.TabIndex = 19;
             this.lnkOpenDemo.TabStop = true;
             this.lnkOpenDemo.Text = "Open Demo File...";
@@ -404,17 +426,19 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(5, 142);
+            this.label3.Location = new System.Drawing.Point(7, 175);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 13);
+            this.label3.Size = new System.Drawing.Size(87, 16);
             this.label3.TabIndex = 18;
             this.label3.Text = "Extra Params";
             // 
             // txtParameters
             // 
-            this.txtParameters.Location = new System.Drawing.Point(86, 139);
+            this.txtParameters.Location = new System.Drawing.Point(115, 171);
+            this.txtParameters.Margin = new System.Windows.Forms.Padding(4);
             this.txtParameters.Name = "txtParameters";
-            this.txtParameters.Size = new System.Drawing.Size(160, 20);
+            this.txtParameters.Size = new System.Drawing.Size(212, 22);
             this.txtParameters.TabIndex = 17;
             this.txtParameters.TabStop = false;
             this.txtParameters.Click += new System.EventHandler(this.TxtParameters_Click);
@@ -422,9 +446,10 @@
             // chkPreview
             // 
             this.chkPreview.AutoSize = true;
-            this.chkPreview.Location = new System.Drawing.Point(6, 90);
+            this.chkPreview.Location = new System.Drawing.Point(8, 109);
+            this.chkPreview.Margin = new System.Windows.Forms.Padding(4);
             this.chkPreview.Name = "chkPreview";
-            this.chkPreview.Size = new System.Drawing.Size(159, 17);
+            this.chkPreview.Size = new System.Drawing.Size(196, 20);
             this.chkPreview.TabIndex = 21;
             this.chkPreview.TabStop = false;
             this.chkPreview.Text = "Preview Launch Parameters";
@@ -433,9 +458,10 @@
             // lnkMore
             // 
             this.lnkMore.AutoSize = true;
-            this.lnkMore.Location = new System.Drawing.Point(171, 21);
+            this.lnkMore.Location = new System.Drawing.Point(228, 26);
+            this.lnkMore.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkMore.Name = "lnkMore";
-            this.lnkMore.Size = new System.Drawing.Size(61, 13);
+            this.lnkMore.Size = new System.Drawing.Size(71, 16);
             this.lnkMore.TabIndex = 20;
             this.lnkMore.TabStop = true;
             this.lnkMore.Text = "More Info...";
@@ -446,9 +472,10 @@
             this.chkSaveStats.AutoSize = true;
             this.chkSaveStats.Checked = true;
             this.chkSaveStats.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkSaveStats.Location = new System.Drawing.Point(6, 20);
+            this.chkSaveStats.Location = new System.Drawing.Point(8, 25);
+            this.chkSaveStats.Margin = new System.Windows.Forms.Padding(4);
             this.chkSaveStats.Name = "chkSaveStats";
-            this.chkSaveStats.Size = new System.Drawing.Size(96, 17);
+            this.chkSaveStats.Size = new System.Drawing.Size(117, 20);
             this.chkSaveStats.TabIndex = 19;
             this.chkSaveStats.TabStop = false;
             this.chkSaveStats.Text = "Save Statistics";
@@ -464,18 +491,21 @@
             this.groupBox4.Controls.Add(this.chkPreview);
             this.groupBox4.Controls.Add(this.chkSaveStats);
             this.groupBox4.Controls.Add(this.lnkMore);
-            this.groupBox4.Location = new System.Drawing.Point(3, 294);
+            this.groupBox4.Location = new System.Drawing.Point(4, 362);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(256, 121);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox4.Size = new System.Drawing.Size(341, 145);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             // 
             // lnkLoadSaveMore
             // 
             this.lnkLoadSaveMore.AutoSize = true;
-            this.lnkLoadSaveMore.Location = new System.Drawing.Point(171, 44);
+            this.lnkLoadSaveMore.Location = new System.Drawing.Point(228, 54);
+            this.lnkLoadSaveMore.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkLoadSaveMore.Name = "lnkLoadSaveMore";
-            this.lnkLoadSaveMore.Size = new System.Drawing.Size(61, 13);
+            this.lnkLoadSaveMore.Size = new System.Drawing.Size(71, 16);
             this.lnkLoadSaveMore.TabIndex = 26;
             this.lnkLoadSaveMore.TabStop = true;
             this.lnkLoadSaveMore.Text = "More Info...";
@@ -484,9 +514,10 @@
             // chkLoadLatestSave
             // 
             this.chkLoadLatestSave.AutoSize = true;
-            this.chkLoadLatestSave.Location = new System.Drawing.Point(6, 43);
+            this.chkLoadLatestSave.Location = new System.Drawing.Point(8, 53);
+            this.chkLoadLatestSave.Margin = new System.Windows.Forms.Padding(4);
             this.chkLoadLatestSave.Name = "chkLoadLatestSave";
-            this.chkLoadLatestSave.Size = new System.Drawing.Size(110, 17);
+            this.chkLoadLatestSave.Size = new System.Drawing.Size(134, 20);
             this.chkLoadLatestSave.TabIndex = 25;
             this.chkLoadLatestSave.TabStop = false;
             this.chkLoadLatestSave.Text = "Load Latest Save";
@@ -495,9 +526,10 @@
             // lnkFilterSettings
             // 
             this.lnkFilterSettings.AutoSize = true;
-            this.lnkFilterSettings.Location = new System.Drawing.Point(171, 66);
+            this.lnkFilterSettings.Location = new System.Drawing.Point(228, 81);
+            this.lnkFilterSettings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkFilterSettings.Name = "lnkFilterSettings";
-            this.lnkFilterSettings.Size = new System.Drawing.Size(45, 13);
+            this.lnkFilterSettings.Size = new System.Drawing.Size(55, 16);
             this.lnkFilterSettings.TabIndex = 24;
             this.lnkFilterSettings.TabStop = true;
             this.lnkFilterSettings.Text = "Settings";
@@ -506,9 +538,10 @@
             // chkScreenFilter
             // 
             this.chkScreenFilter.AutoSize = true;
-            this.chkScreenFilter.Location = new System.Drawing.Point(6, 66);
+            this.chkScreenFilter.Location = new System.Drawing.Point(8, 81);
+            this.chkScreenFilter.Margin = new System.Windows.Forms.Padding(4);
             this.chkScreenFilter.Name = "chkScreenFilter";
-            this.chkScreenFilter.Size = new System.Drawing.Size(85, 17);
+            this.chkScreenFilter.Size = new System.Drawing.Size(104, 20);
             this.chkScreenFilter.TabIndex = 23;
             this.chkScreenFilter.TabStop = false;
             this.chkScreenFilter.Text = "Screen Filter";
@@ -518,9 +551,10 @@
             // lnkPreviewLaunchParameters
             // 
             this.lnkPreviewLaunchParameters.AutoSize = true;
-            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(171, 90);
+            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(228, 109);
+            this.lnkPreviewLaunchParameters.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkPreviewLaunchParameters.Name = "lnkPreviewLaunchParameters";
-            this.lnkPreviewLaunchParameters.Size = new System.Drawing.Size(34, 13);
+            this.lnkPreviewLaunchParameters.Size = new System.Drawing.Size(40, 16);
             this.lnkPreviewLaunchParameters.TabIndex = 22;
             this.lnkPreviewLaunchParameters.TabStop = true;
             this.lnkPreviewLaunchParameters.Text = "Show";
@@ -530,9 +564,11 @@
             // 
             this.groupBox3.Controls.Add(this.tblFiles);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox3.Location = new System.Drawing.Point(265, 3);
+            this.groupBox3.Location = new System.Drawing.Point(353, 4);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(236, 413);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox3.Size = new System.Drawing.Size(315, 503);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Additional Files / Load Order";
@@ -545,14 +581,14 @@
             this.tblFiles.Controls.Add(this.panel1, 0, 0);
             this.tblFiles.Controls.Add(this.flp1, 0, 2);
             this.tblFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblFiles.Location = new System.Drawing.Point(3, 16);
+            this.tblFiles.Location = new System.Drawing.Point(4, 19);
             this.tblFiles.Margin = new System.Windows.Forms.Padding(0);
             this.tblFiles.Name = "tblFiles";
             this.tblFiles.RowCount = 3;
-            this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tblFiles.Size = new System.Drawing.Size(230, 394);
+            this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tblFiles.Size = new System.Drawing.Size(307, 480);
             this.tblFiles.TabIndex = 0;
             // 
             // panel1
@@ -563,23 +599,25 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(230, 40);
+            this.panel1.Size = new System.Drawing.Size(307, 49);
             this.panel1.TabIndex = 21;
             // 
             // lblInfo
             // 
             this.lblInfo.AutoSize = true;
-            this.lblInfo.Location = new System.Drawing.Point(25, 7);
+            this.lblInfo.Location = new System.Drawing.Point(33, 9);
+            this.lblInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(29, 13);
+            this.lblInfo.Size = new System.Drawing.Size(37, 16);
             this.lblInfo.TabIndex = 25;
             this.lblInfo.Text = "label";
             // 
             // pbInfo
             // 
-            this.pbInfo.Location = new System.Drawing.Point(3, 7);
+            this.pbInfo.Location = new System.Drawing.Point(4, 9);
+            this.pbInfo.Margin = new System.Windows.Forms.Padding(4);
             this.pbInfo.Name = "pbInfo";
-            this.pbInfo.Size = new System.Drawing.Size(16, 16);
+            this.pbInfo.Size = new System.Drawing.Size(21, 20);
             this.pbInfo.TabIndex = 24;
             this.pbInfo.TabStop = false;
             // 
@@ -588,20 +626,20 @@
             this.flp1.Controls.Add(this.lnkSpecific);
             this.flp1.Controls.Add(this.lnkCustomParameters);
             this.flp1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp1.Location = new System.Drawing.Point(0, 370);
+            this.flp1.Location = new System.Drawing.Point(0, 450);
             this.flp1.Margin = new System.Windows.Forms.Padding(0);
             this.flp1.Name = "flp1";
-            this.flp1.Size = new System.Drawing.Size(230, 24);
+            this.flp1.Size = new System.Drawing.Size(307, 30);
             this.flp1.TabIndex = 22;
             // 
             // lnkSpecific
             // 
             this.lnkSpecific.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lnkSpecific.AutoSize = true;
-            this.lnkSpecific.Location = new System.Drawing.Point(3, 3);
-            this.lnkSpecific.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.lnkSpecific.Location = new System.Drawing.Point(4, 4);
+            this.lnkSpecific.Margin = new System.Windows.Forms.Padding(4, 4, 4, 0);
             this.lnkSpecific.Name = "lnkSpecific";
-            this.lnkSpecific.Size = new System.Drawing.Size(118, 13);
+            this.lnkSpecific.Size = new System.Drawing.Size(146, 16);
             this.lnkSpecific.TabIndex = 20;
             this.lnkSpecific.TabStop = true;
             this.lnkSpecific.Text = "Select Individual Files...";
@@ -610,10 +648,10 @@
             // lnkCustomParameters
             // 
             this.lnkCustomParameters.AutoSize = true;
-            this.lnkCustomParameters.Location = new System.Drawing.Point(127, 3);
-            this.lnkCustomParameters.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.lnkCustomParameters.Location = new System.Drawing.Point(158, 4);
+            this.lnkCustomParameters.Margin = new System.Windows.Forms.Padding(4, 4, 4, 0);
             this.lnkCustomParameters.Name = "lnkCustomParameters";
-            this.lnkCustomParameters.Size = new System.Drawing.Size(89, 13);
+            this.lnkCustomParameters.Size = new System.Drawing.Size(111, 16);
             this.lnkCustomParameters.TabIndex = 21;
             this.lnkCustomParameters.TabStop = true;
             this.lnkCustomParameters.Text = "Custom Params...";
@@ -627,17 +665,18 @@
             this.tblMain.Controls.Add(this.pnlBottom, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(4);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tblMain.Size = new System.Drawing.Size(504, 451);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
+            this.tblMain.Size = new System.Drawing.Size(672, 550);
             this.tblMain.TabIndex = 21;
             // 
             // tblInner
             // 
             this.tblInner.ColumnCount = 2;
-            this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 262F));
+            this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 349F));
             this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblInner.Controls.Add(this.pnlLeft, 0, 0);
             this.tblInner.Controls.Add(this.groupBox3, 1, 0);
@@ -647,7 +686,7 @@
             this.tblInner.Name = "tblInner";
             this.tblInner.RowCount = 1;
             this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblInner.Size = new System.Drawing.Size(504, 419);
+            this.tblInner.Size = new System.Drawing.Size(672, 511);
             this.tblInner.TabIndex = 0;
             // 
             // pnlLeft
@@ -659,7 +698,7 @@
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
             this.pnlLeft.Margin = new System.Windows.Forms.Padding(0);
             this.pnlLeft.Name = "pnlLeft";
-            this.pnlLeft.Size = new System.Drawing.Size(262, 419);
+            this.pnlLeft.Size = new System.Drawing.Size(349, 511);
             this.pnlLeft.TabIndex = 0;
             // 
             // pnlBottom
@@ -668,17 +707,18 @@
             this.pnlBottom.Controls.Add(this.flpButtons);
             this.pnlBottom.Controls.Add(this.chkRemember);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 419);
+            this.pnlBottom.Location = new System.Drawing.Point(0, 511);
             this.pnlBottom.Margin = new System.Windows.Forms.Padding(0);
             this.pnlBottom.Name = "pnlBottom";
-            this.pnlBottom.Size = new System.Drawing.Size(504, 32);
+            this.pnlBottom.Size = new System.Drawing.Size(672, 39);
             this.pnlBottom.TabIndex = 1;
             // 
             // btnSaveSettings
             // 
-            this.btnSaveSettings.Location = new System.Drawing.Point(133, 5);
+            this.btnSaveSettings.Location = new System.Drawing.Point(177, 6);
+            this.btnSaveSettings.Margin = new System.Windows.Forms.Padding(4);
             this.btnSaveSettings.Name = "btnSaveSettings";
-            this.btnSaveSettings.Size = new System.Drawing.Size(82, 23);
+            this.btnSaveSettings.Size = new System.Drawing.Size(109, 28);
             this.btnSaveSettings.TabIndex = 6;
             this.btnSaveSettings.TabStop = false;
             this.btnSaveSettings.Text = "Save Settings";
@@ -691,29 +731,32 @@
             this.flpButtons.Controls.Add(this.btnOK);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(304, 0);
+            this.flpButtons.Location = new System.Drawing.Point(405, 0);
+            this.flpButtons.Margin = new System.Windows.Forms.Padding(4);
             this.flpButtons.Name = "flpButtons";
             this.flpButtons.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
-            this.flpButtons.Size = new System.Drawing.Size(200, 32);
+            this.flpButtons.Size = new System.Drawing.Size(267, 39);
             this.flpButtons.TabIndex = 5;
             // 
             // ctrlFiles
             // 
             this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlFiles.Location = new System.Drawing.Point(3, 43);
+            this.ctrlFiles.Location = new System.Drawing.Point(5, 54);
+            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(5);
             this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(224, 324);
+            this.ctrlFiles.Size = new System.Drawing.Size(297, 391);
             this.ctrlFiles.TabIndex = 20;
             // 
             // PlayForm
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(504, 451);
+            this.ClientSize = new System.Drawing.Size(672, 550);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "PlayForm";
             this.Text = "Launch";
             this.groupBox1.ResumeLayout(false);
@@ -787,7 +830,7 @@
         private System.Windows.Forms.LinkLabel lnkCustomParameters;
         private System.Windows.Forms.CheckBox chkScreenFilter;
         private System.Windows.Forms.LinkLabel lnkFilterSettings;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblProfile;
         private System.Windows.Forms.ComboBox cmbProfiles;
         private System.Windows.Forms.TableLayoutPanel tblProfile;
         private System.Windows.Forms.ToolStrip profileToolStrip;

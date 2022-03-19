@@ -23,7 +23,7 @@ namespace DoomLauncher
         public bool ShouldShowToolTip { get; private set; } = true;
 
         private readonly string m_workingDirectory;
-        private bool m_playInProgress = false, m_idGamesLoaded;
+        private bool m_idGamesLoaded;
         private IGameFile m_lastSelectedItem;
         private PlayForm m_currentPlayForm;
         private DownloadView m_downloadView;
@@ -31,7 +31,6 @@ namespace DoomLauncher
         private List<INewFileDetector> m_screenshotDetectors;
         private List<INewFileDetector> m_saveFileDetectors;
         private IFileData[] m_saveGames;
-        private IStatisticsReader m_statsReader;
         private TabHandler m_tabHandler;
         private VersionHandler m_versionHandler;
         private readonly SplashScreen m_splash;

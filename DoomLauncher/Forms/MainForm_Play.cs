@@ -1,4 +1,5 @@
-﻿using DoomLauncher.DataSources;
+﻿using DoomLauncher.Adapters;
+using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
@@ -14,6 +15,10 @@ namespace DoomLauncher
 {
     public partial class MainForm
     {
+        private readonly List<PlaySession> m_activeSessions = new List<PlaySession>();
+
+        private FilterForm m_filterForm;
+
         private void HandlePlay()
         {
             if (GetCurrentViewControl() != null)
@@ -43,47 +48,48 @@ namespace DoomLauncher
         {
             LaunchData launchData = GetLaunchFiles(gameFiles);
 
-            if (launchData.Success)
+            if (!launchData.Success)
             {
-                if (launchData.GameFile == null)
-                {
-                    var iwad = DataSourceAdapter.GetIWad((int)AppConfiguration.GetTypedConfigValue(ConfigType.DefaultIWad, typeof(int)));
-                    if (iwad != null)
-                    {
-                        GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID, iwad.GameFileID.Value.ToString()));
-                        launchData.GameFile = DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
-                    }
-                }
+                if (!string.IsNullOrEmpty(launchData.ErrorTitle))
+                    MessageBox.Show(this, launchData.ErrorDescription, launchData.ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-                if (launchData.GameFile != null)
+            if (launchData.GameFile == null)
+            {
+                var iwad = DataSourceAdapter.GetIWad((int)AppConfiguration.GetTypedConfigValue(ConfigType.DefaultIWad, typeof(int)));
+                if (iwad != null)
                 {
-                    SetupPlayForm(launchData.GameFile);
-                    if (sourcePort != null) m_currentPlayForm.SelectedSourcePort = sourcePort;
-
-                    if (m_currentPlayForm.ShowDialog(this) == DialogResult.OK)
-                    {
-                        try
-                        {
-                            HandlePlaySettings(m_currentPlayForm, m_currentPlayForm.SelectedGameProfile);
-                            if (m_currentPlayForm.SelectedSourcePort != null)
-                                m_playInProgress = StartPlay(launchData.GameFile, m_currentPlayForm.SelectedSourcePort, m_currentPlayForm.ScreenFilter);
-                            ctrlSummary.PauseSlideshow();
-                        }
-                        catch (IOException)
-                        {
-                            MessageBox.Show(this, "The file is in use and cannot be launched. Please close any programs that may be using the file and try again.", "File In Use",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    else
-                    {
-                        HandleSelectionChange(GetCurrentViewControl(), true);
-                    }
+                    GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID, iwad.GameFileID.Value.ToString()));
+                    launchData.GameFile = DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
                 }
             }
-            else if (!string.IsNullOrEmpty(launchData.ErrorTitle))
+
+            if (launchData.GameFile == null)
+                return;
+
+            SetupPlayForm(launchData.GameFile);
+            if (sourcePort != null) 
+                m_currentPlayForm.SelectedSourcePort = sourcePort;
+
+            if (m_currentPlayForm.ShowDialog(this) == DialogResult.OK)
             {
-                MessageBox.Show(this, launchData.ErrorTitle, launchData.ErrorDescription, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                try
+                {
+                    HandlePlaySettings(m_currentPlayForm, m_currentPlayForm.SelectedGameProfile);
+                    if (m_currentPlayForm.SelectedSourcePort != null)
+                        StartPlay(launchData.GameFile, m_currentPlayForm.SelectedSourcePort, m_currentPlayForm.ScreenFilter);
+                    ctrlSummary.PauseSlideshow();
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show(this, "The file is in use and cannot be launched. Please close any programs that may be using the file and try again.", "File In Use",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                HandleSelectionChange(GetCurrentViewControl(), true);
             }
         }
 
@@ -105,7 +111,7 @@ namespace DoomLauncher
                 }
             }
 
-            if (m_playInProgress)
+            if (m_activeSessions.Any() && !AppConfiguration.AllowMultiplePlaySessions)
                 return new LaunchData("Already Playing", "There is already a game in progress. Please exit that game first.");
 
             if (!DataSourceAdapter.GetSourcePorts().Any())
@@ -198,7 +204,7 @@ namespace DoomLauncher
             m_currentPlayForm.OnPreviewLaunchParameters += m_currentPlayForm_OnPreviewLaunchParameters;
             m_currentPlayForm.StartPosition = FormStartPosition.CenterParent;
 
-            m_currentPlayForm.Initialize(GetAdditionalTabViews(), gameFile);
+            m_currentPlayForm.Initialize(GetAdditionalTabViews(), gameFile, m_activeSessions.Any());
             m_currentPlayForm.SetGameProfile(GetGameProfile(gameFile));
         }
 
@@ -237,14 +243,10 @@ namespace DoomLauncher
             return views;
         }
 
-        private DateTime m_dtStartPlay;
-        private IGameFile m_currentPlayFile;
-        private FilterForm m_filterForm;
-
         private bool StartPlay(IGameFile gameFile, ISourcePortData sourcePort, bool screenFilter)
         {
             GameFilePlayAdapter playAdapter = CreatePlayAdapter(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
-            m_saveGames = new IFileData[] { };
+            m_saveGames = Array.Empty<IFileData>();
 
             if (AppConfiguration.CopySaveFiles)
                 CopySaveGames(gameFile, sourcePort);
@@ -255,18 +257,18 @@ namespace DoomLauncher
 
             bool isGameFileIwad = IsGameFileIwad(gameFile);
 
+            IStatisticsReader statisticsReader = null;
             if (m_currentPlayForm.SaveStatistics)
-                SetupStatsReader(sourcePort, gameFile);
+                statisticsReader = SetupStatsReader(sourcePort, gameFile);
 
             if (playAdapter.Launch(AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, 
                 gameFile, sourcePort, isGameFileIwad))
             {
-                m_currentPlayFile = gameFile;
+                m_activeSessions.Add(new PlaySession(playAdapter, statisticsReader, DateTime.Now));
 
                 if (gameFile != null)
                 {
                     gameFile.LastPlayed = DateTime.Now;
-                    m_dtStartPlay = DateTime.Now;
                     DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.LastPlayed });
                     UpdateDataSourceViews(gameFile);
                 }
@@ -347,15 +349,17 @@ namespace DoomLauncher
             form.ShowDialog(this);
         }
 
-        private void SetupStatsReader(ISourcePortData sourcePort, IGameFile gameFile)
+        private IStatisticsReader SetupStatsReader(ISourcePortData sourcePort, IGameFile gameFile)
         {
-            m_statsReader = CreateStatisticsReader(sourcePort, gameFile);
+            IStatisticsReader statisticsReader = CreateStatisticsReader(sourcePort, gameFile);
 
-            if (m_statsReader != null)
+            if (statisticsReader != null)
             {
-                m_statsReader.NewStastics += m_statsReader_NewStastics;
-                m_statsReader.Start();
+                statisticsReader.NewStastics += m_statsReader_NewStastics;
+                statisticsReader.Start();
             }
+
+            return statisticsReader;
         }
 
         private void CreateFileDetectors(ISourcePortData sourcePort)
@@ -381,6 +385,7 @@ namespace DoomLauncher
             playAdapter.PlayDemo = form.PlayDemo;
             playAdapter.ExtraParameters = form.ExtraParameters;
             playAdapter.SaveStatistics = form.SaveStatistics;
+            playAdapter.IgnoreExtractError = AppConfiguration.AllowMultiplePlaySessions && m_activeSessions.Any();
 
             if (form.LoadLatestSave)
             {
@@ -423,21 +428,25 @@ namespace DoomLauncher
 
         void m_statsReader_NewStastics(object sender, NewStatisticsEventArgs e)
         {
-            if (e.Statistics != null && m_currentPlayFile != null && m_currentPlayFile.GameFileID.HasValue)
+            if (e.Statistics == null || !(sender is IStatisticsReader statisticsReader))
+                return;
+
+            PlaySession session = m_activeSessions.FirstOrDefault(x => statisticsReader.Equals(x.StatisticsReader));
+            if (session == null || session.Adapter.GameFile == null)
+                return;
+
+            e.Statistics.MapName = e.Statistics.MapName.ToUpper();
+            e.Statistics.GameFileID = session.Adapter.GameFile.GameFileID.Value;
+            e.Statistics.SourcePortID = m_currentPlayForm.SelectedSourcePort.SourcePortID;
+
+            if (e.Update)
             {
-                e.Statistics.MapName = e.Statistics.MapName.ToUpper();
-                e.Statistics.GameFileID = m_currentPlayFile.GameFileID.Value;
-                e.Statistics.SourcePortID = m_currentPlayForm.SelectedSourcePort.SourcePortID;
-
-                if (e.Update)
-                {
-                    IStatsData stats = DataSourceAdapter.GetStats(e.Statistics.GameFileID).LastOrDefault(x => x.MapName == e.Statistics.MapName);
-                    if (stats != null)
-                        DataSourceAdapter.DeleteStats(stats.StatID);
-                }
-
-                DataSourceAdapter.InsertStats(e.Statistics);
+                IStatsData stats = DataSourceAdapter.GetStats(e.Statistics.GameFileID).LastOrDefault(x => x.MapName == e.Statistics.MapName);
+                if (stats != null)
+                    DataSourceAdapter.DeleteStats(stats.StatID);
             }
+
+            DataSourceAdapter.InsertStats(e.Statistics);
         }
 
         private bool IsGameFileIwad(IGameFile gameFile)
@@ -466,35 +475,37 @@ namespace DoomLauncher
             }
 
             GameFilePlayAdapter adapter = sender as GameFilePlayAdapter;
+            PlaySession session = m_activeSessions.FirstOrDefault(x => x.Adapter.Equals(adapter));
             DateTime dtExit = DateTime.Now;
             Directory.SetCurrentDirectory(m_workingDirectory);
-            m_playInProgress = false;
 
             if (adapter.SourcePort != null)
             {
                 IGameFile gameFile = adapter.GameFile;
 
-                if (gameFile != null)
-                    SetMinutesPlayed(dtExit, gameFile);
+                if (gameFile != null && session != null)
+                    SetMinutesPlayed(session, dtExit);
 
                 if (!string.IsNullOrEmpty(adapter.RecordedFileName))
                     HandleRecordedDemo(adapter, gameFile);
 
                 HandleDetectorFiles(adapter, gameFile);
 
-                if (m_statsReader != null)
+                if (session != null && session.StatisticsReader != null)
                 {
-                    m_statsReader.Stop();
+                    IStatisticsReader statsReader = session.StatisticsReader;
+                    statsReader.Stop();
 
-                    if (m_statsReader.ReadOnClose)
-                        m_statsReader.ReadNow();
+                    if (statsReader.ReadOnClose)
+                        statsReader.ReadNow();
 
-                    if (m_statsReader.Errors.Length > 0)
-                        HandleStatReaderErrors(m_statsReader);
-
-                    m_statsReader = null;
+                    if (statsReader.Errors.Length > 0)
+                        HandleStatReaderErrors(statsReader);
                 }
             }
+
+            if (session != null)
+                m_activeSessions.Remove(session);
 
             IGameFileView view = GetCurrentViewControl();
             view.UpdateGameFile(adapter.GameFile);
@@ -506,9 +517,10 @@ namespace DoomLauncher
             return DataSourceAdapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID.Value == gameFile.GameFileID.Value);
         }
 
-        private void SetMinutesPlayed(DateTime dtExit, IGameFile gameFile)
+        private void SetMinutesPlayed(PlaySession session, DateTime dtExit)
         {
-            gameFile.MinutesPlayed += Convert.ToInt32(dtExit.Subtract(m_dtStartPlay).TotalMinutes);
+            IGameFile gameFile = session.Adapter.GameFile;
+            gameFile.MinutesPlayed += Convert.ToInt32(dtExit.Subtract(session.Start).TotalMinutes);
             DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.MinutesPlayed });
             UpdateDataSourceViews(gameFile);
         }

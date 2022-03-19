@@ -82,6 +82,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_3_0, AppVersion.Version_3_3_0);
                 ExecuteUpdate(Pre_Version_3_3_1, AppVersion.Version_3_3_1);
                 ExecuteUpdate(Pre_Version_3_3_2, AppVersion.Version_3_3_2);
+                ExecuteUpdate(Pre_Version_3_4_0, AppVersion.Version_3_4_0);
             }
         }
 
@@ -702,6 +703,17 @@ namespace DoomLauncher
 
             string urls = "Germany;https://www.quaddicted.com/files/idgames/;Idaho;ftp://mirrors.syringanetworks.net/idgames/;New York;https://youfailit.net/pub/idgames/;Sweden;https://ftpmirror1.infania.net/pub/idgames/;Virginia;http://www.gamers.org/pub/idgames/;";
             UpdateMirrorUrls(urls, "New York");
+        }
+
+        private void Pre_Version_3_4_0()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "AllowMultiplePlaySessions",
+                Value = "false",
+                UserCanModify = true,
+                AvailableValues = "Yes;true;No;false"
+            });
         }
 
         private void UpdateMirrorUrls(string urls, string defaultUrl)

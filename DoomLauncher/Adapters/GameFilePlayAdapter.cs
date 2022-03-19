@@ -15,7 +15,7 @@ namespace DoomLauncher
 
         public GameFilePlayAdapter()
         {
-            AdditionalFiles = new IGameFile[] { };
+            AdditionalFiles = Array.Empty<IGameFile>();
             ExtractFiles = true;
         }
 
@@ -113,7 +113,7 @@ namespace DoomLauncher
             if (!string.IsNullOrEmpty(sourcePortData.ExtraParameters))
                 sb.Append(" " + sourcePortData.ExtraParameters);
 
-            IStatisticsReader statsReader = sourcePort.CreateStatisticsReader(gameFile, new IStatsData[] { });
+            IStatisticsReader statsReader = sourcePort.CreateStatisticsReader(gameFile, Array.Empty<IStatsData>());
             if (SaveStatistics && statsReader != null && !string.IsNullOrEmpty(statsReader.LaunchParameter))
                 sb.Append(" " + statsReader.LaunchParameter);
 
@@ -151,8 +151,7 @@ namespace DoomLauncher
                 {
                     IArchiveEntry entry = reader.Entries.First();
                     string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
-                    if (ExtractFiles && entry.ExtractRequired)
-                        entry.ExtractToFile(extractFile, true);
+                    ExtractEntryFile(entry, extractFile);
 
                     if (!entry.ExtractRequired)
                         extractFile = entry.FullName;
@@ -177,6 +176,21 @@ namespace DoomLauncher
             }
 
             return true;
+        }
+
+        private void ExtractEntryFile(IArchiveEntry entry, string extractFile)
+        {
+            try
+            {
+                if (ExtractFiles && entry.ExtractRequired)
+                    entry.ExtractToFile(extractFile, true);
+            }
+            catch (IOException)
+            {
+                if (IgnoreExtractError)
+                    return;
+                throw;
+            }
         }
 
         private bool HandleGameFile(IGameFile gameFile, List<string> launchFiles, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
@@ -363,6 +377,7 @@ namespace DoomLauncher
         public string PlayDemoFile { get; set; }
 
         public bool ExtractFiles { get; set; }
+        public bool IgnoreExtractError { get; set; }
 
         void proc_Exited(object sender, EventArgs e)
         {
