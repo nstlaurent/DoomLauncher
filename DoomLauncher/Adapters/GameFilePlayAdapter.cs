@@ -161,17 +161,18 @@ namespace DoomLauncher
             }
             catch (FileNotFoundException)
             {
-                LastError = string.Format("File not found: {0}", gameFile.FileName);
+                LastError = $"File not found: {gameFile.FileName}";
                 return false;
             }
             catch (IOException)
             {
-                LastError = string.Format("File in use: {0}", gameFile.FileName);
+                LastError = $"File in use: {gameFile.FileName}";
                 return false;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                LastError = string.Format("There was an issue with the IWad: {0}. Corrupted file?", gameFile.FileName);
+                LastError = $"There was an issue with the IWad: {gameFile.FileName}." +
+                    $"{Environment.NewLine}{Environment.NewLine}{e.Message}";
                 return false;
             }
 
