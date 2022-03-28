@@ -111,11 +111,11 @@ namespace DoomLauncher
 
             foreach (IGameFile gameFile in m_gameFiles)
             {
-                if (gameFile.IsDirectory())
+                if (gameFile.IsDirectory() || !Path.GetExtension(gameFile.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 string file = Path.Combine(m_directory.GetFullPath(), gameFile.FileName);
-                using (IArchiveReader reader = ArchiveReader.Create(file, ignorePk3: true))
+                using (IArchiveReader reader = ArchiveReader.Create(file))
                 {
                     if (m_ct.IsCancellationRequested)
                         break;

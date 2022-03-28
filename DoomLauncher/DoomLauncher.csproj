@@ -175,6 +175,7 @@
     </Compile>
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
+    <Compile Include="Handlers\DoomImageUtil.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
     <Compile Include="Config\Icons.cs" />
     <Compile Include="Handlers\MenuConstants.cs" />

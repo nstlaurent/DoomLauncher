@@ -8,6 +8,8 @@ namespace WadReader
     {
         private string m_name;
 
+        public int Length => m_filelump.size;
+
         public FileLump(Stream stream)
         {
             m_filelump = Util.ReadStuctureFromStream<filelump_t>(stream);
@@ -42,6 +44,12 @@ namespace WadReader
             fs.Read(ret, 0, ret.Length);
 
             return ret;
+        }
+
+        public void ReadData(FileStream fs, byte[] data, int offset, int length)
+        {
+            fs.Seek(m_filelump.filepos, SeekOrigin.Begin);
+            fs.Read(data, offset, length);
         }
 
         public static int FileLumpByteSize

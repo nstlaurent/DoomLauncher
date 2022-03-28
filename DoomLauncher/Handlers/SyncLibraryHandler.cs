@@ -2,10 +2,12 @@
 using DoomLauncher.TextFileParsers;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using WadReader;
 
 namespace DoomLauncher
 {
@@ -16,15 +18,21 @@ namespace DoomLauncher
 
         public List<IGameFile> AddedGameFiles => m_addedFiles;
         public List<IGameFile> UpdatedGameFiles => m_updatedFiles;
+        public List<IGameFile> FailedTitlePicFiles => m_failedTitlepics;
 
         private readonly List<IGameFile> m_addedFiles = new List<IGameFile>();
         private readonly List<IGameFile> m_updatedFiles = new List<IGameFile>();
         private readonly List<InvalidFile> m_invalidFiles = new List<InvalidFile>();
         private readonly HashSet<string> m_includeFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly FileManagement m_fileManagement;
+        private readonly Palette m_palette;
+        private readonly Dictionary<IGameFile, Image> m_titlepics = new Dictionary<IGameFile, Image>();
+        private readonly List<IGameFile> m_failedTitlepics = new List<IGameFile>();
+        private readonly bool m_pullTitlepic;
 
         public SyncLibraryHandler(IGameFileDataSourceAdapter dbDataSource, IGameFileDataSourceAdapter syncDataSource,
-            LauncherPath gameFileDirectory, LauncherPath tempDirectory, string[] dateParseFormats, FileManagement fileManagement)
+            LauncherPath gameFileDirectory, LauncherPath tempDirectory, string[] dateParseFormats, FileManagement fileManagement,
+            Palette palette, bool pullTitlepic)
         {
             DbDataSource = dbDataSource;
             SyncDataSource = syncDataSource;
@@ -32,16 +40,15 @@ namespace DoomLauncher
             TempDirectory = tempDirectory;
             DateParseFormats = dateParseFormats;
             m_fileManagement = fileManagement;
+            m_palette = palette;
+            m_pullTitlepic = pullTitlepic;
 
             SyncFileCurrent = SyncFileCount = 0;
         }
 
         public void Execute(string[] zipFiles)
         {
-            m_addedFiles.Clear();
-            m_updatedFiles.Clear();
-            m_invalidFiles.Clear();
-            m_includeFiles.Clear();
+            ClearData();
 
             SyncFileCount = zipFiles.Length;
             SyncFileCurrent = 0;
@@ -74,10 +81,10 @@ namespace DoomLauncher
                         using (IArchiveReader reader = ArchiveReader.Create(Path.Combine(GameFileDirectory.GetFullPath(), file.FileName)))
                         {
                             FillTextFileInfo(file, reader);
-                            FillMapInfo(file, reader);
+                            PopulateGameFileData(file, reader);
                         }
                     }
-                    catch(IOException)
+                    catch (IOException)
                     {
                         file.Map = string.Empty;
                         m_invalidFiles.Add(new InvalidFile(fileName, "File is in use/Not found"));
@@ -124,6 +131,38 @@ namespace DoomLauncher
             }
         }
 
+        private void ClearData()
+        {
+            m_addedFiles.Clear();
+            m_updatedFiles.Clear();
+            m_invalidFiles.Clear();
+            m_includeFiles.Clear();
+            m_titlepics.Clear();
+            m_failedTitlepics.Clear();
+        }
+
+        public bool GetTitlePic(IGameFile gameFile, out Image image) =>
+            m_titlepics.TryGetValue(gameFile, out image);
+
+        private void AddTitlepic(IGameFile file, IArchiveReader reader)
+        {
+            if (!m_pullTitlepic || m_titlepics.ContainsKey(file) || !DoomImageUtil.FindTitlepic(reader, out IArchiveEntry entry))
+                return;
+
+            Palette palette = m_palette;
+            if (DoomImageUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
+                palette = Palette.From(paletteEntry.ReadEntry());
+
+            if (!DoomImageUtil.ConvertToImage(entry.ReadEntry(), palette, out Image image))
+            {
+                if (!m_failedTitlepics.Contains(file))
+                    m_failedTitlepics.Add(file);
+                return;
+            }
+
+            m_titlepics[file] = image;
+        }
+
         private void AddLatestGameFile(string filename, List<IGameFile> gameFiles)
         {
             IGameFile gameFile = DbDataSource.GetGameFile(filename);
@@ -131,9 +170,10 @@ namespace DoomLauncher
                 gameFiles.Add(gameFile);
         }
 
-        private void FillMapInfo(IGameFile file, IArchiveReader reader)
+        private void PopulateGameFileData(IGameFile file, IArchiveReader reader)
         {
-            file.Map = GetMaps(reader);
+            ReadArchiveEntries(file, reader, out string maps);
+            file.Map = maps;
             if (!string.IsNullOrEmpty(file.Map))
                 file.MapCount = file.Map.Count(x => x == ',') + 1;
         }
@@ -188,25 +228,32 @@ namespace DoomLauncher
             return reader.Entries.Where(x => x.Name.Contains('.') && Path.GetExtension(x.Name).Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
-        private string GetMaps(IArchiveReader reader)
+        private void ReadArchiveEntries(IGameFile gameFile, IArchiveReader reader, out string maps)
         {
+            maps = string.Empty;
+            StringBuilder sb = new StringBuilder();
+
             var txtEntries = GetEntriesByExtension(reader, ".txt").Where(x => x.Name.Equals("mapinfo.txt", StringComparison.InvariantCultureIgnoreCase));
             if (txtEntries.Any())
-                return MapStringFromMapInfo(reader, txtEntries.First());
+                AppendMapSet(sb, MapStringFromMapInfo(reader, txtEntries.First()));
 
-            StringBuilder sb = new StringBuilder();
+            AddTitlepic(gameFile, reader);
             AppendMapSet(sb, MapStringFromGameFile(reader));
 
             IEnumerable<IArchiveEntry> pk3Entries = Util.GetEntriesByExtension(reader, Util.GetReadablePkExtensions());
+            IEnumerable<IArchiveEntry> wadEntries = Util.GetEntriesByExtension(reader, new string[] { ".wad" });
 
-            foreach (IArchiveEntry entry in pk3Entries)
+            foreach (IArchiveEntry entry in pk3Entries.Union(wadEntries))
             {
                 string extractedFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), entry);
                 using (var extractedZip = ArchiveReader.Create(extractedFile))
-                    AppendMapSet(sb, GetMaps(extractedZip));
+                {
+                    ReadArchiveEntries(gameFile, extractedZip, out string extractedmaps);
+                    AppendMapSet(sb, extractedmaps);
+                }
             }
 
-            return sb.ToString();
+            maps = sb.ToString();
         }
 
         private string MapStringFromMapInfo(IArchiveReader reader, IArchiveEntry entry)

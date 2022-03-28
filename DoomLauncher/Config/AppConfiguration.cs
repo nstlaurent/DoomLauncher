@@ -27,6 +27,7 @@ namespace DoomLauncher
         public static string ShowTabHeadersName => "ShowTabHeaders";
         public static string CopySaveFilesName => "CopySaveFiles";
         public static string AllowMultiplePlaySessionsName => "AllowMultiplePlaySessions";
+        public static string AutomaticallyPullTitlpicName => "AutomaticallyPullTitlpic";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -125,6 +126,7 @@ namespace DoomLauncher
                 ShowTabHeaders = Convert.ToBoolean(GetValue(config, ShowTabHeadersName));
                 CopySaveFiles = Convert.ToBoolean(GetValue(config, CopySaveFilesName));
                 AllowMultiplePlaySessions = Convert.ToBoolean(GetValue(config, AllowMultiplePlaySessionsName));
+                AutomaticallyPullTitlpic = Convert.ToBoolean(GetValue(config, AutomaticallyPullTitlpicName));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
@@ -258,5 +260,6 @@ namespace DoomLauncher
         public bool ShowTabHeaders { get; set; } = true;
         public bool CopySaveFiles { get; set; }
         public bool AllowMultiplePlaySessions { get; set; }
+        public bool AutomaticallyPullTitlpic { get; set; }
     }
 }

@@ -1621,8 +1621,16 @@ namespace DoomLauncher
 
             foreach (string file in fileNames)
             {
+                // Ignore. This is the same file and should be from a Resync call.
+                if (file.StartsWith(AppConfiguration.GameFileDirectory.GetFullPath()))
+                {
+                    results.ReplacedFiles.Add(Path.GetFileName(file));
+                    continue;
+                }
+
                 if (progressBar != null)
                     UpdateProgressBar(progressBar, string.Format("Copying {0}...", file), Convert.ToInt32(count / (double)fileNames.Count * 100));
+
                 FileInfo fi = new FileInfo(file);
                 string baseName = fi.Name.Replace(fi.Extension, string.Empty);
 
@@ -1886,17 +1894,11 @@ namespace DoomLauncher
             return new ToolStripMenuItem[]
             {
                 GetToolStripItem(mnuLocal, MenuConstants.Rename),
-                GetToolStripItem(mnuLocal, MenuConstants.Utility)
+                GetToolStripItem(mnuLocal, MenuConstants.Utility),
             };
         }
 
-        private ToolStripMenuItem[] GetUnmanagedMenuItems()
-        {
-            return new ToolStripMenuItem[]
-            {
-                GetToolStripItem(mnuLocal, MenuConstants.Resync),
-            };
-        }
+        private ToolStripMenuItem[] GetUnmanagedMenuItems() => Array.Empty<ToolStripMenuItem>();
 
         ToolStripMenuItem GetToolStripItem(ContextMenuStrip strip, string text) =>
             strip.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == text) as ToolStripMenuItem;
@@ -2619,8 +2621,15 @@ namespace DoomLauncher
             if (view == null)
                 return;
 
-            var gameFiles = SelectedItems(view).Where(x => x.IsUnmanaged()).Select(x => x.FileName).ToArray();
-            HandleAddGameFiles(AddFileType.GameFile, gameFiles, overrideManagement: FileManagement.Unmanaged);
+            var allGameFiles = SelectedItems(view);
+
+            var managed = allGameFiles.Where(x => !x.IsUnmanaged()).Select(x => Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), x.FileName)).ToArray();
+            if (managed.Length > 0)
+                HandleAddGameFiles(AddFileType.GameFile, managed, overrideManagement: FileManagement.Managed);
+
+            var unmanaged = allGameFiles.Where(x => x.IsUnmanaged()).Select(x => x.FileName).ToArray();
+            if (unmanaged.Length > 0)
+                HandleAddGameFiles(AddFileType.GameFile, unmanaged, overrideManagement: FileManagement.Unmanaged);
         }
 
         private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;

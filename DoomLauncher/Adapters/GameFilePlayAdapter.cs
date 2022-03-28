@@ -273,7 +273,7 @@ namespace DoomLauncher
                 foreach (string str in files)
                 {
                     FileInfo fi = new FileInfo(str);
-                    if (!dehExtensions.Contains(fi.Extension.ToLower()))
+                    if (!dehExtensions.Contains(fi.Extension, StringComparer.OrdinalIgnoreCase))
                         sb.Append(string.Format("\"{0}\" ", str));
                     else
                         dehFiles.Add(str);

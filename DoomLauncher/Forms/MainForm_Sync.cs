@@ -1,6 +1,7 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,17 @@ namespace DoomLauncher
 
                 foreach (IGameFile updateGameFile in handler.UpdatedGameFiles)
                     UpdateDataSourceViews(updateGameFile);
+            }
+
+            if (handler != null && handler.FailedTitlePicFiles.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder("The following files had title images but failed to convert to a valid image:");
+                sb.AppendLine();
+                sb.AppendLine();
+                foreach (IGameFile gameFile in handler.FailedTitlePicFiles)
+                    sb.Append(gameFile.FileNameNoPath);
+
+                MessageBox.Show(this, sb.ToString(), "Image Conversion Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             if (handler != null &&
@@ -76,12 +88,14 @@ namespace DoomLauncher
 
             try
             {
-                handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter,
-                    AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats, fileManagement);
+                handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration.GameFileDirectory, 
+                    AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats, fileManagement, DataCache.Instance.DefaultPalette, 
+                    AppConfiguration.AutomaticallyPullTitlpic);
                 handler.SyncFileChange += syncHandler_SyncFileChange;
                 handler.GameFileDataNeeded += syncHandler_GameFileDataNeeded;
 
                 handler.Execute(files);
+                SyncTitlePics(handler);
 
                 if (m_pendingZdlFiles != null)
                 {
@@ -98,6 +112,22 @@ namespace DoomLauncher
             }
 
             return handler;
+        }
+
+        private void SyncTitlePics(SyncLibraryHandler handler)
+        {
+            foreach (IGameFile gameFile in handler.AddedGameFiles.Union(handler.UpdatedGameFiles))
+            {
+                if (!handler.GetTitlePic(gameFile, out Image image))
+                    continue;
+
+                // TODO should probably have a way to track if a screenshot is a titlepic
+                var screenshots = DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
+                if (screenshots.Any())
+                    continue;
+
+                ScreenshotHandler.InsertScreenshot(gameFile, image, out _);
+            }
         }
 
         private void TagSyncFiles(SyncLibraryHandler handler, ITagData tag)

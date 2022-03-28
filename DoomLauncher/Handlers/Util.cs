@@ -594,5 +594,12 @@ namespace DoomLauncher
             FileAttributes attr = File.GetAttributes(path);
             return (attr & FileAttributes.Directory) == FileAttributes.Directory;
         }
+
+        public static byte[] ReadEntry(this IArchiveEntry entry)
+        {
+            byte[] data = new byte[entry.Length];
+            entry.Read(data, 0, data.Length);
+            return data;
+        }
     }
 }

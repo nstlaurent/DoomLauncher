@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using WadReader;
 
 namespace DoomLauncher
 {
@@ -21,6 +22,7 @@ namespace DoomLauncher
         public ITagData[] Tags { get; private set; }
         public ITagData[] PreviousTags { get; private set; }
         public Image DefaultImage { get; private set; }
+        public Palette DefaultPalette { get; private set; }
 
         public void Init(IDataSourceAdapter adapter)
         {
@@ -28,6 +30,7 @@ namespace DoomLauncher
             AppConfiguration = new AppConfiguration(adapter);
             TagMapLookup = new TagMapLookup(adapter);
             DefaultImage = Image.FromFile(Path.Combine(LauncherPath.GetDataDirectory(), "TileImages", "DoomLauncherTile.png"));
+            DefaultPalette = Palette.From(Properties.Resources.DoomPalette);
 
             UpdateTags();
         }

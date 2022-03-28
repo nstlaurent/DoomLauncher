@@ -34,9 +34,7 @@ namespace DoomLauncher
             var latestVersion = Enum.GetValues(typeof(AppVersion)).Cast<AppVersion>().Last();
 
             if (version == AppVersion.Unknown || version < latestVersion)
-            {
                 return true;
-            }
 
             return false;
         }
@@ -711,6 +709,14 @@ namespace DoomLauncher
             {
                 Name = "AllowMultiplePlaySessions",
                 Value = "false",
+                UserCanModify = true,
+                AvailableValues = "Yes;true;No;false"
+            });
+
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "AutomaticallyPullTitlpic",
+                Value = "true",
                 UserCanModify = true,
                 AvailableValues = "Yes;true;No;false"
             });
