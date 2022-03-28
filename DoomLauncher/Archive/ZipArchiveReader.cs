@@ -8,6 +8,8 @@ namespace DoomLauncher
     {
         private readonly ZipArchive m_archive;
 
+        public bool EntriesHaveExtensions => true;
+
         public ZipArchiveReader(string file)
         {
             m_archive = ZipFile.OpenRead(file);

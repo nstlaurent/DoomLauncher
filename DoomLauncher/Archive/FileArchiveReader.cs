@@ -9,6 +9,8 @@ namespace DoomLauncher
         private readonly string m_file;
         private readonly List<IArchiveEntry> m_entries = new List<IArchiveEntry>();
 
+        public bool EntriesHaveExtensions => true;
+
         public FileArchiveReader(string file)
         {
             m_file = file;

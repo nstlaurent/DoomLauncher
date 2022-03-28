@@ -109,6 +109,8 @@
     <Compile Include="Archive\FileArchiveReader.cs" />
     <Compile Include="Archive\DirectoryArchiveReader.cs" />
     <Compile Include="Archive\IArchiveEntry.cs" />
+    <Compile Include="Archive\WadArchiveReader.cs" />
+    <Compile Include="Archive\WadEntry.cs" />
     <Compile Include="Archive\ZipArchiveReader.cs" />
     <Compile Include="Archive\ZipArchiveReaderEntry.cs" />
     <Compile Include="Controls\GameFileTile.cs">
@@ -860,6 +862,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\PLAYPAL.LMP" />
     <None Include="Resources\th.png" />
   </ItemGroup>
   <ItemGroup>

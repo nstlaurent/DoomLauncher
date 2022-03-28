@@ -9,6 +9,7 @@ namespace DoomLauncher
         private readonly List<DirectoryArchiveEntry> m_entries = new List<DirectoryArchiveEntry>();
 
         public IEnumerable<IArchiveEntry> Entries => m_entries;
+        public bool EntriesHaveExtensions => true;
 
         public DirectoryArchiveReader(string directory)
         {

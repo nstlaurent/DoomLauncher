@@ -7,7 +7,7 @@ namespace DoomLauncher
     {
         public static IArchiveReader EmptyArchiveReader = new EmptyArchiveReader();
 
-        public static IArchiveReader Create(string path, bool ignorePk3 = false)
+        public static IArchiveReader Create(string path)
         {
             if (!File.Exists(path) && !Directory.Exists(path))
                 return EmptyArchiveReader;
@@ -15,10 +15,17 @@ namespace DoomLauncher
             if (Util.IsDirectory(path))
                 return new DirectoryArchiveReader(path);
 
-            if (!ignorePk3 && IsPk(Path.GetExtension(path)))
+            if (IsPk(Path.GetExtension(path)))
                 return new ZipArchiveReader(path);
+            if (IsWad(Path.GetExtension(path)))
+                return new WadArchiveReader(path);
             else
                 return new FileArchiveReader(path);
+        }
+
+        private static bool IsWad(string ext)
+        {
+            return ext.Equals(".wad", StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool IsPk(string fileExtension)
