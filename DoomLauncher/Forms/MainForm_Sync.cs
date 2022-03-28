@@ -121,12 +121,15 @@ namespace DoomLauncher
                 if (!handler.GetTitlePic(gameFile, out Image image))
                     continue;
 
-                // TODO should probably have a way to track if a screenshot is a titlepic
                 var screenshots = DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
-                if (screenshots.Any())
+                if (ScreenshotHandler.FindScreenshot(screenshots, image, out MemoryStream imageStream))
                     continue;
 
-                ScreenshotHandler.InsertScreenshot(gameFile, image, out _);
+                if (imageStream == null)
+                    continue;
+
+                ScreenshotHandler.InsertScreenshot(gameFile, imageStream, screenshots, out _);
+                imageStream?.Dispose();
             }
         }
 

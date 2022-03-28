@@ -1358,7 +1358,10 @@ namespace DoomLauncher
 
         private IGameFile[] m_pendingZdlFiles;
 
-        private async Task HandleAddGameFiles(AddFileType type, string[] files, ITagData tag = null, FileManagement? overrideManagement = null)
+        // A non-null value for pullTitlepic will override the users configuration value for AutomaticallyPullTitlepic.
+        // The value will be restored on completion.
+        private async Task HandleAddGameFiles(AddFileType type, string[] files, 
+            ITagData tag = null, FileManagement? overrideManagement = null, bool? overridePullTitlepic = null)
         {
             if (!VerifyAddFiles(type, files))
                 return;
@@ -1392,10 +1395,16 @@ namespace DoomLauncher
 
             if (libraryFiles.Count > 0)
             {
+                bool saveTitlepicValue = AppConfiguration.AutomaticallyPullTitlpic;
+                if (overridePullTitlepic != null)
+                    AppConfiguration.AutomaticallyPullTitlpic = overridePullTitlepic.Value;
+
                 if (libraryFilesAsFiles.Length > 0)
                     await HandleCopyFiles(type, libraryFilesAsFiles, overrideManagement ?? GetUserSelectedFileManagement(), tag);
                 if (libraryFilesAsDirectories.Length > 0)
                     await HandleCopyFiles(type, libraryFilesAsDirectories, FileManagement.Unmanaged, tag);
+
+                AppConfiguration.AutomaticallyPullTitlpic = saveTitlepicValue;
             }
             else if (m_zdlInvalidFiles.Count > 0)
             {
@@ -2615,21 +2624,32 @@ namespace DoomLauncher
             }
         }
 
-        private void resyncToolStripMenuItem_Click(object sender, EventArgs e)
+        private void resyncToolStripMenuItem_Click(object sender, EventArgs e) =>
+            HandleResync(true);
+
+        private void resyncIgnoreTitlepicToolStripMenuItem_Click(object sender, EventArgs e) =>
+            HandleResync(false);
+
+        private void HandleResync(bool pullTitlepic)
         {
             IGameFileView view = GetCurrentViewControl();
             if (view == null)
                 return;
 
+            bool? setPullTitlepic = null;
+            if (!pullTitlepic)
+                setPullTitlepic = false;
             var allGameFiles = SelectedItems(view);
 
             var managed = allGameFiles.Where(x => !x.IsUnmanaged()).Select(x => Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), x.FileName)).ToArray();
             if (managed.Length > 0)
-                HandleAddGameFiles(AddFileType.GameFile, managed, overrideManagement: FileManagement.Managed);
+                HandleAddGameFiles(AddFileType.GameFile, managed, overrideManagement: FileManagement.Managed, 
+                    overridePullTitlepic: setPullTitlepic);
 
             var unmanaged = allGameFiles.Where(x => x.IsUnmanaged()).Select(x => x.FileName).ToArray();
             if (unmanaged.Length > 0)
-                HandleAddGameFiles(AddFileType.GameFile, unmanaged, overrideManagement: FileManagement.Unmanaged);
+                HandleAddGameFiles(AddFileType.GameFile, unmanaged, overrideManagement: FileManagement.Unmanaged, 
+                    overridePullTitlepic: setPullTitlepic);
         }
 
         private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
