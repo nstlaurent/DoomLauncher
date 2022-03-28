@@ -88,9 +88,9 @@ namespace DoomLauncher
             return false;
         }
 
-        public static string GetMapStringFromWad(string file)
+        public static List<string> GetMapStringFromWad(string file)
         {
-            StringBuilder sb = new StringBuilder();
+            List<string> maps = new List<string>();
 
             try
             {
@@ -102,7 +102,8 @@ namespace DoomLauncher
                     var mapLumps = WadFileReader.GetMapMarkerLumps(wadReader.ReadLumps()).OrderBy(x => x.Name).ToArray();
                     fs.Close();
 
-                    sb.Append(string.Join(", ", mapLumps.Select(x => x.Name)));
+                    foreach (var mapLump in mapLumps)
+                        maps.Add(mapLump.Name);
                 }
                 else
                 {
@@ -114,7 +115,7 @@ namespace DoomLauncher
                 DisplayUnexpectedException(null, ex);
             }
 
-            return sb.ToString();
+            return maps;
         }
 
         public static void DisplayUnexpectedException(Form form, Exception ex)

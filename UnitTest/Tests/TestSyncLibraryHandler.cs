@@ -221,7 +221,7 @@ namespace UnitTest.Tests
         private static SyncLibraryHandler CreateSyncLibraryHandler()
         {
             return new SyncLibraryHandler(TestUtil.CreateAdapter(), CreateDirectoryAdapater(), new LauncherPath(s_filedir), 
-                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" }, FileManagement.Managed);
+                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" }, FileManagement.Managed, null, false);
         }
 
         private static DirectoryDataSourceAdapter CreateDirectoryAdapater()

@@ -24,11 +24,13 @@ namespace DoomLauncher
         private readonly List<IGameFile> m_updatedFiles = new List<IGameFile>();
         private readonly List<InvalidFile> m_invalidFiles = new List<InvalidFile>();
         private readonly HashSet<string> m_includeFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> m_mapSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly FileManagement m_fileManagement;
         private readonly Palette m_palette;
         private readonly Dictionary<IGameFile, Image> m_titlepics = new Dictionary<IGameFile, Image>();
         private readonly List<IGameFile> m_failedTitlepics = new List<IGameFile>();
         private readonly bool m_pullTitlepic;
+        private bool m_readMapInfo;
 
         public SyncLibraryHandler(IGameFileDataSourceAdapter dbDataSource, IGameFileDataSourceAdapter syncDataSource,
             LauncherPath gameFileDirectory, LauncherPath tempDirectory, string[] dateParseFormats, FileManagement fileManagement,
@@ -172,6 +174,8 @@ namespace DoomLauncher
 
         private void PopulateGameFileData(IGameFile file, IArchiveReader reader)
         {
+            m_readMapInfo = false;
+            m_mapSet.Clear();
             ReadArchiveEntries(file, reader, out string maps);
             file.Map = maps;
             if (!string.IsNullOrEmpty(file.Map))
@@ -233,12 +237,17 @@ namespace DoomLauncher
             maps = string.Empty;
             StringBuilder sb = new StringBuilder();
 
-            var txtEntries = GetEntriesByExtension(reader, ".txt").Where(x => x.Name.Equals("mapinfo.txt", StringComparison.InvariantCultureIgnoreCase));
-            if (txtEntries.Any())
-                AppendMapSet(sb, MapStringFromMapInfo(reader, txtEntries.First()));
+            var mapInfoEntries = reader.Entries.Where(x => Path.GetFileNameWithoutExtension(x.Name).Equals("mapinfo", StringComparison.OrdinalIgnoreCase));
+            if (mapInfoEntries.Any())
+            {
+                m_readMapInfo = true;
+                AppendMapSet(sb, MapStringFromMapInfo(reader, mapInfoEntries.First()));
+            }
 
             AddTitlepic(gameFile, reader);
-            AppendMapSet(sb, MapStringFromGameFile(reader));
+            // Only scan wad files if there is no MapInfo
+            if (!m_readMapInfo)
+                AppendMapSet(sb, MapStringFromGameFileWads(reader));
 
             IEnumerable<IArchiveEntry> pk3Entries = Util.GetEntriesByExtension(reader, Util.GetReadablePkExtensions());
             IEnumerable<IArchiveEntry> wadEntries = Util.GetEntriesByExtension(reader, new string[] { ".wad" });
@@ -309,29 +318,45 @@ namespace DoomLauncher
             sb.Append(maps);
         }
 
-        private static string GetMapStringFromMapInfo(string mapinfo)
+        private string GetMapStringFromMapInfo(string mapinfo)
         {
             Regex mapRegex = new Regex(@"\s*map\s+\w+");
             MatchCollection matches = mapRegex.Matches(mapinfo);
 
-            return string.Join(", ", matches.Cast<Match>().Select(x => x.Value.Trim().Substring(3).Trim()));
+            List<string> maps = new List<string>();
+            var mapMatches = matches.Cast<Match>().Select(x => x.Value.Trim().Substring(3).Trim());
+            foreach (var mapMatch in mapMatches)
+            {
+                if (m_mapSet.Contains(mapMatch))
+                    continue;
+
+                m_mapSet.Add(mapMatch);
+                maps.Add(mapMatch);
+            }
+
+            return string.Join(", ", maps);
         }
 
-        private string MapStringFromGameFile(IArchiveReader reader)
+        private string MapStringFromGameFileWads(IArchiveReader reader)
         {
             List<string> maps = new List<string>();
-
             IEnumerable<IArchiveEntry> wadEntries = GetEntriesByExtension(reader, ".wad");
 
             foreach (IArchiveEntry entry in wadEntries)
             {
                 string extractFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), entry);
-                string mapString = Util.GetMapStringFromWad(extractFile);
-                if (!string.IsNullOrEmpty(mapString))
-                    maps.Add(mapString);
+                List<string> wadEntryMaps = Util.GetMapStringFromWad(extractFile);
+                foreach (string map in wadEntryMaps)
+                {
+                    if (m_mapSet.Contains(map))
+                        continue;
+
+                    m_mapSet.Add(map);
+                    maps.Add(map);
+                }
             }
 
-            return string.Join(", ", maps.ToArray());
+            return string.Join(", ", maps);
         }
 
         public IGameFileDataSourceAdapter DbDataSource { get; set; }
