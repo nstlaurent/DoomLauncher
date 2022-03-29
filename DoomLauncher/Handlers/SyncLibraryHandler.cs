@@ -13,6 +13,11 @@ namespace DoomLauncher
 {
     public class SyncLibraryHandler
     {
+        private static readonly string[] MapInfoNames = new string[] { "mapinfo", "zmapinfo" };
+        private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");
+        private static readonly Regex IncludeRegex = new Regex(@"\s*include\s+(\S+)");
+        private static readonly Regex MapRegex = new Regex(@"\s*map\s+\w+");
+
         public event EventHandler SyncFileChange;
         public event EventHandler GameFileDataNeeded;
 
@@ -146,9 +151,16 @@ namespace DoomLauncher
         public bool GetTitlePic(IGameFile gameFile, out Image image) =>
             m_titlepics.TryGetValue(gameFile, out image);
 
-        private void AddTitlepic(IGameFile file, IArchiveReader reader)
+        private void AddTitlepic(IGameFile file, IArchiveReader reader, string[] mapInfoData)
         {
-            if (!m_pullTitlepic || m_titlepics.ContainsKey(file) || !DoomImageUtil.FindTitlepic(reader, out IArchiveEntry entry))
+            if (!m_pullTitlepic || m_titlepics.ContainsKey(file))
+                return;
+
+            string titlepicName = DoomImageUtil.TitlepicName;
+            if (GetTitlepicNameFromMapInfo(mapInfoData, out string newTitlepicName))
+                titlepicName = newTitlepicName;
+
+            if (!DoomImageUtil.GetEntry(reader, titlepicName, out IArchiveEntry entry))
                 return;
 
             Palette palette = m_palette;
@@ -163,6 +175,23 @@ namespace DoomLauncher
             }
 
             m_titlepics[file] = image;
+        }
+
+        private bool GetTitlepicNameFromMapInfo(string[] mapInfoData, out string newTitlepicName)
+        {            
+            newTitlepicName = string.Empty;
+            foreach (string data in mapInfoData)
+            {
+                Match match = TitlePageRegex.Match(data);
+                if (!match.Success)
+                    continue;
+
+                newTitlepicName = match.Groups[1].Value;
+                return true;
+
+            }
+
+            return false;
         }
 
         private void AddLatestGameFile(string filename, List<IGameFile> gameFiles)
@@ -237,14 +266,16 @@ namespace DoomLauncher
             maps = string.Empty;
             StringBuilder sb = new StringBuilder();
 
-            var mapInfoEntries = reader.Entries.Where(x => Path.GetFileNameWithoutExtension(x.Name).Equals("mapinfo", StringComparison.OrdinalIgnoreCase));
-            if (mapInfoEntries.Any())
+            var mapInfoEntries = reader.Entries.Where(x => IsEntryMapInfo(x)).ToArray();
+            string[] mapInfoData = Array.Empty<string>();
+            if (mapInfoEntries.Length > 0)
             {
+                mapInfoData = GetArchiveEntryData(mapInfoEntries);
                 m_readMapInfo = true;
-                AppendMapSet(sb, MapStringFromMapInfo(reader, mapInfoEntries.First()));
+                AppendMapSet(sb, MapStringFromMapInfo(reader, mapInfoData[0]));
             }
 
-            AddTitlepic(gameFile, reader);
+            AddTitlepic(gameFile, reader, mapInfoData);
             // Only scan wad files if there is no MapInfo
             if (!m_readMapInfo)
                 AppendMapSet(sb, MapStringFromGameFileWads(reader));
@@ -265,19 +296,40 @@ namespace DoomLauncher
             maps = sb.ToString();
         }
 
-        private string MapStringFromMapInfo(IArchiveReader reader, IArchiveEntry entry)
+        private string[] GetArchiveEntryData(params IArchiveEntry[] entries)
+        {
+            string[] data = new string[entries.Length];
+            for (int i = 0; i < entries.Length; i++)
+            {
+                try
+                {
+                    data[i] = Encoding.UTF8.GetString(entries[i].ReadEntry());
+                }
+                catch
+                {
+                    data[i] = string.Empty;
+                }
+            }
+
+            return data;
+        }
+
+        private static bool IsEntryMapInfo(IArchiveEntry entry)
+        {
+            foreach (string name in MapInfoNames)
+            {
+                if (Path.GetFileNameWithoutExtension(entry.Name).Equals(name, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private string MapStringFromMapInfo(IArchiveReader reader, string mapInfoData)
         {
             StringBuilder sb = new StringBuilder();
-            string extractedFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), entry);
-
-            if (File.Exists(extractedFile))
-            {
-                string mapinfo = File.ReadAllText(extractedFile);
-                AppendMapSet(sb, ParseMapInfoInclude(reader, mapinfo));
-                if (entry.ExtractRequired)
-                    File.Delete(extractedFile);
-                AppendMapSet(sb, GetMapStringFromMapInfo(mapinfo));
-            }
+            AppendMapSet(sb, ParseMapInfoInclude(reader, mapInfoData));
+            AppendMapSet(sb, GetMapStringFromMapInfo(mapInfoData));
 
             return sb.ToString();
         }
@@ -285,8 +337,8 @@ namespace DoomLauncher
         private string ParseMapInfoInclude(IArchiveReader reader, string mapinfo)
         {
             StringBuilder sb = new StringBuilder();
-            Regex mapRegex = new Regex(@"\s*include\s+(\S+)");
-            MatchCollection matches = mapRegex.Matches(mapinfo);
+            
+            MatchCollection matches = IncludeRegex.Matches(mapinfo);
             foreach (Match match in matches)
             {
                 if (match.Groups.Count < 2)
@@ -302,7 +354,9 @@ namespace DoomLauncher
                 if (entry == null)
                     continue;
 
-                AppendMapSet(sb, MapStringFromMapInfo(reader, entry));
+                string[] entryData = GetArchiveEntryData(entry);
+                if (entryData.Length > 0)
+                    AppendMapSet(sb, MapStringFromMapInfo(reader, entryData[0]));
             }
 
             return sb.ToString();
@@ -319,9 +373,8 @@ namespace DoomLauncher
         }
 
         private string GetMapStringFromMapInfo(string mapinfo)
-        {
-            Regex mapRegex = new Regex(@"\s*map\s+\w+");
-            MatchCollection matches = mapRegex.Matches(mapinfo);
+        {            
+            MatchCollection matches = MapRegex.Matches(mapinfo);
 
             List<string> maps = new List<string>();
             var mapMatches = matches.Cast<Match>().Select(x => x.Value.Trim().Substring(3).Trim());

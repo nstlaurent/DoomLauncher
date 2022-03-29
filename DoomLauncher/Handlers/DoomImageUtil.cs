@@ -8,13 +8,12 @@ namespace DoomLauncher
 {
     public static class DoomImageUtil
     {
-        public static bool FindTitlepic(IArchiveReader archive, out IArchiveEntry entry) =>
-            GetEntry(archive, "TITLEPIC", out entry);
+        public const string TitlepicName = "TITLEPIC";
 
         public static bool FindPalette(IArchiveReader archive, out IArchiveEntry entry) =>
             GetEntry(archive, "PLAYPAL", out entry);
 
-        private static bool GetEntry(IArchiveReader archive, string name, out IArchiveEntry entry)
+        public static bool GetEntry(IArchiveReader archive, string name, out IArchiveEntry entry)
         {
             if (archive.EntriesHaveExtensions)
                 entry = archive.Entries.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x.Name).Equals(name, StringComparison.OrdinalIgnoreCase));
