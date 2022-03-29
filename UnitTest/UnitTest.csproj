@@ -121,6 +121,9 @@
     <None Include="Resources\pyrrhicmaps.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\zmapinfo.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\uroburos.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -1,6 +1,7 @@
 ﻿using DoomLauncher;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -215,13 +216,100 @@ namespace UnitTest.Tests
             Assert.AreEqual(file, handler.InvalidFiles[0].FileName);
         }
 
-        //todo test exception paths (Invalid Files)
-        //todo test mapinfo
+        [TestMethod]
+        public void TestDoomImageTitlepicWad()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler(true);
 
-        private static SyncLibraryHandler CreateSyncLibraryHandler()
+            string file = "uroburos.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, handler.AddedGameFiles.Count);
+            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image titlepic);
+            Assert.IsTrue(hasTitlepic);
+            Assert.AreEqual(320, titlepic.Width);
+            Assert.AreEqual(200, titlepic.Height);
+        }
+
+        [TestMethod]
+        public void TestLargeDoomImageTitlepicWad()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler(true);
+
+            string file = "pyrrhic.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, handler.AddedGameFiles.Count);
+            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image titlepic);
+            Assert.IsTrue(hasTitlepic);
+            Assert.AreEqual(640, titlepic.Width);
+            Assert.AreEqual(400, titlepic.Height);
+        }
+
+        [TestMethod]
+        public void TestPngTitlepicPk3()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler(true);
+
+            string file = "joymaps1.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, handler.AddedGameFiles.Count);
+            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image titlepic);
+            Assert.IsTrue(hasTitlepic);
+            Assert.AreEqual(320, titlepic.Width);
+            Assert.AreEqual(200, titlepic.Height);
+        }
+
+        [TestMethod]
+        public void TestTilepicZMapInfo()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler(true);
+
+            string file = "zmapinfo.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, handler.AddedGameFiles.Count);
+            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image titlepic);
+            Assert.IsTrue(hasTitlepic);
+            Assert.AreEqual(478, titlepic.Width);
+            Assert.AreEqual(313, titlepic.Height);
+        }
+
+        [TestMethod]
+        public void TestMultipleTitlepicFiles()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler(true);
+
+            string file = "pyrrhic.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            string file2 = "joymaps1.zip";
+            File.Copy(Path.Combine("Resources", file2), Path.Combine(s_filedir, file2));
+            handler.Execute(new string[] { file, file2 });
+
+            Assert.AreEqual(2, handler.AddedGameFiles.Count);
+
+            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image pyrrhicTitlepic);
+            Assert.IsTrue(hasTitlepic);
+   
+            Assert.AreEqual(640, pyrrhicTitlepic.Width);
+            Assert.AreEqual(400, pyrrhicTitlepic.Height);
+
+            hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[1], out Image joymapsTitlepic);
+            Assert.IsTrue(hasTitlepic);
+
+            Assert.AreEqual(320, joymapsTitlepic.Width);
+            Assert.AreEqual(200, joymapsTitlepic.Height);
+        }
+
+        private static SyncLibraryHandler CreateSyncLibraryHandler(bool pullTitlepic = false)
         {
             return new SyncLibraryHandler(TestUtil.CreateAdapter(), CreateDirectoryAdapater(), new LauncherPath(s_filedir), 
-                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" }, FileManagement.Managed, null, false);
+                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" }, FileManagement.Managed, null, pullTitlepic);
         }
 
         private static DirectoryDataSourceAdapter CreateDirectoryAdapater()
