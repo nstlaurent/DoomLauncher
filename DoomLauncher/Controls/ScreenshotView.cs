@@ -253,7 +253,7 @@ namespace DoomLauncher
                     try
                     {
                         using (var image = Image.FromFile(file))
-                            pbScreen.Image = Util.FixedSize(image, pbScreen.Width, pbScreen.Height, Color.Black);
+                            pbScreen.Image = image.FixedSize(pbScreen.Width, pbScreen.Height, Color.Black);
                     }
                     catch
                     {

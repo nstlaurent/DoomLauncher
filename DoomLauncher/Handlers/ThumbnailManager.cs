@@ -91,7 +91,7 @@ namespace DoomLauncher
 
             using (Image image = Image.FromFile(file))
             {
-                using (Image thumb = Util.FixedSize(image, GameFileTile.ImageWidth, GameFileTile.ImageHeight, Color.Black))
+                using (Image thumb = image.FixedSize(GameFileTile.ImageWidth, GameFileTile.ImageHeight, Color.Black))
                 {
                     string filename = Guid.NewGuid().ToString() + ".png";
                     thumb.Save(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);

@@ -228,7 +228,7 @@ namespace DoomLauncher
             m_drawImage?.Dispose();
 
             using (var image = Image.FromFile(m_images[m_index]))
-                m_currentImage = Util.FixedSize(image, pbImage.Width, pbImage.Height, Color.Black);
+                m_currentImage = image.FixedSize(pbImage.Width, pbImage.Height, Color.Black);
             m_drawImage = new Bitmap(m_currentImage.Width, m_currentImage.Height);
             m_currentGraphics = Graphics.FromImage(m_drawImage);
         }

@@ -178,6 +178,7 @@
     <Compile Include="Handlers\DoomImageUtil.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
     <Compile Include="Config\Icons.cs" />
+    <Compile Include="Handlers\ImageExtensions.cs" />
     <Compile Include="Handlers\MenuConstants.cs" />
     <Compile Include="Interfaces\IGameFileSortableView.cs" />
     <Compile Include="Interfaces\IGameFileTile.cs" />

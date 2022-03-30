@@ -126,6 +126,8 @@ namespace DoomLauncher
                 if (!handler.GetTitlePic(gameFile, out Image image))
                     continue;
 
+                image = image.ScaleDoomImage();
+
                 var screenshots = DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
                 if (ScreenshotHandler.FindScreenshot(screenshots, image, out MemoryStream imageStream))
                     continue;
