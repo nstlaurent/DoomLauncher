@@ -37,6 +37,8 @@ namespace DoomLauncher
                 tblMain.RowStyles[1].Height = 0;
                 Height -= grpAdditionalFiles.Height;
             }
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         private void ctrlFiles_NewItemNeeded(object sender, AdditionalFilesEventArgs e)

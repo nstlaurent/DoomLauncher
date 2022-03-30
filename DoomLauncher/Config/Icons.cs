@@ -24,7 +24,7 @@ namespace DoomLauncher
 
         private static Image GetIcon(Bitmap bitmap)
         {
-            return ColorizeIcon(bitmap, SystemColors.WindowText);
+            return ColorizeIcon(bitmap, ColorTheme.Current.WindowText);
         }
 
         private static Bitmap ColorizeIcon(Bitmap bitmap, Color color)

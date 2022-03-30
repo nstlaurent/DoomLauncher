@@ -36,10 +36,13 @@ namespace DoomLauncher
             StyleDisplayLabel(m_label);
             Controls.Add(m_label);
             dgvMain.KeyDown += dgvMain_KeyDown;
+
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public static void StyleGrid(DataGridView view)
         {
+            return;
             view.RowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
             view.AlternatingRowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
             view.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;

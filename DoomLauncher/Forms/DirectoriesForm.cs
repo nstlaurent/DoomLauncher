@@ -13,6 +13,8 @@ namespace DoomLauncher.Forms
             lstDirectories.Columns[0].Width = lstDirectories.Width;
             btnAdd.Image = Icons.File;
             btnDelete.Image = Icons.Delete;
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public void SetDirectories(string[] directories)

@@ -24,6 +24,7 @@ namespace DoomLauncher
             tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
             UpdateSize();
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public new int Height { get; set; }

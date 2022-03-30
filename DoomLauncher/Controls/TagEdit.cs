@@ -23,6 +23,8 @@ namespace DoomLauncher
             m_color = Color.Black;
 
             Load += TagEdit_Load;
+
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         private void TagEdit_Load(object sender, EventArgs e)

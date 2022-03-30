@@ -113,6 +113,16 @@
     <Compile Include="Archive\WadEntry.cs" />
     <Compile Include="Archive\ZipArchiveReader.cs" />
     <Compile Include="Archive\ZipArchiveReaderEntry.cs" />
+    <Compile Include="Config\ColorTheme.cs" />
+    <Compile Include="Controls\CCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\GameFileTile.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -211,6 +221,10 @@
     <Compile Include="SourcePort\EternitySourcePort.cs" />
     <Compile Include="SourcePort\FdwlSourcePort.cs" />
     <Compile Include="SourcePort\WoofSourcePort.cs" />
+    <Compile Include="Stylize\DarkTheme.cs" />
+    <Compile Include="Stylize\DefaultTheme.cs" />
+    <Compile Include="Stylize\Stylizer.cs" />
+    <Compile Include="Stylize\IThemeColors.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
     <Compile Include="Controls\ColumnField.cs" />

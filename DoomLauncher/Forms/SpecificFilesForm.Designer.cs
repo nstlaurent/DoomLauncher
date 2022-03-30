@@ -60,13 +60,14 @@
             this.tblMain.Controls.Add(this.tblInner, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 3;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 98F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblMain.Size = new System.Drawing.Size(314, 361);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblMain.Size = new System.Drawing.Size(419, 444);
             this.tblMain.TabIndex = 0;
             // 
             // flpButtons
@@ -75,27 +76,29 @@
             this.flpButtons.Controls.Add(this.btnOK);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(0, 329);
+            this.flpButtons.Location = new System.Drawing.Point(0, 405);
             this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(314, 32);
+            this.flpButtons.Size = new System.Drawing.Size(419, 39);
             this.flpButtons.TabIndex = 0;
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(236, 3);
+            this.btnCancel.Location = new System.Drawing.Point(315, 4);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.Size = new System.Drawing.Size(100, 28);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(155, 3);
+            this.btnOK.Location = new System.Drawing.Point(207, 4);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.Size = new System.Drawing.Size(100, 28);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -106,16 +109,17 @@
             this.clbFiles.CheckOnClick = true;
             this.clbFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.clbFiles.FormattingEnabled = true;
-            this.clbFiles.Location = new System.Drawing.Point(3, 83);
+            this.clbFiles.Location = new System.Drawing.Point(4, 102);
+            this.clbFiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.clbFiles.Name = "clbFiles";
-            this.clbFiles.Size = new System.Drawing.Size(308, 243);
+            this.clbFiles.Size = new System.Drawing.Size(411, 299);
             this.clbFiles.TabIndex = 1;
             // 
             // tblInner
             // 
             this.tblInner.ColumnCount = 2;
             this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 160F));
+            this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 213F));
             this.tblInner.Controls.Add(this.btnSearch, 1, 1);
             this.tblInner.Controls.Add(this.txtSearch, 0, 1);
             this.tblInner.Controls.Add(this.pnlLinks, 1, 0);
@@ -125,16 +129,17 @@
             this.tblInner.Margin = new System.Windows.Forms.Padding(0);
             this.tblInner.Name = "tblInner";
             this.tblInner.RowCount = 2;
-            this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
             this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblInner.Size = new System.Drawing.Size(314, 80);
+            this.tblInner.Size = new System.Drawing.Size(419, 98);
             this.tblInner.TabIndex = 5;
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(157, 53);
+            this.btnSearch.Location = new System.Drawing.Point(210, 66);
+            this.btnSearch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(75, 23);
+            this.btnSearch.Size = new System.Drawing.Size(100, 28);
             this.btnSearch.TabIndex = 6;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
@@ -143,9 +148,10 @@
             // txtSearch
             // 
             this.txtSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSearch.Location = new System.Drawing.Point(3, 53);
+            this.txtSearch.Location = new System.Drawing.Point(4, 66);
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(148, 20);
+            this.txtSearch.Size = new System.Drawing.Size(198, 22);
             this.txtSearch.TabIndex = 7;
             // 
             // pnlLinks
@@ -153,18 +159,19 @@
             this.pnlLinks.Controls.Add(this.chkPkContents);
             this.pnlLinks.Controls.Add(this.chkSupported);
             this.pnlLinks.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlLinks.Location = new System.Drawing.Point(154, 0);
+            this.pnlLinks.Location = new System.Drawing.Point(206, 0);
             this.pnlLinks.Margin = new System.Windows.Forms.Padding(0);
             this.pnlLinks.Name = "pnlLinks";
-            this.pnlLinks.Size = new System.Drawing.Size(160, 50);
+            this.pnlLinks.Size = new System.Drawing.Size(213, 62);
             this.pnlLinks.TabIndex = 4;
             // 
             // chkPkContents
             // 
             this.chkPkContents.AutoSize = true;
-            this.chkPkContents.Location = new System.Drawing.Point(3, 25);
+            this.chkPkContents.Location = new System.Drawing.Point(4, 31);
+            this.chkPkContents.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkPkContents.Name = "chkPkContents";
-            this.chkPkContents.Size = new System.Drawing.Size(119, 17);
+            this.chkPkContents.Size = new System.Drawing.Size(142, 20);
             this.chkPkContents.TabIndex = 4;
             this.chkPkContents.Text = "Show pk3 Contents";
             this.chkPkContents.UseVisualStyleBackColor = true;
@@ -173,10 +180,10 @@
             // chkSupported
             // 
             this.chkSupported.AutoSize = true;
-            this.chkSupported.Location = new System.Drawing.Point(3, 5);
-            this.chkSupported.Margin = new System.Windows.Forms.Padding(24, 0, 0, 0);
+            this.chkSupported.Location = new System.Drawing.Point(4, 6);
+            this.chkSupported.Margin = new System.Windows.Forms.Padding(32, 0, 0, 0);
             this.chkSupported.Name = "chkSupported";
-            this.chkSupported.Size = new System.Drawing.Size(153, 17);
+            this.chkSupported.Size = new System.Drawing.Size(190, 20);
             this.chkSupported.TabIndex = 3;
             this.chkSupported.Text = "Supported Extensions Only";
             this.chkSupported.UseVisualStyleBackColor = true;
@@ -190,25 +197,26 @@
             this.pnl.Location = new System.Drawing.Point(0, 0);
             this.pnl.Margin = new System.Windows.Forms.Padding(0);
             this.pnl.Name = "pnl";
-            this.pnl.Size = new System.Drawing.Size(154, 50);
+            this.pnl.Size = new System.Drawing.Size(206, 62);
             this.pnl.TabIndex = 8;
             // 
             // lblLoading
             // 
             this.lblLoading.AutoSize = true;
-            this.lblLoading.Location = new System.Drawing.Point(3, 26);
+            this.lblLoading.Location = new System.Drawing.Point(4, 32);
+            this.lblLoading.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLoading.Name = "lblLoading";
-            this.lblLoading.Size = new System.Drawing.Size(54, 13);
+            this.lblLoading.Size = new System.Drawing.Size(65, 16);
             this.lblLoading.TabIndex = 3;
             this.lblLoading.Text = "Loading...";
             // 
             // lnkSelect
             // 
             this.lnkSelect.AutoSize = true;
-            this.lnkSelect.Location = new System.Drawing.Point(3, 6);
-            this.lnkSelect.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
+            this.lnkSelect.Location = new System.Drawing.Point(4, 7);
+            this.lnkSelect.Margin = new System.Windows.Forms.Padding(4, 7, 4, 0);
             this.lnkSelect.Name = "lnkSelect";
-            this.lnkSelect.Size = new System.Drawing.Size(98, 13);
+            this.lnkSelect.Size = new System.Drawing.Size(120, 16);
             this.lnkSelect.TabIndex = 2;
             this.lnkSelect.TabStop = true;
             this.lnkSelect.Text = "Select/Unselect All";
@@ -216,13 +224,14 @@
             // 
             // SpecificFilesForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(314, 361);
+            this.ClientSize = new System.Drawing.Size(419, 444);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(300, 300);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MinimumSize = new System.Drawing.Size(394, 358);
             this.Name = "SpecificFilesForm";
             this.Text = "Select Files";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SpecificFilesForm_FormClosing);

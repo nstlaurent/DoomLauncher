@@ -25,7 +25,7 @@ namespace DoomLauncher
         public override IGameFile GameFile { get; protected set; }
         public override bool Selected { get; protected set; }
 
-        private Color m_titleColor = SystemColors.WindowText;
+        private Color m_titleColor = ColorTheme.Current.WindowText;
         private bool m_new;
         private bool m_loadingImage;
         private Image m_setImage;
@@ -95,7 +95,7 @@ namespace DoomLauncher
             float x = Width - size.Width - (Width - size.Width) / 2;
             float y = Height - size.Height - (labelHeight - size.Height) / 2;
             if (Selected)
-                e.Graphics.DrawString(text, DisplayFont, new SolidBrush(SystemColors.HighlightText), x, y);
+                e.Graphics.DrawString(text, DisplayFont, new SolidBrush(ColorTheme.Current.HighlightText), x, y);
             else
                 e.Graphics.DrawString(text, DisplayFont, new SolidBrush(m_titleColor), x, y);
 
@@ -127,13 +127,13 @@ namespace DoomLauncher
             if (set)
             {
                 BorderStyle = BorderStyle.FixedSingle;
-                BackColor = SystemColors.Highlight;
-                pb.BackColor = SystemColors.Highlight;
+                BackColor = ColorTheme.Current.Highlight;
+                pb.BackColor = ColorTheme.Current.Highlight;
             }
             else
             {
                 BorderStyle = BorderStyle.None;
-                BackColor = SystemColors.Control;
+                BackColor = ColorTheme.Current.Control;
                 pb.BackColor = Color.Black;
             }
         }
@@ -146,7 +146,7 @@ namespace DoomLauncher
             if (colorTag != null && colorTag.Color != null)
                 m_titleColor = Color.FromArgb(colorTag.Color.Value);
             else
-                m_titleColor = SystemColors.WindowText;
+                m_titleColor = ColorTheme.Current.WindowText;
 
             GameFile = gameFile;
             Invalidate();

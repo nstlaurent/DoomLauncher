@@ -83,6 +83,8 @@ namespace DoomLauncher
             };
 
             InitTabIndicies();
+            Stylizer.Stylize(this, DesignMode);
+            Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
         }
 
         private void InitTabIndicies()
@@ -182,15 +184,15 @@ namespace DoomLauncher
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             float infoHeight = dpiScale.ScaleFloatY(40);
-            lblInfo.BackColor = SystemColors.Control;
-            lblInfo.ForeColor = SystemColors.ControlText;
+            lblInfo.BackColor = ColorTheme.Current.Control;
+            lblInfo.ForeColor = ColorTheme.Current.ControlText;
 
             if (m_playSessionInProgress)
             {
                 tblFiles.RowStyles[0].Height = infoHeight;
                 pbInfo.Image = Properties.Resources.bon2b;
-                lblInfo.BackColor = SystemColors.Highlight;
-                lblInfo.ForeColor = SystemColors.HighlightText;
+                lblInfo.BackColor = ColorTheme.Current.Highlight;
+                lblInfo.ForeColor = ColorTheme.Current.HighlightText;
                 lblInfo.Text = string.Format("Play session already in progress. Features{0}like statistics tracking may not function.", Environment.NewLine);
                 return;
             }
@@ -499,6 +501,7 @@ namespace DoomLauncher
         private void chkMap_CheckedChanged(object sender, EventArgs e)
         {
             cmbMap.Enabled = cmbSkill.Enabled = chkMap.Checked;
+            cmbMap.SetEnabled(chkMap.Checked);
         }
 
         private void ctrlFiles_NewItemNeeded(object sender, AdditionalFilesEventArgs e)

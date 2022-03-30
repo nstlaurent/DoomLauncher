@@ -17,7 +17,8 @@ namespace DoomLauncher
 
         public TagControl()
         {
-            InitializeComponent();          
+            InitializeComponent();
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public void Init(IDataSourceAdapter adapter)

@@ -16,6 +16,8 @@ namespace DoomLauncher
             InitializeComponent();
 
             txtFileOption.Text = "-file"; //default for source port, currently user will not see this but it will be populated in the database
+
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public void SetSupportedExtensions(string text)

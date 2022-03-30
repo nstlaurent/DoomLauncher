@@ -38,6 +38,8 @@ namespace DoomLauncher
             PopulateDefaultSettings(m_adapter);
             PopulateConfiguration();
             UpdateScreenshotWidth(m_screenshotTrackBar);
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         private void PnlViewRestart_Paint(object sender, PaintEventArgs e)

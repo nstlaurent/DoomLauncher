@@ -13,6 +13,7 @@ namespace DoomLauncher
             InitializeComponent();
 
             this.Load += ProgressBarForm_Load;
+            Stylizer.Stylize(this, DesignMode);
         }
 
         void ProgressBarForm_Load(object sender, EventArgs e)

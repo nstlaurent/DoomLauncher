@@ -18,6 +18,8 @@ namespace DoomLauncher
             btnSearch.Image = Icons.Search;
             m_multiSelect = m_bOverrideInit = false;
             ctrlSearch.SearchTextKeyPreviewDown += CtrlSearch_SearchTextKeyPreviewDown;
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         private void CtrlSearch_SearchTextKeyPreviewDown(object sender, PreviewKeyDownEventArgs e)

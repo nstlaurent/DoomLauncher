@@ -23,6 +23,8 @@ namespace DoomLauncher
             m_adapter = adapter;
             m_view = view;
             btnCopyFrom.Visible = true;
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public void SetSelectDataMode()

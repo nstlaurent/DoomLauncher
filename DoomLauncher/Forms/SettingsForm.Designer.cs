@@ -34,7 +34,7 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabControl = new CTabControl();
             this.tabPageConfig = new System.Windows.Forms.TabPage();
             this.tabPageDefault = new System.Windows.Forms.TabPage();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -476,7 +476,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.TabControl tabControl;
+        private CTabControl tabControl;
         private System.Windows.Forms.TabPage tabPageConfig;
         private System.Windows.Forms.TabPage tabPageDefault;
         private System.Windows.Forms.Label label2;

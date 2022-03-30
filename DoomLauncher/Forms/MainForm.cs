@@ -34,8 +34,8 @@ namespace DoomLauncher
         private TabHandler m_tabHandler;
         private VersionHandler m_versionHandler;
         private readonly SplashScreen m_splash;
-        private readonly UpdateControl m_updateControl = new UpdateControl();
-        private readonly TagSelectControl m_tagSelectControl = new TagSelectControl();
+        private readonly UpdateControl m_updateControl;
+        private readonly TagSelectControl m_tagSelectControl;
         private Popup m_tagPopup;
 
         private string m_launchFile;
@@ -44,6 +44,11 @@ namespace DoomLauncher
 
         public MainForm(string launchFile)
         {
+            LoadDatabase();
+
+            m_updateControl = new UpdateControl();
+            m_tagSelectControl = new TagSelectControl();
+
             Load += MainForm_Load;
             m_launchFile = launchFile;
 
@@ -57,6 +62,31 @@ namespace DoomLauncher
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
+
+            Stylizer.Stylize(this, DesignMode);
+            Stylizer.StylizeControl(mnuLocal, DesignMode);
+            Stylizer.StylizeControl(mnuIdGames, DesignMode);
+            Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
+        }
+
+        private void LoadDatabase()
+        {
+            if (DesignMode)
+                return;
+
+            try
+            {
+                string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
+                DataSourceAdapter = DbDataSourceAdapter.CreateAdapter();
+                DataCache.Instance.Init(DataSourceAdapter);
+
+                BackupDatabase(dataSource);
+            }
+            catch
+            {
+                // If the database is bad for any reason then VerifyDatabase in HandleLoad will display an error.
+                // The database needs to be initialized in the contstructor now for styling to work.
+            }
         }
 
         protected override void OnClientSizeChanged(EventArgs e)
@@ -96,11 +126,6 @@ namespace DoomLauncher
 
             if (VerifyDatabase())
             {
-                string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
-                DataSourceAdapter = DbDataSourceAdapter.CreateAdapter();
-                DataCache.Instance.Init(DataSourceAdapter);
-
-                BackupDatabase(dataSource);
                 CreateSendToLink();
                 KillRunningApps();
 
@@ -1886,6 +1911,8 @@ namespace DoomLauncher
 
             foreach (var item in GetManagedMenuItems())
                 item.Visible = !visible;
+
+            Stylizer.StylizeControl(mnuLocal, DesignMode);
         }
 
         private ToolStripMenuItem[] GetNonDirectoryMenuItems()

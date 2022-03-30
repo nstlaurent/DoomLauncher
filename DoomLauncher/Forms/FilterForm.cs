@@ -25,6 +25,8 @@ namespace DoomLauncher.Forms
                 InitEllipse(filter, rect);
             else
                 InitScanline(filter, rect);
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         private void InitScanline(ScreenFilter filter, Rectangle rect)

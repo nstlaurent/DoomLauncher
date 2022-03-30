@@ -30,6 +30,7 @@ namespace DoomLauncher.Controls
 
             SetPinned(false);
             Resize += TagSelectControl_Resize;
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         private void TagSelectControl_Resize(object sender, EventArgs e)

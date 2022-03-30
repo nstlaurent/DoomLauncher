@@ -33,6 +33,8 @@ namespace DoomLauncher
             btnDelete.Image = Icons.Delete;
             btnMoveUp.Image = Icons.ArrowUp;
             btnMoveDown.Image = Icons.ArrowDown;
+
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public void Initialize(string keyProperty, string dataProperty)

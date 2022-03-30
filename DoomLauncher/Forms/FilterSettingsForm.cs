@@ -25,6 +25,8 @@ namespace DoomLauncher.Forms
             numScanlineSize.Value = Convert.ToDecimal(settings.ScanlineSpacing);
             chkVertical.Checked = settings.VerticalScanlines;
             chkHorizontal.Checked = settings.HorizontalScanlines;
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public ScreenFilter GetFilterSettings()

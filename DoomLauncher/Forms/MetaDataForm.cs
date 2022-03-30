@@ -9,6 +9,8 @@ namespace DoomLauncher
             InitializeComponent();
             gameFileEdit1.SetShowCheckBoxes(true);
             gameFileEdit1.SetShowMaps(false);
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public GameFileEdit GameFileEdit

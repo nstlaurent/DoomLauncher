@@ -34,6 +34,8 @@ namespace DoomLauncher
 
             ResetData();
             dgvSourcePorts.Columns[dgvSourcePorts.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public void DisplayInitSetupButton()

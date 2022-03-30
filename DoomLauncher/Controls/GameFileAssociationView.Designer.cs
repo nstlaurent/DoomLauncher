@@ -47,7 +47,7 @@
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setFirstToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
-            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabControl = new CTabControl();
             this.tabPageDemos = new System.Windows.Forms.TabPage();
             this.ctrlDemoView = new DoomLauncher.GenericFileView();
             this.tabPageSaveGames = new System.Windows.Forms.TabPage();
@@ -446,7 +446,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl;
+        private CTabControl tabControl;
         private ScreenshotView ctrlScreenshotView;
         private System.Windows.Forms.TabPage tabPageDemos;
         private GenericFileView ctrlDemoView;

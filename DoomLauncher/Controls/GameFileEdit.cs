@@ -22,6 +22,8 @@ namespace DoomLauncher
             chkTags.Visible = false;
             txtComments.WarnLinkClick = false;
             lblFile.IsPath = true;
+
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public void SetShowCheckBoxes(bool set)

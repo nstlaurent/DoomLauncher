@@ -10,6 +10,8 @@ namespace DoomLauncher
         public DownloadViewItem()
         {
             InitializeComponent();
+
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public object Key

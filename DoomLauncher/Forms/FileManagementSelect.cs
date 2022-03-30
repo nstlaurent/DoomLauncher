@@ -8,6 +8,8 @@ namespace DoomLauncher.Forms
         {
             InitializeComponent();
             cmbFileManagement.DataSource = new string[] { "Managed", "Unmanaged" };
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public FileManagement GetSelectedFileManagement()

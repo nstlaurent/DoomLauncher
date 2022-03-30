@@ -35,6 +35,8 @@ namespace DoomLauncher
 
             dgvMain.Columns[dgvMain.Columns.Count - 2].DefaultCellStyle.Format = string.Format("{0} {1}",
                 CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public void SetContextMenu(ContextMenuStrip menu)

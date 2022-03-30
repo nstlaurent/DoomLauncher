@@ -34,7 +34,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cmbIwad = new System.Windows.Forms.ComboBox();
-            this.chkRemember = new System.Windows.Forms.CheckBox();
+            this.chkRemember = new CCheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
             this.profileToolStrip = new System.Windows.Forms.ToolStrip();
@@ -43,29 +43,29 @@
             this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblProfile = new System.Windows.Forms.Label();
-            this.cmbProfiles = new System.Windows.Forms.ComboBox();
+            this.cmbProfiles = new CComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.cmbMap = new System.Windows.Forms.ComboBox();
+            this.cmbMap = new CComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cmbSkill = new System.Windows.Forms.ComboBox();
-            this.chkRecord = new System.Windows.Forms.CheckBox();
+            this.chkRecord = new CCheckBox();
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.cmbDemo = new System.Windows.Forms.ComboBox();
-            this.chkDemo = new System.Windows.Forms.CheckBox();
-            this.chkMap = new System.Windows.Forms.CheckBox();
+            this.chkDemo = new CCheckBox();
+            this.chkMap = new CCheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.lnkOpenDemo = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.txtParameters = new System.Windows.Forms.TextBox();
-            this.chkPreview = new System.Windows.Forms.CheckBox();
+            this.chkPreview = new CCheckBox();
             this.lnkMore = new System.Windows.Forms.LinkLabel();
-            this.chkSaveStats = new System.Windows.Forms.CheckBox();
+            this.chkSaveStats = new CCheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.lnkLoadSaveMore = new System.Windows.Forms.LinkLabel();
-            this.chkLoadLatestSave = new System.Windows.Forms.CheckBox();
+            this.chkLoadLatestSave = new CCheckBox();
             this.lnkFilterSettings = new System.Windows.Forms.LinkLabel();
-            this.chkScreenFilter = new System.Windows.Forms.CheckBox();
+            this.chkScreenFilter = new CCheckBox();
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
@@ -159,7 +159,6 @@
             this.chkRemember.TabIndex = 4;
             this.chkRemember.TabStop = false;
             this.chkRemember.Text = "Remember Settings";
-            this.chkRemember.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -338,7 +337,6 @@
             this.chkRecord.TabIndex = 12;
             this.chkRecord.TabStop = false;
             this.chkRecord.Text = "Record";
-            this.chkRecord.UseVisualStyleBackColor = true;
             this.chkRecord.CheckedChanged += new System.EventHandler(this.chkRecord_CheckedChanged);
             // 
             // txtDescription
@@ -374,7 +372,6 @@
             this.chkDemo.TabIndex = 15;
             this.chkDemo.TabStop = false;
             this.chkDemo.Text = "Play Demo";
-            this.chkDemo.UseVisualStyleBackColor = true;
             this.chkDemo.CheckedChanged += new System.EventHandler(this.chkDemo_CheckedChanged);
             // 
             // chkMap
@@ -387,7 +384,6 @@
             this.chkMap.TabIndex = 16;
             this.chkMap.TabStop = false;
             this.chkMap.Text = "Map";
-            this.chkMap.UseVisualStyleBackColor = true;
             this.chkMap.CheckedChanged += new System.EventHandler(this.chkMap_CheckedChanged);
             // 
             // groupBox2
@@ -453,7 +449,6 @@
             this.chkPreview.TabIndex = 21;
             this.chkPreview.TabStop = false;
             this.chkPreview.Text = "Preview Launch Parameters";
-            this.chkPreview.UseVisualStyleBackColor = true;
             // 
             // lnkMore
             // 
@@ -479,7 +474,6 @@
             this.chkSaveStats.TabIndex = 19;
             this.chkSaveStats.TabStop = false;
             this.chkSaveStats.Text = "Save Statistics";
-            this.chkSaveStats.UseVisualStyleBackColor = true;
             // 
             // groupBox4
             // 
@@ -521,7 +515,6 @@
             this.chkLoadLatestSave.TabIndex = 25;
             this.chkLoadLatestSave.TabStop = false;
             this.chkLoadLatestSave.Text = "Load Latest Save";
-            this.chkLoadLatestSave.UseVisualStyleBackColor = true;
             // 
             // lnkFilterSettings
             // 
@@ -545,7 +538,6 @@
             this.chkScreenFilter.TabIndex = 23;
             this.chkScreenFilter.TabStop = false;
             this.chkScreenFilter.Text = "Screen Filter";
-            this.chkScreenFilter.UseVisualStyleBackColor = true;
             this.chkScreenFilter.CheckedChanged += new System.EventHandler(this.chkScreenFilter_CheckedChanged);
             // 
             // lnkPreviewLaunchParameters
@@ -792,24 +784,24 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ComboBox cmbIwad;
-        private System.Windows.Forms.CheckBox chkRemember;
+        private CCheckBox chkRemember;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox cmbMap;
+        private CComboBox cmbMap;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox cmbSkill;
-        private System.Windows.Forms.CheckBox chkRecord;
+        private CCheckBox chkRecord;
         private System.Windows.Forms.TextBox txtDescription;
         private System.Windows.Forms.ComboBox cmbDemo;
-        private System.Windows.Forms.CheckBox chkDemo;
-        private System.Windows.Forms.CheckBox chkMap;
+        private CCheckBox chkDemo;
+        private CCheckBox chkMap;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtParameters;
-        private System.Windows.Forms.CheckBox chkSaveStats;
+        private CCheckBox chkSaveStats;
         private System.Windows.Forms.LinkLabel lnkMore;
-        private System.Windows.Forms.CheckBox chkPreview;
+        private CCheckBox chkPreview;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox3;
         private FilesCtrl ctrlFiles;
@@ -828,17 +820,17 @@
         private System.Windows.Forms.FlowLayoutPanel flp1;
         private System.Windows.Forms.LinkLabel lnkSpecific;
         private System.Windows.Forms.LinkLabel lnkCustomParameters;
-        private System.Windows.Forms.CheckBox chkScreenFilter;
+        private CCheckBox chkScreenFilter;
         private System.Windows.Forms.LinkLabel lnkFilterSettings;
         private System.Windows.Forms.Label lblProfile;
-        private System.Windows.Forms.ComboBox cmbProfiles;
+        private CComboBox cmbProfiles;
         private System.Windows.Forms.TableLayoutPanel tblProfile;
         private System.Windows.Forms.ToolStrip profileToolStrip;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
         private System.Windows.Forms.ToolStripMenuItem newProfileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editProfileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteProfileToolStripMenuItem;
-        private System.Windows.Forms.CheckBox chkLoadLatestSave;
+        private CCheckBox chkLoadLatestSave;
         private System.Windows.Forms.LinkLabel lnkLoadSaveMore;
     }
 }

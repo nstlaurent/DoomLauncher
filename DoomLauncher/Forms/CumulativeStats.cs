@@ -9,6 +9,8 @@ namespace DoomLauncher
         public CumulativeStats()
         {
             InitializeComponent();
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public void SetStatistics(IEnumerable<IGameFile> gameFiles, IEnumerable<IStatsData> stats)

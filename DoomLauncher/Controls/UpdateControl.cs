@@ -19,6 +19,8 @@ namespace DoomLauncher
         public UpdateControl()
         {
             InitializeComponent();
+
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public void Initialize(AppConfiguration appConfig, ApplicationUpdateInfo info)

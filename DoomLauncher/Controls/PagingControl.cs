@@ -13,6 +13,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
             DoubleBuffered = true;
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         public void Init(int records, int recordsPerPage)

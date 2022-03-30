@@ -42,7 +42,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            BackColor = SystemColors.Window;
+            BackColor = ColorTheme.Current.Window;
 
             SetItemsPerPage(GameFileTileManager.Instance.MaxItems);
             pagingControl.PageIndexChanged += M_pagingControl_PageIndexChanged;
@@ -59,6 +59,8 @@ namespace DoomLauncher
 
             GameFileTileManager.Instance.TilesRecreated += Instance_TilesRecreated;
             InitTiles();
+
+            Stylizer.StylizeControl(this, DesignMode);
         }
 
         private void SetItemsPerPage(int maxItems)
@@ -117,7 +119,7 @@ namespace DoomLauncher
                     tblMain.Controls.Add(flpMain, 0, LayoutRow);
                 }
 
-                flpMain.BackColor = SystemColors.Window;
+                flpMain.BackColor = ColorTheme.Current.Window;
                 flpMain.KeyPress += GameFileTileViewControl_KeyPress;
                 flpMain.KeyDown += GameFileTileViewControl_KeyDown;
 

@@ -25,6 +25,7 @@ namespace DoomLauncher.Forms
             KeyPreview = true;
             KeyUp += ScreenshotViewerForm_KeyUp;
             MouseWheel += ScreenshotViewerForm_MouseWheel;
+            Stylizer.Stylize(this, DesignMode);
         }
 
         private void ScreenshotViewerForm_MouseWheel(object sender, MouseEventArgs e)

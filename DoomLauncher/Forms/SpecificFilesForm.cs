@@ -35,6 +35,8 @@ namespace DoomLauncher
             ShowPkContentsCheckBox(false);
             lblLoading.Text = string.Empty;
             txtSearch.PreviewKeyDown += TxtSearch_PreviewKeyDown;
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         private void TxtSearch_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
