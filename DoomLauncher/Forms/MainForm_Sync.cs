@@ -38,6 +38,11 @@ namespace DoomLauncher
 
                 foreach (IGameFile updateGameFile in handler.UpdatedGameFiles)
                     UpdateDataSourceViews(updateGameFile);
+
+                IGameFileView view = GetCurrentViewControl();
+                IGameFile selectedFile = view.SelectedItem;
+                if (selectedFile != null && handler.UpdatedGameFiles.Contains(selectedFile))
+                    HandleSelectionChange(view, true);
             }
 
             if (handler != null && handler.FailedTitlePicFiles.Count > 0)
@@ -399,6 +404,30 @@ namespace DoomLauncher
             form.StartPosition = FormStartPosition.CenterParent;
             form.ShowDialog(this);
             return form;
+        }
+
+        private void HandleResync(bool pullTitlepic)
+        {
+            IGameFileView view = GetCurrentViewControl();
+            if (view == null)
+                return;
+
+            bool? setPullTitlepic = null;
+            if (!pullTitlepic)
+                setPullTitlepic = false;
+            var allGameFiles = SelectedItems(view);
+
+            AddFileType addFileType = view.DoomLauncherParent is IWadTabViewCtrl ? AddFileType.IWad : AddFileType.GameFile;
+
+            var managed = allGameFiles.Where(x => !x.IsUnmanaged()).Select(x => Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), x.FileName)).ToArray();
+            if (managed.Length > 0)
+                HandleAddGameFiles(addFileType, managed, overrideManagement: FileManagement.Managed,
+                    overridePullTitlepic: setPullTitlepic);
+
+            var unmanaged = allGameFiles.Where(x => x.IsUnmanaged()).Select(x => x.FileName).ToArray();
+            if (unmanaged.Length > 0)
+                HandleAddGameFiles(addFileType, unmanaged, overrideManagement: FileManagement.Unmanaged,
+                    overridePullTitlepic: setPullTitlepic);
         }
     }
 }

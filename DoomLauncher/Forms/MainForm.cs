@@ -41,6 +41,7 @@ namespace DoomLauncher
         private string m_launchFile;
         private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
         private FormWindowState m_windowState;
+        private bool m_progressBarCancelled;
 
         public MainForm(string launchFile)
         {
@@ -1466,7 +1467,6 @@ namespace DoomLauncher
                 await HandleAddGameFiles(type, dialog.FileNames);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Await.Warning", "CS4014:Await.Warning")]
         private async Task HandleCopyFiles(AddFileType type, string[] fileNames, FileManagement fileManagement, ITagData tag)
         {
             ProgressBarForm progressBar = CreateProgressBar("Copying...", ProgressBarStyle.Marquee);
@@ -1491,7 +1491,7 @@ namespace DoomLauncher
                     await SyncLocalDatabase(files, fileManagement, true, tag);
                     break;
                 case AddFileType.IWad:
-                    await SyncLocalDatabase(files, fileManagement, false);
+                    await SyncLocalDatabase(files, fileManagement, fileAddResults.ReplacedFiles.Count > 0);
                     SyncIWads(fileAddResults);
                     break;
                 default:
@@ -1630,6 +1630,9 @@ namespace DoomLauncher
 
             foreach (string file in fileNames)
             {
+                if (m_progressBarCancelled)
+                    break;
+
                 // Ignore. This is the same file and should be from a Resync call.
                 if (file.StartsWith(AppConfiguration.GameFileDirectory.GetFullPath()))
                 {
@@ -1792,7 +1795,17 @@ namespace DoomLauncher
 
         void m_progressBarFormCopy_Cancelled(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (InvokeRequired)
+                Invoke(new Action<object>(HandleProgressCancelled), sender );
+            else
+                HandleProgressCancelled(sender);
+        }
+
+        private void HandleProgressCancelled(object sender)
+        {
+            m_progressBarCancelled = true;
+            if (sender is ProgressBarForm progressBarForm)
+                progressBarForm.Close();
         }
 
         private void UpdateProgressBar(ProgressBarForm form, string text, int value)
@@ -2460,9 +2473,11 @@ namespace DoomLauncher
 
         private void ProgressBarStart(ProgressBarForm form)
         {
+            m_progressBarCancelled = false;
+
             if (InvokeRequired)
             {
-                Invoke(new Action<ProgressBarForm>(ProgressBarStart), new object[] { form });
+                Invoke(new Action<ProgressBarForm>(ProgressBarStart), form);
             }
             else
             {
@@ -2629,28 +2644,6 @@ namespace DoomLauncher
 
         private void resyncIgnoreTitlepicToolStripMenuItem_Click(object sender, EventArgs e) =>
             HandleResync(false);
-
-        private void HandleResync(bool pullTitlepic)
-        {
-            IGameFileView view = GetCurrentViewControl();
-            if (view == null)
-                return;
-
-            bool? setPullTitlepic = null;
-            if (!pullTitlepic)
-                setPullTitlepic = false;
-            var allGameFiles = SelectedItems(view);
-
-            var managed = allGameFiles.Where(x => !x.IsUnmanaged()).Select(x => Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), x.FileName)).ToArray();
-            if (managed.Length > 0)
-                HandleAddGameFiles(AddFileType.GameFile, managed, overrideManagement: FileManagement.Managed, 
-                    overridePullTitlepic: setPullTitlepic);
-
-            var unmanaged = allGameFiles.Where(x => x.IsUnmanaged()).Select(x => x.FileName).ToArray();
-            if (unmanaged.Length > 0)
-                HandleAddGameFiles(AddFileType.GameFile, unmanaged, overrideManagement: FileManagement.Unmanaged, 
-                    overridePullTitlepic: setPullTitlepic);
-        }
 
         private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
         private IDataSourceAdapter DataSourceAdapter { get; set; }
