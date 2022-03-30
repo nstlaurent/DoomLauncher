@@ -40,7 +40,9 @@ namespace DoomLauncher
             ctrlFiles.Initialize("GameFileID", "FileNameNoPath");
             ctrlFiles.CellFormatting += ctrlFiles_CellFormatting;
             ctrlFiles.NewItemNeeded += ctrlFiles_NewItemNeeded;
+            ctrlFiles.ItemAdded += CtrlFiles_ItemAdded;
             ctrlFiles.ItemRemoving += CtrlFiles_ItemRemoving;
+            ctrlFiles.ItemRemoved += CtrlFiles_ItemRemoved;
             Load += PlayForm_Load;
 
             lnkCustomParameters.Visible = false;
@@ -132,6 +134,27 @@ namespace DoomLauncher
             cmbSkill.SelectedItem = "3";
 
             LoadProfiles();
+            SetSpecificFilesEnabled();
+        }
+
+        private void SetSpecificFilesEnabled()
+        {
+            if (GameFile != null || !GameFile.IsDirectory())
+                lnkSpecific.Enabled = true;
+
+            foreach (var file in ctrlFiles.GetFiles())
+            {
+                if (!(file is IGameFile gameFile))
+                    continue;
+
+                if (!gameFile.IsDirectory())
+                {
+                    lnkSpecific.Enabled = true;
+                    return;
+                }
+            }
+
+            lnkSpecific.Enabled = false;
         }
 
         public void SetGameProfile(IGameProfile gameProfile)
@@ -562,6 +585,16 @@ namespace DoomLauncher
             }
         }
 
+        private void CtrlFiles_ItemAdded(object sender, AdditionalFilesEventArgs e)
+        {
+            SetSpecificFilesEnabled();
+        }
+
+        private void CtrlFiles_ItemRemoved(object sender, AdditionalFilesEventArgs e)
+        {
+            SetSpecificFilesEnabled();
+        }
+
         private void ResetSpecificFilesSelections(IGameFile[] selectedFiles)
         {
             foreach (IGameFile gameFile in selectedFiles)
@@ -617,6 +650,7 @@ namespace DoomLauncher
 
             ctrlFiles.SetDataSource(m_handler.GetCurrentAdditionalFiles());
             ctrlFiles.Refresh(); //the port or iwad in () may have changed so invalidate to force update
+            SetSpecificFilesEnabled();
         }
 
         private bool ShouldRecalculateAdditionalFiles()
@@ -746,6 +780,8 @@ namespace DoomLauncher
                     ctrlFiles.SetDataSource(gameFiles);
                     if (iwads.Count > 0)
                         SelectedIWad = iwads.First();
+
+                    SetSpecificFilesEnabled();
 
                     if (unavailable.Count > 0)
                     {
