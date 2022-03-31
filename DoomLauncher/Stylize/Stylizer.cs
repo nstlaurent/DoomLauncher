@@ -7,15 +7,13 @@ namespace DoomLauncher
 {
     internal class Stylizer
     {
-        private static IThemeColors CurrentTheme = ColorTheme.Current;
+        private static readonly IThemeColors CurrentTheme = ColorTheme.Current;
 
         public static void Stylize(Form form, bool designMode)
         {
             if (designMode)
                 return;
 
-            form.BackColor = CurrentTheme.Window;
-            form.ForeColor = CurrentTheme.WindowText;
             foreach (Control control in form.Controls)
                 StylizeControl(control, designMode);
         }
@@ -52,8 +50,8 @@ namespace DoomLauncher
 
         private static void StyleTextBox(TextBox textBox)
         {
-            textBox.BackColor = CurrentTheme.ControlLightLight;
-            textBox.ForeColor = CurrentTheme.ControlText;
+            textBox.BackColor = CurrentTheme.TextBoxBackground;
+            textBox.ForeColor = CurrentTheme.Text;
             //textBox.BorderStyle = BorderStyle.None;
         }
 
@@ -78,8 +76,8 @@ namespace DoomLauncher
             e.Graphics.Clear(SystemColors.Control);
             e.Graphics.DrawString(box.Text, box.Font, Brushes.Black, 0, 0);
 
-            Brush textBrush = new SolidBrush(CurrentTheme.ControlText);
-            Brush borderBrush = new SolidBrush(CurrentTheme.ActiveBorder);
+            Brush textBrush = new SolidBrush(CurrentTheme.Text);
+            Brush borderBrush = new SolidBrush(CurrentTheme.Border);
             Pen borderPen = new Pen(borderBrush);
             SizeF strSize = g.MeasureString(box.Text, box.Font);
             Rectangle rect = new Rectangle(box.ClientRectangle.X,
@@ -100,8 +98,8 @@ namespace DoomLauncher
 
         private static void StyleDefault(Control control)
         {
-            control.BackColor = CurrentTheme.Control;
-            control.ForeColor = CurrentTheme.ControlText;
+            control.BackColor = CurrentTheme.Window;
+            control.ForeColor = CurrentTheme.Text;
         }
 
         public static void StylizeControl(ToolStripDropDownButton control, bool designMode)
@@ -109,24 +107,24 @@ namespace DoomLauncher
             if (designMode)
                 return;
 
-            control.BackColor = CurrentTheme.Control;
-            control.ForeColor = CurrentTheme.ControlText;
+            control.BackColor = CurrentTheme.Window;
+            control.ForeColor = CurrentTheme.Text;
 
             foreach (var item in control.DropDownItems)
             {
                 if (!(item is ToolStripMenuItem menuItem))
                     continue;
 
-                menuItem.BackColor = CurrentTheme.Control;
-                menuItem.ForeColor = CurrentTheme.ControlText;
+                menuItem.BackColor = CurrentTheme.Window;
+                menuItem.ForeColor = CurrentTheme.Text;
                 StyleMenuDropDownItems(menuItem);
             }
         }
 
         private static void StyleContextMenuStrip(ContextMenuStrip cms)
         {
-            cms.BackColor = CurrentTheme.Control;
-            cms.ForeColor = CurrentTheme.ControlText;
+            cms.BackColor = CurrentTheme.Window;
+            cms.ForeColor = CurrentTheme.Text;
 
             cms.ShowCheckMargin = false;
             cms.ShowImageMargin = false;
@@ -136,8 +134,8 @@ namespace DoomLauncher
                 if (!(item is ToolStripMenuItem menuItem))
                     continue;
 
-                menuItem.BackColor = CurrentTheme.Control;
-                menuItem.ForeColor = CurrentTheme.ControlText;
+                menuItem.BackColor = CurrentTheme.Window;
+                menuItem.ForeColor = CurrentTheme.Text;
                 StyleMenuDropDownItems(menuItem);
             }
         }
@@ -154,16 +152,16 @@ namespace DoomLauncher
                 if (subItem is ToolStripSeparator separator)
                 {
                     //separator.Paint += Separator_Paint;
-                    separator.BackColor = CurrentTheme.Control;
-                    separator.ForeColor = CurrentTheme.ControlText;
+                    separator.BackColor = CurrentTheme.Window;
+                    separator.ForeColor = CurrentTheme.Text;
                     continue;
                 }
 
                 if (!(subItem is ToolStripMenuItem subMenuItem))
                     continue;
 
-                subMenuItem.BackColor = CurrentTheme.Control;
-                subMenuItem.ForeColor = CurrentTheme.ControlText;
+                subMenuItem.BackColor = CurrentTheme.Window;
+                subMenuItem.ForeColor = CurrentTheme.Text;
             }
         }
 
@@ -186,50 +184,62 @@ namespace DoomLauncher
 
         private static void StyleCheckBox(CheckBox checkBox)
         {
-            checkBox.ForeColor = CurrentTheme.ControlText;
-            checkBox.BackColor = CurrentTheme.Control;
+            checkBox.ForeColor = CurrentTheme.Text;
+            checkBox.BackColor = CurrentTheme.CheckBoxBackground;
             //checkBox.Appearance = Appearance.Button;
             checkBox.FlatStyle = FlatStyle.Flat;
             checkBox.TextAlign = ContentAlignment.MiddleRight;
             checkBox.FlatAppearance.BorderSize = 0;
-            checkBox.FlatAppearance.MouseOverBackColor = CurrentTheme.Control;
-            checkBox.FlatAppearance.CheckedBackColor = CurrentTheme.Control;
-            checkBox.FlatAppearance.MouseDownBackColor = CurrentTheme.Control;
+            checkBox.FlatAppearance.MouseOverBackColor = CurrentTheme.Window;
+            checkBox.FlatAppearance.CheckedBackColor = CurrentTheme.Window;
+            checkBox.FlatAppearance.MouseDownBackColor = CurrentTheme.Window;
             checkBox.AutoSize = true;
         }
 
         private static void StyleCombo(ComboBox comboBox)
         {
-            comboBox.BackColor = CurrentTheme.ControlLightLight;
-            comboBox.ForeColor = CurrentTheme.ControlText;
+            comboBox.BackColor = CurrentTheme.TextBoxBackground;
+            comboBox.ForeColor = CurrentTheme.Text;
             comboBox.DrawItem += ComboBox_DrawItem;
             comboBox.FlatStyle = FlatStyle.Flat;
         }
 
         private static void StyleGrid(DataGridView view)
         {
+            view.BackgroundColor = CurrentTheme.WindowDark;
+
             view.DefaultCellStyle.NullValue = "N/A";
             view.RowHeadersVisible = false;
             view.AutoGenerateColumns = false;
             view.ShowCellToolTips = false;
             view.EnableHeadersVisualStyles = false;
 
-            view.ColumnHeadersDefaultCellStyle.BackColor = CurrentTheme.Control;
-            view.ColumnHeadersDefaultCellStyle.ForeColor = CurrentTheme.ControlText;
+            view.ColumnHeadersDefaultCellStyle.BackColor = CurrentTheme.Window;
+            view.ColumnHeadersDefaultCellStyle.ForeColor = CurrentTheme.Text;
             view.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
 
-            view.ForeColor = CurrentTheme.ControlText;
-            view.BackgroundColor = CurrentTheme.Control;
-            view.RowsDefaultCellStyle.ForeColor = CurrentTheme.ControlText;
-            view.RowsDefaultCellStyle.BackColor = CurrentTheme.Control;
-            view.AlternatingRowsDefaultCellStyle.ForeColor = CurrentTheme.ControlText;
-            view.AlternatingRowsDefaultCellStyle.BackColor = CurrentTheme.ControlLight;
+            view.ForeColor = CurrentTheme.Text;
+            view.BackgroundColor = CurrentTheme.WindowDark;
+            view.RowsDefaultCellStyle.ForeColor = CurrentTheme.Text;
+            view.RowsDefaultCellStyle.BackColor = CurrentTheme.WindowDark;
+            view.AlternatingRowsDefaultCellStyle.ForeColor = CurrentTheme.Text;
+            view.AlternatingRowsDefaultCellStyle.BackColor = CurrentTheme.WindowDark;
             view.DefaultCellStyle.SelectionBackColor = CurrentTheme.Highlight;
+
+            view.CellPainting += View_CellPainting;
+        }
+
+        private static void View_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            e.AdvancedBorderStyle.Right = DataGridViewAdvancedCellBorderStyle.None;
+            e.AdvancedBorderStyle.Bottom = DataGridViewAdvancedCellBorderStyle.None;
+            e.AdvancedBorderStyle.Left = DataGridViewAdvancedCellBorderStyle.None;
+            e.AdvancedBorderStyle.Top = DataGridViewAdvancedCellBorderStyle.None;
         }
 
         private static void ComboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
-            e.Graphics.FillRectangle(new SolidBrush(CurrentTheme.Control), e.Bounds);
+            e.Graphics.FillRectangle(new SolidBrush(CurrentTheme.Window), e.Bounds);
         }
     }
 }

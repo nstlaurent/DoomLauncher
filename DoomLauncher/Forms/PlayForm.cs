@@ -37,6 +37,9 @@ namespace DoomLauncher
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
             InitializeComponent();
+
+            cmbMap.Combo.FormattingEnabled = true;
+
             ctrlFiles.Initialize("GameFileID", "FileNameNoPath");
             ctrlFiles.CellFormatting += ctrlFiles_CellFormatting;
             ctrlFiles.NewItemNeeded += ctrlFiles_NewItemNeeded;
@@ -184,8 +187,8 @@ namespace DoomLauncher
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             float infoHeight = dpiScale.ScaleFloatY(40);
-            lblInfo.BackColor = ColorTheme.Current.Control;
-            lblInfo.ForeColor = ColorTheme.Current.ControlText;
+            lblInfo.BackColor = ColorTheme.Current.Window;
+            lblInfo.ForeColor = ColorTheme.Current.Text;
 
             if (m_playSessionInProgress)
             {
@@ -211,10 +214,10 @@ namespace DoomLauncher
 
         private void SetDefaultSelections()
         {
-            if (cmbMap.Items.Count > 0)
-                cmbMap.SelectedIndex = 0;
+            if (cmbMap.Combo.Items.Count > 0)
+                cmbMap.Combo.SelectedIndex = 0;
             else
-                cmbMap.SelectedIndex = -1;
+                cmbMap.Combo.SelectedIndex = -1;
 
             chkMap.Checked = false;
 
@@ -260,6 +263,13 @@ namespace DoomLauncher
         }
 
         private static string[] MapSplit(IGameFile gameFile) => DataSources.GameFile.GetMaps(gameFile);
+
+        private static void SetAutoCompleteCustomSource(CComboBox cmb, IEnumerable<object> datasource, Type dataType, string property)
+        {
+            cmb.DataSource = datasource;
+            SetAutoCompleteCustomSource(cmb.Combo, datasource, dataType, property);
+            //cmb.DataSourceChanged();
+        }
 
         private static void SetAutoCompleteCustomSource(ComboBox cmb, IEnumerable<object> datasource, Type dataType, string property)
         {
@@ -362,7 +372,7 @@ namespace DoomLauncher
             get
             {
                 if (!chkMap.Checked) return null;
-                return cmbMap.SelectedItem as string;
+                return cmbMap.Combo.SelectedItem as string;
             }
             set
             {
@@ -373,7 +383,7 @@ namespace DoomLauncher
                 else
                 {
                     chkMap.Checked = true;
-                    cmbMap.SelectedItem = value;
+                    cmbMap.Combo.SelectedItem = value;
                 }
             }
         }
@@ -501,7 +511,7 @@ namespace DoomLauncher
         private void chkMap_CheckedChanged(object sender, EventArgs e)
         {
             cmbMap.Enabled = cmbSkill.Enabled = chkMap.Checked;
-            cmbMap.SetEnabled(chkMap.Checked);
+            //cmbMap.SetEnabled(chkMap.Checked);
         }
 
         private void ctrlFiles_NewItemNeeded(object sender, AdditionalFilesEventArgs e)
@@ -603,7 +613,7 @@ namespace DoomLauncher
 
             var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID == SelectedIWad.GameFileID);
             if (gameFileIwad != null)
-                SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFileIwad), null, null);
+                SetAutoCompleteCustomSource(cmbMap.Combo, MapSplit(gameFileIwad), null, null);
         }
 
         private void SetAdditionalFiles(bool reset)

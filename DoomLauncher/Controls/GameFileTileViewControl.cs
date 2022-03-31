@@ -61,6 +61,7 @@ namespace DoomLauncher
             InitTiles();
 
             Stylizer.StylizeControl(this, DesignMode);
+
         }
 
         private void SetItemsPerPage(int maxItems)

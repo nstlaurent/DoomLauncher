@@ -67,6 +67,23 @@ namespace DoomLauncher
             Stylizer.StylizeControl(mnuLocal, DesignMode);
             Stylizer.StylizeControl(mnuIdGames, DesignMode);
             Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
+
+            SetCustomStyling();
+        }
+
+        private void SetCustomStyling()
+        {
+            flpSearch.BackColor = ColorTheme.Current.WindowDark;
+            tblTop.BackColor = ColorTheme.Current.WindowDark;
+            flpTags.BackColor = ColorTheme.Current.WindowDark;
+
+            TitleBarControl title = new TitleBarControl();
+            title.Title = "Doom Launcher";
+            tblMain.Controls.Add(title);
+            title.Dock = DockStyle.Fill;
+
+            ControlBox = false;
+            Text = string.Empty;
         }
 
         private void LoadDatabase()

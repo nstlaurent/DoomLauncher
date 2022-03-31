@@ -101,6 +101,7 @@
             this.splitTagSelect = new System.Windows.Forms.SplitContainer();
             this.splitTopBottom = new System.Windows.Forms.SplitContainer();
             this.tabControl = new DoomLauncher.CTabControl();
+            this.ctrlAssociationView = new DoomLauncher.GameFileAssociationView();
             this.ctrlSummary = new DoomLauncher.GameFileSummary();
             this.flpTags = new System.Windows.Forms.FlowLayoutPanel();
             this.btnTags = new System.Windows.Forms.Button();
@@ -110,7 +111,6 @@
             this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewWebPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
-            this.ctrlAssociationView = new GameFileAssociationView();
             this.mnuLocal.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblTop.SuspendLayout();
@@ -126,6 +126,7 @@
             this.splitTagSelect.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitTopBottom)).BeginInit();
             this.splitTopBottom.Panel1.SuspendLayout();
+            this.splitTopBottom.Panel2.SuspendLayout();
             this.splitTopBottom.SuspendLayout();
             this.flpTags.SuspendLayout();
             this.mnuIdGames.SuspendLayout();
@@ -356,14 +357,15 @@
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.tblTop, 0, 0);
-            this.tblMain.Controls.Add(this.tblDataView, 0, 2);
-            this.tblMain.Controls.Add(this.flpTags, 0, 1);
+            this.tblMain.Controls.Add(this.tblTop, 0, 1);
+            this.tblMain.Controls.Add(this.tblDataView, 0, 3);
+            this.tblMain.Controls.Add(this.flpTags, 0, 2);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Margin = new System.Windows.Forms.Padding(4);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 3;
+            this.tblMain.RowCount = 4;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -376,12 +378,12 @@
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 98.03922F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 1.960784F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 187F));
-            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 210F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 211F));
             this.tblTop.Controls.Add(this.flpSearch, 0, 0);
             this.tblTop.Controls.Add(this.btnDownloads, 3, 0);
             this.tblTop.Controls.Add(this.btnUpdate, 2, 0);
             this.tblTop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblTop.Location = new System.Drawing.Point(0, 0);
+            this.tblTop.Location = new System.Drawing.Point(0, 30);
             this.tblTop.Margin = new System.Windows.Forms.Padding(0);
             this.tblTop.Name = "tblTop";
             this.tblTop.RowCount = 1;
@@ -401,7 +403,7 @@
             this.flpSearch.Location = new System.Drawing.Point(0, 0);
             this.flpSearch.Margin = new System.Windows.Forms.Padding(0);
             this.flpSearch.Name = "flpSearch";
-            this.flpSearch.Size = new System.Drawing.Size(928, 39);
+            this.flpSearch.Size = new System.Drawing.Size(927, 39);
             this.flpSearch.TabIndex = 0;
             // 
             // toolStrip1
@@ -415,7 +417,7 @@
             this.toolStrip1.Location = new System.Drawing.Point(5, 4);
             this.toolStrip1.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(78, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(39, 27);
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "Options";
             // 
@@ -617,7 +619,7 @@
             // ctrlSearch
             // 
             this.ctrlSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlSearch.Location = new System.Drawing.Point(87, 4);
+            this.ctrlSearch.Location = new System.Drawing.Point(48, 4);
             this.ctrlSearch.Margin = new System.Windows.Forms.Padding(4, 2, 4, 4);
             this.ctrlSearch.Name = "ctrlSearch";
             this.ctrlSearch.SearchText = "";
@@ -628,7 +630,7 @@
             // 
             this.chkAutoSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAutoSearch.AutoSize = true;
-            this.chkAutoSearch.Location = new System.Drawing.Point(284, 8);
+            this.chkAutoSearch.Location = new System.Drawing.Point(245, 8);
             this.chkAutoSearch.Margin = new System.Windows.Forms.Padding(4);
             this.chkAutoSearch.Name = "chkAutoSearch";
             this.chkAutoSearch.Size = new System.Drawing.Size(102, 20);
@@ -642,7 +644,7 @@
             this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
             this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnSearch.Location = new System.Drawing.Point(394, 2);
+            this.btnSearch.Location = new System.Drawing.Point(355, 2);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(4, 2, 4, 4);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(107, 30);
@@ -660,7 +662,7 @@
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPlay.Image = global::DoomLauncher.Properties.Resources.Play;
             this.btnPlay.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnPlay.Location = new System.Drawing.Point(509, 2);
+            this.btnPlay.Location = new System.Drawing.Point(470, 2);
             this.btnPlay.Margin = new System.Windows.Forms.Padding(4, 2, 4, 4);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(100, 30);
@@ -695,7 +697,7 @@
             this.btnUpdate.FlatAppearance.BorderSize = 0;
             this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUpdate.Image = global::DoomLauncher.Properties.Resources.bon2b;
-            this.btnUpdate.Location = new System.Drawing.Point(972, 2);
+            this.btnUpdate.Location = new System.Drawing.Point(971, 2);
             this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(160, 27);
@@ -715,12 +717,12 @@
             this.tblDataView.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 27F));
             this.tblDataView.Controls.Add(this.splitLeftRight, 0, 0);
             this.tblDataView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblDataView.Location = new System.Drawing.Point(4, 71);
+            this.tblDataView.Location = new System.Drawing.Point(4, 101);
             this.tblDataView.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.tblDataView.Name = "tblDataView";
             this.tblDataView.RowCount = 1;
             this.tblDataView.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblDataView.Size = new System.Drawing.Size(1336, 792);
+            this.tblDataView.Size = new System.Drawing.Size(1336, 762);
             this.tblDataView.TabIndex = 4;
             // 
             // splitLeftRight
@@ -737,7 +739,7 @@
             // splitLeftRight.Panel2
             // 
             this.splitLeftRight.Panel2.Controls.Add(this.ctrlSummary);
-            this.splitLeftRight.Size = new System.Drawing.Size(1328, 781);
+            this.splitLeftRight.Size = new System.Drawing.Size(1328, 751);
             this.splitLeftRight.SplitterDistance = 906;
             this.splitLeftRight.SplitterWidth = 5;
             this.splitLeftRight.TabIndex = 9;
@@ -755,7 +757,7 @@
             // 
             this.splitTagSelect.Panel2.Controls.Add(this.splitTopBottom);
             this.splitTagSelect.Panel2MinSize = 0;
-            this.splitTagSelect.Size = new System.Drawing.Size(906, 781);
+            this.splitTagSelect.Size = new System.Drawing.Size(906, 751);
             this.splitTagSelect.SplitterDistance = 100;
             this.splitTagSelect.SplitterWidth = 5;
             this.splitTagSelect.TabIndex = 9;
@@ -775,34 +777,38 @@
             // splitTopBottom.Panel2
             // 
             this.splitTopBottom.Panel2.Controls.Add(this.ctrlAssociationView);
-            this.splitTopBottom.Size = new System.Drawing.Size(906, 781);
-            this.splitTopBottom.SplitterDistance = 537;
+            this.splitTopBottom.Size = new System.Drawing.Size(906, 751);
+            this.splitTopBottom.SplitterDistance = 516;
             this.splitTopBottom.SplitterWidth = 5;
             this.splitTopBottom.TabIndex = 8;
             // 
             // tabControl
             // 
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl.HotTrack = true;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Multiline = true;
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(906, 537);
+            this.tabControl.Size = new System.Drawing.Size(906, 516);
+            this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl.TabIndex = 6;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
-            //
+            // 
             // ctrlAssociationView
             // 
+            this.ctrlAssociationView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
             this.ctrlAssociationView.DataSourceAdapter = null;
             this.ctrlAssociationView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlAssociationView.ForeColor = System.Drawing.Color.White;
             this.ctrlAssociationView.Location = new System.Drawing.Point(0, 0);
             this.ctrlAssociationView.Margin = new System.Windows.Forms.Padding(5);
             this.ctrlAssociationView.Name = "ctrlAssociationView";
             this.ctrlAssociationView.SaveGameDirectory = null;
             this.ctrlAssociationView.ScreenshotDirectory = null;
-            this.ctrlAssociationView.Size = new System.Drawing.Size(906, 239);
+            this.ctrlAssociationView.Size = new System.Drawing.Size(906, 230);
             this.ctrlAssociationView.TabIndex = 7;
             // 
             // ctrlSummary
@@ -813,7 +819,7 @@
             this.ctrlSummary.Margin = new System.Windows.Forms.Padding(4, 0, 4, 4);
             this.ctrlSummary.Name = "ctrlSummary";
             this.ctrlSummary.Padding = new System.Windows.Forms.Padding(0, 25, 0, 0);
-            this.ctrlSummary.Size = new System.Drawing.Size(417, 781);
+            this.ctrlSummary.Size = new System.Drawing.Size(417, 751);
             this.ctrlSummary.TabIndex = 4;
             this.ctrlSummary.TagText = "Tags:";
             // 
@@ -822,7 +828,7 @@
             this.flpTags.Controls.Add(this.btnTags);
             this.flpTags.Controls.Add(this.lblSelectedTag);
             this.flpTags.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTags.Location = new System.Drawing.Point(0, 39);
+            this.flpTags.Location = new System.Drawing.Point(0, 69);
             this.flpTags.Margin = new System.Windows.Forms.Padding(0);
             this.flpTags.Name = "flpTags";
             this.flpTags.Size = new System.Drawing.Size(1344, 32);
@@ -911,6 +917,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitTagSelect)).EndInit();
             this.splitTagSelect.ResumeLayout(false);
             this.splitTopBottom.Panel1.ResumeLayout(false);
+            this.splitTopBottom.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitTopBottom)).EndInit();
             this.splitTopBottom.ResumeLayout(false);
             this.flpTags.ResumeLayout(false);

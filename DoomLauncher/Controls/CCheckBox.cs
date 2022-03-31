@@ -263,8 +263,8 @@ namespace DoomLauncher
             var g = e.Graphics;
             var rect = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
 
-            var textColor = ColorTheme.Current.ControlText;
-            var borderColor = ColorTheme.Current.ControlText;
+            var textColor = ColorTheme.Current.Text;
+            var borderColor = ColorTheme.Current.Border;
             var fillColor = ColorTheme.Current.Highlight;
 
             if (Enabled)
@@ -276,18 +276,18 @@ namespace DoomLauncher
                 }
                 else if (_controlState == DarkControlState.Pressed)
                 {
-                    borderColor = ColorTheme.Current.ActiveBorder;
-                    fillColor = ColorTheme.Current.ActiveBorder;
+                    borderColor = ColorTheme.Current.Border;
+                    fillColor = ColorTheme.Current.Border;
                 }
             }
             else
             {
-                textColor = ColorTheme.Current.ControlDark;
-                borderColor = ColorTheme.Current.ControlDark;
-                fillColor = ColorTheme.Current.ControlDark;
+                textColor = ColorTheme.Current.DisabledText;
+                borderColor = ColorTheme.Current.Border;
+                fillColor = ColorTheme.Current.Window;
             }
 
-            using (var b = new SolidBrush(ColorTheme.Current.Control))
+            using (var b = new SolidBrush(ColorTheme.Current.Window))
                 g.FillRectangle(b, rect);
 
             var size = 12;

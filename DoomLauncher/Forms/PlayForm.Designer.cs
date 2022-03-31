@@ -34,7 +34,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cmbIwad = new System.Windows.Forms.ComboBox();
-            this.chkRemember = new CCheckBox();
+            this.chkRemember = new DoomLauncher.CCheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
             this.profileToolStrip = new System.Windows.Forms.ToolStrip();
@@ -43,32 +43,33 @@
             this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblProfile = new System.Windows.Forms.Label();
-            this.cmbProfiles = new CComboBox();
+            this.cmbProfiles = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbMap = new CComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cmbSkill = new System.Windows.Forms.ComboBox();
-            this.chkRecord = new CCheckBox();
+            this.chkRecord = new DoomLauncher.CCheckBox();
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.cmbDemo = new System.Windows.Forms.ComboBox();
-            this.chkDemo = new CCheckBox();
-            this.chkMap = new CCheckBox();
+            this.chkDemo = new DoomLauncher.CCheckBox();
+            this.chkMap = new DoomLauncher.CCheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.lnkOpenDemo = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.txtParameters = new System.Windows.Forms.TextBox();
-            this.chkPreview = new CCheckBox();
+            this.chkPreview = new DoomLauncher.CCheckBox();
             this.lnkMore = new System.Windows.Forms.LinkLabel();
-            this.chkSaveStats = new CCheckBox();
+            this.chkSaveStats = new DoomLauncher.CCheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.lnkLoadSaveMore = new System.Windows.Forms.LinkLabel();
-            this.chkLoadLatestSave = new CCheckBox();
+            this.chkLoadLatestSave = new DoomLauncher.CCheckBox();
             this.lnkFilterSettings = new System.Windows.Forms.LinkLabel();
-            this.chkScreenFilter = new CCheckBox();
+            this.chkScreenFilter = new DoomLauncher.CCheckBox();
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
+            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
             this.pbInfo = new System.Windows.Forms.PictureBox();
@@ -81,7 +82,6 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.groupBox1.SuspendLayout();
             this.tblProfile.SuspendLayout();
             this.profileToolStrip.SuspendLayout();
@@ -295,9 +295,7 @@
             // 
             // cmbMap
             // 
-            this.cmbMap.DisplayMember = "Name";
             this.cmbMap.Enabled = false;
-            this.cmbMap.FormattingEnabled = true;
             this.cmbMap.Location = new System.Drawing.Point(115, 23);
             this.cmbMap.Margin = new System.Windows.Forms.Padding(4);
             this.cmbMap.Name = "cmbMap";
@@ -583,6 +581,17 @@
             this.tblFiles.Size = new System.Drawing.Size(307, 480);
             this.tblFiles.TabIndex = 0;
             // 
+            // ctrlFiles
+            // 
+            this.ctrlFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlFiles.ForeColor = System.Drawing.Color.White;
+            this.ctrlFiles.Location = new System.Drawing.Point(5, 54);
+            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(5);
+            this.ctrlFiles.Name = "ctrlFiles";
+            this.ctrlFiles.Size = new System.Drawing.Size(297, 391);
+            this.ctrlFiles.TabIndex = 20;
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.lblInfo);
@@ -730,15 +739,6 @@
             this.flpButtons.Size = new System.Drawing.Size(267, 39);
             this.flpButtons.TabIndex = 5;
             // 
-            // ctrlFiles
-            // 
-            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlFiles.Location = new System.Drawing.Point(5, 54);
-            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(5);
-            this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(297, 391);
-            this.ctrlFiles.TabIndex = 20;
-            // 
             // PlayForm
             // 
             this.AcceptButton = this.btnOK;
@@ -823,7 +823,7 @@
         private CCheckBox chkScreenFilter;
         private System.Windows.Forms.LinkLabel lnkFilterSettings;
         private System.Windows.Forms.Label lblProfile;
-        private CComboBox cmbProfiles;
+        private System.Windows.Forms.ComboBox cmbProfiles;
         private System.Windows.Forms.TableLayoutPanel tblProfile;
         private System.Windows.Forms.ToolStrip profileToolStrip;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;

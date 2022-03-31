@@ -25,7 +25,7 @@ namespace DoomLauncher
         protected override void OnPaint(PaintEventArgs e)
         {
             Rectangle fillRect = new Rectangle(0, 0, Width, Height);
-            using (Brush controlBrush = new SolidBrush(ColorTheme.Current.Control))
+            using (Brush controlBrush = new SolidBrush(ColorTheme.Current.Window))
                 e.Graphics.FillRectangle(controlBrush, fillRect);
 
             int index = 0;
@@ -49,9 +49,9 @@ namespace DoomLauncher
             if (selected)
                 tabRect.Y -= 2;
 
-            Brush controlBrush = new SolidBrush(ColorTheme.Current.ControlLight);
-            Brush textBrush = new SolidBrush(ColorTheme.Current.ControlText);
-            Pen boxPen = new Pen(ColorTheme.Current.ControlDark, 10);
+            Brush controlBrush = new SolidBrush(ColorTheme.Current.WindowLight);
+            Brush textBrush = new SolidBrush(ColorTheme.Current.Text);
+            Pen boxPen = new Pen(ColorTheme.Current.WindowDark, 10);
 
             e.Graphics.FillRectangle(controlBrush, tabRect);
             RectangleF layout_rect = new RectangleF(tabRect.Left, tabRect.Y + tab_margin,
@@ -80,9 +80,9 @@ namespace DoomLauncher
 
         private void tabControl_DrawItem(object sender, DrawItemEventArgs e)
         {            
-            Brush controlBrush = new SolidBrush(ColorTheme.Current.ControlLight);
-            Brush textBrush = new SolidBrush(ColorTheme.Current.ControlText);
-            Pen boxPen = new Pen(ColorTheme.Current.ControlDark, 10);
+            Brush controlBrush = new SolidBrush(ColorTheme.Current.WindowLight);
+            Brush textBrush = new SolidBrush(ColorTheme.Current.Text);
+            Pen boxPen = new Pen(ColorTheme.Current.WindowDark, 10);
 
             Rectangle tabRect = GetTabRect(e.Index);
             //tabRect.Inflate(4,4);
@@ -111,7 +111,7 @@ namespace DoomLauncher
             }
 
             Rectangle tabPageRect = TabPages[e.Index].Bounds;
-            e.Graphics.DrawRectangle(new Pen(ColorTheme.Current.Control, 10), tabPageRect);
+            e.Graphics.DrawRectangle(new Pen(ColorTheme.Current.Window, 10), tabPageRect);
             e.DrawFocusRectangle();
         }
     }

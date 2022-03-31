@@ -20,7 +20,7 @@ namespace DoomLauncher
         private static readonly Font DisplayBoldFont = new Font("Microsof Sans Serif", 10, FontStyle.Bold);
         private static readonly Pen SeparatorPen = new Pen(Color.LightGray, 1.0f);
         private static readonly Pen HighlightPen = new Pen(ColorTheme.Current.Highlight, 1.0f);
-        private static readonly Brush TextBrush = new SolidBrush(ColorTheme.Current.WindowText);
+        private static readonly Brush TextBrush = new SolidBrush(ColorTheme.Current.Text);
 
         private string m_tags;
         private string m_maps;
@@ -31,7 +31,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            BackColor = ColorTheme.Current.Control;
+            BackColor = ColorTheme.Current.WindowDark;
 
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             gameTile.Width = dpiScale.ScaleIntX(GameFileTile.ImageWidth);
