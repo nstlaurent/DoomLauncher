@@ -805,7 +805,7 @@
             this.ctrlSummary.Location = new System.Drawing.Point(0, 0);
             this.ctrlSummary.Margin = new System.Windows.Forms.Padding(4, 0, 4, 4);
             this.ctrlSummary.Name = "ctrlSummary";
-            this.ctrlSummary.Padding = new System.Windows.Forms.Padding(0, 25, 0, 0);
+            this.ctrlSummary.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.ctrlSummary.Size = new System.Drawing.Size(417, 781);
             this.ctrlSummary.TabIndex = 4;
             this.ctrlSummary.TagText = "Tags:";
