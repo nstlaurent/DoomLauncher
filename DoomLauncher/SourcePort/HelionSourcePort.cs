@@ -14,7 +14,7 @@ namespace DoomLauncher.SourcePort
 
         public override bool Supported()
         {
-            return CheckFileNameWithoutExtension("Client");
+            return CheckFileNameWithoutExtension("Helion");
         }
 
         public override bool StatisticsSupported()
