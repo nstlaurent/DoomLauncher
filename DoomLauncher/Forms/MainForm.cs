@@ -1916,7 +1916,6 @@ namespace DoomLauncher
             return new ToolStripMenuItem[]
             {
                 GetToolStripItem(mnuLocal, MenuConstants.Rename),
-                GetToolStripItem(mnuLocal, MenuConstants.Utility),
             };
         }
 

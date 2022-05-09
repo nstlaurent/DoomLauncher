@@ -231,17 +231,22 @@ namespace DoomLauncher
             try
             {
                 List<string> files = new List<string>();
-
                 foreach(var pathFile in pathFiles)
                 {
-                    if (File.Exists(pathFile.ExtractedFile))
+                    if (gameFile.IsUnmanaged())
                     {
-                        using (IArchiveReader reader = ArchiveReader.Create(pathFile.ExtractedFile))
-                        {
-                            var entry = reader.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
-                            if (entry != null)
-                                files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
-                        }
+                        files.Add(pathFile.ExtractedFile);
+                        continue;
+                    }
+
+                    if (!File.Exists(pathFile.ExtractedFile))
+                        continue;
+
+                    using (IArchiveReader reader = ArchiveReader.Create(pathFile.ExtractedFile))
+                    {
+                        var entry = reader.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
+                        if (entry != null)
+                            files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
                     }
                 }
 
