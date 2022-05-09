@@ -10,7 +10,7 @@ using WadReader;
 
 namespace DoomLauncher
 {
-    class DataCache
+    public class DataCache
     {
         public static readonly DataCache Instance = new DataCache();
 
