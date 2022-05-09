@@ -380,6 +380,6 @@ namespace DoomLauncher
 
         private IFileData SelectedFile { get; set; }
 
-        public override bool EditAllowed { get { return false; } }
+        public override bool EditAllowed => true;
     }
 }
