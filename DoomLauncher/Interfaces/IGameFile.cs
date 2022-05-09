@@ -7,6 +7,7 @@ namespace DoomLauncher.Interfaces
         int? GameFileID { get; set; }
         string FileName { get; set; }
         string FileNameNoPath { get; }
+        string LastDirectory { get; }
         string Title { get; set; }
         string Author { get; set; }
         DateTime? ReleaseDate { get; set; }

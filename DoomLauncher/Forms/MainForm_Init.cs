@@ -254,8 +254,9 @@ namespace DoomLauncher
             ColumnField[] columnTextFields = new ColumnField[]
             {
                 new ColumnField("FileNameNoPath", "File"),
+                new ColumnField("LastDirectory", "Directory"),
                 new ColumnField("Title", "Title"),
-                new ColumnField("LastPlayed", "Last Played")
+                new ColumnField("LastPlayed", "Last Played"),
             };
 
             IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(TabKeys.IWadsKey, StaticTagData.GetFavoriteName(TabKeys.IWadsKey), DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);

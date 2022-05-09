@@ -9,6 +9,7 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -81,6 +82,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_3_1, AppVersion.Version_3_3_1);
                 ExecuteUpdate(Pre_Version_3_3_2, AppVersion.Version_3_3_2);
                 ExecuteUpdate(Pre_Version_3_4_0, AppVersion.Version_3_4_0);
+                ExecuteUpdate(Pre_Version_3_4_0_Update1, AppVersion.Version_3_4_0_Update1);
             }
         }
 
@@ -720,6 +722,42 @@ namespace DoomLauncher
                 UserCanModify = true,
                 AvailableValues = "Yes;true;No;false"
             });
+        }
+
+        private void Pre_Version_3_4_0_Update1()
+        {
+            var columnConfig = DataCache.Instance.GetColumnConfig().ToList();
+            var columnGroups = columnConfig.GroupBy(x => x.Parent);
+            List<ColumnConfig> newColumns = new List<ColumnConfig>(columnConfig.Count * 2);
+
+            // Insert LastDirectory after FileNameNoPath
+            foreach (var set in columnGroups)
+            {
+                if (set.Any(x => x.Column.Equals("LastDirectory", StringComparison.OrdinalIgnoreCase)))
+                    continue;  
+
+                List<ColumnConfig> sortColumns = set.ToList();
+                for (int i = 0; i < sortColumns.Count; i++)
+                {
+                    var col = sortColumns[i];
+                    newColumns.Add(col);
+                    if (!col.Column.Equals("FileNameNoPath", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    newColumns.Add(new ColumnConfig()
+                    {
+                        Parent = set.Key,
+                        Column = "LastDirectory",
+                        Width = 100,
+                        Sort = SortOrder.None
+                    });
+                }
+
+                newColumns.AddRange(sortColumns);
+            }
+
+            string data = DataCache.SerializeColumnConfig(newColumns);
+            DataCache.Instance.UpdateConfig(DataCache.Instance.DataSourceAdapter.GetConfiguration(), AppConfiguration.ColumnConfigName, data);
         }
 
         private void UpdateMirrorUrls(string urls, string defaultUrl)

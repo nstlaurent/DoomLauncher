@@ -19,50 +19,30 @@ namespace DoomLauncher
 
                 if (WindowState != FormWindowState.Minimized) //too many problems when the form is minimized, not supported
                 {
-                    UpdateConfig(config, AppConfiguration.SplitTopBottomName, splitTopBottom.SplitterDistance.ToString());
-                    UpdateConfig(config, AppConfiguration.SplitLeftRightName, splitLeftRight.SplitterDistance.ToString());
-                    UpdateConfig(config, AppConfiguration.SplitTagSelectName, splitTagSelect.SplitterDistance.ToString());
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTopBottomName, splitTopBottom.SplitterDistance.ToString());
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitLeftRightName, splitLeftRight.SplitterDistance.ToString());
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTagSelectName, splitTagSelect.SplitterDistance.ToString());
 
-                    UpdateConfig(config, AppConfiguration.AppWidthName, Size.Width.ToString());
-                    UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
-                    UpdateConfig(config, AppConfiguration.AppXName, Location.X.ToString());
-                    UpdateConfig(config, AppConfiguration.AppYName, Location.Y.ToString());
-                    UpdateConfig(config, AppConfiguration.WindowStateName, WindowState.ToString());
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.AppWidthName, Size.Width.ToString());
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.AppXName, Location.X.ToString());
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.AppYName, Location.Y.ToString());
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.WindowStateName, WindowState.ToString());
                 }
 
-                UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
-                UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
-                UpdateConfig(config, AppConfiguration.ItemsPerPageName, AppConfiguration.ItemsPerPage.ToString());
-                UpdateConfig(config, AppConfiguration.LastSelectedTabIndexName, tabControl.SelectedIndex.ToString());
-                UpdateConfig(config, AppConfiguration.TagSelectPinnedName, m_tagSelectControl.Pinned.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
+                DataCache.Instance.UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.ItemsPerPageName, AppConfiguration.ItemsPerPage.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.LastSelectedTabIndexName, tabControl.SelectedIndex.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.TagSelectPinnedName, m_tagSelectControl.Pinned.ToString());
             }
         }
 
         private void UpdateColumnConfig()
         {
             IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
-            UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
-        }
-
-        private void UpdateConfig(IEnumerable<IConfigurationData> config, string name, string value)
-        {
-            IConfigurationData configFind = config.FirstOrDefault(x => x.Name == name);
-
-            if (configFind == null)
-            {
-                DataSourceAdapter.InsertConfiguration(new ConfigurationData
-                {
-                    Name = name,
-                    Value = value,
-                    UserCanModify = false
-                });
-            }
-            else
-            {
-                configFind.Value = value;
-                DataSourceAdapter.UpdateConfiguration(configFind);
-            }
-        }
+            DataCache.Instance.UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
+        }      
 
         private string BuildColumnConfig()
         {
@@ -106,10 +86,7 @@ namespace DoomLauncher
         {
             try
             {
-                StringWriter text = new StringWriter();
-                XmlSerializer xml = new XmlSerializer(typeof(ColumnConfig[]));
-                xml.Serialize(text, config.ToArray());
-                return text.ToString();
+                return DataCache.SerializeColumnConfig(config);
             }
             catch (Exception ex)
             {

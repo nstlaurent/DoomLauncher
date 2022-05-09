@@ -8,6 +8,8 @@ namespace DoomLauncher.DataSources
     {
         public static string[] GetMaps(IGameFile gameFile) => gameFile.Map.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
 
+        private string m_lastDirectory = null;
+
         public GameFile()
         {
             FileName = Title = Author = Description = Thumbnail = Comments = Map = SettingsMap = SettingsSkill = SettingsExtraParams = SettingsFiles
@@ -21,6 +23,7 @@ namespace DoomLauncher.DataSources
         public string FullFileName { get; set; }
         public virtual string FileName { get; set; }
         public string FileNameNoPath => Path.GetFileName(FileName);
+        public virtual string LastDirectory => GetLastDirectory(FileName);
         public virtual string Title { get; set; }
         public virtual string Author { get; set; }
         public virtual DateTime? ReleaseDate { get; set; }
@@ -96,6 +99,22 @@ namespace DoomLauncher.DataSources
             if (FileName == null)
                 return string.Empty;
             return FileName;
+        }
+
+        private string GetLastDirectory(string path)
+        {
+            if (m_lastDirectory != null)
+                return m_lastDirectory;
+
+            if (!IsUnmanaged())
+            {
+                m_lastDirectory = string.Empty;
+                return m_lastDirectory;
+            }
+
+            string dir = Path.GetDirectoryName(FileName);
+            m_lastDirectory = new DirectoryInfo(dir).Name;
+            return m_lastDirectory;
         }
     }
 }

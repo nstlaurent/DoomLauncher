@@ -125,7 +125,7 @@ namespace DoomLauncher
             }
             catch
             {
-                return new ColumnConfig[] { };
+                return Array.Empty<ColumnConfig>();
             }
         }
 
@@ -145,5 +145,34 @@ namespace DoomLauncher
 
             return columnList.ToArray();
         }
+
+        public static string SerializeColumnConfig(List<ColumnConfig> config)
+        {
+            StringWriter text = new StringWriter();
+            XmlSerializer xml = new XmlSerializer(typeof(ColumnConfig[]));
+            xml.Serialize(text, config.ToArray());
+            return text.ToString();
+        }
+
+        public void UpdateConfig(IEnumerable<IConfigurationData> config, string name, string value)
+        {
+            IConfigurationData configFind = config.FirstOrDefault(x => x.Name == name);
+
+            if (configFind == null)
+            {
+                DataSourceAdapter.InsertConfiguration(new ConfigurationData
+                {
+                    Name = name,
+                    Value = value,
+                    UserCanModify = false
+                });
+            }
+            else
+            {
+                configFind.Value = value;
+                DataSourceAdapter.UpdateConfiguration(configFind);
+            }
+        }
+
     }
 }

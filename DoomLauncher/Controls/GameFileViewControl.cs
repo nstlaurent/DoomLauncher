@@ -108,7 +108,7 @@ namespace DoomLauncher
                         DataPropertyName = item.DataKey
                     };
                     dgvMain.Columns.Add(col);
-                    m_orderLookup.Add(item.DataKey.ToLower(), col);
+                    m_orderLookup.Add(item.DataKey, col);
                 }
                 
                 dgvMain.Columns[dgvMain.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -391,13 +391,17 @@ namespace DoomLauncher
             if (width <= 0)
                 return;
 
-            key = key.ToLower();
+            if (!m_orderLookup.ContainsKey(key))
+                return;
+
             m_orderLookup[key].Width = width;
         }
 
         public int GetColumnWidth(string key)
         {
-            key = key.ToLower();
+            if (!m_orderLookup.ContainsKey(key))
+                return 64;
+
             return m_orderLookup[key].Width;
         }
 
@@ -473,7 +477,7 @@ namespace DoomLauncher
 
         public object DoomLauncherParent { get; set; }
 
-        private Dictionary<string, DataGridViewColumn> m_orderLookup = new Dictionary<string, DataGridViewColumn>();
+        private readonly Dictionary<string, DataGridViewColumn> m_orderLookup = new Dictionary<string, DataGridViewColumn>(StringComparer.OrdinalIgnoreCase);
 
         private void dgvMain_KeyPress(object sender, KeyPressEventArgs e)
         {

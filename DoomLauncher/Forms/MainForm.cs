@@ -2122,7 +2122,7 @@ namespace DoomLauncher
             }
 
             IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
-            UpdateConfig(config, AppConfiguration.ColumnConfigName, SerializeColumnConfig(columnConfig.ToList()));
+            DataCache.Instance.UpdateConfig(config, AppConfiguration.ColumnConfigName, SerializeColumnConfig(columnConfig.ToList()));
             AppConfiguration.RefreshColumnConfig();
         }
 
