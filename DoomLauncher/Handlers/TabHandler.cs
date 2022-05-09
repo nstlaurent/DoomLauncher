@@ -32,6 +32,7 @@ namespace DoomLauncher
         private TabPage CreateTabPage(ITabView tab)
         {
             TabPage page = new TabPage(tab.Title);
+            page.Name = tab.Key.ToString();
 
             if (tab is Control ctrl)
             {
