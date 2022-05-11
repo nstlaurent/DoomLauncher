@@ -111,6 +111,7 @@
             this.viewWebPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
             this.resyncIgnoreTitlepicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chkIncludeAll = new System.Windows.Forms.CheckBox();
             this.mnuLocal.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblTop.SuspendLayout();
@@ -389,6 +390,7 @@
             this.flpSearch.Controls.Add(this.toolStrip1);
             this.flpSearch.Controls.Add(this.ctrlSearch);
             this.flpSearch.Controls.Add(this.chkAutoSearch);
+            this.flpSearch.Controls.Add(this.chkIncludeAll);
             this.flpSearch.Controls.Add(this.btnSearch);
             this.flpSearch.Controls.Add(this.btnPlay);
             this.flpSearch.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -880,6 +882,18 @@
             this.resyncIgnoreTitlepicToolStripMenuItem.Text = "Resync (Ignore Titlepic)";
             this.resyncIgnoreTitlepicToolStripMenuItem.Click += new System.EventHandler(this.resyncIgnoreTitlepicToolStripMenuItem_Click);
             // 
+            // chkIncludeAll
+            // 
+            this.chkIncludeAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkIncludeAll.AutoSize = true;
+            this.chkIncludeAll.Location = new System.Drawing.Point(406, 10);
+            this.chkIncludeAll.Name = "chkIncludeAll";
+            this.chkIncludeAll.Size = new System.Drawing.Size(108, 24);
+            this.chkIncludeAll.TabIndex = 8;
+            this.chkIncludeAll.Text = "Include All";
+            this.chkIncludeAll.UseVisualStyleBackColor = true;
+            this.chkIncludeAll.CheckedChanged += new System.EventHandler(this.chkIncludeAll_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnSearch;
@@ -1003,6 +1017,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;
         private System.Windows.Forms.ToolStripMenuItem resyncToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resyncIgnoreTitlepicToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chkIncludeAll;
     }
 }
 

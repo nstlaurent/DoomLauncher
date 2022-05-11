@@ -237,6 +237,11 @@ namespace DoomLauncher
             HandleSelectionChange(view, true);
         }
 
+        private void chkIncludeAll_CheckedChanged(object sender, EventArgs e)
+        {
+            HandleSearch();
+        }
+
         void DownloadView_UserPlay(object sender, EventArgs e)
         {
             if (m_downloadView.SelectedItem != null)
@@ -1127,6 +1132,7 @@ namespace DoomLauncher
                     btnSearch.Enabled = tabView.IsSearchAllowed;
                     btnPlay.Enabled = tabView.IsPlayAllowed;
                     chkAutoSearch.Enabled = tabView.IsAutoSearchAllowed;
+                    chkIncludeAll.Enabled = tabView.IsAutoSearchAllowed;
 
                     if (tabView is IdGamesTabViewCtrl && !m_idGamesLoaded)
                     {
@@ -1982,6 +1988,9 @@ namespace DoomLauncher
 
         private IEnumerable<IGameFile> RemoveExcludeTags(ITabView tabView, IEnumerable<IGameFile> gameFiles)
         {
+            if (chkIncludeAll.Checked)
+                return gameFiles;
+
             ITagData currentTag = null;
             if (tabView is TagTabView tagTabView)
                 currentTag = tagTabView.TagDataSource;
