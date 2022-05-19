@@ -71,6 +71,7 @@
     <Compile Include="Tests\TestPlayAdapter.cs" />
     <Compile Include="Tests\TestMapLumps.cs" />
     <Compile Include="Tests\TestSourcePort.cs" />
+    <Compile Include="Tests\TestSpecificFiles.cs" />
     <Compile Include="Tests\TestUtil.cs" />
     <Compile Include="Tests\TestFile.cs" />
     <Compile Include="Tests\TestLoadFiles.cs" />
@@ -119,6 +120,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\pyrrhicmaps.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\testpk3.pk3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\zmapinfo.zip">

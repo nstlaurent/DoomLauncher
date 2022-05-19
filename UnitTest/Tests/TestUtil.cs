@@ -1,6 +1,7 @@
 ﻿using DoomLauncher;
 using DoomLauncher.Interfaces;
 using System.IO;
+using System.IO.Compression;
 
 namespace UnitTest.Tests
 {
@@ -44,6 +45,16 @@ namespace UnitTest.Tests
         {
             if (File.Exists(filename))
                 File.Delete(filename);
+        }
+
+        public static void ExtractResourceToDirectory(string filename, string directory)
+        {
+            if (Directory.Exists(directory))
+                Directory.Delete(directory, true);
+
+            string file = Path.Combine("Resources", filename);
+            using (ZipArchive za = ZipFile.OpenRead(file))
+                za.ExtractToDirectory(directory);
         }
     }
 }

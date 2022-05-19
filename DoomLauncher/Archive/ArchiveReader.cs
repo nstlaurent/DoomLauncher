@@ -23,12 +23,12 @@ namespace DoomLauncher
                 return new FileArchiveReader(path);
         }
 
-        private static bool IsWad(string ext)
+        public static bool IsWad(string ext)
         {
             return ext.Equals(".wad", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static bool IsPk(string fileExtension)
+        public static bool IsPk(string fileExtension)
         {
             var extensions = Util.GetReadablePkExtensions();
             foreach (string ext in extensions)
