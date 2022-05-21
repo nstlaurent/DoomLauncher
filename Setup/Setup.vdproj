@@ -498,7 +498,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:WadReader, Version=3.4.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:WadReader, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_1D58DBC36810F3BB0E82C4CB7A32DAB4"
@@ -1230,15 +1230,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Doom Launcher"
-        "ProductCode" = "8:{FFFE9CFF-AC97-439F-8371-6D055739EBEC}"
-        "PackageCode" = "8:{165AE93E-72D4-4737-8EEF-268A498FA071}"
+        "ProductCode" = "8:{7EA0E94A-2CAC-4265-A9C9-54DCC20D50EB}"
+        "PackageCode" = "8:{31267194-9B66-4D6B-B484-E0116198327A}"
         "UpgradeCode" = "8:{CAFDF197-4B50-4AFE-BCFE-0432710657F1}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.5.0"
+        "ProductVersion" = "8:3.5.1"
         "Manufacturer" = "8:Doom Launcher"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/nstlaurent/DoomLauncher"
