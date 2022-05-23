@@ -52,9 +52,9 @@ namespace DoomLauncher
             else
             {
                 if (string.IsNullOrEmpty(s_queryLookup[(int)options.SearchField.SearchFieldType]))
-                    return new List<IGameFile>();
+                    return Array.Empty<IGameFile>();
 
-                return GetFiles(string.Format(s_queryLookup[(int)options.SearchField.SearchFieldType], options.SearchField.SearchText),
+                return GetFiles(string.Format(s_queryLookup[(int)options.SearchField.SearchFieldType], Uri.EscapeDataString(options.SearchField.SearchText)),
                     options.SearchField.SearchFieldType == GameFileFieldType.GameFileID ? "content" : "file");
             }
         }
