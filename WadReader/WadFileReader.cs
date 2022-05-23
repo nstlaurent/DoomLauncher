@@ -6,6 +6,8 @@ namespace WadReader
 {
     public class WadFileReader
     {
+        public readonly bool IsValid;
+
         private static readonly string[] s_mapData = new string[] { "THINGS", "LINEDEFS", "SIDEDEFS", "VERTEXES", "SEGS", "SSECTORS", "NODES", "SECTORS", "REJECT", "BLOCKMAP", "BEHAVIOR",
             "TEXTMAP", "ZNODES", "ENDMAP", "DIALOGUE", "SCRIPTS", };
         private static readonly string[] s_importantMapData = new string[] { "BLOCKMAP", "VERTEXES", "SECTORS", "SIDEDEFS", "LINEDEFS", "SSECTORS", "NODES", "SEGS" };
@@ -17,8 +19,20 @@ namespace WadReader
         public WadFileReader(Stream stream)
         {
             m_stream = stream;
-
             WadHeader = new WadHeader(stream);
+            IsValid = CheckIsValid();
+        }
+
+        private bool CheckIsValid()
+        {
+            if (WadHeader.WadType == WadType.Unknown)
+                return false;
+
+            int lumpSize = WadHeader.LumpCount * FileLump.FileLumpByteSize;
+            if (lumpSize < 0 || lumpSize > m_stream.Length)
+                return false;
+
+            return true;
         }
 
         public WadType WadType
@@ -28,6 +42,9 @@ namespace WadReader
 
         public List<FileLump> ReadLumps()
         {
+            if (!IsValid)
+                return new List<FileLump>();
+
             return WadHeader.ReadLumps();
         }
 

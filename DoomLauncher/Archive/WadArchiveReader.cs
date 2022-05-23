@@ -15,11 +15,13 @@ namespace DoomLauncher
 
         public IEnumerable<IArchiveEntry> Entries => m_entries;
         public bool EntriesHaveExtensions => false;
+        public readonly bool IsValid;
 
         public WadArchiveReader(string file)
         {
             m_fs = File.OpenRead(file);
             WadFileReader wadReader = new WadFileReader(m_fs);
+            IsValid = wadReader.IsValid;
             var lumps = wadReader.ReadLumps();
             foreach (var lump in lumps)
                 m_entries.Add(new WadEntry(m_fs, lump));
