@@ -192,6 +192,7 @@ namespace DoomLauncher
             tabView.GameFileViewControl.SetContextMenuStrip(menu);
             tabView.GameFileViewControl.AllowDrop = dragDrop;
             tabView.DataSourceChanging += TabView_DataSourceChanging;
+            tabView.DataSourceChanged += TabView_DataSourceChanged;
             SetGameFileViewEvents(tabView.GameFileViewControl, dragDrop);
         }
 

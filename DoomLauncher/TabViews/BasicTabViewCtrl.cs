@@ -10,6 +10,7 @@ namespace DoomLauncher
     public partial class BasicTabViewCtrl : UserControl, ITabView, ICloneable
     {
         public event EventHandler<GameFileListEventArgs> DataSourceChanging;
+        public event EventHandler<GameFileListEventArgs> DataSourceChanged;
 
         protected object m_key;
         protected GameFileFieldType[] m_selectFields;
@@ -233,6 +234,8 @@ namespace DoomLauncher
             {
                 GameFileView.DataSource = gameFiles.ToList();
             }
+
+            DataSourceChanged?.Invoke(this, args);
         }
 
         public virtual bool IsLocal { get { return true; } }

@@ -1143,11 +1143,17 @@ namespace DoomLauncher
                     tabView.GameFileViewControl.Focus();
                     tabView.GameFileViewControl.SetVisible(true);
                     AppConfiguration.LastSelectedTabIndex = tabControl.SelectedIndex;
-                    if (tabControl.SelectedTab != null)
-                        lblSelectedTag.Text = tabControl.SelectedTab.Text;
+
+                    SetSelectedTabText(tabView);
                     HandleSelectionChange(tabView.GameFileViewControl, false);
                 }
             }
+        }
+
+        private void SetSelectedTabText(ITabView tabView)
+        {
+            if (tabControl.SelectedTab != null)
+                lblSelectedTag.Text = $"{tabControl.SelectedTab.Text} ({tabView.GameFileViewControl.DataSource.Count()} Files)";
         }
 
         private ITabView GetCurrentTabView()
@@ -1984,6 +1990,12 @@ namespace DoomLauncher
                     e.GameFiles = RemoveExcludeTags(tabView, e.GameFiles);
                 e.GameFiles = GetViewSort(tabView.GameFileViewControl, e.GameFiles);
             }
+        }
+
+        private void TabView_DataSourceChanged(object sender, GameFileListEventArgs e)
+        {
+            if (sender is ITabView tabView)
+                SetSelectedTabText(tabView);
         }
 
         private IEnumerable<IGameFile> RemoveExcludeTags(ITabView tabView, IEnumerable<IGameFile> gameFiles)
