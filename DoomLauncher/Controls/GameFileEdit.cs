@@ -200,5 +200,10 @@ namespace DoomLauncher
                 SetTagsLabel();
             }
         }
+
+        private void lnkClearRating_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            ctrlStarRating.SelectedRating = 0;
+        }
     }
 }

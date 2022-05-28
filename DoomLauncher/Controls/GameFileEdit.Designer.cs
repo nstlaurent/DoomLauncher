@@ -56,7 +56,10 @@
             this.lblFile = new DoomLauncher.GrowLabel();
             this.chkMaps = new System.Windows.Forms.CheckBox();
             this.lnkMapsEdit = new System.Windows.Forms.LinkLabel();
+            this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
+            this.lnkClearRating = new System.Windows.Forms.LinkLabel();
             this.tblMain.SuspendLayout();
+            this.flpRating.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblMain
@@ -76,7 +79,6 @@
             this.tblMain.Controls.Add(this.label6, 0, 7);
             this.tblMain.Controls.Add(this.txtTitle, 2, 1);
             this.tblMain.Controls.Add(this.dtRelease, 2, 3);
-            this.tblMain.Controls.Add(this.ctrlStarRating, 2, 4);
             this.tblMain.Controls.Add(this.label7, 0, 5);
             this.tblMain.Controls.Add(this.chkTitle, 1, 1);
             this.tblMain.Controls.Add(this.chkAuthor, 1, 2);
@@ -91,6 +93,7 @@
             this.tblMain.Controls.Add(this.lblFile, 2, 0);
             this.tblMain.Controls.Add(this.chkMaps, 1, 8);
             this.tblMain.Controls.Add(this.lnkMapsEdit, 2, 8);
+            this.tblMain.Controls.Add(this.flpRating, 2, 4);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
@@ -214,15 +217,6 @@
             this.dtRelease.ShowCheckBox = true;
             this.dtRelease.Size = new System.Drawing.Size(200, 20);
             this.dtRelease.TabIndex = 8;
-            // 
-            // ctrlStarRating
-            // 
-            this.ctrlStarRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlStarRating.Location = new System.Drawing.Point(103, 120);
-            this.ctrlStarRating.Name = "ctrlStarRating";
-            this.ctrlStarRating.SelectedRating = 0;
-            this.ctrlStarRating.Size = new System.Drawing.Size(105, 20);
-            this.ctrlStarRating.TabIndex = 11;
             // 
             // label7
             // 
@@ -398,6 +392,38 @@
             this.lnkMapsEdit.Text = "Edit...";
             this.lnkMapsEdit.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkMapsEdit_LinkClicked);
             // 
+            // flpRating
+            // 
+            this.flpRating.Controls.Add(this.ctrlStarRating);
+            this.flpRating.Controls.Add(this.lnkClearRating);
+            this.flpRating.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpRating.Location = new System.Drawing.Point(150, 173);
+            this.flpRating.Margin = new System.Windows.Forms.Padding(0);
+            this.flpRating.Name = "flpRating";
+            this.flpRating.Size = new System.Drawing.Size(374, 55);
+            this.flpRating.TabIndex = 28;
+            // 
+            // ctrlStarRating
+            // 
+            this.ctrlStarRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ctrlStarRating.Location = new System.Drawing.Point(0, 13);
+            this.ctrlStarRating.Name = "ctrlStarRating";
+            this.ctrlStarRating.SelectedRating = 0;
+            this.ctrlStarRating.Size = new System.Drawing.Size(105, 20);
+            this.ctrlStarRating.TabIndex = 11;
+            // 
+            // lnkClearRating
+            // 
+            this.lnkClearRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lnkClearRating.AutoSize = true;
+            this.lnkClearRating.Location = new System.Drawing.Point(110, 16);
+            this.lnkClearRating.Name = "lnkClearRating";
+            this.lnkClearRating.Size = new System.Drawing.Size(46, 20);
+            this.lnkClearRating.TabIndex = 12;
+            this.lnkClearRating.TabStop = true;
+            this.lnkClearRating.Text = "Clear";
+            this.lnkClearRating.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkClearRating_LinkClicked);
+            // 
             // GameFileEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -440,5 +466,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.LinkLabel lnkMapsEdit;
         private System.Windows.Forms.CheckBox chkMaps;
+        private System.Windows.Forms.FlowLayoutPanel flpRating;
+        private System.Windows.Forms.LinkLabel lnkClearRating;
     }
 }
