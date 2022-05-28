@@ -2269,57 +2269,31 @@ namespace DoomLauncher
             HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
-        private void anyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void playRandomToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            PlayRandom(null);
-        }
-
-        private void unplayedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PlayRandom(GameFileFieldType.LastPlayed);
-        }
-
-        private void unratedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PlayRandom(GameFileFieldType.Rating);
-        }
-
-        private void PlayRandom(GameFileFieldType? field)
-        {
-            IGameFileGetOptions options = new GameFileGetOptions(new GameFileFieldType[] { GameFileFieldType.GameFileID , GameFileFieldType.LastPlayed, GameFileFieldType.Rating});
-            IEnumerable<IGameFile> gameFiles = DataSourceAdapter.GetGameFiles(options);
-
-            if (field != null)
+            PlayRandomForm form = new PlayRandomForm();
+            form.Initialize(GetCurrentTabView());
+            form.StartPosition = FormStartPosition.CenterParent;
+            if (form.ShowDialog(this) == DialogResult.OK)
             {
-                if (field.Value == GameFileFieldType.LastPlayed)
-                    gameFiles = gameFiles.Where(x => !x.LastPlayed.HasValue);
-                else if (field.Value == GameFileFieldType.Rating)
-                    gameFiles = gameFiles.Where(x => !x.Rating.HasValue);
-            }
-
-            if (gameFiles.Any())
-            {
-                Random rand = new Random(DateTime.Now.Millisecond);
-                int index = rand.Next() % gameFiles.Count();
-
-                IGameFile gameFile = gameFiles.ElementAt(index);
-                options = new GameFileGetOptions();
-                options.SearchField = new GameFileSearchField(GameFileFieldType.GameFileID, gameFile.GameFileID.ToString());
-
-                gameFile = DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
-
-                tabControl.SelectedTab = tabControl.TabPages[1];
-                ITabView tabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(TabKeys.LocalKey));
-                if (tabView != null)
+                if (form.GeneratedGameFile == null)
                 {
-                    tabView.GameFileViewControl.SelectedItem = gameFile;
-                    if (gameFile != null)
-                        HandlePlay(new IGameFile[] { gameFile });
+                    MessageBox.Show(this, "No file was generated.", "None Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
-            }
-            else
-            {
-                MessageBox.Show(this, "No file found that matched the requested parameters!", "None Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                ITabView tabView = GetCurrentTabView();
+                if (form.SelectedType != PlayRandomType.CurrentTab)
+                {
+                    tabControl.SelectedTab = tabControl.TabPages[1];
+                    tabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(TabKeys.LocalKey));
+                    if (tabView == null)
+                        return;
+                }
+
+                tabView.GameFileViewControl.SelectedItem = form.GeneratedGameFile;
+                if (form.GeneratedGameFile != null)
+                    HandlePlay(new IGameFile[] { form.GeneratedGameFile }, map: form.GeneratedMap);
             }
         }
 

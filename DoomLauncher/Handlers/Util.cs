@@ -2,6 +2,7 @@
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -500,6 +501,16 @@ namespace DoomLauncher
             byte[] data = new byte[entry.Length];
             entry.Read(data, 0, data.Length);
             return data;
+        }
+
+        public static string GetDescription(this Enum value)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+            if (fi.GetCustomAttributes(typeof(DescriptionAttribute), false) is DescriptionAttribute[] attributes &&
+                attributes.Any())
+                return attributes.First().Description;
+
+            return value.ToString();
         }
     }
 }

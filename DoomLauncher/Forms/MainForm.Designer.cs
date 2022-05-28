@@ -79,9 +79,6 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.playNowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playRandomToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.anyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.unplayedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.unratedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateTextFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -535,35 +532,11 @@
             this.playNowToolStripMenuItem.Click += new System.EventHandler(this.playNowToolStripMenuItem_Click);
             // 
             // playRandomToolStripMenuItem1
-            // 
-            this.playRandomToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.anyToolStripMenuItem,
-            this.unplayedToolStripMenuItem,
-            this.unratedToolStripMenuItem});
+            //
             this.playRandomToolStripMenuItem1.Name = "playRandomToolStripMenuItem1";
             this.playRandomToolStripMenuItem1.Size = new System.Drawing.Size(273, 26);
             this.playRandomToolStripMenuItem1.Text = "Play Random";
-            // 
-            // anyToolStripMenuItem
-            // 
-            this.anyToolStripMenuItem.Name = "anyToolStripMenuItem";
-            this.anyToolStripMenuItem.Size = new System.Drawing.Size(155, 26);
-            this.anyToolStripMenuItem.Text = "Any";
-            this.anyToolStripMenuItem.Click += new System.EventHandler(this.anyToolStripMenuItem_Click);
-            // 
-            // unplayedToolStripMenuItem
-            // 
-            this.unplayedToolStripMenuItem.Name = "unplayedToolStripMenuItem";
-            this.unplayedToolStripMenuItem.Size = new System.Drawing.Size(155, 26);
-            this.unplayedToolStripMenuItem.Text = "Unplayed";
-            this.unplayedToolStripMenuItem.Click += new System.EventHandler(this.unplayedToolStripMenuItem_Click);
-            // 
-            // unratedToolStripMenuItem
-            // 
-            this.unratedToolStripMenuItem.Name = "unratedToolStripMenuItem";
-            this.unratedToolStripMenuItem.Size = new System.Drawing.Size(155, 26);
-            this.unratedToolStripMenuItem.Text = "Unrated";
-            this.unratedToolStripMenuItem.Click += new System.EventHandler(this.unratedToolStripMenuItem_Click);
+            this.playRandomToolStripMenuItem1.Click += new System.EventHandler(this.playRandomToolStripMenuItem1_Click);
             // 
             // toolStripSeparator4
             // 
@@ -1000,9 +973,6 @@
         private System.Windows.Forms.ToolStripMenuItem playNowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem playRandomToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem anyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem unplayedToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem unratedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createZipToolStripMenuItem;
         private DoomLauncher.GlowButton btnUpdate;
         private System.Windows.Forms.ToolStripMenuItem addFIlesRecursivelyToolStripMenuItem1;

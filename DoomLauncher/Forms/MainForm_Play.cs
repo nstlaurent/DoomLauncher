@@ -39,12 +39,7 @@ namespace DoomLauncher
             return exists;
         }
 
-        private void HandlePlay(IEnumerable<IGameFile> gameFiles)
-        {
-            HandlePlay(gameFiles, null);
-        }
-
-        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort)
+        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort = null, string map = null)
         {
             LaunchData launchData = GetLaunchFiles(gameFiles);
 
@@ -71,6 +66,8 @@ namespace DoomLauncher
             SetupPlayForm(launchData.GameFile);
             if (sourcePort != null) 
                 m_currentPlayForm.SelectedSourcePort = sourcePort;
+            if (map != null)
+                m_currentPlayForm.SelectedMap = map;
 
             if (m_currentPlayForm.ShowDialog(this) == DialogResult.OK)
             {
