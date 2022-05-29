@@ -6,6 +6,7 @@ namespace DoomLauncher.Interfaces
     {
         IEnumerable<IStatsData> GetStats();
         IEnumerable<IStatsData> GetStats(int gameFileID);
+        IEnumerable<IStatsData> GetStats(IEnumerable<IGameFile> gameFiles);
         void InsertStats(IStatsData stats);
         void UpdateStats(IStatsData stats);
         void DeleteStatsByFile(int gameFileID);

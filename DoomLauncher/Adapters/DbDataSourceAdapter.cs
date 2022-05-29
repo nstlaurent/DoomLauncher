@@ -614,6 +614,16 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(StatsData)).Cast<StatsData>().ToList();
         }
 
+        public IEnumerable<IStatsData> GetStats(IEnumerable<IGameFile> gameFiles)
+        {
+            if (!gameFiles.Any())
+                return Array.Empty<IStatsData>();
+
+            var gameFileIds = gameFiles.Select(x => x.GameFileID);
+            DataTable dt = DataAccess.ExecuteSelect($"select * from Stats where GameFileID in ({string.Join(",", gameFileIds)})").Tables[0];
+            return Util.TableToStructure(dt, typeof(StatsData)).Cast<StatsData>().ToList();
+        }
+
         public void InsertStats(IStatsData stats)
         {
             string insert = InsertStatement("Stats", stats, new string[] { "StatID", "SaveFile" }, out List<DbParameter> parameters);

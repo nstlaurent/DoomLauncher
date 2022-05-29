@@ -2422,28 +2422,18 @@ namespace DoomLauncher
 
         private void HandleCumulativeStatistics()
         {
-            if (GetCurrentViewControl() != null)
-            {
-                List<IStatsData> stats = new List<IStatsData>();
-                List<IGameFile> gameFiles = new List<IGameFile>();
-                foreach (IGameFile item in GetCurrentViewControl().DataSource)
-                {
-                    if (item.GameFileID.HasValue)
-                    {
-                        stats.AddRange(DataSourceAdapter.GetStats(item.GameFileID.Value));
-                        gameFiles.Add(item);
-                    }
-                }
+            IGameFileView view = GetCurrentViewControl();
+            if (view == null)
+                return;
 
-                ITabView tabView = m_tabHandler.TabViewForControl(GetCurrentViewControl());
-                string tabText = tabView == null ? string.Empty : tabView.Title;
+            ITabView tabView = m_tabHandler.TabViewForControl(view);
+            string tabText = tabView == null ? string.Empty : tabView.Title;
 
-                CumulativeStats form = new CumulativeStats();
-                form.Text = string.Format("Cumulative Stats - {0}", tabText);
-                form.SetStatistics(gameFiles, stats);
-                form.StartPosition = FormStartPosition.CenterParent;
-                form.ShowDialog(this);
-            }
+            CumulativeStats form = new CumulativeStats();
+            form.Text = $"Cumulative Stats - {tabText}";
+            form.SetStatistics(view.DataSource, DataSourceAdapter.GetStats(view.DataSource));
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.ShowDialog(this);
         }
 
         private ProgressBarForm CreateProgressBar(string text, ProgressBarStyle style)

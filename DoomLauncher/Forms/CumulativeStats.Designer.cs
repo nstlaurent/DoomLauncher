@@ -32,19 +32,25 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CumulativeStats));
             this.btnOK = new System.Windows.Forms.Button();
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
+            this.lblNote = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.lblDisplay2 = new System.Windows.Forms.Label();
+            this.lblDisplay1 = new System.Windows.Forms.Label();
+            this.lblTimeLaunched = new System.Windows.Forms.Label();
             this.lblTimePlayed = new System.Windows.Forms.Label();
             this.ctrlStats = new DoomLauncher.StatsControl();
-            this.label1 = new System.Windows.Forms.Label();
             this.tblMain.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(265, 183);
+            this.btnOK.Location = new System.Drawing.Point(354, 238);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.Size = new System.Drawing.Size(100, 28);
             this.btnOK.TabIndex = 9;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -54,63 +60,119 @@
             this.tblMain.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.lblTimePlayed, 0, 1);
-            this.tblMain.Controls.Add(this.ctrlStats, 0, 2);
-            this.tblMain.Controls.Add(this.label1, 0, 0);
+            this.tblMain.Controls.Add(this.lblNote, 0, 0);
             this.tblMain.Controls.Add(this.btnOK, 0, 3);
+            this.tblMain.Controls.Add(this.tableLayoutPanel1, 0, 1);
+            this.tblMain.Controls.Add(this.ctrlStats, 0, 2);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Margin = new System.Windows.Forms.Padding(0);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 4;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 104F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 128F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Size = new System.Drawing.Size(344, 211);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblMain.Size = new System.Drawing.Size(459, 274);
             this.tblMain.TabIndex = 2;
+            // 
+            // lblNote
+            // 
+            this.lblNote.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblNote.AutoSize = true;
+            this.lblNote.Location = new System.Drawing.Point(5, 12);
+            this.lblNote.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblNote.Name = "lblNote";
+            this.lblNote.Size = new System.Drawing.Size(39, 16);
+            this.lblNote.TabIndex = 10;
+            this.lblNote.Text = "Note:";
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 166F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.lblDisplay2, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblDisplay1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblTimeLaunched, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblTimePlayed, 1, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(1, 41);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(457, 60);
+            this.tableLayoutPanel1.TabIndex = 12;
+            // 
+            // lblDisplay2
+            // 
+            this.lblDisplay2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDisplay2.AutoSize = true;
+            this.lblDisplay2.Location = new System.Drawing.Point(4, 37);
+            this.lblDisplay2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDisplay2.Name = "lblDisplay2";
+            this.lblDisplay2.Size = new System.Drawing.Size(128, 16);
+            this.lblDisplay2.TabIndex = 11;
+            this.lblDisplay2.Text = "Time Played (Stats):";
+            // 
+            // lblDisplay1
+            // 
+            this.lblDisplay1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDisplay1.AutoSize = true;
+            this.lblDisplay1.Location = new System.Drawing.Point(4, 7);
+            this.lblDisplay1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDisplay1.Name = "lblDisplay1";
+            this.lblDisplay1.Size = new System.Drawing.Size(157, 16);
+            this.lblDisplay1.TabIndex = 7;
+            this.lblDisplay1.Text = "Time Played (Launched):";
+            // 
+            // lblTimeLaunched
+            // 
+            this.lblTimeLaunched.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTimeLaunched.AutoSize = true;
+            this.lblTimeLaunched.Location = new System.Drawing.Point(169, 7);
+            this.lblTimeLaunched.Name = "lblTimeLaunched";
+            this.lblTimeLaunched.Size = new System.Drawing.Size(66, 16);
+            this.lblTimeLaunched.TabIndex = 12;
+            this.lblTimeLaunched.Text = "Launched";
             // 
             // lblTimePlayed
             // 
             this.lblTimePlayed.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTimePlayed.AutoSize = true;
-            this.lblTimePlayed.Location = new System.Drawing.Point(4, 47);
+            this.lblTimePlayed.Location = new System.Drawing.Point(169, 37);
             this.lblTimePlayed.Name = "lblTimePlayed";
-            this.lblTimePlayed.Size = new System.Drawing.Size(68, 13);
-            this.lblTimePlayed.TabIndex = 7;
-            this.lblTimePlayed.Text = "Time Played:";
+            this.lblTimePlayed.Size = new System.Drawing.Size(50, 16);
+            this.lblTimePlayed.TabIndex = 13;
+            this.lblTimePlayed.Text = "Played";
             // 
             // ctrlStats
             // 
             this.ctrlStats.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlStats.Location = new System.Drawing.Point(4, 78);
-            this.ctrlStats.Margin = new System.Windows.Forms.Padding(3, 3, 0, 0);
+            this.ctrlStats.Location = new System.Drawing.Point(5, 106);
+            this.ctrlStats.Margin = new System.Windows.Forms.Padding(4);
             this.ctrlStats.Name = "ctrlStats";
-            this.ctrlStats.Size = new System.Drawing.Size(339, 101);
-            this.ctrlStats.TabIndex = 8;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(125, 13);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Note: Search filters apply";
+            this.ctrlStats.Size = new System.Drawing.Size(449, 120);
+            this.ctrlStats.TabIndex = 13;
             // 
             // CumulativeStats
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(344, 211);
+            this.ClientSize = new System.Drawing.Size(459, 274);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "CumulativeStats";
             this.Text = "Cumulative Stats";
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -118,9 +180,13 @@
         #endregion
 
         private TableLayoutPanelDB tblMain;
+        private System.Windows.Forms.Label lblDisplay1;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Label lblNote;
+        private System.Windows.Forms.Label lblDisplay2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Label lblTimeLaunched;
         private System.Windows.Forms.Label lblTimePlayed;
         private StatsControl ctrlStats;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Label label1;
     }
 }
