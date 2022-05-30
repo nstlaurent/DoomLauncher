@@ -174,9 +174,15 @@ namespace DoomLauncher.Controls
         private List<ITagData> GetStaticTags()
         {
             List<ITagData> tags = new List<ITagData>();
+            HashSet<string> visibleViews = DataCache.Instance.AppConfiguration.VisibleViews;
 
             foreach (var key in TabKeys.KeyNames)
+            {
+                if (key != TabKeys.LocalKey && !visibleViews.Contains(key))
+                    continue;
+
                 tags.Add(new StaticTagData() { Name = key, Favorite = true });
+            }
 
             return tags;
         }

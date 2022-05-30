@@ -83,6 +83,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_3_2, AppVersion.Version_3_3_2);
                 ExecuteUpdate(Pre_Version_3_4_0, AppVersion.Version_3_4_0);
                 ExecuteUpdate(Pre_Version_3_4_0_Update1, AppVersion.Version_3_4_0_Update1);
+                ExecuteUpdate(Pre_Version_3_5_2, AppVersion.Version_3_5_2);
             }
         }
 
@@ -758,6 +759,16 @@ namespace DoomLauncher
 
             string data = DataCache.SerializeColumnConfig(newColumns);
             DataCache.Instance.UpdateConfig(DataCache.Instance.DataSourceAdapter.GetConfiguration(), AppConfiguration.ColumnConfigName, data);
+        }
+
+        private void Pre_Version_3_5_2()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "VisibleViews",
+                Value = string.Join(";", TabKeys.KeyNames.Except(new string[] { TabKeys.LocalKey })),
+                UserCanModify = false,
+            });
         }
 
         private void UpdateMirrorUrls(string urls, string defaultUrl)

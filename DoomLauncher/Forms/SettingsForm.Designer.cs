@@ -57,6 +57,8 @@
             this.cmbFileManagement = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.tabPageView = new System.Windows.Forms.TabPage();
+            this.label13 = new System.Windows.Forms.Label();
+            this.chkListViews = new System.Windows.Forms.CheckedListBox();
             this.pnlViewRestart = new System.Windows.Forms.Panel();
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -81,12 +83,12 @@
             this.tblOuter.Controls.Add(this.tabControl, 0, 0);
             this.tblOuter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblOuter.Location = new System.Drawing.Point(0, 0);
-            this.tblOuter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblOuter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblOuter.Name = "tblOuter";
             this.tblOuter.RowCount = 2;
             this.tblOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.tblOuter.Size = new System.Drawing.Size(450, 291);
+            this.tblOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tblOuter.Size = new System.Drawing.Size(608, 436);
             this.tblOuter.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -95,19 +97,19 @@
             this.flowLayoutPanel1.Controls.Add(this.btnSave);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 252);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 387);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(450, 39);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(608, 49);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(346, 4);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnCancel.Location = new System.Drawing.Point(492, 5);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 28);
+            this.btnCancel.Size = new System.Drawing.Size(112, 35);
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -115,10 +117,10 @@
             // btnSave
             // 
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Location = new System.Drawing.Point(238, 4);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSave.Location = new System.Drawing.Point(372, 5);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(100, 28);
+            this.btnSave.Size = new System.Drawing.Size(112, 35);
             this.btnSave.TabIndex = 0;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -131,21 +133,21 @@
             this.tabControl.Controls.Add(this.tabPageFileManagement);
             this.tabControl.Controls.Add(this.tabPageView);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.Location = new System.Drawing.Point(4, 4);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl.Location = new System.Drawing.Point(4, 5);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(442, 244);
+            this.tabControl.Size = new System.Drawing.Size(600, 377);
             this.tabControl.TabIndex = 1;
             // 
             // tabPageConfig
             // 
             this.tabPageConfig.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPageConfig.Location = new System.Drawing.Point(4, 25);
-            this.tabPageConfig.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPageConfig.Location = new System.Drawing.Point(4, 29);
+            this.tabPageConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPageConfig.Name = "tabPageConfig";
-            this.tabPageConfig.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPageConfig.Size = new System.Drawing.Size(434, 215);
+            this.tabPageConfig.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tabPageConfig.Size = new System.Drawing.Size(592, 344);
             this.tabPageConfig.TabIndex = 0;
             this.tabPageConfig.Text = "Configuration";
             // 
@@ -160,31 +162,31 @@
             this.tabPageDefault.Controls.Add(this.label1);
             this.tabPageDefault.Controls.Add(this.cmbSourcePorts);
             this.tabPageDefault.Controls.Add(this.cmbIwad);
-            this.tabPageDefault.Location = new System.Drawing.Point(4, 25);
+            this.tabPageDefault.Location = new System.Drawing.Point(4, 29);
             this.tabPageDefault.Margin = new System.Windows.Forms.Padding(0);
             this.tabPageDefault.Name = "tabPageDefault";
-            this.tabPageDefault.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPageDefault.Size = new System.Drawing.Size(529, 284);
+            this.tabPageDefault.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tabPageDefault.Size = new System.Drawing.Size(592, 344);
             this.tabPageDefault.TabIndex = 1;
             this.tabPageDefault.Text = "Launch Settings";
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::DoomLauncher.Properties.Resources.bon2b;
-            this.pictureBox1.Location = new System.Drawing.Point(13, 124);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Location = new System.Drawing.Point(15, 155);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(28, 22);
+            this.pictureBox1.Size = new System.Drawing.Size(32, 28);
             this.pictureBox1.TabIndex = 16;
             this.pictureBox1.TabStop = false;
             // 
             // lblLaunchSettings
             // 
             this.lblLaunchSettings.AutoSize = true;
-            this.lblLaunchSettings.Location = new System.Drawing.Point(49, 124);
+            this.lblLaunchSettings.Location = new System.Drawing.Point(55, 155);
             this.lblLaunchSettings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLaunchSettings.Name = "lblLaunchSettings";
-            this.lblLaunchSettings.Size = new System.Drawing.Size(33, 16);
+            this.lblLaunchSettings.Size = new System.Drawing.Size(39, 20);
             this.lblLaunchSettings.TabIndex = 15;
             this.lblLaunchSettings.Text = "Text";
             // 
@@ -192,39 +194,39 @@
             // 
             this.cmbSkill.DisplayMember = "Name";
             this.cmbSkill.FormattingEnabled = true;
-            this.cmbSkill.Location = new System.Drawing.Point(64, 82);
-            this.cmbSkill.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbSkill.Location = new System.Drawing.Point(72, 102);
+            this.cmbSkill.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbSkill.Name = "cmbSkill";
-            this.cmbSkill.Size = new System.Drawing.Size(261, 24);
+            this.cmbSkill.Size = new System.Drawing.Size(293, 28);
             this.cmbSkill.TabIndex = 13;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(11, 86);
+            this.label4.Location = new System.Drawing.Point(12, 108);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(32, 16);
+            this.label4.Size = new System.Drawing.Size(37, 20);
             this.label4.TabIndex = 14;
             this.label4.Text = "Skill";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 53);
+            this.label2.Location = new System.Drawing.Point(10, 66);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(42, 16);
+            this.label2.Size = new System.Drawing.Size(52, 20);
             this.label2.TabIndex = 12;
             this.label2.Text = "IWAD";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 20);
+            this.label1.Location = new System.Drawing.Point(10, 25);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(31, 16);
+            this.label1.Size = new System.Drawing.Size(38, 20);
             this.label1.TabIndex = 11;
             this.label1.Text = "Port";
             // 
@@ -232,10 +234,10 @@
             // 
             this.cmbSourcePorts.DisplayMember = "Name";
             this.cmbSourcePorts.FormattingEnabled = true;
-            this.cmbSourcePorts.Location = new System.Drawing.Point(64, 16);
-            this.cmbSourcePorts.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbSourcePorts.Location = new System.Drawing.Point(72, 20);
+            this.cmbSourcePorts.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbSourcePorts.Name = "cmbSourcePorts";
-            this.cmbSourcePorts.Size = new System.Drawing.Size(261, 24);
+            this.cmbSourcePorts.Size = new System.Drawing.Size(293, 28);
             this.cmbSourcePorts.TabIndex = 9;
             this.cmbSourcePorts.ValueMember = "SourcePortID";
             // 
@@ -243,10 +245,10 @@
             // 
             this.cmbIwad.DisplayMember = "FileName";
             this.cmbIwad.FormattingEnabled = true;
-            this.cmbIwad.Location = new System.Drawing.Point(64, 49);
-            this.cmbIwad.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbIwad.Location = new System.Drawing.Point(72, 61);
+            this.cmbIwad.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbIwad.Name = "cmbIwad";
-            this.cmbIwad.Size = new System.Drawing.Size(261, 24);
+            this.cmbIwad.Size = new System.Drawing.Size(293, 28);
             this.cmbIwad.TabIndex = 10;
             this.cmbIwad.ValueMember = "IWadID";
             // 
@@ -257,27 +259,27 @@
             this.tabPageFileManagement.Controls.Add(this.tblFileOptions);
             this.tabPageFileManagement.Controls.Add(this.cmbFileManagement);
             this.tabPageFileManagement.Controls.Add(this.label10);
-            this.tabPageFileManagement.Location = new System.Drawing.Point(4, 25);
-            this.tabPageFileManagement.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPageFileManagement.Location = new System.Drawing.Point(4, 29);
+            this.tabPageFileManagement.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPageFileManagement.Name = "tabPageFileManagement";
-            this.tabPageFileManagement.Size = new System.Drawing.Size(529, 284);
+            this.tabPageFileManagement.Size = new System.Drawing.Size(592, 344);
             this.tabPageFileManagement.TabIndex = 2;
             this.tabPageFileManagement.Text = "File Management";
             // 
             // pictureBox2
             // 
             this.pictureBox2.Image = global::DoomLauncher.Properties.Resources.bon2b;
-            this.pictureBox2.Location = new System.Drawing.Point(19, 217);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox2.Location = new System.Drawing.Point(21, 271);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(28, 22);
+            this.pictureBox2.Size = new System.Drawing.Size(32, 28);
             this.pictureBox2.TabIndex = 20;
             this.pictureBox2.TabStop = false;
             // 
             // tblFileOptions
             // 
             this.tblFileOptions.ColumnCount = 2;
-            this.tblFileOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tblFileOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 135F));
             this.tblFileOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblFileOptions.Controls.Add(this.label9, 1, 2);
             this.tblFileOptions.Controls.Add(this.label8, 1, 1);
@@ -285,25 +287,25 @@
             this.tblFileOptions.Controls.Add(this.label5, 0, 1);
             this.tblFileOptions.Controls.Add(this.label6, 0, 2);
             this.tblFileOptions.Controls.Add(this.label7, 1, 0);
-            this.tblFileOptions.Location = new System.Drawing.Point(19, 68);
-            this.tblFileOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblFileOptions.Location = new System.Drawing.Point(21, 85);
+            this.tblFileOptions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblFileOptions.Name = "tblFileOptions";
             this.tblFileOptions.RowCount = 4;
-            this.tblFileOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.tblFileOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.tblFileOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.tblFileOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tblFileOptions.Size = new System.Drawing.Size(488, 142);
+            this.tblFileOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tblFileOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tblFileOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tblFileOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 12F));
+            this.tblFileOptions.Size = new System.Drawing.Size(549, 178);
             this.tblFileOptions.TabIndex = 19;
             // 
             // label9
             // 
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(124, 89);
+            this.label9.Location = new System.Drawing.Point(139, 112);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(266, 16);
+            this.label9.Size = new System.Drawing.Size(316, 20);
             this.label9.TabIndex = 5;
             this.label9.Text = "Prompted to choose when file(s) are added.";
             // 
@@ -311,10 +313,10 @@
             // 
             this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(124, 42);
+            this.label8.Location = new System.Drawing.Point(139, 53);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(360, 32);
+            this.label8.Size = new System.Drawing.Size(357, 40);
             this.label8.TabIndex = 4;
             this.label8.Text = "Files are referenced by their original path and not managed by Doom Launcher.";
             // 
@@ -323,7 +325,7 @@
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(4, 11);
+            this.label3.Location = new System.Drawing.Point(4, 16);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(74, 17);
@@ -335,7 +337,7 @@
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(4, 50);
+            this.label5.Location = new System.Drawing.Point(4, 65);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(94, 17);
@@ -347,7 +349,7 @@
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(4, 89);
+            this.label6.Location = new System.Drawing.Point(4, 114);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(59, 17);
@@ -358,10 +360,10 @@
             // 
             this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(124, 3);
+            this.label7.Location = new System.Drawing.Point(139, 4);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(330, 32);
+            this.label7.Size = new System.Drawing.Size(393, 40);
             this.label7.TabIndex = 3;
             this.label7.Text = "Doom Launcher manages and compresses files in the GameFiles directory for you.";
             // 
@@ -369,62 +371,83 @@
             // 
             this.cmbFileManagement.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFileManagement.FormattingEnabled = true;
-            this.cmbFileManagement.Location = new System.Drawing.Point(19, 17);
-            this.cmbFileManagement.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbFileManagement.Location = new System.Drawing.Point(21, 21);
+            this.cmbFileManagement.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbFileManagement.Name = "cmbFileManagement";
-            this.cmbFileManagement.Size = new System.Drawing.Size(261, 24);
+            this.cmbFileManagement.Size = new System.Drawing.Size(293, 28);
             this.cmbFileManagement.TabIndex = 10;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(55, 220);
+            this.label10.Location = new System.Drawing.Point(62, 275);
             this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(359, 16);
+            this.label10.Size = new System.Drawing.Size(421, 20);
             this.label10.TabIndex = 6;
             this.label10.Text = "Downloaded files are always managed by Doom Launcher.";
             // 
             // tabPageView
             // 
             this.tabPageView.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageView.Controls.Add(this.label13);
+            this.tabPageView.Controls.Add(this.chkListViews);
             this.tabPageView.Controls.Add(this.pnlViewRestart);
             this.tabPageView.Controls.Add(this.label11);
             this.tabPageView.Controls.Add(this.cmbViewType);
-            this.tabPageView.Location = new System.Drawing.Point(4, 25);
-            this.tabPageView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPageView.Location = new System.Drawing.Point(4, 29);
+            this.tabPageView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPageView.Name = "tabPageView";
-            this.tabPageView.Size = new System.Drawing.Size(529, 284);
+            this.tabPageView.Size = new System.Drawing.Size(592, 344);
             this.tabPageView.TabIndex = 3;
             this.tabPageView.Text = "View";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(89, 78);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(101, 20);
+            this.label13.TabIndex = 15;
+            this.label13.Text = "Visible Views";
+            // 
+            // chkListViews
+            // 
+            this.chkListViews.CheckOnClick = true;
+            this.chkListViews.FormattingEnabled = true;
+            this.chkListViews.Location = new System.Drawing.Point(85, 101);
+            this.chkListViews.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkListViews.Name = "chkListViews";
+            this.chkListViews.Size = new System.Drawing.Size(420, 130);
+            this.chkListViews.TabIndex = 14;
             // 
             // pnlViewRestart
             // 
             this.pnlViewRestart.Controls.Add(this.label12);
-            this.pnlViewRestart.Location = new System.Drawing.Point(0, 54);
-            this.pnlViewRestart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlViewRestart.Location = new System.Drawing.Point(0, 242);
+            this.pnlViewRestart.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pnlViewRestart.Name = "pnlViewRestart";
-            this.pnlViewRestart.Size = new System.Drawing.Size(501, 170);
+            this.pnlViewRestart.Size = new System.Drawing.Size(584, 94);
             this.pnlViewRestart.TabIndex = 13;
             this.pnlViewRestart.Visible = false;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(76, 22);
+            this.label12.Location = new System.Drawing.Point(71, 28);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(375, 16);
+            this.label12.Size = new System.Drawing.Size(447, 20);
             this.label12.TabIndex = 0;
-            this.label12.Text = "Changing from tile view to grid view will restart Doom Launcher.";
+            this.label12.Text = "Changing view type or visible views will restart Doom Launcher.";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(7, 21);
+            this.label11.Location = new System.Drawing.Point(89, 26);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(71, 16);
+            this.label11.Size = new System.Drawing.Size(81, 20);
             this.label11.TabIndex = 12;
             this.label11.Text = "View Type";
             // 
@@ -432,23 +455,23 @@
             // 
             this.cmbViewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbViewType.FormattingEnabled = true;
-            this.cmbViewType.Location = new System.Drawing.Point(117, 17);
-            this.cmbViewType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbViewType.Location = new System.Drawing.Point(213, 21);
+            this.cmbViewType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbViewType.Name = "cmbViewType";
-            this.cmbViewType.Size = new System.Drawing.Size(261, 24);
+            this.cmbViewType.Size = new System.Drawing.Size(293, 28);
             this.cmbViewType.TabIndex = 11;
             this.cmbViewType.SelectedIndexChanged += new System.EventHandler(this.CmbViewType_SelectedIndexChanged);
             // 
             // SettingsForm
             // 
             this.AcceptButton = this.btnSave;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(540, 349);
+            this.ClientSize = new System.Drawing.Size(608, 436);
             this.Controls.Add(this.tblOuter);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "SettingsForm";
             this.Text = "Settings";
             this.tblOuter.ResumeLayout(false);
@@ -503,5 +526,7 @@
         private System.Windows.Forms.ComboBox cmbViewType;
         private System.Windows.Forms.Panel pnlViewRestart;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.CheckedListBox chkListViews;
     }
 }

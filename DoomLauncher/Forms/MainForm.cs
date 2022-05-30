@@ -971,46 +971,49 @@ namespace DoomLauncher
         private void HandleEdit()
         {
             IGameFileView ctrl = GetCurrentViewControl();
+            if (ctrl == null)
+                return;
 
-            if (ctrl != null)
+            ITabView tabView = m_tabHandler.TabViewForControl(ctrl);
+            IGameFile[] gameFiles = SelectedItems(ctrl);
+
+            if (!CheckEdit(tabView, gameFiles))
+                return;
+
+            IGameFile gameFile = DataSourceAdapter.GetGameFile(gameFiles.First().FileName);
+            IEnumerable<ITagData> tags = GetTagsFromFile(gameFile);
+
+            ITabView localView = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(TabKeys.LocalKey));
+            if (localView == null)
+                return;
+
+            GameFileEditForm form = new GameFileEditForm();
+            form.SetCopyFromFileAllowed(DataSourceAdapter, localView);
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.EditControl.SetShowCheckBoxes(false);
+            form.EditControl.SetDataSource(gameFile, tags);
+
+            if (gameFiles.Length > 1)
             {
-                ITabView tabView = m_tabHandler.TabViewForControl(ctrl);
-                IGameFile[] gameFiles = SelectedItems(ctrl);
-
-                if (CheckEdit(tabView, gameFiles))
-                {
-                    IGameFile gameFile = DataSourceAdapter.GetGameFile(gameFiles.First().FileName);
-                    IEnumerable<ITagData> tags = GetTagsFromFile(gameFile);
-
-                    GameFileEditForm form = new GameFileEditForm();
-                    form.SetCopyFromFileAllowed(DataSourceAdapter, m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(TabKeys.LocalKey)));
-                    form.StartPosition = FormStartPosition.CenterParent;
-                    form.EditControl.SetShowCheckBoxes(false);
-                    form.EditControl.SetDataSource(gameFile, tags);
-
-                    if (gameFiles.Length > 1)
-                    {
-                        form.Text = "*** Multiple Edit";
-                        form.EditControl.SetShowCheckBoxes(true);
-                        form.EditControl.SetCheckBoxesChecked(false);
-                    }
-
-                    if (form.ShowDialog(this) == DialogResult.OK)
-                    {
-                        foreach (IGameFile updateGameFile in gameFiles)
-                        {
-                            form.EditControl.UpdateDataSource(updateGameFile);
-                            if (form.TagsChanged || form.EditControl.TagsChanged)
-                                DataCache.Instance.UpdateGameFileTags(new IGameFile[] { updateGameFile }, form.EditControl.TagData);
-                            tabView.Adapter.UpdateGameFile(updateGameFile, Util.DefaultGameFileUpdateFields);
-                            UpdateDataSourceViews(updateGameFile);
-                        }
-
-                        if (gameFiles.Any())
-                            HandleSelectionChange(ctrl, true);
-                    }
-                }
+                form.Text = "*** Multiple Edit";
+                form.EditControl.SetShowCheckBoxes(true);
+                form.EditControl.SetCheckBoxesChecked(false);
             }
+
+            if (form.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            foreach (IGameFile updateGameFile in gameFiles)
+            {
+                form.EditControl.UpdateDataSource(updateGameFile);
+                if (form.TagsChanged || form.EditControl.TagsChanged)
+                    DataCache.Instance.UpdateGameFileTags(new IGameFile[] { updateGameFile }, form.EditControl.TagData);
+                tabView.Adapter.UpdateGameFile(updateGameFile, Util.DefaultGameFileUpdateFields);
+                UpdateDataSourceViews(updateGameFile);
+            }
+
+            if (gameFiles.Any())
+                HandleSelectionChange(ctrl, true);
         }
 
         private static bool CheckEdit(ITabView tabView, IGameFile[] gameFiles)
@@ -1309,7 +1312,8 @@ namespace DoomLauncher
             if (m_tabHandler != null)
             {
                 ITabView tabView = m_tabHandler.TabViews.FirstOrDefault(x => x is IdGamesTabViewCtrl);
-                tabView.Adapter = IdGamesDataSourceAdapter;
+                if (tabView != null)
+                    tabView.Adapter = IdGamesDataSourceAdapter;
             }
 
             ctrlAssociationView.Initialize(DataSourceAdapter, AppConfiguration);

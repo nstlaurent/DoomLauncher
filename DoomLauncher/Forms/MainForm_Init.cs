@@ -205,11 +205,19 @@ namespace DoomLauncher
             GameFileViewFactory = new GameFileViewFactory(this, AppConfiguration.GameFileViewType);
             GameFileTileManager.Instance.Init(GameFileViewFactory);
 
-            tabViews.Add(CreateTabViewRecent(colConfig));
+            if (AppConfiguration.VisibleViews.Contains(TabKeys.RecentKey))
+                tabViews.Add(CreateTabViewRecent(colConfig));
+
+            // User can't remove local
             tabViews.Add(CreateTabViewLocal(colConfig));
-            tabViews.Add(CreateTabViewUntagged(colConfig));
-            tabViews.Add(CreateTabViewIwad(colConfig));
-            tabViews.Add(CreateTabViewIdGames(colConfig));
+
+            if (AppConfiguration.VisibleViews.Contains(TabKeys.UntaggedKey))
+                tabViews.Add(CreateTabViewUntagged(colConfig));
+            if (AppConfiguration.VisibleViews.Contains(TabKeys.IWadsKey))
+                tabViews.Add(CreateTabViewIwad(colConfig));
+            if (AppConfiguration.VisibleViews.Contains(TabKeys.IdGamesKey))
+                tabViews.Add(CreateTabViewIdGames(colConfig));
+
             tabViews.AddRange(CreateTagTabs(GameFileViewFactory.DefaultColumnTextFields, colConfig));
 
             m_tabHandler = new TabHandler(tabControl);
@@ -431,6 +439,7 @@ namespace DoomLauncher
             DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory);
             DataCache.Instance.Init(DataSourceAdapter);
             DataCache.Instance.AppConfiguration.GameFileViewTypeChanged += AppConfiguration_GameFileViewTypeChanged;
+            DataCache.Instance.AppConfiguration.VisibleViewsChanged += AppConfiguration_VisibleViewsChanged;
             DataCache.Instance.TagMapLookup.TagMappingChanged += TagMapLookup_TagMappingChanged;
             DataCache.Instance.TagsChanged += DataCache_TagsChanged;
 
@@ -593,14 +602,24 @@ namespace DoomLauncher
         {
             if (GameFileViewFactory.IsBaseViewTypeChange(GameFileViewFactory.DefaultType, AppConfiguration.GameFileViewType))
             {
-                // Write any settings the user may have changed before the application is killed
-                HandleFormClosing();
-                Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Util.GetExecutableNoPath()));
+                Restart();
                 return;
             }
 
             GameFileViewFactory.UpdateDefaultType(AppConfiguration.GameFileViewType);
             GameFileTileManager.Instance.Init(GameFileViewFactory);
+        }
+
+        private void AppConfiguration_VisibleViewsChanged(object sender, EventArgs e)
+        {
+            Restart();
+        }
+
+        private void Restart()
+        {
+            // Write any settings the user may have changed before the application is killed
+            HandleFormClosing();
+            Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Util.GetExecutableNoPath()));
         }
 
         private void BuildUtilityToolStrip()
