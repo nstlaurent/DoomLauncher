@@ -101,6 +101,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Resources\chocosave1.dsg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

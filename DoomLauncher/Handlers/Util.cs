@@ -512,5 +512,13 @@ namespace DoomLauncher
 
             return value.ToString();
         }
+
+        public static string GetInteropDirectory()
+        {
+            if (Environment.Is64BitOperatingSystem)
+                return "x64";
+
+            return "x86";
+        }
     }
 }

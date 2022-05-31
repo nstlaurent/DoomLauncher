@@ -38,6 +38,7 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.resyncToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resyncIgnoreTitlepicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateMetadataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.sortByToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,6 +89,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctrlSearch = new DoomLauncher.SearchControl();
             this.chkAutoSearch = new System.Windows.Forms.CheckBox();
+            this.chkIncludeAll = new System.Windows.Forms.CheckBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnDownloads = new System.Windows.Forms.Button();
@@ -107,8 +109,6 @@
             this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewWebPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
-            this.resyncIgnoreTitlepicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chkIncludeAll = new System.Windows.Forms.CheckBox();
             this.mnuLocal.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblTop.SuspendLayout();
@@ -158,7 +158,7 @@
             this.toolStripSeparator12,
             this.createShortcutToolStripMenuItem});
             this.mnuLocal.Name = "mnuGrid";
-            this.mnuLocal.Size = new System.Drawing.Size(234, 476);
+            this.mnuLocal.Size = new System.Drawing.Size(234, 448);
             this.mnuLocal.Opening += new System.ComponentModel.CancelEventHandler(this.MnuLocal_Opening);
             // 
             // viewTextFileToolStripMenuItem
@@ -200,6 +200,13 @@
             this.resyncToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
             this.resyncToolStripMenuItem.Text = "Resync";
             this.resyncToolStripMenuItem.Click += new System.EventHandler(this.resyncToolStripMenuItem_Click);
+            // 
+            // resyncIgnoreTitlepicToolStripMenuItem
+            // 
+            this.resyncIgnoreTitlepicToolStripMenuItem.Name = "resyncIgnoreTitlepicToolStripMenuItem";
+            this.resyncIgnoreTitlepicToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
+            this.resyncIgnoreTitlepicToolStripMenuItem.Text = "Resync (Ignore Titlepic)";
+            this.resyncIgnoreTitlepicToolStripMenuItem.Click += new System.EventHandler(this.resyncIgnoreTitlepicToolStripMenuItem_Click);
             // 
             // updateMetadataToolStripMenuItem
             // 
@@ -353,13 +360,13 @@
             this.tblMain.Controls.Add(this.flpTags, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 3;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Size = new System.Drawing.Size(1344, 863);
+            this.tblMain.Size = new System.Drawing.Size(1512, 1079);
             this.tblMain.TabIndex = 1;
             // 
             // tblTop
@@ -367,8 +374,8 @@
             this.tblTop.ColumnCount = 4;
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 98.03922F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 1.960784F));
-            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 187F));
-            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 209F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 210F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 236F));
             this.tblTop.Controls.Add(this.flpSearch, 0, 0);
             this.tblTop.Controls.Add(this.btnDownloads, 3, 0);
             this.tblTop.Controls.Add(this.btnUpdate, 2, 0);
@@ -378,7 +385,7 @@
             this.tblTop.Name = "tblTop";
             this.tblTop.RowCount = 1;
             this.tblTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblTop.Size = new System.Drawing.Size(1344, 39);
+            this.tblTop.Size = new System.Drawing.Size(1512, 49);
             this.tblTop.TabIndex = 1;
             // 
             // flpSearch
@@ -394,7 +401,7 @@
             this.flpSearch.Location = new System.Drawing.Point(0, 0);
             this.flpSearch.Margin = new System.Windows.Forms.Padding(0);
             this.flpSearch.Name = "flpSearch";
-            this.flpSearch.Size = new System.Drawing.Size(929, 39);
+            this.flpSearch.Size = new System.Drawing.Size(1045, 49);
             this.flpSearch.TabIndex = 0;
             // 
             // toolStrip1
@@ -405,8 +412,8 @@
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(5, 4);
-            this.toolStrip1.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(6, 9);
+            this.toolStrip1.Margin = new System.Windows.Forms.Padding(6, 0, 0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(39, 27);
             this.toolStrip1.TabIndex = 5;
@@ -532,7 +539,7 @@
             this.playNowToolStripMenuItem.Click += new System.EventHandler(this.playNowToolStripMenuItem_Click);
             // 
             // playRandomToolStripMenuItem1
-            //
+            // 
             this.playRandomToolStripMenuItem1.Name = "playRandomToolStripMenuItem1";
             this.playRandomToolStripMenuItem1.Size = new System.Drawing.Size(273, 26);
             this.playRandomToolStripMenuItem1.Text = "Play Random";
@@ -586,24 +593,37 @@
             // ctrlSearch
             // 
             this.ctrlSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlSearch.Location = new System.Drawing.Point(48, 4);
-            this.ctrlSearch.Margin = new System.Windows.Forms.Padding(4, 2, 4, 4);
+            this.ctrlSearch.Location = new System.Drawing.Point(49, 5);
+            this.ctrlSearch.Margin = new System.Windows.Forms.Padding(4, 2, 4, 5);
             this.ctrlSearch.Name = "ctrlSearch";
             this.ctrlSearch.SearchText = "";
-            this.ctrlSearch.Size = new System.Drawing.Size(189, 25);
+            this.ctrlSearch.Size = new System.Drawing.Size(213, 31);
             this.ctrlSearch.TabIndex = 0;
             // 
             // chkAutoSearch
             // 
             this.chkAutoSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAutoSearch.AutoSize = true;
-            this.chkAutoSearch.Location = new System.Drawing.Point(245, 8);
-            this.chkAutoSearch.Margin = new System.Windows.Forms.Padding(4);
+            this.chkAutoSearch.Location = new System.Drawing.Point(270, 10);
+            this.chkAutoSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkAutoSearch.Name = "chkAutoSearch";
-            this.chkAutoSearch.Size = new System.Drawing.Size(102, 20);
+            this.chkAutoSearch.Size = new System.Drawing.Size(120, 24);
             this.chkAutoSearch.TabIndex = 7;
             this.chkAutoSearch.Text = "Auto Search";
             this.chkAutoSearch.UseVisualStyleBackColor = true;
+            // 
+            // chkIncludeAll
+            // 
+            this.chkIncludeAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkIncludeAll.AutoSize = true;
+            this.chkIncludeAll.Location = new System.Drawing.Point(397, 10);
+            this.chkIncludeAll.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkIncludeAll.Name = "chkIncludeAll";
+            this.chkIncludeAll.Size = new System.Drawing.Size(104, 24);
+            this.chkIncludeAll.TabIndex = 8;
+            this.chkIncludeAll.Text = "Include All";
+            this.chkIncludeAll.UseVisualStyleBackColor = true;
+            this.chkIncludeAll.CheckedChanged += new System.EventHandler(this.chkIncludeAll_CheckedChanged);
             // 
             // btnSearch
             // 
@@ -611,10 +631,10 @@
             this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
             this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnSearch.Location = new System.Drawing.Point(355, 2);
-            this.btnSearch.Margin = new System.Windows.Forms.Padding(4, 2, 4, 4);
+            this.btnSearch.Location = new System.Drawing.Point(508, 2);
+            this.btnSearch.Margin = new System.Windows.Forms.Padding(4, 2, 4, 5);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(107, 30);
+            this.btnSearch.Size = new System.Drawing.Size(120, 38);
             this.btnSearch.TabIndex = 1;
             this.btnSearch.Text = "Search";
             this.btnSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -629,10 +649,10 @@
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPlay.Image = global::DoomLauncher.Properties.Resources.Play;
             this.btnPlay.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnPlay.Location = new System.Drawing.Point(470, 2);
-            this.btnPlay.Margin = new System.Windows.Forms.Padding(4, 2, 4, 4);
+            this.btnPlay.Location = new System.Drawing.Point(636, 2);
+            this.btnPlay.Margin = new System.Windows.Forms.Padding(4, 2, 4, 5);
             this.btnPlay.Name = "btnPlay";
-            this.btnPlay.Size = new System.Drawing.Size(100, 30);
+            this.btnPlay.Size = new System.Drawing.Size(112, 38);
             this.btnPlay.TabIndex = 6;
             this.btnPlay.Text = "Play";
             this.btnPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -646,10 +666,10 @@
             this.btnDownloads.FlatAppearance.BorderSize = 0;
             this.btnDownloads.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDownloads.Image = global::DoomLauncher.Properties.Resources.th;
-            this.btnDownloads.Location = new System.Drawing.Point(1215, 2);
+            this.btnDownloads.Location = new System.Drawing.Point(1367, 2);
             this.btnDownloads.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
             this.btnDownloads.Name = "btnDownloads";
-            this.btnDownloads.Size = new System.Drawing.Size(128, 27);
+            this.btnDownloads.Size = new System.Drawing.Size(144, 34);
             this.btnDownloads.TabIndex = 1;
             this.btnDownloads.Text = "Downloads";
             this.btnDownloads.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
@@ -664,10 +684,10 @@
             this.btnUpdate.FlatAppearance.BorderSize = 0;
             this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUpdate.Image = global::DoomLauncher.Properties.Resources.bon2b;
-            this.btnUpdate.Location = new System.Drawing.Point(973, 2);
+            this.btnUpdate.Location = new System.Drawing.Point(1094, 2);
             this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 1, 0);
             this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(160, 27);
+            this.btnUpdate.Size = new System.Drawing.Size(180, 34);
             this.btnUpdate.TabIndex = 2;
             this.btnUpdate.Text = "Update Available";
             this.btnUpdate.TextGlowColor = System.Drawing.Color.White;
@@ -680,23 +700,23 @@
             // 
             this.tblDataView.ColumnCount = 1;
             this.tblDataView.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblDataView.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tblDataView.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tblDataView.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tblDataView.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tblDataView.Controls.Add(this.splitLeftRight, 0, 0);
             this.tblDataView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblDataView.Location = new System.Drawing.Point(4, 71);
+            this.tblDataView.Location = new System.Drawing.Point(4, 89);
             this.tblDataView.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.tblDataView.Name = "tblDataView";
             this.tblDataView.RowCount = 1;
             this.tblDataView.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblDataView.Size = new System.Drawing.Size(1336, 792);
+            this.tblDataView.Size = new System.Drawing.Size(1504, 990);
             this.tblDataView.TabIndex = 4;
             // 
             // splitLeftRight
             // 
             this.splitLeftRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitLeftRight.Location = new System.Drawing.Point(4, 7);
-            this.splitLeftRight.Margin = new System.Windows.Forms.Padding(4, 7, 4, 4);
+            this.splitLeftRight.Location = new System.Drawing.Point(4, 9);
+            this.splitLeftRight.Margin = new System.Windows.Forms.Padding(4, 9, 4, 5);
             this.splitLeftRight.Name = "splitLeftRight";
             // 
             // splitLeftRight.Panel1
@@ -706,16 +726,16 @@
             // splitLeftRight.Panel2
             // 
             this.splitLeftRight.Panel2.Controls.Add(this.ctrlSummary);
-            this.splitLeftRight.Size = new System.Drawing.Size(1328, 781);
-            this.splitLeftRight.SplitterDistance = 906;
-            this.splitLeftRight.SplitterWidth = 5;
+            this.splitLeftRight.Size = new System.Drawing.Size(1496, 976);
+            this.splitLeftRight.SplitterDistance = 1020;
+            this.splitLeftRight.SplitterWidth = 6;
             this.splitLeftRight.TabIndex = 9;
             // 
             // splitTagSelect
             // 
             this.splitTagSelect.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitTagSelect.Location = new System.Drawing.Point(0, 0);
-            this.splitTagSelect.Margin = new System.Windows.Forms.Padding(4);
+            this.splitTagSelect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitTagSelect.Name = "splitTagSelect";
             this.splitTagSelect.Panel1Collapsed = true;
             this.splitTagSelect.Panel1MinSize = 100;
@@ -724,9 +744,9 @@
             // 
             this.splitTagSelect.Panel2.Controls.Add(this.splitTopBottom);
             this.splitTagSelect.Panel2MinSize = 0;
-            this.splitTagSelect.Size = new System.Drawing.Size(906, 781);
+            this.splitTagSelect.Size = new System.Drawing.Size(1020, 976);
             this.splitTagSelect.SplitterDistance = 100;
-            this.splitTagSelect.SplitterWidth = 5;
+            this.splitTagSelect.SplitterWidth = 6;
             this.splitTagSelect.TabIndex = 9;
             // 
             // splitTopBottom
@@ -744,9 +764,9 @@
             // splitTopBottom.Panel2
             // 
             this.splitTopBottom.Panel2.Controls.Add(this.ctrlAssociationView);
-            this.splitTopBottom.Size = new System.Drawing.Size(906, 781);
-            this.splitTopBottom.SplitterDistance = 537;
-            this.splitTopBottom.SplitterWidth = 5;
+            this.splitTopBottom.Size = new System.Drawing.Size(1020, 976);
+            this.splitTopBottom.SplitterDistance = 671;
+            this.splitTopBottom.SplitterWidth = 6;
             this.splitTopBottom.TabIndex = 8;
             // 
             // tabControl
@@ -754,10 +774,10 @@
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.HotTrack = true;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(4);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(906, 537);
+            this.tabControl.Size = new System.Drawing.Size(1020, 671);
             this.tabControl.TabIndex = 6;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
@@ -766,11 +786,11 @@
             this.ctrlAssociationView.DataSourceAdapter = null;
             this.ctrlAssociationView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ctrlAssociationView.Location = new System.Drawing.Point(0, 0);
-            this.ctrlAssociationView.Margin = new System.Windows.Forms.Padding(5);
+            this.ctrlAssociationView.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.ctrlAssociationView.Name = "ctrlAssociationView";
             this.ctrlAssociationView.SaveGameDirectory = null;
             this.ctrlAssociationView.ScreenshotDirectory = null;
-            this.ctrlAssociationView.Size = new System.Drawing.Size(906, 239);
+            this.ctrlAssociationView.Size = new System.Drawing.Size(1020, 299);
             this.ctrlAssociationView.TabIndex = 7;
             // 
             // ctrlSummary
@@ -778,10 +798,9 @@
             this.ctrlSummary.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ctrlSummary.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ctrlSummary.Location = new System.Drawing.Point(0, 0);
-            this.ctrlSummary.Margin = new System.Windows.Forms.Padding(4, 0, 4, 4);
+            this.ctrlSummary.Margin = new System.Windows.Forms.Padding(4, 0, 4, 5);
             this.ctrlSummary.Name = "ctrlSummary";
-            this.ctrlSummary.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
-            this.ctrlSummary.Size = new System.Drawing.Size(417, 781);
+            this.ctrlSummary.Size = new System.Drawing.Size(470, 976);
             this.ctrlSummary.TabIndex = 4;
             this.ctrlSummary.TagText = "Tags:";
             // 
@@ -790,10 +809,10 @@
             this.flpTags.Controls.Add(this.btnTags);
             this.flpTags.Controls.Add(this.lblSelectedTag);
             this.flpTags.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTags.Location = new System.Drawing.Point(0, 39);
+            this.flpTags.Location = new System.Drawing.Point(0, 49);
             this.flpTags.Margin = new System.Windows.Forms.Padding(0);
             this.flpTags.Name = "flpTags";
-            this.flpTags.Size = new System.Drawing.Size(1344, 32);
+            this.flpTags.Size = new System.Drawing.Size(1512, 40);
             this.flpTags.TabIndex = 6;
             // 
             // btnTags
@@ -806,7 +825,7 @@
             this.btnTags.Location = new System.Drawing.Point(0, 0);
             this.btnTags.Margin = new System.Windows.Forms.Padding(0, 0, 1, 0);
             this.btnTags.Name = "btnTags";
-            this.btnTags.Size = new System.Drawing.Size(88, 27);
+            this.btnTags.Size = new System.Drawing.Size(99, 34);
             this.btnTags.TabIndex = 5;
             this.btnTags.Text = "Tags";
             this.btnTags.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
@@ -818,7 +837,7 @@
             this.lblSelectedTag.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSelectedTag.AutoSize = true;
             this.lblSelectedTag.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSelectedTag.Location = new System.Drawing.Point(89, 5);
+            this.lblSelectedTag.Location = new System.Drawing.Point(100, 8);
             this.lblSelectedTag.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
             this.lblSelectedTag.Name = "lblSelectedTag";
             this.lblSelectedTag.Size = new System.Drawing.Size(94, 18);
@@ -848,35 +867,16 @@
             this.viewWebPageToolStripMenuItem.Text = "View Web Page...";
             this.viewWebPageToolStripMenuItem.Click += new System.EventHandler(this.viewWebPageToolStripMenuItem_Click);
             // 
-            // resyncIgnoreTitlepicToolStripMenuItem
-            // 
-            this.resyncIgnoreTitlepicToolStripMenuItem.Name = "resyncIgnoreTitlepicToolStripMenuItem";
-            this.resyncIgnoreTitlepicToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
-            this.resyncIgnoreTitlepicToolStripMenuItem.Text = "Resync (Ignore Titlepic)";
-            this.resyncIgnoreTitlepicToolStripMenuItem.Click += new System.EventHandler(this.resyncIgnoreTitlepicToolStripMenuItem_Click);
-            // 
-            // chkIncludeAll
-            // 
-            this.chkIncludeAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkIncludeAll.AutoSize = true;
-            this.chkIncludeAll.Location = new System.Drawing.Point(406, 10);
-            this.chkIncludeAll.Name = "chkIncludeAll";
-            this.chkIncludeAll.Size = new System.Drawing.Size(108, 24);
-            this.chkIncludeAll.TabIndex = 8;
-            this.chkIncludeAll.Text = "Include All";
-            this.chkIncludeAll.UseVisualStyleBackColor = true;
-            this.chkIncludeAll.CheckedChanged += new System.EventHandler(this.chkIncludeAll_CheckedChanged);
-            // 
             // MainForm
             // 
             this.AcceptButton = this.btnSearch;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1344, 863);
+            this.ClientSize = new System.Drawing.Size(1512, 1079);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimumSize = new System.Drawing.Size(1061, 728);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.MinimumSize = new System.Drawing.Size(1191, 898);
             this.Name = "MainForm";
             this.Text = "Doom Launcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);

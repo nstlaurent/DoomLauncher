@@ -115,8 +115,12 @@ namespace DoomLauncherRelease
                 "WadReader.dll",
                 "Octokit.dll",
                 "Octokit.xml",
+                "SevenZipSharp.dll",
+                "SharpCompress.dll",
                 "x64\\SQLite.Interop.dll",
-                "x86\\SQLite.Interop.dll"
+                "x86\\SQLite.Interop.dll",
+                "x64\\7z.dll",
+                "x86\\7z.dll",
             };
         }
 
