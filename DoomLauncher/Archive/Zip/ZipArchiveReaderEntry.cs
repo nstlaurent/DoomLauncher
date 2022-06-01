@@ -23,6 +23,8 @@ namespace DoomLauncher
 
         public bool ExtractRequired => true;
 
+        public bool IsDirectory => m_entry.FullName.EndsWith("/");
+
         public void ExtractToFile(string file, bool overwrite = false)
         {
             m_entry.ExtractToFile(file, overwrite);
@@ -30,8 +32,7 @@ namespace DoomLauncher
 
         public override bool Equals(object obj)
         {
-            IArchiveEntry entry = obj as IArchiveEntry;
-            if (entry == null)
+            if (!(obj is IArchiveEntry entry))
                 return false;
 
             return entry.FullName == FullName;

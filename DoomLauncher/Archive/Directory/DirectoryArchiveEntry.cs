@@ -19,6 +19,8 @@ namespace DoomLauncher
 
         public bool ExtractRequired => false;
 
+        public bool IsDirectory => false;
+
         public void ExtractToFile(string file, bool overwrite = false)
         {
             m_file.CopyTo(file, overwrite);

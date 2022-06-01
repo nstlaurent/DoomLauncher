@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DoomLauncher.Archive.Rar;
+using DoomLauncher.Archive.SevenZip;
+using System;
 using System.IO;
 
 namespace DoomLauncher
@@ -15,18 +17,27 @@ namespace DoomLauncher
             if (Util.IsDirectory(path))
                 return new DirectoryArchiveReader(path);
 
-            if (IsPk(Path.GetExtension(path)))
+            string ext = Path.GetExtension(path);
+            if (IsPk(ext))
                 return new ZipArchiveReader(path);
-            if (IsWad(Path.GetExtension(path)))
+            if (IsWad(ext))
                 return new WadArchiveReader(path);
-            else
-                return new FileArchiveReader(path);
+            if (IsSevenZip(ext))
+                return new SevenZipArchiveReader(path);
+            if (IsRar(ext))
+                return new RarArchiveReader(path);
+            
+            return new FileArchiveReader(path);
         }
 
-        public static bool IsWad(string ext)
-        {
-            return ext.Equals(".wad", StringComparison.OrdinalIgnoreCase);
-        }
+        private static bool IsRar(string ext) =>
+            ext.Equals(".rar", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsSevenZip(string ext) =>
+            ext.Equals(".7z", StringComparison.OrdinalIgnoreCase);
+
+        public static bool IsWad(string ext) =>
+            ext.Equals(".wad", StringComparison.OrdinalIgnoreCase);
 
         public static bool IsPk(string fileExtension)
         {

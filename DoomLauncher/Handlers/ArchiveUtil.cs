@@ -8,11 +8,15 @@ using System.Linq;
 
 namespace DoomLauncher
 {
-    internal class AlternateArchive
+    internal class ArchiveUtil
     {
         public static readonly string[] Exenstions = new string[] { ".7z", ".rar" };
+        private static readonly string[] CoreExtensions = new string[] { ".zip", ".7z", ".rar" };
 
-        public static bool IsAlternateArchive(string exension) => Exenstions.Contains(exension, StringComparer.OrdinalIgnoreCase);
+        public static bool IsTransformableToZip(string extension) => Exenstions.Contains(extension, StringComparer.OrdinalIgnoreCase);
+
+        // If this is an archive that packages files together that Doom Launcher should read the contents of (".zip", ".7z", ".rar")
+        public static bool ShouldReadPackagedArchive(string file) => CoreExtensions.Contains(Path.GetExtension(file), StringComparer.OrdinalIgnoreCase);
 
         public static FileInfo CreateZipFrom(FileInfo fi, string tempDirectory)
         {

@@ -126,15 +126,19 @@
     <Compile Include="Adapters\PlaySession.cs" />
     <Compile Include="Adapters\WadArchiveDataAdapter.cs" />
     <Compile Include="Archive\ArchiveReader.cs" />
-    <Compile Include="Archive\DirectoryArchiveEntry.cs" />
+    <Compile Include="Archive\Directory\DirectoryArchiveEntry.cs" />
     <Compile Include="Archive\EmptyArchiveReader.cs" />
     <Compile Include="Archive\FileArchiveReader.cs" />
-    <Compile Include="Archive\DirectoryArchiveReader.cs" />
+    <Compile Include="Archive\Directory\DirectoryArchiveReader.cs" />
     <Compile Include="Archive\IArchiveEntry.cs" />
-    <Compile Include="Archive\WadArchiveReader.cs" />
-    <Compile Include="Archive\WadEntry.cs" />
-    <Compile Include="Archive\ZipArchiveReader.cs" />
-    <Compile Include="Archive\ZipArchiveReaderEntry.cs" />
+    <Compile Include="Archive\Rar\RarArchiveEntry.cs" />
+    <Compile Include="Archive\Rar\RarArchiveReader.cs" />
+    <Compile Include="Archive\SevenZip\SevenZipArchiveEntry.cs" />
+    <Compile Include="Archive\SevenZip\SevenZipArchiveReader.cs" />
+    <Compile Include="Archive\Wad\WadArchiveReader.cs" />
+    <Compile Include="Archive\Wad\WadEntry.cs" />
+    <Compile Include="Archive\Zip\ZipArchiveReader.cs" />
+    <Compile Include="Archive\Zip\ZipArchiveReaderEntry.cs" />
     <Compile Include="Controls\GameFileTile.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -208,7 +212,7 @@
     <Compile Include="Config\Icons.cs" />
     <Compile Include="Handlers\ImageExtensions.cs" />
     <Compile Include="Handlers\MenuConstants.cs" />
-    <Compile Include="Handlers\AlternateArchive.cs" />
+    <Compile Include="Handlers\ArchiveUtil.cs" />
     <Compile Include="Interfaces\IGameFileSortableView.cs" />
     <Compile Include="Interfaces\IGameFileTile.cs" />
     <Compile Include="Interfaces\IGameFileColumnView.cs" />
