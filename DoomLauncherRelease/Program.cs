@@ -112,6 +112,7 @@ namespace DoomLauncherRelease
                 "System.Memory.dll",
                 "System.Numerics.Vectors.dll",
                 "System.Runtime.CompilerServices.Unsafe.dll",
+                "System.Buffers.dll",
                 "WadReader.dll",
                 "Octokit.dll",
                 "Octokit.xml",
