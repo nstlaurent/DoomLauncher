@@ -107,6 +107,7 @@
             this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewWebPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
+            this.manualUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resyncIgnoreTitlepicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chkIncludeAll = new System.Windows.Forms.CheckBox();
             this.mnuLocal.SuspendLayout();
@@ -436,7 +437,8 @@
             this.cumulativeStatisticsToolStripMenuItem,
             this.toolStripSeparator14,
             this.aboutToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.manualUpdateToolStripMenuItem});
             this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
@@ -867,6 +869,13 @@
             this.chkIncludeAll.UseVisualStyleBackColor = true;
             this.chkIncludeAll.CheckedChanged += new System.EventHandler(this.chkIncludeAll_CheckedChanged);
             // 
+            // manualUpdateToolStripMenuItem
+            // 
+            this.manualUpdateToolStripMenuItem.Name = "manualUpdateToolStripMenuItem";
+            this.manualUpdateToolStripMenuItem.Size = new System.Drawing.Size(330, 34);
+            this.manualUpdateToolStripMenuItem.Text = "Manual Update...";
+            this.manualUpdateToolStripMenuItem.Click += new System.EventHandler(this.manualUpdateToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnSearch;
@@ -988,6 +997,7 @@
         private System.Windows.Forms.ToolStripMenuItem resyncToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resyncIgnoreTitlepicToolStripMenuItem;
         private System.Windows.Forms.CheckBox chkIncludeAll;
+        private System.Windows.Forms.ToolStripMenuItem manualUpdateToolStripMenuItem;
     }
 }
 

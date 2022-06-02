@@ -2633,6 +2633,18 @@ namespace DoomLauncher
         private void resyncIgnoreTitlepicToolStripMenuItem_Click(object sender, EventArgs e) =>
             HandleResync(false);
 
+        private void manualUpdateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Zip (*.zip)|*.zip|All Files (*.*)|*.*";
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                ApplicationUpdater applicationUpdater = new ApplicationUpdater(dialog.FileName, AppDomain.CurrentDomain.BaseDirectory);
+                if (!applicationUpdater.Execute())
+                    UpdateControl.CreateUpdateFailureForm(applicationUpdater).ShowDialog(this);
+            }
+        }
+
         private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
         private IDataSourceAdapter DataSourceAdapter { get; set; }
 
