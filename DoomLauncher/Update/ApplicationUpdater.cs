@@ -86,7 +86,7 @@ namespace DoomLauncher
 
                     foreach (var entry in entries)
                     {
-                        string file = Path.Combine(Directory.GetCurrentDirectory(), entry.Name);
+                        string file = GetCopyFile(entry);
                         FileInfo fileInfo = new FileInfo(file);
 
                         if (fileInfo.Exists)
@@ -104,6 +104,16 @@ namespace DoomLauncher
 
             Process.Start(Path.Combine(m_executingDirectory, Util.GetExecutableNoPath()));
             return true;
+        }
+
+        private string GetCopyFile(ZipArchiveEntry entry)
+        {
+            if (entry.FullName.Contains("x86"))
+                return Path.Combine(Directory.GetCurrentDirectory(), "x86", entry.Name);
+            if (entry.FullName.Contains("x64"))
+                return Path.Combine(Directory.GetCurrentDirectory(), "x64", entry.Name);
+
+            return Path.Combine(Directory.GetCurrentDirectory(), entry.Name);
         }
 
         private void SetLastErrorException(Exception ex)
