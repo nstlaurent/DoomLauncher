@@ -9,9 +9,9 @@ namespace DoomLauncher.Archive.SevenZip
         private readonly SevenZipExtractor m_extractor;
         private readonly MemoryStreamManager m_streamManager = new MemoryStreamManager();
 
-        public SevenZipArchiveReader(string file)
+        public SevenZipArchiveReader(string file, string sevenZipInteropLibrary)
         {
-            SevenZipBase.SetLibraryPath(Path.Combine(Util.GetInteropDirectory(), "7z.dll"));
+            SevenZipBase.SetLibraryPath(sevenZipInteropLibrary);
             m_extractor = new SevenZipExtractor(file);
         }
 

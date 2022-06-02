@@ -9,6 +9,11 @@ namespace DoomLauncher
     {
         public static IArchiveReader EmptyArchiveReader = new EmptyArchiveReader();
 
+        public static string SevenZipInteropLibrary { get; private set; } = Path.Combine(Util.GetInteropDirectory(), "7z.dll");
+
+        public static void SetSevenZipInteropLibrary(string file) =>
+            SevenZipInteropLibrary = file;
+
         public static IArchiveReader Create(string path)
         {
             if (!File.Exists(path) && !Directory.Exists(path))
@@ -23,7 +28,7 @@ namespace DoomLauncher
             if (IsWad(ext))
                 return new WadArchiveReader(path);
             if (IsSevenZip(ext))
-                return new SevenZipArchiveReader(path);
+                return new SevenZipArchiveReader(path, SevenZipInteropLibrary);
             if (IsRar(ext))
                 return new RarArchiveReader(path);
             
