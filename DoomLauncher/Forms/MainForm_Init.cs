@@ -458,14 +458,14 @@ namespace DoomLauncher
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
         }
 
-        private void Check_340Update()
+        private void CheckInteropUpdate()
         {
             if (LauncherPath.IsInstalled())
                 return;
 
             string[] dirs = new string[] { "x86", "x64" };
             string updateFile = Path.Combine("GameFiles\\Temp", UpdateControl.AppUpdateFileName);
-            if (!File.Exists(updateFile) || dirs.Any(x => Directory.Exists(x)))
+            if (!File.Exists(updateFile) || AllInteropsExist())
                 return;
 
             using (ZipArchive za = ZipFile.OpenRead(updateFile))
@@ -477,9 +477,28 @@ namespace DoomLauncher
 
                     var entries = za.Entries.Where(x => x.FullName.Contains(dir));
                     foreach (var entry in entries)
-                        entry.ExtractToFile(Path.Combine(Directory.GetCurrentDirectory(), dir, entry.Name));
+                        entry.ExtractToFile(Path.Combine(Directory.GetCurrentDirectory(), dir, entry.Name), true);
                 }
             }
+        }
+
+        private bool AllInteropsExist()
+        {
+            DirectoryInfo[] dirs = new DirectoryInfo[] { new DirectoryInfo("x86"), new DirectoryInfo("x64") };
+
+            foreach (DirectoryInfo dir in dirs)
+            {
+                if (!dir.Exists)
+                    return false;
+
+                FileInfo[] files = dir.GetFiles();
+                if (!files.Any(x => x.Name.Equals("SQLite.Interop.dll", StringComparison.OrdinalIgnoreCase)))
+                    return false;
+                if (!files.Any(x => x.Name.Equals("7z.dll", StringComparison.OrdinalIgnoreCase)))
+                    return false;
+            }
+
+            return true;
         }
 
         private void CleanUpFiles()

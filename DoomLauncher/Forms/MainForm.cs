@@ -93,7 +93,7 @@ namespace DoomLauncher
         {
             bool success = false;
             CleanOldLibraries();
-            Check_340Update();
+            CheckInteropUpdate();
 
             if (VerifyDatabase())
             {
@@ -134,7 +134,7 @@ namespace DoomLauncher
             if (LauncherPath.IsInstalled())
                 return;
 
-            string[] libraries = new string[] { "SQLite.Interop.dll", "SQLite.Interop.dll.bak" };
+            string[] libraries = new string[] { "SQLite.Interop.dll", "SQLite.Interop.dll.bak", "7z.dll" };
             foreach (string library in libraries)
             {
                 if (!File.Exists(library))
@@ -2639,7 +2639,8 @@ namespace DoomLauncher
             dialog.Filter = "Zip (*.zip)|*.zip|All Files (*.*)|*.*";
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                File.Copy(dialog.FileName, AppConfiguration.TempDirectory.GetFullPath(), true);
+                string copyFilePath = Path.Combine(AppConfiguration.TempDirectory.GetFullPath(), UpdateControl.AppUpdateFileName);
+                File.Copy(dialog.FileName, copyFilePath, true);
                 ApplicationUpdater applicationUpdater = new ApplicationUpdater(dialog.FileName, AppDomain.CurrentDomain.BaseDirectory);
                 if (!applicationUpdater.Execute())
                     UpdateControl.CreateUpdateFailureForm(applicationUpdater).ShowDialog(this);
@@ -2648,9 +2649,7 @@ namespace DoomLauncher
 
         private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
         private IDataSourceAdapter DataSourceAdapter { get; set; }
-
         private IGameFileDataSourceAdapter DirectoryDataSourceAdapter { get; set; }
-
         private IGameFileDataSourceAdapter IdGamesDataSourceAdapter { get; set; }
     }
 }
