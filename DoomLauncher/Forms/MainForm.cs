@@ -2639,6 +2639,7 @@ namespace DoomLauncher
             dialog.Filter = "Zip (*.zip)|*.zip|All Files (*.*)|*.*";
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
+                File.Copy(dialog.FileName, AppConfiguration.TempDirectory.GetFullPath(), true);
                 ApplicationUpdater applicationUpdater = new ApplicationUpdater(dialog.FileName, AppDomain.CurrentDomain.BaseDirectory);
                 if (!applicationUpdater.Execute())
                     UpdateControl.CreateUpdateFailureForm(applicationUpdater).ShowDialog(this);
