@@ -21,6 +21,7 @@ namespace DoomLauncher
             dgvMain.AutoGenerateColumns = false;
             dgvMain.ShowCellToolTips = false;
             dgvMain.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            dgvMain.DefaultCellStyle.NullValue = "N/A";
 
             SetColumnFields(new Tuple<string, string>[]
             {
@@ -30,10 +31,11 @@ namespace DoomLauncher
                 new Tuple<string, string>("FormattedItems", "Items"),
                 new Tuple<string, string>("FormattedTime", "Time"),
                 new Tuple<string, string>("RecordTime", "Date"),
+                new Tuple<string, string>("Skill", "Skill"),
                 new Tuple<string, string>("SourcePort", "SourcePort"),
             });
 
-            dgvMain.Columns[dgvMain.Columns.Count - 2].DefaultCellStyle.Format = string.Format("{0} {1}",
+            dgvMain.Columns[dgvMain.Columns.Count - 3].DefaultCellStyle.Format = string.Format("{0} {1}",
                 CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
         }
 
@@ -68,7 +70,7 @@ namespace DoomLauncher
             IEnumerable<StatsBind> statsBind = from stat in stats
                                                join sp in sourcePorts on stat.SourcePortID equals sp.SourcePortID
                                                select new StatsBind(stat.MapName, stat.FormattedKills, stat.FormattedSecrets,
-                                               stat.FormattedItems, TimeSpan.FromSeconds(stat.LevelTime), stat.RecordTime, sp.Name, stat);
+                                               stat.FormattedItems, TimeSpan.FromSeconds(stat.LevelTime), stat.RecordTime, stat.Skill, sp.Name, stat);
             return statsBind.ToList();
         }
 
@@ -125,10 +127,12 @@ namespace DoomLauncher
             {
                 foreach (Tuple<string, string> item in columnFields)
                 {
-                    DataGridViewColumn col = new DataGridViewTextBoxColumn();
-                    col.HeaderText = item.Item2;
-                    col.Name = item.Item1;
-                    col.DataPropertyName = item.Item1;
+                    DataGridViewColumn col = new DataGridViewTextBoxColumn
+                    {
+                        HeaderText = item.Item2,
+                        Name = item.Item1,
+                        DataPropertyName = item.Item1
+                    };
                     dgvMain.Columns.Add(col);
                 }
 
@@ -147,7 +151,8 @@ namespace DoomLauncher
 
         private class StatsBind
         {
-            public StatsBind(string map, string kills, string secrets, string items, TimeSpan time, DateTime recordtime, string sourceport, IStatsData statsdatasource)
+            public StatsBind(string map, string kills, string secrets, string items, TimeSpan time, DateTime recordtime, int? skill, string sourceport,
+                IStatsData statsdatasource)
             {
                 MapName = map;
                 FormattedKills = kills;
@@ -156,6 +161,7 @@ namespace DoomLauncher
                 FormattedTime = time;
                 RecordTime = recordtime;
                 SourcePort = sourceport;
+                Skill = skill;
                 StatsData = statsdatasource;
             }
 
@@ -166,6 +172,7 @@ namespace DoomLauncher
             public TimeSpan FormattedTime { get; set; }
             public DateTime RecordTime { get; set; }
             public string SourcePort  { get; set; }
+            public int? Skill { get; set; }
             public IStatsData StatsData { get; set; }
         }
     }

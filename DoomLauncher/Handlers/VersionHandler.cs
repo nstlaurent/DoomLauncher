@@ -84,6 +84,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_4_0, AppVersion.Version_3_4_0);
                 ExecuteUpdate(Pre_Version_3_4_0_Update1, AppVersion.Version_3_4_0_Update1);
                 ExecuteUpdate(Pre_Version_3_5_2, AppVersion.Version_3_5_2);
+                ExecuteUpdate(Pre_Version_3_5_2_Update1, AppVersion.Version_3_5_2_Update1);
             }
         }
 
@@ -769,6 +770,13 @@ namespace DoomLauncher
                 Value = string.Join(";", TabKeys.KeyNames.Except(new string[] { TabKeys.LocalKey })),
                 UserCanModify = false,
             });
+        }
+
+        private void Pre_Version_3_5_2_Update1()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(Stats);").Tables[0];
+            if (!dt.Select("name = 'Skill'").Any())
+                DataAccess.ExecuteNonQuery(@"alter table Stats add column 'Skill' INTEGER;");
         }
 
         private void UpdateMirrorUrls(string urls, string defaultUrl)

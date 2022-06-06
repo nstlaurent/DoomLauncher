@@ -110,31 +110,30 @@ namespace DoomLauncher
 
         private bool ParseJson(string file)
         {
+            List<StatsData> stats = null;
             bool success = false;
             try
             {
                 using (ZipArchive za = ZipFile.OpenRead(file))
                 {
                     var entry = za.Entries.FirstOrDefault(x => x.Name.Equals("globals.json"));
-
                     if (entry != null)
                     {
-                        List<StatsData> stats = null;
                         using (var stream = new StreamReader(entry.Open()))
                             stats = ParseJsonStats(stream);
-
-                        if (stats != null)
-                        {
-                            foreach (var stat in stats)
-                                HandleStatsData(stat);
-                            success = true;
-                        }
                     }
                 }
             }
             catch
             {
                 //nothing to do
+            }
+
+            if (stats != null)
+            {
+                foreach (var stat in stats)
+                    HandleStatsData(stat);
+                success = true;
             }
 
             return success;
@@ -146,33 +145,69 @@ namespace DoomLauncher
             JObject obj = JsonConvert.DeserializeObject(stream.ReadToEnd()) as JObject;
 
             var statsource = obj.GetValue("statistics") as JObject;
+            if (statsource == null)
+                return stats;
+                
+            var levels = statsource.GetValue("levels");
+            if (levels == null)
+                return stats;
 
-            if (statsource != null)
+            int? skill = GetSkill(obj);            
+            foreach (JObject level in levels.OfType<JObject>())
             {
-                var levels = statsource.GetValue("levels");
+                uint totalkills = Convert.ToUInt32(level.GetValue("totalkills"));
+                uint kills = Convert.ToUInt32(level.GetValue("killcount"));
 
-                if (levels != null)
-                {
-                    foreach (JObject level in levels.OfType<JObject>())
-                    {
-                        uint totalkills = Convert.ToUInt32(level.GetValue("totalkills"));
-                        uint kills = Convert.ToUInt32(level.GetValue("killcount"));
+                //item stats are only included in json (new save format), so they're converted to UInt32 here
+                uint totalitems = Convert.ToUInt32(level.GetValue("totalitems"));
+                uint items = Convert.ToUInt32(level.GetValue("itemcount"));
 
-                        //item stats are only included in json (new save format), so they're converted to UInt32 here
-                        uint totalitems = Convert.ToUInt32(level.GetValue("totalitems"));
-                        uint items = Convert.ToUInt32(level.GetValue("itemcount"));
+                uint totalsecrets = Convert.ToUInt32(level.GetValue("totalsecrets"));
+                uint secrets = Convert.ToUInt32(level.GetValue("secretcount"));
 
-                        uint totalsecrets = Convert.ToUInt32(level.GetValue("totalsecrets"));
-                        uint secrets = Convert.ToUInt32(level.GetValue("secretcount"));
-
-                        uint time = Convert.ToUInt32(level.GetValue("leveltime"));
-                        string name = level.GetValue("levelname").ToString();
-                        stats.Add(CreateJsonStatsDataSource(totalkills, kills, totalitems, items, totalsecrets, secrets, time, name));
-                    }
-                }
-            }
+                uint time = Convert.ToUInt32(level.GetValue("leveltime"));
+                string name = level.GetValue("levelname").ToString();
+                stats.Add(CreateJsonStatsDataSource(totalkills, kills, totalitems, items, totalsecrets, secrets, time, name, skill));
+            }            
 
             return stats;
+        }
+
+        private static int? GetSkill(JObject obj)
+        {
+            var cvars = obj.GetValue("importantcvars");
+            if (cvars != null)
+                return GetSKillByImportCvars(cvars);
+
+            if (obj.GetValue("servercvars") is JObject objectCvars)
+                return GetSkillByServerCvars(objectCvars);
+
+            return null;
+        }
+
+        private static int? GetSkillByServerCvars(JObject cvars)
+        {
+            var skill = cvars.GetValue("skill");
+            if (skill == null)
+                return null;
+
+            if (int.TryParse(skill.ToString(), out int skillValue))
+                return skillValue + 1;
+
+            return null;
+        }
+
+        private static int? GetSKillByImportCvars(JToken cvars)
+        {
+            string[] stringCvars = cvars.ToString().Split(new char[] { '\\' });
+            int index = Array.FindIndex(stringCvars, x => x.Equals("skill", StringComparison.OrdinalIgnoreCase));
+            if (index == -1 || index + 1 >= stringCvars.Length)
+                return null;
+
+            if (int.TryParse(stringCvars[index + 1], out int parsedSkill))
+                return parsedSkill + 1;
+
+            return null;
         }
 
         private void ParseBinary(string file)
@@ -247,7 +282,7 @@ namespace DoomLauncher
 
         //separate json and binary to avoid stat overflow with how binary (old save format) is read
         private static StatsData CreateJsonStatsDataSource(UInt32 totalkills, UInt32 killcount, UInt32 totalitems, UInt32 itemcount, UInt32 totalsecrets, UInt32 secretcount,
-            UInt32 leveltime, string name)
+            UInt32 leveltime, string name, int? skill)
         {
             float calctime = Convert.ToSingle(leveltime) / 35.0f;
             StatsData stats = new StatsData
@@ -260,7 +295,8 @@ namespace DoomLauncher
                 TotalSecrets = (int)totalsecrets,
                 SecretCount = (int)secretcount,
                 LevelTime = calctime,
-                MapName = name
+                MapName = name,
+                Skill = skill
             };
 
             return stats;
