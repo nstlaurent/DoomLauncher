@@ -218,6 +218,7 @@
     <Compile Include="SourcePort\EternitySourcePort.cs" />
     <Compile Include="SourcePort\FdwlSourcePort.cs" />
     <Compile Include="SourcePort\HelionSourcePort.cs" />
+    <Compile Include="SourcePort\NuggetDoomSourcePort.cs" />
     <Compile Include="SourcePort\WoofSourcePort.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
     <Compile Include="Update\ApplicationUpdateInfo.cs" />
