@@ -127,7 +127,7 @@ namespace DoomLauncher
 
                         foreach (IArchiveEntry entry in reader.Entries)
                         {
-                            if (string.IsNullOrEmpty(entry.Name))
+                            if (string.IsNullOrEmpty(entry.Name) || entry.IsDirectory)
                                 continue;
 
                             if (m_ct.IsCancellationRequested)
@@ -150,8 +150,13 @@ namespace DoomLauncher
             if (!File.Exists(path) && !Directory.Exists(path))
                 return ArchiveReader.EmptyArchiveReader;
 
-            if (gameFile.IsUnmanaged() && !Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+            bool isPackagedArchive = ArchiveUtil.ShouldReadPackagedArchive(path);
+            if (gameFile.IsUnmanaged() && !isPackagedArchive)
                 return new FileArchiveReader(path);
+
+            // TODO IsPk necessary?
+            if (isPackagedArchive)
+                return ArchiveReader.Create(path);
 
             if (ArchiveReader.IsPk(Path.GetExtension(path)))
                 return new ZipArchiveReader(path);
@@ -184,7 +189,7 @@ namespace DoomLauncher
 
             foreach (IArchiveEntry entry in reader.Entries)
             {
-                if (string.IsNullOrEmpty(entry.Name))
+                if (string.IsNullOrEmpty(entry.Name) || entry.IsDirectory)
                     continue;
 
                 if (m_ct.IsCancellationRequested)
@@ -231,7 +236,7 @@ namespace DoomLauncher
 
             // Directories do not have extensions, always add it
             // Unmanaged pk3s should not be extracted
-            if (gameFile.IsDirectory() || (gameFile.IsUnmanaged() && !Path.GetExtension(gameFile.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase)))
+            if (gameFile.IsDirectory() || (gameFile.IsUnmanaged() && !ArchiveUtil.ShouldReadPackagedArchive(gameFile.FileName)))
             {
                 files.Add(gameFile.FileName);
                 return files.ToArray();

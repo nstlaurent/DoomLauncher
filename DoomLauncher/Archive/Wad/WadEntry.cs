@@ -16,6 +16,8 @@ namespace DoomLauncher
 
         public bool ExtractRequired => false;
 
+        public bool IsDirectory => false;
+
         public WadEntry(FileStream fs, FileLump lump)
         {
             m_fs = fs;

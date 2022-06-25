@@ -112,11 +112,16 @@ namespace DoomLauncherRelease
                 "System.Memory.dll",
                 "System.Numerics.Vectors.dll",
                 "System.Runtime.CompilerServices.Unsafe.dll",
+                "System.Buffers.dll",
                 "WadReader.dll",
                 "Octokit.dll",
                 "Octokit.xml",
+                "SevenZipSharp.dll",
+                "SharpCompress.dll",
                 "x64\\SQLite.Interop.dll",
-                "x86\\SQLite.Interop.dll"
+                "x86\\SQLite.Interop.dll",
+                "x64\\7z.dll",
+                "x86\\7z.dll",
             };
         }
 

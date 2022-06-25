@@ -1040,19 +1040,18 @@ namespace DoomLauncher
 
             foreach (string file in fileNames)
             {
+                // This currently doesn't work for unmanaged files
                 var gameFile = m_adapter.GetGameFile(file.Replace(Path.GetExtension(file), ".zip"));
-
                 if (gameFile == null)
                 {
                     unavailable.Add(file);
+                    continue;
                 }
+
+                if (knowniwads.Any(x => x.FileName.Equals(gameFile.FileName, StringComparison.InvariantCultureIgnoreCase)))
+                    iwads.Add(gameFile);
                 else
-                {
-                    if (knowniwads.Any(x => x.FileName.Equals(gameFile.FileName, StringComparison.InvariantCultureIgnoreCase)))
-                        iwads.Add(gameFile);
-                    else
-                        gameFiles.Add(gameFile);
-                }
+                    gameFiles.Add(gameFile);
             }
 
             return gameFiles;

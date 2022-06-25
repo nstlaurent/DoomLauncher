@@ -4,7 +4,7 @@ using System.IO.Compression;
 
 namespace DoomLauncher
 {
-    class ZipArchiveReader : IArchiveReader
+    public class ZipArchiveReader : IArchiveReader
     {
         private readonly ZipArchive m_archive;
 

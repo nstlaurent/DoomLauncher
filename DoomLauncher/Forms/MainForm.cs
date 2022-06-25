@@ -1660,8 +1660,10 @@ namespace DoomLauncher
                     UpdateProgressBar(progressBar, string.Format("Copying {0}...", file), Convert.ToInt32(count / (double)fileNames.Count * 100));
 
                 FileInfo fi = new FileInfo(file);
-                string baseName = fi.Name.Replace(fi.Extension, string.Empty);
+                if (ArchiveUtil.IsTransformableToZip(fi.Extension))
+                    fi = ArchiveUtil.CreateZipFrom(fi, AppConfiguration.TempDirectory.GetFullPath());
 
+                string baseName = fi.Name.Replace(fi.Extension, string.Empty);
                 if (!IsZipFile(fi) && addedNames.Contains(baseName)) //archive with this name exists, add the file (match .txt with .wad etc)
                     AddEntryToExistingFile(directory, file, fi, baseName);
 
