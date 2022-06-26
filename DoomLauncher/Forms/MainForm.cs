@@ -1813,17 +1813,9 @@ namespace DoomLauncher
 
         void m_progressBarFormCopy_Cancelled(object sender, EventArgs e)
         {
-            if (InvokeRequired)
-                Invoke(new Action<object>(HandleProgressCancelled), sender );
-            else
-                HandleProgressCancelled(sender);
-        }
-
-        private void HandleProgressCancelled(object sender)
-        {
             m_progressBarCancelled = true;
             if (sender is ProgressBarForm progressBarForm)
-                progressBarForm.Close();
+                ProgressBarEnd(progressBarForm);
         }
 
         private void UpdateProgressBar(ProgressBarForm form, string text, int value)
