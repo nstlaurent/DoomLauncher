@@ -41,7 +41,7 @@ namespace DoomLauncher
 
         private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort = null, string map = null)
         {
-            LaunchData launchData = GetLaunchFiles(gameFiles);
+            LaunchData launchData = GetLaunchFiles(gameFiles, checkActiveSessions: true);
 
             if (!launchData.Success)
             {
@@ -90,10 +90,9 @@ namespace DoomLauncher
             }
         }
 
-        private LaunchData GetLaunchFiles(IEnumerable<IGameFile> gameFiles)
+        private LaunchData GetLaunchFiles(IEnumerable<IGameFile> gameFiles, bool checkActiveSessions)
         {
             IGameFile gameFile = null;
-
             if (gameFiles != null)
             {
                 if (gameFiles.Count() > 1)
@@ -108,8 +107,8 @@ namespace DoomLauncher
                 }
             }
 
-            if (m_activeSessions.Any() && !AppConfiguration.AllowMultiplePlaySessions)
-                return new LaunchData("Already Playing", "There is already a game in progress. Please exit that game first.");
+            if (checkActiveSessions && m_activeSessions.Any() && !AppConfiguration.AllowMultiplePlaySessions)
+                return new LaunchData("Already Playing", "There is already a game in progress. Please exit that game first.\n\nCheck the 'Allow Multiple Play Sessions' in the settings to enable this feature.");
 
             if (!DataSourceAdapter.GetSourcePorts().Any())
                 return new LaunchData("No Source Ports", "You must have at least one source port configured to play! Click the settings menu on the top left and select Source Ports to configure.");

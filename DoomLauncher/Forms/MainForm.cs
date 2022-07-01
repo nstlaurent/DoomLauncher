@@ -2165,18 +2165,24 @@ namespace DoomLauncher
             ToolStripItem strip = sender as ToolStripItem;
             var utilities = DataSourceAdapter.GetUtilities();
             var utility = utilities.FirstOrDefault(x => x.Name == strip.Text);
-
-            if (utility != null)
+            if (utility == null)
             {
-                LaunchData launchData = GetLaunchFiles(SelectedItems(GetCurrentViewControl()));
-                if (launchData.Success)
-                {
-                    UtilityHandler handler = new UtilityHandler(this, AppConfiguration, utility);
-                    if (!handler.RunUtility(launchData.GameFile))
-                        MessageBox.Show(this, "The utility was an invalid application or not found.", "Invalid Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show(this, "Failed to find the utility.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-        }
+
+            LaunchData launchData = GetLaunchFiles(SelectedItems(GetCurrentViewControl()), checkActiveSessions: false);
+            if (!launchData.Success)
+            {
+                if (!string.IsNullOrEmpty(launchData.ErrorTitle))
+                    MessageBox.Show(this, launchData.ErrorDescription, launchData.ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            UtilityHandler handler = new UtilityHandler(this, AppConfiguration, utility);
+            if (!handler.RunUtility(launchData.GameFile))
+                MessageBox.Show(this, "The utility was an invalid application or not found.", "Invalid Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
 
         private void selectTagsToolStripMenuItem_Click(object sender, EventArgs e)
         {
