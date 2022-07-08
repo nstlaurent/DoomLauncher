@@ -293,22 +293,16 @@ namespace DoomLauncher
             }
         }
 
-        public IEnumerable<ISourcePortData> GetSourcePorts()
+        public IEnumerable<ISourcePortData> GetSourcePorts(bool loadArchived = false) =>
+            GetSourcePorts(SourcePortLaunchType.SourcePort, loadArchived);
+
+        public IEnumerable<ISourcePortData> GetUtilities(bool loadArchived = false) =>
+            GetSourcePorts(SourcePortLaunchType.Utility, loadArchived);
+
+        private IEnumerable<ISourcePortData> GetSourcePorts(SourcePortLaunchType type, bool loadArchived)
         {
-            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where LaunchType = {0} order by Name collate nocase", (int)SourcePortLaunchType.SourcePort)).Tables[0];
-
-            List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
-
-            foreach(DataRow dr in dt.Rows)                       
-                sourcePorts.Add(CreateSourcePortDataSource(dt, dr));
-
-            return sourcePorts;
-        }
-
-        public IEnumerable<ISourcePortData> GetUtilities()
-        {
-            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where LaunchType = {0} order by Name collate nocase", (int)SourcePortLaunchType.Utility)).Tables[0];
-
+            int sqlArchive = loadArchived ? 1 : 0;
+            DataTable dt = DataAccess.ExecuteSelect($"select * from SourcePorts where LaunchType = {(int)type} and Archived = {sqlArchive} order by Name collate nocase").Tables[0];
             List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
 
             foreach (DataRow dr in dt.Rows)
@@ -330,6 +324,7 @@ namespace DoomLauncher
                 FileOption = (string)CheckDBNull(dr["FileOption"], string.Empty),
                 ExtraParameters = (string)CheckDBNull(dr["ExtraParameters"], string.Empty),
                 AltSaveDirectory = new LauncherPath((string)CheckDBNull(dr["AltSaveDirectory"], string.Empty)),
+                Archived = Convert.ToInt32(dr["Archived"]) != 0
             };
 
             if (dt.Columns.Contains("SettingsFiles"))
@@ -358,8 +353,8 @@ namespace DoomLauncher
 
         public void InsertSourcePort(ISourcePortData sourcePort)
         {
-            string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption,ExtraParameters,AltSaveDirectory) 
-                values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption,@ExtraParameters,@AltSaveDirectory)";
+            string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption,ExtraParameters,AltSaveDirectory,Archived) 
+                values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption,@ExtraParameters,@AltSaveDirectory,@Archived)";
 
             DataAccess.ExecuteNonQuery(insert, GetSourcePortParams(sourcePort));
         }
@@ -369,7 +364,7 @@ namespace DoomLauncher
             string query = @"update SourcePorts set 
             Name = @Name, Executable = @Executable, SupportedExtensions = @SupportedExtensions,
             Directory = @Directory, SettingsFiles = @SettingsFiles, LaunchType = @LaunchType, FileOption = @FileOption, ExtraParameters = @ExtraParameters,
-            AltSaveDirectory = @AltSaveDirectory
+            AltSaveDirectory = @AltSaveDirectory, Archived = @Archived
             where SourcePortID = @sourcePortID";
 
             DataAccess.ExecuteNonQuery(query, GetSourcePortParams(sourcePort));
@@ -388,7 +383,8 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("LaunchType", sourcePort.LaunchType),
                 DataAccess.DbAdapter.CreateParameter("FileOption", sourcePort.FileOption ?? string.Empty),
                 DataAccess.DbAdapter.CreateParameter("ExtraParameters", sourcePort.ExtraParameters ?? string.Empty),
-                DataAccess.DbAdapter.CreateParameter("AltSaveDirectory", sourcePort.AltSaveDirectory == null ? string.Empty : sourcePort.AltSaveDirectory.GetPossiblyRelativePath())
+                DataAccess.DbAdapter.CreateParameter("AltSaveDirectory", sourcePort.AltSaveDirectory == null ? string.Empty : sourcePort.AltSaveDirectory.GetPossiblyRelativePath()),
+                DataAccess.DbAdapter.CreateParameter("Archived", sourcePort.Archived)
             };
 
             return parameters;

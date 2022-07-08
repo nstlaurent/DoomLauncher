@@ -32,6 +32,7 @@
         Version_3_4_0,
         Version_3_4_0_Update1,
         Version_3_5_2,
-        Version_3_5_2_Update1
+        Version_3_5_2_Update1,
+        Version_3_5_2_Update2
     }
 }

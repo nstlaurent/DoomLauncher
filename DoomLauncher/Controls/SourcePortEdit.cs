@@ -53,6 +53,7 @@ namespace DoomLauncher
                 txtParameters.Text = sourcePort.ExtraParameters;
             if (sourcePort.AltSaveDirectory != null)
                 txtAltSave.Text = sourcePort.AltSaveDirectory.GetPossiblyRelativePath();
+            chkArchive.Checked = sourcePort.Archived;
         }
 
         public void UpdateDataSource(ISourcePortData sourcePort)
@@ -64,6 +65,7 @@ namespace DoomLauncher
             sourcePort.FileOption = txtFileOption.Text;
             sourcePort.ExtraParameters = txtParameters.Text;
             sourcePort.AltSaveDirectory = new LauncherPath(txtAltSave.Text);
+            sourcePort.Archived = chkArchive.Checked;
         }
 
         public string SourcePortName { get { return txtName.Text;  } }

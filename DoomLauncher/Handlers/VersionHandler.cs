@@ -85,6 +85,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_4_0_Update1, AppVersion.Version_3_4_0_Update1);
                 ExecuteUpdate(Pre_Version_3_5_2, AppVersion.Version_3_5_2);
                 ExecuteUpdate(Pre_Version_3_5_2_Update1, AppVersion.Version_3_5_2_Update1);
+                ExecuteUpdate(Pre_Version_3_5_2_Update2, AppVersion.Version_3_5_2_Update2);
             }
         }
 
@@ -777,6 +778,16 @@ namespace DoomLauncher
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(Stats);").Tables[0];
             if (!dt.Select("name = 'Skill'").Any())
                 DataAccess.ExecuteNonQuery(@"alter table Stats add column 'Skill' INTEGER;");
+        }
+
+        private void Pre_Version_3_5_2_Update2()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
+            if (!dt.Select("name = 'Archived'").Any())
+            {
+                DataAccess.ExecuteNonQuery(@"alter table SourcePorts add column 'Archived' INTEGER;");
+                DataAccess.ExecuteNonQuery("update SourcePorts set Archived = 0");
+            }
         }
 
         private void UpdateMirrorUrls(string urls, string defaultUrl)

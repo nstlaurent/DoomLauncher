@@ -12,6 +12,7 @@
         string FileOption { get; set; }
         string ExtraParameters { get; set; }
         LauncherPath AltSaveDirectory { get; set; }
+        bool Archived { get; set; }
         string GetFullExecutablePath();
         LauncherPath GetSavePath();
     }
