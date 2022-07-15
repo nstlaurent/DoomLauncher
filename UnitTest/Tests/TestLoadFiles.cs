@@ -24,12 +24,14 @@ namespace UnitTest.Tests
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = Util.GetAdditionalFiles(adapter, (GameFile)adapter.GetGameFile("COOLGAMEFILE.WAD"));
 
-            Assert.AreEqual(2, gameFiles.Count);
+            Assert.AreEqual(3, gameFiles.Count);
+            Assert.IsNotNull(gameFiles.First(x => x.FileName == "COOLGAMEFILE.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "SUPERCOOLMOD.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "MOD2.WAD"));
 
             gameFiles = Util.GetAdditionalFiles(adapter, (GameFile)adapter.GetGameFile("OTHERGAMEFILE.WAD"));
-            Assert.AreEqual(2, gameFiles.Count);
+            Assert.AreEqual(3, gameFiles.Count);
+            Assert.IsNotNull(gameFiles.First(x => x.FileName == "OTHERGAMEFILE.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "MOD3.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "MOD4.WAD"));
 
@@ -330,7 +332,7 @@ namespace UnitTest.Tests
             {
                 FileName = name,
                 Title = name,
-                SettingsFiles = addfiles
+                SettingsFiles = string.Concat(name, ";", addfiles)
             };
 
             adapter.InsertGameFile(gameFile);
