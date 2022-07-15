@@ -33,17 +33,18 @@ namespace DoomLauncher
 
         public void ShowDescription(bool set)
         {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
             if (set)
             {
                 txtDescription.Visible = true;
-                Height = 300;
-                MaximumSize = new Size(400, Height);
+                Height = dpiScale.ScaleIntY(300);
+                MaximumSize = new Size(dpiScale.ScaleIntX(400), Height);
             }
             else
             {
                 txtDescription.Visible = false;
-                Height = 104;
-                MaximumSize = new Size(400, Height);
+                Height = dpiScale.ScaleIntY(104);
+                MaximumSize = new Size(dpiScale.ScaleIntX(400), Height);
             }
         }
 
