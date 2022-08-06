@@ -198,7 +198,16 @@ namespace DoomLauncher
             {
                 Process currentProc = Process.GetCurrentProcess();
                 foreach (Process proc in Process.GetProcessesByName("DoomLauncher").Where(x => x.Id != currentProc.Id))
+                {
                     proc.CloseMainWindow();
+
+                    Stopwatch sw = Stopwatch.StartNew();
+                    while (sw.Elapsed.TotalSeconds < 10 && !proc.HasExited)
+                    {
+                        System.Threading.Thread.Sleep(100);
+                        proc.Refresh();
+                    }
+                }
             }
             catch
             {
