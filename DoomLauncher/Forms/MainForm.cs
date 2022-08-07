@@ -134,12 +134,19 @@ namespace DoomLauncher
             if (LauncherPath.IsInstalled())
                 return;
 
-            string[] libraries = new string[] { "SQLite.Interop.dll", "SQLite.Interop.dll.bak", "7z.dll" };
-            foreach (string library in libraries)
+            try
             {
-                if (!File.Exists(library))
-                    continue;
-                File.Delete(library);
+                string[] libraries = new string[] { "SQLite.Interop.dll", "SQLite.Interop.dll.bak", "7z.dll" };
+                foreach (string library in libraries)
+                {
+                    if (!File.Exists(library))
+                        continue;
+                    File.Delete(library);
+                }
+            }
+            catch
+            {
+                // Do not crash if it fails to delete for any reason
             }
         }
 
