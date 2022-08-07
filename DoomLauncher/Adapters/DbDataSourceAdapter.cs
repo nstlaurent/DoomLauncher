@@ -324,13 +324,22 @@ namespace DoomLauncher
                 FileOption = (string)CheckDBNull(dr["FileOption"], string.Empty),
                 ExtraParameters = (string)CheckDBNull(dr["ExtraParameters"], string.Empty),
                 AltSaveDirectory = new LauncherPath((string)CheckDBNull(dr["AltSaveDirectory"], string.Empty)),
-                Archived = Convert.ToInt32(dr["Archived"]) != 0
+                Archived = GetDBObject(dr["Archived"], false,
+                    (object obj) => { return Convert.ToInt32(obj) != 0; })
             };
 
             if (dt.Columns.Contains("SettingsFiles"))
                 sourcePort.SettingsFiles = (string)CheckDBNull(dr["SettingsFiles"], string.Empty);
 
             return sourcePort;
+        }
+
+        private static T GetDBObject<T>(object obj, T defaultValue, Func<object, T> convert)
+        {
+            if (obj == DBNull.Value)
+                return defaultValue;
+
+            return convert(obj);
         }
 
         private static object CheckDBNull(object obj, object defaultValue)
