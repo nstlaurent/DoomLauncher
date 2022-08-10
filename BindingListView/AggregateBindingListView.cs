@@ -1277,7 +1277,10 @@ namespace Equin.ApplicationFramework
                     {
                         return delegate (T x, T y)
                         {
-                            return (pi.GetValue(x, null) as IComparable).CompareTo(pi.GetValue(y, null));
+                            int result = (pi.GetValue(x, null) as IComparable).CompareTo(pi.GetValue(y, null));
+                            if (direction == ListSortDirection.Descending)
+                                result *= -1;
+                            return result;
                         };
                     }
                     else
@@ -1306,14 +1309,15 @@ namespace Equin.ApplicationFramework
                 {
                     return delegate (T o1, T o2)
                     {
+                        int result;
                         if (o1.Equals(o2))
-                        {
-                            return 0;
-                        }
+                            result = 0;
                         else
-                        {
-                            return o1.ToString().CompareTo(o2.ToString());
-                        }
+                            result = o1.ToString().CompareTo(o2.ToString());
+
+                        if (direction == ListSortDirection.Descending)
+                            result *= -1;
+                        return result;
                     };
                 }
             }
