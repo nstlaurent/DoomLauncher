@@ -302,7 +302,18 @@ namespace DoomLauncher
         private IEnumerable<ISourcePortData> GetSourcePorts(SourcePortLaunchType type, bool loadArchived)
         {
             int sqlArchive = loadArchived ? 1 : 0;
-            DataTable dt = DataAccess.ExecuteSelect($"select * from SourcePorts where LaunchType = {(int)type} and Archived = {sqlArchive} order by Name collate nocase").Tables[0];
+            DataTable dt;
+
+            try
+            {
+                dt = DataAccess.ExecuteSelect($"select * from SourcePorts where LaunchType = {(int)type} and Archived = {sqlArchive} order by Name collate nocase").Tables[0];
+            }
+            catch
+            {
+                // This is for updates before Archived column existed...
+                dt = DataAccess.ExecuteSelect($"select * from SourcePorts where LaunchType = {(int)type}").Tables[0];
+            }
+
             List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
 
             foreach (DataRow dr in dt.Rows)
@@ -324,22 +335,14 @@ namespace DoomLauncher
                 FileOption = (string)CheckDBNull(dr["FileOption"], string.Empty),
                 ExtraParameters = (string)CheckDBNull(dr["ExtraParameters"], string.Empty),
                 AltSaveDirectory = new LauncherPath((string)CheckDBNull(dr["AltSaveDirectory"], string.Empty)),
-                Archived = GetDBObject(dr["Archived"], false,
-                    (object obj) => { return Convert.ToInt32(obj) != 0; })
             };
 
             if (dt.Columns.Contains("SettingsFiles"))
                 sourcePort.SettingsFiles = (string)CheckDBNull(dr["SettingsFiles"], string.Empty);
+            if (dt.Columns.Contains("Archived"))
+                sourcePort.Archived = Convert.ToInt32(dr["Archived"]) != 0;
 
             return sourcePort;
-        }
-
-        private static T GetDBObject<T>(object obj, T defaultValue, Func<object, T> convert)
-        {
-            if (obj == DBNull.Value)
-                return defaultValue;
-
-            return convert(obj);
         }
 
         private static object CheckDBNull(object obj, object defaultValue)

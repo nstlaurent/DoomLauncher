@@ -680,6 +680,11 @@ namespace DoomLauncher
 
         private void Pre_Version_3_3_1()
         {
+
+            string query = @"update SourcePorts set 
+                    SupportedExtensions = @SupportedExtensions
+                    where SourcePortID = @sourcePortID";
+
             var sourcePorts = m_adapter.GetSourcePorts();
             foreach (var sourcePort in sourcePorts)
             {
@@ -687,7 +692,14 @@ namespace DoomLauncher
                     continue;
 
                 sourcePort.SupportedExtensions += ",.pke";
-                m_adapter.UpdateSourcePort(sourcePort);
+
+                List<DbParameter> parameters = new List<DbParameter>
+                {
+                    DataAccess.DbAdapter.CreateParameter("SupportedExtensions", sourcePort.SupportedExtensions),
+                    DataAccess.DbAdapter.CreateParameter("sourcePortID", sourcePort.SourcePortID)
+                };
+
+                DataAccess.ExecuteNonQuery(query, parameters);
             }
         }
 
