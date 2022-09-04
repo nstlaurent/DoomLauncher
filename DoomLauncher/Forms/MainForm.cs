@@ -2120,7 +2120,12 @@ namespace DoomLauncher
 
         private void UpdateTabOrder()
         {
-            int index = TabKeys.KeyNames.Length;
+            int index = 1;
+            foreach (string name in TabKeys.KeyNames)
+            {
+                if (AppConfiguration.VisibleViews.Contains(name))
+                    index++;
+            }
 
             foreach (var tag in DataCache.Instance.Tags)
             {
