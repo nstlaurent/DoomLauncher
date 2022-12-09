@@ -326,14 +326,25 @@ namespace DoomLauncher
                     ProgressBarStart(form);
 
                     List<IGameFile> gameFiles = await Task.Run(() => FindIdGamesFiles(files));
-                    foreach (IGameFile gameFile in gameFiles)
-                        m_downloadHandler.Download(IdGamesDataSourceAdapter, gameFile as IGameFileDownloadable);
+                    if (gameFiles == null)
+                    {
+                        MessageBox.Show(this, "Failed to connect to id games.", "Connection Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        foreach (IGameFile gameFile in gameFiles)
+                            m_downloadHandler.Download(IdGamesDataSourceAdapter, gameFile as IGameFileDownloadable);
+                    }
 
                     ProgressBarEnd(form);
-                    DisplayFilesNotFound(files, gameFiles);
 
-                    if (gameFiles.Count > 0)
-                        DisplayDownloads();
+                    if (gameFiles != null)
+                    {
+                        DisplayFilesNotFound(files, gameFiles);
+
+                        if (gameFiles.Count > 0)
+                            DisplayDownloads();
+                    }
 
                     break;
 
@@ -377,11 +388,18 @@ namespace DoomLauncher
         {
             List<IGameFile> gameFiles = new List<IGameFile>();
 
-            foreach (string file in files)
+            try
             {
-                IGameFile gameFile = IdGamesDataSourceAdapter.GetGameFile(file);
-                if (gameFile != null)
-                    gameFiles.Add(gameFile);
+                foreach (string file in files)
+                {
+                    IGameFile gameFile = IdGamesDataSourceAdapter.GetGameFile(file);
+                    if (gameFile != null)
+                        gameFiles.Add(gameFile);
+                }
+            }
+            catch
+            {
+                return null;
             }
 
             return gameFiles;
