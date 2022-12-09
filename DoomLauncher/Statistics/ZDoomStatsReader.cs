@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -30,7 +31,7 @@ namespace DoomLauncher
         }
 
         private readonly string m_dir;
-        private NewFileDetector m_detector;
+        private List<NewFileDetector> m_detectors = new List<NewFileDetector>();
         private readonly List<IStatsData> m_statistics;
         private readonly List<string> m_errors = new List<string>();
 
@@ -48,8 +49,15 @@ namespace DoomLauncher
 
         public void Start()
         {
-            m_detector = new NewFileDetector(new string[] { ".zds" }, m_dir, true);
-            m_detector.StartDetection();
+            m_detectors.Clear();
+            string[] zdsExtensions = new string[] { ".zds" };
+            m_detectors.Add(new NewFileDetector(zdsExtensions, m_dir, true));
+
+            string userDir = ZDoomSourcePort.UserSaveGameDirectory;
+            if (Directory.Exists(userDir))
+                m_detectors.Add(new NewFileDetector(zdsExtensions, userDir, true));
+            
+            m_detectors.ForEach(x => x.StartDetection());
         }
 
         public void Stop()
@@ -59,13 +67,18 @@ namespace DoomLauncher
 
         public void ReadNow()
         {
-            if (m_detector == null)
+            if (m_detectors.Count == 0)
                 return;
 
-            string[] files = m_detector.GetNewFiles().Union(m_detector.GetModifiedFiles()).ToArray();
+            List<string> files = new List<string>();
+            foreach (var detector in m_detectors)
+            {
+                files.AddRange(detector.GetNewFiles());
+                files.AddRange(detector.GetModifiedFiles());
+            }
 
-            if (files.Length > 0)
-                Array.ForEach(files, x => HandleSaveFile(x));
+            if (files.Count > 0)
+                files.ForEach(x => HandleSaveFile(x));
         }
 
         public string[] Errors
@@ -100,7 +113,7 @@ namespace DoomLauncher
 
         private void ReadSaveFile(string file)
         {
-            lock (m_detector)
+            lock (m_detectors)
             {
                 //if we fail to read json (new save format) attempt to read binary (old save format)
                 if (!ParseJson(file))

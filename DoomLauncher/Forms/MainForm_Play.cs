@@ -358,15 +358,35 @@ namespace DoomLauncher
             return statisticsReader;
         }
 
-        private void CreateFileDetectors(ISourcePortData sourcePort)
+        private void CreateFileDetectors(ISourcePortData sourcePortData)
+        {
+            ISourcePort sourcePort = SourcePortUtil.CreateSourcePort(sourcePortData);
+            CreateScreenshotDetectors(sourcePortData, sourcePort);
+            CreateSaveGameDetectors(sourcePortData, sourcePort);
+        }
+
+        private void CreateSaveGameDetectors(ISourcePortData sourcePortData, ISourcePort sourcePort)
+        {
+            m_saveFileDetectors = CreateDefaultSaveGameDetectors();
+            m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePortData.GetSavePath().GetFullPath()));
+
+            string saveDir = sourcePort.GetSaveGameDirectory();
+            if (!string.IsNullOrEmpty(saveDir) && Directory.Exists(saveDir))
+                m_saveFileDetectors.Add(CreateSaveGameDetector(saveDir));
+
+            Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
+        }
+
+        private void CreateScreenshotDetectors(ISourcePortData sourcePortData, ISourcePort sourcePort)
         {
             m_screenshotDetectors = CreateDefaultScreenshotDetectors();
-            m_screenshotDetectors.Add(CreateScreenshotDetector(sourcePort.Directory.GetFullPath()));
-            Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
+            m_screenshotDetectors.Add(CreateScreenshotDetector(sourcePortData.Directory.GetFullPath()));
 
-            m_saveFileDetectors = CreateDefaultSaveGameDetectors();
-            m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.GetSavePath().GetFullPath()));
-            Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
+            string screenshotDir = sourcePort.GetScreenshotDirectory();
+            if (!string.IsNullOrEmpty(screenshotDir) && Directory.Exists(screenshotDir))
+                m_screenshotDetectors.Add(CreateScreenshotDetector(screenshotDir));
+
+            Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
         }
 
         private GameFilePlayAdapter CreatePlayAdapter(PlayForm form, EventHandler processExited, AppConfiguration appConfig)
@@ -399,7 +419,8 @@ namespace DoomLauncher
             }
 
             playAdapter.ProcessExited += processExited;
-            if (form.SelectedDemo != null) playAdapter.PlayDemoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
+            if (form.SelectedDemo != null)
+                playAdapter.PlayDemoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
             return playAdapter;
         }
 
