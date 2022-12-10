@@ -396,9 +396,9 @@ namespace DoomLauncher
                 bool success = false;
                 TextBoxForm form = new TextBoxForm(false, MessageBoxButtons.OKCancel);
                 form.SetMaxLength(48);
-                form.DisplayText = gameFile.FileName;
+                form.DisplayText = gameFile.FileNameNoPath;
                 form.StartPosition = FormStartPosition.CenterParent;
-                form.Text = string.Format("Rename {0}", gameFile.FileName);
+                form.Text = string.Format("Rename {0}", gameFile.FileNameNoPath);
 
                 int idx = form.DisplayText.IndexOf('.');
                 if (idx != -1)
@@ -451,35 +451,42 @@ namespace DoomLauncher
 
         private string HandleRenameFile(IGameFile gameFile, string fileName, string error)
         {
-            string oldFileName = gameFile.FileName;
-            FileInfo fi = new FileInfo(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), gameFile.FileName));
+            FileInfo fi = GetRenameFileInfo(gameFile, fileName, out string oldFilePath, out string newFilePath, out string gameFileUpdateFileName);
+            if (!fi.Exists)
+                return string.Format($"Could not find {gameFile.FileName} to rename.");
 
-            if (fi.Exists)
-            {
-                FileInfo fiCheck = new FileInfo(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), fileName));
+            FileInfo fiCheck = new FileInfo(newFilePath);
+            if (fiCheck.Exists)
+                return string.Format($"The file {fileName} already exists.");
 
-                if (!fiCheck.Exists)
-                {
-                    fi.MoveTo(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), fileName));
+            fi.MoveTo(newFilePath);
 
-                    IGameFile gameFileUpdate = DataSourceAdapter.GetGameFile(gameFile.FileName); //Need to to populate all info before updating
-                    gameFile.FileName = fileName;
-                    gameFileUpdate.FileName = fileName;
-                    DataSourceAdapter.UpdateGameFile(gameFileUpdate, new GameFileFieldType[] { GameFileFieldType.Filename });
-                    UpdateAdditinalFileReferences(oldFileName, fileName);
-                    HandleSelectionChange(GetCurrentViewControl(), true);
-                }
-                else
-                {
-                    error = string.Format("The file {0} already exists.", fileName);
-                }
-            }
-            else
-            {
-                error = string.Format("Could not find {0} to rename.", gameFile.FileName);
-            }
+            IGameFile gameFileUpdate = DataSourceAdapter.GetGameFile(gameFile.FileName); //Need to to populate all info before updating
+            gameFile.FileName = gameFileUpdateFileName;
+            gameFileUpdate.FileName = gameFileUpdateFileName;
+            DataSourceAdapter.UpdateGameFile(gameFileUpdate, new GameFileFieldType[] { GameFileFieldType.Filename });
+            UpdateAdditinalFileReferences(oldFilePath, fileName);
+            HandleSelectionChange(GetCurrentViewControl(), true);
 
             return error;
+        }
+
+        private FileInfo GetRenameFileInfo(IGameFile gameFile, string fileName, out string oldFilePath, out string newFilePath,
+            out string gameFileUpdateFileName)
+        {
+            if (gameFile.IsUnmanaged())
+            {
+                FileInfo fi = new FileInfo(gameFile.FileName);
+                oldFilePath = gameFile.FileName;
+                newFilePath = Path.Combine(fi.DirectoryName, fileName);
+                gameFileUpdateFileName = newFilePath;
+                return fi;
+            }
+
+            oldFilePath = gameFile.FileName;
+            newFilePath = Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), fileName);
+            gameFileUpdateFileName = fileName;
+            return new FileInfo(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), gameFile.FileName));
         }
 
         private void UpdateAdditinalFileReferences(string oldFileName, string newFileName)
@@ -1915,16 +1922,9 @@ namespace DoomLauncher
             if (gameFiles.Length == 0)
                 return;
 
-            bool visible = gameFiles.All(x => !x.IsDirectory());
+            bool nonDirectory = gameFiles.All(x => !x.IsDirectory());
             foreach (var item in GetNonDirectoryMenuItems())
-                item.Visible = visible;
-
-            visible = gameFiles.All(x => x.IsUnmanaged());
-            foreach (var item in GetUnmanagedMenuItems())
-                item.Visible = visible;
-
-            foreach (var item in GetManagedMenuItems())
-                item.Visible = !visible;
+                item.Visible = nonDirectory;
         }
 
         private ToolStripMenuItem[] GetNonDirectoryMenuItems()
@@ -1936,16 +1936,6 @@ namespace DoomLauncher
                 GetToolStripItem(mnuLocal, MenuConstants.Utility)
             };
         }
-
-        private ToolStripMenuItem[] GetManagedMenuItems()
-        {
-            return new ToolStripMenuItem[]
-            {
-                GetToolStripItem(mnuLocal, MenuConstants.Rename),
-            };
-        }
-
-        private ToolStripMenuItem[] GetUnmanagedMenuItems() => Array.Empty<ToolStripMenuItem>();
 
         ToolStripMenuItem GetToolStripItem(ContextMenuStrip strip, string text) =>
             strip.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == text) as ToolStripMenuItem;
