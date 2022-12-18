@@ -2,6 +2,7 @@
 using DoomLauncher.Interfaces;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 
 namespace UnitTest.Tests
 {
@@ -13,11 +14,19 @@ namespace UnitTest.Tests
             return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), string.Format(@"Data Source={0}", dataSource));
         }
 
-        public static bool AllFieldsEqual<T>(T obj1, T obj2)
+        public static bool AllFieldsEqualIgnore<T>(T obj1, T obj2, params string[] ignore)
+        {
+            return AllFieldsEqual(obj1, obj2, ignore);
+        }
+
+        public static bool AllFieldsEqual<T>(T obj1, T obj2, string[] ignore = null)
         {
             var properties = typeof(T).GetProperties();
             foreach (var prop in properties)
             {
+                if (ignore != null && ignore.Contains(prop.Name))
+                    continue;
+
                 var value = prop.GetValue(obj1);
 
                 if (value == null)

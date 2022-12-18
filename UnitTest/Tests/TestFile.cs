@@ -39,7 +39,16 @@ namespace UnitTest.Tests
             return ret;
         }
 
+
         [TestMethod]
+        public void TestFiles()
+        {
+            TestInsertFile();
+            TestGetFile();
+            TestUpdateFile();
+            TestDeleteFile();
+        }
+
         public void TestInsertFile()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -49,7 +58,6 @@ namespace UnitTest.Tests
                 adapter.InsertFile(file);
         }
 
-        [TestMethod]
         public void TestGetFile()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -74,7 +82,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestUpdateFile()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -100,7 +107,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestDeleteFile()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();

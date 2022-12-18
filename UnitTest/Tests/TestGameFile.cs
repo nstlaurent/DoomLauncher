@@ -138,6 +138,39 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void TestGameFileData()
+        {
+            TestInsertGameFile();
+            TestInsertIWad();
+
+            TestInsertTag();
+            TestInsertTagMap();
+
+            TestGameFileSelect();
+            TestIWadSelect();
+            TestTagSelect();
+            TestTagMapSelect();
+            TestGameFileTagging();
+            TestGameFileTaggingSearch();
+            TestSelectFields();
+            TestGetFileNameByFileName();
+            TestGetFileNameByID();
+            TestFullLikeFileName();
+            TestPartialLikeFileName();
+            TestPartialLikeFileName_SqlSyntax();
+            TestPartialLikeTitle();
+            TestPartialLikeDescription();
+            TestPartialLikeAuthor();
+            TestUpdateFileName();
+            TestUpdateFields();
+            TestUpdateGameFiles();
+            TestUpdateIWads();
+            TestGetGameFileIWads();
+            TestDeleteIWad();
+            TestUpdateWhere();
+            TestDelete();
+        }
+
         public void TestInsertGameFile()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -146,7 +179,6 @@ namespace UnitTest.Tests
                 adapter.InsertGameFile(gameFile);
         }
 
-        [TestMethod]
         public void TestInsertIWad()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -155,7 +187,6 @@ namespace UnitTest.Tests
                 adapter.InsertIWad(iwad);
         }
 
-        [TestMethod]
         public void TestInsertTag()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -164,7 +195,6 @@ namespace UnitTest.Tests
                 adapter.InsertTag(tag);
         }
 
-        [TestMethod]
         public void TestInsertTagMap()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -173,7 +203,6 @@ namespace UnitTest.Tests
                 adapter.InsertTagMapping(map);
         }
 
-        [TestMethod]
         public void TestGameFileSelect()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -184,7 +213,6 @@ namespace UnitTest.Tests
             Assert.IsTrue(adapter.GetGameFileNames().Count() == gameFiles.Count);
         }
 
-        [TestMethod]
         public void TestIWadSelect()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -192,7 +220,6 @@ namespace UnitTest.Tests
             Assert.IsTrue(adapter.GetIWads().Count() == iwads.Count);
         }
 
-        [TestMethod]
         public void TestTagSelect()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -200,7 +227,6 @@ namespace UnitTest.Tests
             Assert.IsTrue(adapter.GetTags().Count() == tags.Count);
         }
 
-        [TestMethod]
         public void TestTagMapSelect()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -209,7 +235,6 @@ namespace UnitTest.Tests
             Assert.IsTrue(adapter.GetGameFiles().Count() == tagMap.Count);
         }
 
-        [TestMethod]
         public void TestGameFileTagging()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -223,7 +248,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestGameFileTaggingSearch()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -244,7 +268,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestSelectFields()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -277,7 +300,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestGetFileNameByFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -292,7 +314,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestGetFileNameByID()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -309,7 +330,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestFullLikeFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -325,7 +345,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestPartialLikeFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -335,7 +354,6 @@ namespace UnitTest.Tests
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
-        [TestMethod]
         public void TestPartialLikeFileName_SqlSyntax()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -345,7 +363,6 @@ namespace UnitTest.Tests
             Assert.AreEqual(3, gameFilesFind.Count());
         }
 
-        [TestMethod]
         public void TestPartialLikeTitle()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -355,7 +372,6 @@ namespace UnitTest.Tests
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
-        [TestMethod]
         public void TestPartialLikeDescription()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -365,7 +381,6 @@ namespace UnitTest.Tests
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
-        [TestMethod]
         public void TestPartialLikeAuthor()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -375,7 +390,6 @@ namespace UnitTest.Tests
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
-        [TestMethod]
         public void TestUpdateFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -396,7 +410,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestUpdateFields()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -420,7 +433,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestUpdateGameFiles()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -436,7 +448,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestUpdateIWads()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -458,7 +469,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestGetGameFileIWads()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -467,7 +477,6 @@ namespace UnitTest.Tests
             Assert.IsTrue(adapter.GetGameFileIWads().Count() == gameFileIwads.Count);
         }
 
-        [TestMethod]
         public void TestDeleteIWad()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -482,7 +491,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestUpdateWhere()
         {
             //Note: This function is only used in SourcePortViewForm.cs
@@ -544,7 +552,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestDelete()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();

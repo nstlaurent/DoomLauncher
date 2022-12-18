@@ -10,6 +10,14 @@ namespace UnitTest.Tests
     public class TestGameProfile
     {
         [TestMethod]
+        public void TestGameProfileData()
+        {
+            TestInsert();
+            TestGameProfileSelect();
+            TestGameProfileUpdate();
+            TestGameProfileDelete();
+        }
+        
         public void TestInsert()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -17,7 +25,6 @@ namespace UnitTest.Tests
                 adapter.InsertGameProfile(profile);
         }
 
-        [TestMethod]
         public void TestGameProfileSelect()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -31,7 +38,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestGameProfileUpdate()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -60,7 +66,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestGameProfileDelete()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
