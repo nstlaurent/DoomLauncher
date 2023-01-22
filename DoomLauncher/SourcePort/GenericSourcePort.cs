@@ -98,6 +98,8 @@ namespace DoomLauncher.SourcePort
                 return new ZDoomSaveGameReader(file.FullName);
             else if (file.Extension.Equals(".dsg", StringComparison.InvariantCultureIgnoreCase))
                 return new DsgSaveGameReader(file.FullName);
+            else if (file.Extension.Equals(".hsg", StringComparison.InvariantCultureIgnoreCase))
+                return new HelionSaveGameReader(file.FullName);
 
             return null;
         }

@@ -614,7 +614,7 @@ namespace DoomLauncher
 
         private INewFileDetector CreateSaveGameDetector(string dir)
         {
-            return new NewFileDetector(new string[] { ".zds", ".dsg", ".esg" }, dir, true); //future - should be configurable
+            return new NewFileDetector(new string[] { ".zds", ".dsg", ".esg", ".hsg" }, dir, true); //future - should be configurable
         }
 
         private string[] GetNewScreenshots()

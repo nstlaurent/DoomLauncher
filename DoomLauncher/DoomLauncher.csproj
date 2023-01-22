@@ -241,6 +241,7 @@
       <DependentUpon>TagSelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DataSources\StaticTagData.cs" />
+    <Compile Include="SaveGame\HelionSaveGameReader.cs" />
     <Compile Include="SourcePort\DsdaDoomSourcePort.cs" />
     <Compile Include="SourcePort\EternitySourcePort.cs" />
     <Compile Include="SourcePort\FdwlSourcePort.cs" />
