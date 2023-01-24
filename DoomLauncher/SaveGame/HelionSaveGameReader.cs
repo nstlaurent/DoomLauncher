@@ -32,9 +32,9 @@ namespace DoomLauncher.SaveGame
             }
         }
 
-        private string TryGetSaveName(string fileName)
+        private static string TryGetSaveName(string fileName)
         {
-            ZipArchiveReader zipArchive = new ZipArchiveReader(m_file);
+            ZipArchiveReader zipArchive = new ZipArchiveReader(fileName);
             var entry = zipArchive.Entries.FirstOrDefault(x => x.Name.Equals("save.json", StringComparison.OrdinalIgnoreCase));
 
             if (entry == null)
