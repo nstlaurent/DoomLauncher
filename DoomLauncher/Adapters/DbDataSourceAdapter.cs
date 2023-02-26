@@ -169,8 +169,13 @@ namespace DoomLauncher
 
         public IGameFile GetGameFile(string fileName)
         {
-            List<DbParameter> parameters = new List<DbParameter> { DataAccess.DbAdapter.CreateParameter("FileName", fileName) };
-            DataTable dt = DataAccess.ExecuteSelect("select * from GameFiles where Filename = @FileName COLLATE NOCASE", parameters).Tables[0];
+            List<DbParameter> parameters = new List<DbParameter>
+            { 
+                DataAccess.DbAdapter.CreateParameter("FileName", fileName),
+                DataAccess.DbAdapter.CreateParameter("FileNamePath", '%' + Path.DirectorySeparatorChar + fileName),
+            };
+
+            DataTable dt = DataAccess.ExecuteSelect("select * from GameFiles where Filename = @FileName COLLATE NOCASE or Filename like @FileNamePath COLLATE NOCASE", parameters).Tables[0];
 
             if (dt.Rows.Count > 0)
                 return Util.TableToStructure(dt, typeof(GameFile)).Cast<GameFile>().ToList()[0];
