@@ -74,7 +74,7 @@ namespace DoomLauncher
                 chkSaveStats,
                 chkLoadLatestSave,
                 chkScreenFilter,
-                chkPreview,
+                chkExtraParamsOnly,
                 chkRemember,
                 btnSaveSettings,
                 ctrlFiles,
@@ -151,6 +151,7 @@ namespace DoomLauncher
             {
                 chkSaveStats.Checked = gameProfile.SettingsStat;
                 chkLoadLatestSave.Checked = gameProfile.SettingsLoadLatestSave;
+                chkExtraParamsOnly.Checked = gameProfile.SettingsExtraParamsOnly;
 
                 if (gameProfile.SourcePortID.HasValue)
                     SelectedSourcePort = m_adapter.GetSourcePort(gameProfile.SourcePortID.Value);
@@ -422,9 +423,9 @@ namespace DoomLauncher
             get { return chkLoadLatestSave.Enabled && chkLoadLatestSave.Checked; }
         }
 
-        public bool PreviewLaunchParameters
+        public bool ExtraParametersOnly
         {
-            get { return chkPreview.Checked; }
+            get { return chkExtraParamsOnly.Checked; }
         }
 
         public bool ScreenFilter
@@ -948,6 +949,7 @@ namespace DoomLauncher
 
             gameProfile.SettingsStat = SaveStatistics;
             gameProfile.SettingsLoadLatestSave = LoadLatestSave;
+            gameProfile.SettingsExtraParamsOnly = ExtraParametersOnly;
 
             if (ShouldSaveAdditionalFiles())
             {

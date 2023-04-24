@@ -230,7 +230,8 @@ namespace DoomLauncher
                     SettingsFilesSourcePort = @SettingsFilesSourcePort, SettingsFilesIWAD = @SettingsFilesIWAD,
                     SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, SettingsLoadLatestSave = @SettingsLoadLatestSave, 
                     FileName = @FileName, MapCount = @MapCount, 
-                    MinutesPlayed = @MinutesPlayed, SettingsGameProfileID = @SettingsGameProfileID, SettingsSaved = @SettingsSaved
+                    MinutesPlayed = @MinutesPlayed, SettingsGameProfileID = @SettingsGameProfileID, SettingsSaved = @SettingsSaved,
+                    SettingsExtraParamsOnly = @SettingsExtraParamsOnly
                     where GameFileID = @gameFileID");
             }
 
@@ -260,6 +261,7 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("SettingsStat", gameFile.SettingsStat),
                 DataAccess.DbAdapter.CreateParameter("SettingsLoadLatestSave", gameFile.SettingsLoadLatestSave),
                 DataAccess.DbAdapter.CreateParameter("SettingsSaved", gameFile.SettingsSaved),
+                DataAccess.DbAdapter.CreateParameter("SettingsExtraParamsOnly", gameFile.SettingsExtraParamsOnly),
                 DataAccess.DbAdapter.CreateParameter("SettingsGameProfileID", gameFile.SettingsGameProfileID ?? (object)DBNull.Value),
 
                 DataAccess.DbAdapter.CreateParameter("MapCount", !gameFile.MapCount.HasValue ? (object)DBNull.Value : gameFile.MapCount),

@@ -9,12 +9,22 @@ using System.Text;
 
 namespace DoomLauncher
 {
+    [Flags]
+    public enum GameFilePlayAdapterOptions
+    {
+        None = 0,
+        ExtraParamsOnly = 1
+    }
+
     public class GameFilePlayAdapter
     {
         public event EventHandler ProcessExited;
 
-        public GameFilePlayAdapter()
+        private readonly GameFilePlayAdapterOptions m_options;
+
+        public GameFilePlayAdapter(GameFilePlayAdapterOptions options = GameFilePlayAdapterOptions.None)
         {
+            m_options = options;
             AdditionalFiles = Array.Empty<IGameFile>();
             ExtractFiles = true;
         }
@@ -33,34 +43,41 @@ namespace DoomLauncher
             SourcePort = sourcePort;
 
             string launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad);
-
-            if (!string.IsNullOrEmpty(launchParameters))
+            if (launchParameters == null)
             {
-                Directory.SetCurrentDirectory(sourcePort.Directory.GetFullPath());
-
-                try
-                {
-                    Process proc = Process.Start(sourcePort.GetFullExecutablePath(), launchParameters);
-                    proc.EnableRaisingEvents = true;
-                    proc.Exited += proc_Exited;
-                }
-                catch
-                {
-                    LastError = "Failed to execute the source port process.";
-                    return false;
-                }
-
-                return true;
-            }
-            else
-            {
+                LastError = "Failed to create launch parameters";
                 return false;
             }
+       
+            Directory.SetCurrentDirectory(sourcePort.Directory.GetFullPath());
+
+            try
+            {
+                Process proc = Process.Start(sourcePort.GetFullExecutablePath(), launchParameters);
+                proc.EnableRaisingEvents = true;
+                proc.Exited += proc_Exited;
+            }
+            catch
+            {
+                LastError = "Failed to execute the source port process.";
+                return false;
+            }
+
+            return true;
+            
         }
 
         public string GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
             IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad)
         {
+            if (m_options.HasFlag(GameFilePlayAdapterOptions.ExtraParamsOnly))
+            {
+                if (string.IsNullOrEmpty(ExtraParameters))
+                    return string.Empty;
+
+                return ExtraParameters;
+            }
+
             ISourcePort sourcePort = SourcePortUtil.CreateSourcePort(sourcePortData);
             StringBuilder sb = new StringBuilder();
 

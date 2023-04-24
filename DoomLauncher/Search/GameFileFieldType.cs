@@ -28,6 +28,7 @@
         SettingsFilesSourcePort,
         SettingsGameProfileID,
         SettingsSaved,
-        SettingsLoadLatestSave
+        SettingsLoadLatestSave,
+        SettingsExtraParamsOnly
     }
 }

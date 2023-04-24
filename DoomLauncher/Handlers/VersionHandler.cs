@@ -86,6 +86,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_5_2, AppVersion.Version_3_5_2);
                 ExecuteUpdate(Pre_Version_3_5_2_Update1, AppVersion.Version_3_5_2_Update1);
                 ExecuteUpdate(Pre_Version_3_5_2_Update2, AppVersion.Version_3_5_2_Update2);
+                ExecuteUpdate(Pre_Version_3_5_3, AppVersion.Version_3_5_3);
             }
         }
 
@@ -799,6 +800,23 @@ namespace DoomLauncher
             {
                 DataAccess.ExecuteNonQuery(@"alter table SourcePorts add column 'Archived' INTEGER;");
                 DataAccess.ExecuteNonQuery("update SourcePorts set Archived = 0");
+            }
+        }
+
+        private void Pre_Version_3_5_3()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
+            if (!dt.Select("name = 'SettingsExtraParamsOnly'").Any())
+            {
+                string query = @"alter table GameFiles add column 'SettingsExtraParamsOnly' INTEGER;";
+                DataAccess.ExecuteNonQuery(query);
+            }
+
+            dt = DataAccess.ExecuteSelect("pragma table_info(GameProfiles);").Tables[0];
+            if (!dt.Select("name = 'SettingsExtraParamsOnly'").Any())
+            {
+                string query = @"alter table GameProfiles add column 'SettingsExtraParamsOnly' INTEGER;";
+                DataAccess.ExecuteNonQuery(query);
             }
         }
 

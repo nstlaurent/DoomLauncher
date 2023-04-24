@@ -184,7 +184,8 @@ namespace DoomLauncher
                 {
                     DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap,
                     GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
-                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave });
+                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave, 
+                        GameFileFieldType.SettingsExtraParamsOnly });
                 }
                 else
                 {
@@ -247,9 +248,6 @@ namespace DoomLauncher
             if (AppConfiguration.CopySaveFiles)
                 CopySaveGames(gameFile, sourcePort);
             CreateFileDetectors(sourcePort);
-
-            if (m_currentPlayForm.PreviewLaunchParameters)
-                ShowLaunchParameters(playAdapter, gameFile, sourcePort);
 
             bool isGameFileIwad = IsGameFileIwad(gameFile);
 
@@ -391,7 +389,8 @@ namespace DoomLauncher
 
         private GameFilePlayAdapter CreatePlayAdapter(PlayForm form, EventHandler processExited, AppConfiguration appConfig)
         {
-            GameFilePlayAdapter playAdapter = new GameFilePlayAdapter();
+            GameFilePlayAdapterOptions options = form.ExtraParametersOnly ? GameFilePlayAdapterOptions.ExtraParamsOnly : GameFilePlayAdapterOptions.None;
+            GameFilePlayAdapter playAdapter = new GameFilePlayAdapter(options);
             playAdapter.IWad = form.SelectedIWad;
             playAdapter.Map = form.SelectedMap;
             playAdapter.Skill = form.SelectedSkill;
