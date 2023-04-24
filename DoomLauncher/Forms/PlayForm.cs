@@ -688,6 +688,11 @@ namespace DoomLauncher
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            Accept();
+        }
+
+        public void Accept()
+        {
             if (SettingsValid(out string err))
             {
                 DialogResult = DialogResult.OK;

@@ -60,6 +60,7 @@
             this.cumulativeStatisticsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.createShortcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createAutoPlayShortcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.tblTop = new System.Windows.Forms.TableLayoutPanel();
             this.flpSearch = new System.Windows.Forms.FlowLayoutPanel();
@@ -157,7 +158,8 @@
             this.toolStripSeparator11,
             this.cumulativeStatisticsToolStripMenuItem1,
             this.toolStripSeparator12,
-            this.createShortcutToolStripMenuItem});
+            this.createShortcutToolStripMenuItem,
+            this.createAutoPlayShortcutToolStripMenuItem});
             this.mnuLocal.Name = "mnuGrid";
             this.mnuLocal.Size = new System.Drawing.Size(234, 476);
             this.mnuLocal.Opening += new System.ComponentModel.CancelEventHandler(this.MnuLocal_Opening);
@@ -344,6 +346,12 @@
             this.createShortcutToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
             this.createShortcutToolStripMenuItem.Text = "Create Shortcut";
             this.createShortcutToolStripMenuItem.Click += new System.EventHandler(this.createShortcutToolStripMenuItem_Click);
+
+            this.createAutoPlayShortcutToolStripMenuItem.Name = "createAutoPlayShortcutToolStripMenuItem";
+            this.createAutoPlayShortcutToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
+            this.createAutoPlayShortcutToolStripMenuItem.Text = "Create Auto Play Shortcut";
+            this.createAutoPlayShortcutToolStripMenuItem.Click += new System.EventHandler(this.createAutoPlayShortcutToolStripMenuItem_Click);
+
             // 
             // tblMain
             // 
@@ -976,6 +984,7 @@
         private System.Windows.Forms.ToolStripMenuItem utilityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem utilitiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createShortcutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createAutoPlayShortcutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem manageUtilitiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;

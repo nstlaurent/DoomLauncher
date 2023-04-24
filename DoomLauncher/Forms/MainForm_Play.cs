@@ -39,7 +39,7 @@ namespace DoomLauncher
             return exists;
         }
 
-        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort = null, string map = null)
+        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort = null, string map = null, bool autoPlay = false)
         {
             LaunchData launchData = GetLaunchFiles(gameFiles, checkActiveSessions: true);
 
@@ -69,7 +69,7 @@ namespace DoomLauncher
             if (map != null)
                 m_currentPlayForm.SelectedMap = map;
 
-            if (m_currentPlayForm.ShowDialog(this) == DialogResult.OK)
+            if (autoPlay || m_currentPlayForm.ShowDialog(this) == DialogResult.OK)
             {
                 try
                 {

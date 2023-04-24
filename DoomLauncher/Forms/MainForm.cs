@@ -39,14 +39,16 @@ namespace DoomLauncher
         private Popup m_tagPopup;
 
         private string m_launchFile;
+        private LaunchArgs m_launchArgs;
         private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
         private FormWindowState m_windowState;
         private bool m_progressBarCancelled;
 
-        public MainForm(string launchFile)
+        public MainForm(LaunchArgs launchArgs)
         {
             Load += MainForm_Load;
-            m_launchFile = launchFile;
+            m_launchFile = launchArgs.LaunchFileName;
+            m_launchArgs = launchArgs;
 
             m_splash = new SplashScreen();
             m_splash.StartPosition = FormStartPosition.CenterScreen;
@@ -2527,21 +2529,34 @@ namespace DoomLauncher
             HandleEditUtilities();
         }
 
+        private void createAutoPlayShortcutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateShortcut(true);
+        }
+
         private void createShortcutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateShortcut(false);
+        }
+
+        private void CreateShortcut(bool autoPlay)
         {
             try
             {
                 IGameFile[] gameFiles = SelectedItems(GetCurrentViewControl());
                 StringBuilder sbFileNames = new StringBuilder();
-                foreach(IGameFile gameFile in gameFiles)
+                foreach (IGameFile gameFile in gameFiles)
                 {
                     string fileName = string.IsNullOrEmpty(gameFile.Title) ? gameFile.FileName : gameFile.Title;
-                    Array.ForEach(Path.GetInvalidFileNameChars(), x=> fileName = fileName.Replace(x, ' '));
+                    Array.ForEach(Path.GetInvalidFileNameChars(), x => fileName = fileName.Replace(x, ' '));
                     string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), string.Concat(fileName, ".lnk"));
 
                     IWshRuntimeLibrary.WshShell wsh = new IWshRuntimeLibrary.WshShell();
                     IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(filePath) as IWshRuntimeLibrary.IWshShortcut;
-                    shortcut.Arguments = gameFile.FileName;
+                    if (autoPlay)
+                        shortcut.Arguments = $"-{nameof(LaunchArgs.LaunchGameFileID)} {gameFile.GameFileID}";
+                    else
+                        shortcut.Arguments = gameFile.FileName;
                     shortcut.TargetPath = string.Format(Path.Combine(Directory.GetCurrentDirectory(), Util.GetExecutableNoPath()));
                     shortcut.WindowStyle = 1;
                     shortcut.Description = string.Concat("Doom Launcher - ", gameFile.FileName);
@@ -2557,7 +2572,7 @@ namespace DoomLauncher
                 MessageBox.Show(this, string.Format("Shortcut successfully created for: {0}", sbFileNames.ToString()), "Shortcut Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Util.DisplayUnexpectedException(this, ex);
             }

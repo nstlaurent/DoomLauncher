@@ -738,6 +738,22 @@ namespace DoomLauncher
                     HandleAddGameFiles(AddFileType.GameFile, new string[] { addFile });
                 else
                     HandlePlay(new IGameFile[] { launchFile });
+
+                return;
+            }
+
+            if (m_launchArgs.LaunchGameFileID != null)
+            {
+                GameFileGetOptions options = new GameFileGetOptions();
+                options.SearchField = new GameFileSearchField(GameFileFieldType.GameFileID, m_launchArgs.LaunchGameFileID.ToString());
+                var gameFile = DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
+                if (gameFile == null)
+                {
+                    MessageBox.Show(this, $"Failed to find game file by id: {m_launchArgs.LaunchGameFileID}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                HandlePlay(new IGameFile[] { gameFile }, autoPlay: true);
             }
         }
 
