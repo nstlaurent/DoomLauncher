@@ -317,12 +317,26 @@ namespace DoomLauncher
             {
                 ScreenshotViewerForm screenshotForm = new ScreenshotViewerForm();
                 screenshotForm.StartPosition = FormStartPosition.CenterParent;
-                screenshotForm.SetImages(m_screenshots.Select(x => Path.Combine(DataDirectory.GetFullPath(), x.FileName)).ToArray());
-                if (SelectedFile != null)
-                    screenshotForm.SetImage(Path.Combine(DataDirectory.GetFullPath(), SelectedFile.FileName));
+                var imagePaths = m_screenshots.Select(x => Path.Combine(DataDirectory.GetFullPath(), x.FileName)).ToArray();
+                screenshotForm.SetImageFileData(DataSourceAdapter, DataSourceAdapter.GetGameFile(GameFile.FileName), imagePaths, m_screenshots);
                 screenshotForm.WindowState = FormWindowState.Maximized;
+                screenshotForm.Shown += ScreenshotForm_Shown;
                 screenshotForm.ShowDialog(this);
             }
+        }
+
+        private void ScreenshotForm_Shown(object sender, EventArgs e)
+        {
+            if (!(sender is ScreenshotViewerForm screenshotForm))
+                return;
+
+            if (SelectedFile != null)
+                screenshotForm.SetImage(Path.Combine(DataDirectory.GetFullPath(), SelectedFile.FileName));
+        }
+
+        private void ScreenshotForm_UpdateFile(object sender, IFileData fileData)
+        {
+            DataSourceAdapter.UpdateFile(fileData);
         }
 
         private void HandleClick(object sender, MouseEventArgs e)

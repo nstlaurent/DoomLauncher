@@ -120,17 +120,17 @@ namespace DoomLauncher
 
             GameFile = gameFile;
 
-            SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePortData), "Name");
-            SetAutoCompleteCustomSource(cmbIwad, Util.GetIWadsDataSource(m_adapter), typeof(IIWadData), "FileName");
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePortData), "Name");
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbIwad, Util.GetIWadsDataSource(m_adapter), typeof(IIWadData), "FileName");
 
             if (gameFile != null)
             {
                 Text = "Launch - " + (string.IsNullOrEmpty(gameFile.Title) ? gameFile.FileName : gameFile.Title);
                 if (!string.IsNullOrEmpty(gameFile.Map))
-                    SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
+                    AutoCompleteCombo.SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
             }
 
-            SetAutoCompleteCustomSource(cmbSkill, Util.GetSkills().ToList(), null, null);
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbSkill, Util.GetSkills().ToList(), null, null);
             cmbSkill.SelectedItem = "3";
 
             LoadProfiles();
@@ -253,7 +253,7 @@ namespace DoomLauncher
             {
                 List<IGameProfile> profiles = m_adapter.GetGameProfiles(GameFile.GameFileID.Value).OrderBy(x => x.Name).ToList();
                 profiles.Insert(0, (GameFile)GameFile);
-                SetAutoCompleteCustomSource(cmbProfiles, profiles, typeof(IGameProfile), "Name");
+                AutoCompleteCombo.SetAutoCompleteCustomSource(cmbProfiles, profiles, typeof(IGameProfile), "Name");
                 return profiles;
             }
 
@@ -261,43 +261,6 @@ namespace DoomLauncher
         }
 
         private static string[] MapSplit(IGameFile gameFile) => DataSources.GameFile.GetMaps(gameFile);
-
-        private static void SetAutoCompleteCustomSource(ComboBox cmb, IEnumerable<object> datasource, Type dataType, string property)
-        {
-            AutoCompleteStringCollection collection = new AutoCompleteStringCollection();
-
-            if (dataType != null)
-            {
-                PropertyInfo pi = dataType.GetProperty(property);
-                collection.AddRange(datasource.Select(x => (string)pi.GetValue(x)).ToArray());
-            }
-            else
-            {
-                collection.AddRange(datasource.Cast<string>().ToArray());
-            }
-
-            cmb.DataSource = datasource;
-            cmb.AutoCompleteSource = AutoCompleteSource.CustomSource;
-            cmb.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            cmb.AutoCompleteCustomSource = collection;
-            cmb.DropDown += Cmb_DropDown;
-
-            if (!datasource.Any())
-                cmb.Text = string.Empty;
-        }
-
-        private static void Cmb_DropDown(object sender, EventArgs e)
-        {
-            ((ComboBox)sender).PreviewKeyDown += Cmb_PreviewKeyDown;
-        }
-
-        private static void Cmb_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            ComboBox cmb = (ComboBox)sender;
-            cmb.PreviewKeyDown -= Cmb_PreviewKeyDown;
-            if (cmb.DroppedDown)
-                cmb.Focus();
-        }
 
         private bool IsIwad(IGameFile gameFile)
         {
@@ -485,7 +448,7 @@ namespace DoomLauncher
                 IEnumerable<IFileData> demoFiles = m_adapter.GetFiles(GameFile, FileType.Demo)
                     .Where(x => x.SourcePortID == sourcePort.SourcePortID);
 
-                SetAutoCompleteCustomSource(cmbDemo, demoFiles.ToList(), typeof(IFileData), "Description");
+                AutoCompleteCombo.SetAutoCompleteCustomSource(cmbDemo, demoFiles.ToList(), typeof(IFileData), "Description");
             }
         }
 
@@ -611,7 +574,7 @@ namespace DoomLauncher
 
             var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID == SelectedIWad.GameFileID);
             if (gameFileIwad != null)
-                SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFileIwad), null, null);
+                AutoCompleteCombo.SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFileIwad), null, null);
         }
 
         private void SetAdditionalFiles(bool reset)

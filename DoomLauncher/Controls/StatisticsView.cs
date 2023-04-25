@@ -12,8 +12,19 @@ namespace DoomLauncher
     public partial class StatisticsView : UserControl, IFileAssociationView
     {
         private ContextMenuStrip m_menu;
+        private static readonly Tuple<string, string>[] ColumnFields = new Tuple<string, string>[]
+        {
+            new Tuple<string, string>("MapName", "Map"),
+            new Tuple<string, string>("FormattedKills", "Kills"),
+            new Tuple<string, string>("FormattedSecrets", "Secrets"),
+            new Tuple<string, string>("FormattedItems", "Items"),
+            new Tuple<string, string>("FormattedTime", "Time"),
+            new Tuple<string, string>("RecordTime", "Date"),
+            new Tuple<string, string>("Skill", "Skill"),
+            new Tuple<string, string>("SourcePort", "SourcePort"),
+        };
 
-        public StatisticsView()
+    public StatisticsView()
         {
             InitializeComponent();
 
@@ -23,17 +34,7 @@ namespace DoomLauncher
             dgvMain.DefaultCellStyle.SelectionBackColor = Color.Gray;
             dgvMain.DefaultCellStyle.NullValue = "N/A";
 
-            SetColumnFields(new Tuple<string, string>[]
-            {
-                new Tuple<string, string>("MapName", "Map"),
-                new Tuple<string, string>("FormattedKills", "Kills"),
-                new Tuple<string, string>("FormattedSecrets", "Secrets"),
-                new Tuple<string, string>("FormattedItems", "Items"),
-                new Tuple<string, string>("FormattedTime", "Time"),
-                new Tuple<string, string>("RecordTime", "Date"),
-                new Tuple<string, string>("Skill", "Skill"),
-                new Tuple<string, string>("SourcePort", "SourcePort"),
-            });
+            SetColumnFields(ColumnFields);
 
             dgvMain.Columns[dgvMain.Columns.Count - 3].DefaultCellStyle.Format = string.Format("{0} {1}",
                 CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
@@ -46,21 +47,43 @@ namespace DoomLauncher
 
         public void SetData(IGameFile gameFile)
         {
+            SetDataByMap(gameFile, null);
+        }
+
+        public IEnumerable<IStatsData> SetDataByMap(IGameFile gameFile, string map)
+        {
             if (gameFile != null && gameFile.GameFileID.HasValue)
             {
                 IEnumerable<IStatsData> stats = DataSourceAdapter.GetStats(gameFile.GameFileID.Value);
+                if (map != null)
+                    stats = stats.Where(x => x.MapName.Equals(map, StringComparison.OrdinalIgnoreCase));
                 dgvMain.DataSource = new BindingListView<StatsBind>(GetStatsBind(stats));
                 dgvMain.ContextMenuStrip = m_menu;
+                return stats;
             }
             else
             {
                 dgvMain.DataSource = null;
+                return Array.Empty<IStatsData>();
             }
         }
 
         public void ClearData()
         {
             dgvMain.DataSource = null;
+        }
+
+        public void SetMapsVisible(bool visible)
+        {
+            dgvMain.Columns.Clear();
+
+            if (visible)
+            {
+                SetColumnFields(ColumnFields);
+                return;
+            }
+
+            SetColumnFields(ColumnFields.Skip(1));
         }
 
         private List<StatsBind> GetStatsBind(IEnumerable<IStatsData> stats)

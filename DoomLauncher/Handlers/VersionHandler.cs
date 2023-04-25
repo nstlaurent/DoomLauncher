@@ -86,7 +86,8 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_5_2, AppVersion.Version_3_5_2);
                 ExecuteUpdate(Pre_Version_3_5_2_Update1, AppVersion.Version_3_5_2_Update1);
                 ExecuteUpdate(Pre_Version_3_5_2_Update2, AppVersion.Version_3_5_2_Update2);
-                ExecuteUpdate(Pre_Version_3_5_3, AppVersion.Version_3_5_3);
+                ExecuteUpdate(Pre_Version_3_5_3_Update1, AppVersion.Version_3_5_3_Update1);
+                ExecuteUpdate(Pre_Version_3_5_3_Update2, AppVersion.Version_3_5_3_Update2);
             }
         }
 
@@ -803,7 +804,7 @@ namespace DoomLauncher
             }
         }
 
-        private void Pre_Version_3_5_3()
+        private void Pre_Version_3_5_3_Update1()
         {
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
             if (!dt.Select("name = 'SettingsExtraParamsOnly'").Any())
@@ -816,6 +817,28 @@ namespace DoomLauncher
             if (!dt.Select("name = 'SettingsExtraParamsOnly'").Any())
             {
                 string query = @"alter table GameProfiles add column 'SettingsExtraParamsOnly' INTEGER;";
+                DataAccess.ExecuteNonQuery(query);
+            }
+        }
+
+        private void Pre_Version_3_5_3_Update2()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(Files);").Tables[0];
+            if (!dt.Select("name = 'UserTitle'").Any())
+            {
+                string query = @"alter table Files add column 'UserTitle' TEXT;";
+                DataAccess.ExecuteNonQuery(query);
+            }
+
+            if (!dt.Select("name = 'UserDescription'").Any())
+            {
+                string query = @"alter table Files add column 'UserDescription' TEXT;";
+                DataAccess.ExecuteNonQuery(query);
+            }
+
+            if (!dt.Select("name = 'Map'").Any())
+            {
+                string query = @"alter table Files add column 'Map' TEXT;";
                 DataAccess.ExecuteNonQuery(query);
             }
         }

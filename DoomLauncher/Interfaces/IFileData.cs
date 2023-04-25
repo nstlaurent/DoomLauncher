@@ -13,6 +13,9 @@ namespace DoomLauncher.Interfaces
         string Description { get; set; }
         string OriginalFileName { get; set; }
         string OriginalFilePath { get; set; }
+        string UserTitle { get; set; }
+        string UserDescription { get; set; }
+        string Map { get; set; }
         int FileOrder { get; set; }
         bool IsUrl { get; }
     }

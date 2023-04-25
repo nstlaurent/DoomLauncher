@@ -205,8 +205,15 @@
     <Compile Include="Forms\SaveInfo.Designer.cs">
       <DependentUpon>SaveInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ScreenshotEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ScreenshotEditForm.Designer.cs">
+      <DependentUpon>ScreenshotEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
+    <Compile Include="Handlers\AutoCompleteCombo.cs" />
     <Compile Include="Handlers\DoomImageUtil.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
     <Compile Include="Config\Icons.cs" />
@@ -737,6 +744,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SaveInfo.resx">
       <DependentUpon>SaveInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ScreenshotEditForm.resx">
+      <DependentUpon>ScreenshotEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScreenshotViewerForm.resx">
       <DependentUpon>ScreenshotViewerForm.cs</DependentUpon>
