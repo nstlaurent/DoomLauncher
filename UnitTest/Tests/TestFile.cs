@@ -30,7 +30,10 @@ namespace UnitTest.Tests
                         GameFileID = id % 3,
                         SourcePortID = id,
                         OriginalFileName = id.ToString(),
-                        OriginalFilePath = id.ToString()
+                        OriginalFilePath = id.ToString(),
+                        UserTitle = id.ToString(),
+                        UserDescription = id.ToString(),
+                        Map = id.ToString()
                     });
                     id++;
                 }
