@@ -96,11 +96,14 @@
             this.cmbMaxItemsPerPage.Items.AddRange(new object[] {
             "30",
             "60",
-            "120"});
+            "120",
+            "240",
+            "500",
+            "1000"});
             this.cmbMaxItemsPerPage.Location = new System.Drawing.Point(476, 10);
             this.cmbMaxItemsPerPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbMaxItemsPerPage.Name = "cmbMaxItemsPerPage";
-            this.cmbMaxItemsPerPage.Size = new System.Drawing.Size(61, 28);
+            this.cmbMaxItemsPerPage.Size = new System.Drawing.Size(70, 28);
             this.cmbMaxItemsPerPage.TabIndex = 1;
             // 
             // GameFileTileViewControl
