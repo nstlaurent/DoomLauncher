@@ -38,7 +38,7 @@ namespace DoomLauncher
             Brush brush = new SolidBrush(Color.FromArgb(alpha, Color.White));
 
             string title = m_previewImages[pbImage.ImageIndex].Title;
-            Util.DrawImageTitleBar(title, e, brush, Font);
+            Util.DrawImageTitleBar(title, pbImage.ClientRectangle, e, brush, Font);
         }
 
         public void SetTitle(string text)

@@ -336,7 +336,7 @@ namespace DoomLauncher
             if (string.IsNullOrEmpty(title))
                 return;
 
-            Util.DrawImageTitleBar(title, e, Brushes.White, Font);
+            Util.DrawImageTitleBar(title, pb.ClientRectangle, e, Brushes.White, Font);
         }
 
         private void PbScreen_DoubleClick(object sender, EventArgs e)

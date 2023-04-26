@@ -523,7 +523,7 @@ namespace DoomLauncher
 
         private static readonly SolidBrush RectangleBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
 
-        public static void DrawImageTitleBar(string title, PaintEventArgs e, Brush textBrush, Font font)
+        public static void DrawImageTitleBar(string title, Rectangle paintRect, PaintEventArgs e, Brush textBrush, Font font)
         {
             if (string.IsNullOrEmpty(title))
                 return;
@@ -531,13 +531,13 @@ namespace DoomLauncher
             DpiScale dpiScale = new DpiScale(e.Graphics);
             int padX = dpiScale.ScaleIntX(3);
             int padY = dpiScale.ScaleIntY(2);
-            title = GetClippedEllipsesText(e.Graphics, font, title, new SizeF(e.ClipRectangle.Width, font.Height));
+            title = GetClippedEllipsesText(e.Graphics, font, title, new SizeF(paintRect.Width, font.Height));
 
             SizeF size = e.Graphics.MeasureString(title, font);
-            RectangleF rect = new RectangleF(0, e.ClipRectangle.Height - size.Height - padY,
+            RectangleF rect = new RectangleF(0, paintRect.Height - size.Height - padY,
                 e.ClipRectangle.Width, size.Height + padY);
             e.Graphics.FillRectangle(RectangleBrush, rect);
-            e.Graphics.DrawString(title, font, textBrush, new PointF(padX, e.ClipRectangle.Height - size.Height - padY));
+            e.Graphics.DrawString(title, font, textBrush, new PointF(padX, paintRect.Height - size.Height - padY));
         }
     }
 }
