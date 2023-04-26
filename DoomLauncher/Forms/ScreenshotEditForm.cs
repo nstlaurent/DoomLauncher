@@ -37,14 +37,17 @@ namespace DoomLauncher.Forms
             AutoCompleteCombo.SetAutoCompleteCustomSource(cmbMap, DataSources.GameFile.GetMaps(gameFile), null, null);
 
             if (fileData == null)
+            {
+                cmbMap.Enabled = chkMap.Checked = false;
                 return;
+            }
 
             if (!string.IsNullOrEmpty(fileData.Map))
                 cmbMap.SelectedItem = fileData.Map;
             else
                 cmbMap.SelectedIndex = 0;
 
-            cmbMap.Enabled = cmbMap.SelectedItem != null;
+            cmbMap.Enabled = chkMap.Checked;
             chkMap.Checked = !string.IsNullOrEmpty(fileData.Map);
             txtTitle.Text = fileData.UserTitle;
             txtDescription.Text = fileData.UserDescription;
