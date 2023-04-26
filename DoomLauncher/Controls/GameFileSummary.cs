@@ -9,9 +9,10 @@ namespace DoomLauncher
 {
     public partial class GameFileSummary : UserControl
     {
-        private float m_labelHeight, m_imageHeight;
-
-        private SlideShowPictureBox pbImage = new SlideShowPictureBox();
+        private readonly float m_labelHeight;
+        private float m_imageHeight;
+        private readonly SlideShowPictureBox pbImage = new SlideShowPictureBox();
+        private List<PreviewImage> m_previewImages = new List<PreviewImage>();
 
         public GameFileSummary()
         {
@@ -19,12 +20,25 @@ namespace DoomLauncher
 
             tblMain.Controls.Add(pbImage, 0, 1);
             pbImage.Dock = DockStyle.Fill;
+            pbImage.ImagePaint += PbImage_Paint;
 
             m_labelHeight = GetRowStyle(lblTitle).Height;
             m_imageHeight = GetRowStyle(pbImage).Height;
             ShowCommentsSection(false);
 
             txtComments.WarnLinkClick = false;
+        }
+
+        private void PbImage_Paint(object sender, PaintEventArgs e)
+        {
+            if (pbImage.ImageIndex < 0 || pbImage.ImageIndex >= m_previewImages.Count)
+                return;
+
+            int alpha = (int)(pbImage.ImageAlpha * 255);
+            Brush brush = new SolidBrush(Color.FromArgb(alpha, Color.White));
+
+            string title = m_previewImages[pbImage.ImageIndex].Title;
+            Util.DrawImageTitleBar(title, e, brush, Font);
         }
 
         public void SetTitle(string text)
@@ -62,15 +76,17 @@ namespace DoomLauncher
             pbImage.Resume();
         }
 
-        public bool SetPreviewImages(List<string> imagePaths)
+        public bool SetPreviewImages(List<PreviewImage> imagePaths)
         {
-            bool success = pbImage.SetImages(imagePaths);
+            m_previewImages = imagePaths;
+            bool success = pbImage.SetImages(imagePaths.Select(x => x.Path).ToList());
             ShowImageSection(true);
             return success;
         }
 
         public void SetPreviewImage(Image image)
         {
+            m_previewImages.Clear();
             pbImage.SetImage(image);
             ShowImageSection(true);
         }

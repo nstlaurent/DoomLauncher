@@ -812,11 +812,14 @@ namespace DoomLauncher
             else
                 ctrlSummary.ClearComments();
 
-            List<string> imagePaths = new List<string>();
+            List<PreviewImage> imagePaths = new List<PreviewImage>();
             if (item.GameFileID.HasValue)
             {
                 foreach (var screenshot in DataSourceAdapter.GetFiles(item, FileType.Screenshot))
-                    imagePaths.Add(Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), screenshot.FileName));
+                {
+                    string path = Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
+                    imagePaths.Add(new PreviewImage(path, FileData.GetTitle(screenshot)));
+                }
             }
 
             if (imagePaths.Count > 0)
@@ -835,7 +838,7 @@ namespace DoomLauncher
             ctrlSummary.ClearComments();
         }
 
-        private void SetPreviewImages(List<string> imagePaths)
+        private void SetPreviewImages(List<PreviewImage> imagePaths)
         {
             bool success;
             try

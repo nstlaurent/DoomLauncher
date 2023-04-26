@@ -520,5 +520,24 @@ namespace DoomLauncher
 
             return "x86";
         }
+
+        private static readonly SolidBrush RectangleBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
+
+        public static void DrawImageTitleBar(string title, PaintEventArgs e, Brush textBrush, Font font)
+        {
+            if (string.IsNullOrEmpty(title))
+                return;
+
+            DpiScale dpiScale = new DpiScale(e.Graphics);
+            int padX = dpiScale.ScaleIntX(3);
+            int padY = dpiScale.ScaleIntY(2);
+            title = GetClippedEllipsesText(e.Graphics, font, title, new SizeF(e.ClipRectangle.Width, font.Height));
+
+            SizeF size = e.Graphics.MeasureString(title, font);
+            RectangleF rect = new RectangleF(0, e.ClipRectangle.Height - size.Height - padY,
+                e.ClipRectangle.Width, size.Height + padY);
+            e.Graphics.FillRectangle(RectangleBrush, rect);
+            e.Graphics.DrawString(title, font, textBrush, new PointF(padX, e.ClipRectangle.Height - size.Height - padY));
+        }
     }
 }
