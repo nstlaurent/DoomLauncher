@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Forms;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -89,6 +90,29 @@ namespace DoomLauncher
             m_lookup.Clear();
         }
 
+        public override bool ShowCreateNew(IWin32Window parent, IDataSourceAdapter adapter, ISourcePortData sourcePort, string filename, bool isMultiImport,
+            out NewFileData newFileData)
+        {
+            newFileData = null;
+            ScreenshotEditForm screenshotEditForm = new ScreenshotEditForm();
+            screenshotEditForm.StartPosition = FormStartPosition.CenterParent;
+            screenshotEditForm.SetData(adapter.GetGameFile(GameFile.FileName), null);
+
+            if (screenshotEditForm.ShowDialog() == DialogResult.OK)
+            {
+                newFileData = new NewFileData()
+                {
+                    UserTitle = screenshotEditForm.Title,
+                    UserDescription = screenshotEditForm.Description,
+                    Map = screenshotEditForm.Map,
+                    SourcePortID = -1,
+                };
+                return true;
+            }
+
+            return false;
+        }
+
         public override bool New()
         {
             if (base.New())
@@ -98,6 +122,15 @@ namespace DoomLauncher
             }
 
             return false;
+        }
+
+        public override bool Edit()
+        {
+            if (SelectedFile == null)
+                return false;
+
+            return ScreenshotEditForm.ShowDialogAndUpdate(this, DataSourceAdapter, 
+                DataSourceAdapter.GetGameFile(GameFile.FileName), SelectedFile);
         }
 
         public override bool Delete()
@@ -347,6 +380,7 @@ namespace DoomLauncher
                 screenshotForm.WindowState = FormWindowState.Maximized;
                 screenshotForm.Shown += ScreenshotForm_Shown;
                 screenshotForm.ShowDialog(this);
+                SetData(GameFile);
             }
         }
 

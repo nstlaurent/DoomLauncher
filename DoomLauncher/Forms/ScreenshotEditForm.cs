@@ -11,14 +11,38 @@ namespace DoomLauncher.Forms
             InitializeComponent();
         }
 
+        public static bool ShowDialogAndUpdate(IWin32Window owner, IDataSourceAdapter adapter, IGameFile gameFile, IFileData fileData)
+        {
+            ScreenshotEditForm screenshotEditForm = new ScreenshotEditForm();
+            screenshotEditForm.StartPosition = FormStartPosition.CenterParent;
+            screenshotEditForm.SetData(gameFile, fileData);
+
+            if (screenshotEditForm.ShowDialog(owner) == DialogResult.OK)
+            {
+                fileData.UserTitle = screenshotEditForm.Title;
+                fileData.UserDescription = screenshotEditForm.Description;
+                fileData.Map = screenshotEditForm.Map;
+                if (!screenshotEditForm.HasMap)
+                    fileData.Map = null;
+
+                adapter.UpdateFile(fileData);
+                return true;
+            }
+
+            return false;
+        }
+
         public void SetData(IGameFile gameFile, IFileData fileData)
         {
             AutoCompleteCombo.SetAutoCompleteCustomSource(cmbMap, DataSources.GameFile.GetMaps(gameFile), null, null);
 
+            if (fileData == null)
+                return;
+
             if (!string.IsNullOrEmpty(fileData.Map))
                 cmbMap.SelectedItem = fileData.Map;
             else
-                cmbMap.SelectedIndex = -1;
+                cmbMap.SelectedIndex = 0;
 
             cmbMap.Enabled = cmbMap.SelectedItem != null;
             chkMap.Checked = !string.IsNullOrEmpty(fileData.Map);

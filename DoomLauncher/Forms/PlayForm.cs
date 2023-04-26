@@ -689,7 +689,8 @@ namespace DoomLauncher
 
         private void lnkOpenDemo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            List<IFileData> demoFiles = BasicFileView.CreateFileAssociation(this, m_adapter, m_appConfig.DemoDirectory, FileType.Demo, GameFile,
+            GenericFileView genericFileView = new GenericFileView();
+            List<IFileData> demoFiles = genericFileView.CreateFileAssociation(this, m_adapter, m_appConfig.DemoDirectory, FileType.Demo, GameFile,
                 cmbSourcePorts.SelectedItem as ISourcePortData);
 
             if (demoFiles.Count > 0)

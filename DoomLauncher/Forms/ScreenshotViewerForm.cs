@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Handlers;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -254,24 +255,12 @@ namespace DoomLauncher.Forms
             }
         }
 
-        private void btnEdit_Click(object sender, System.EventArgs e)
+        private void btnEdit_Click(object sender, EventArgs e)
         {
-            IFileData fileData = GetFileData();
-            ScreenshotEditForm screenshotEditForm = new ScreenshotEditForm();
-            screenshotEditForm.StartPosition = FormStartPosition.CenterParent;
-            screenshotEditForm.SetData(m_gameFile, fileData);
+            if (!ScreenshotEditForm.ShowDialogAndUpdate(this, m_adapter, m_gameFile, GetFileData()))
+                return;
 
-            if (screenshotEditForm.ShowDialog(this) == DialogResult.OK)
-            {
-                fileData.UserTitle = screenshotEditForm.Title;
-                fileData.UserDescription = screenshotEditForm.Description;
-                fileData.Map = screenshotEditForm.Map;
-                if (!screenshotEditForm.HasMap)
-                    fileData.Map = null;
-
-                m_adapter.UpdateFile(fileData);
-                SetImage();
-            }
+            SetImage();
         }
 
         private void SetSlideshow(bool set)

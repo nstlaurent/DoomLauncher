@@ -170,6 +170,7 @@
     <Compile Include="Controls\FlowLayoutPanelDB.Designer.cs">
       <DependentUpon>FlowLayoutPanelDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataSources\NewFileData.cs" />
     <Compile Include="Forms\FileManagementSelect.cs">
       <SubType>Form</SubType>
     </Compile>
