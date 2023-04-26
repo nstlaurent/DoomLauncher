@@ -341,10 +341,10 @@ namespace DoomLauncher
             DpiScale dpiScale = new DpiScale(e.Graphics);
             int padX = dpiScale.ScaleIntX(3);
             int padY = dpiScale.ScaleIntY(2);
-            int pad1 = dpiScale.ScaleIntX(1);
+            title = Util.GetClippedEllipsesText(e.Graphics, Font, title, new SizeF(pb.ClientSize.Width, FontHeight));
 
             SizeF size = e.Graphics.MeasureString(title, Font);
-            RectangleF rect = new RectangleF(0, pb.ClientRectangle.Height - size.Height - padY - pad1,
+            RectangleF rect = new RectangleF(0, pb.ClientRectangle.Height - size.Height - padY,
                 pb.ClientRectangle.Width, size.Height + padY);
             e.Graphics.FillRectangle(RectangleBrush, rect);
             e.Graphics.DrawString(title, Font, Brushes.White, new PointF(padX, pb.ClientRectangle.Height - size.Height - padY));
