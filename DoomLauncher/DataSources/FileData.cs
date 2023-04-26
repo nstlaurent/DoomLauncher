@@ -27,6 +27,23 @@ namespace DoomLauncher
 
         public virtual bool IsUrl { get { return false; } }
 
+        public static string GetTitle(IFileData fileData)
+        {
+            if (!string.IsNullOrEmpty(fileData.Map))
+            {
+                string title = fileData.Map;
+                if (string.IsNullOrEmpty(fileData.UserTitle))
+                    return title;
+
+                return $"{title} {fileData.UserTitle}";
+            }
+
+            if (!string.IsNullOrEmpty(fileData.UserTitle))
+                return fileData.UserTitle;
+
+            return string.Empty;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is IFileData file && file.IsUrl == IsUrl)

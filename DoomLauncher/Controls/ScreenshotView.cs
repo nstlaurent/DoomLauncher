@@ -41,6 +41,8 @@ namespace DoomLauncher
 
         public event EventHandler<RequestScreenshotsEventArgs> RequestScreenshots;
 
+        private static readonly SolidBrush RectangleBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
+
         public ScreenshotView()
         {
             InitializeComponent();
@@ -289,7 +291,30 @@ namespace DoomLauncher
             pbScreen.Margin = new Padding(7);
             pbScreen.MouseDown += pbScreen_MouseDown;
             pbScreen.DoubleClick += PbScreen_DoubleClick;
+            pbScreen.Paint += PbScreen_Paint;
             return pbScreen;
+        }
+
+        private void PbScreen_Paint(object sender, PaintEventArgs e)
+        {
+            PictureBox pb = sender as PictureBox;
+            if (pb == null || !m_lookup.TryGetValue(pb, out var fileData))
+                return;
+
+            string title = FileData.GetTitle(fileData);
+            if (string.IsNullOrEmpty(title))
+                return;
+
+            DpiScale dpiScale = new DpiScale(e.Graphics);
+            int padX = dpiScale.ScaleIntX(3);
+            int padY = dpiScale.ScaleIntY(2);
+            int pad1 = dpiScale.ScaleIntX(1);
+
+            SizeF size = e.Graphics.MeasureString(title, Font);
+            RectangleF rect = new RectangleF(0, pb.ClientRectangle.Height - size.Height - padY - pad1,
+                pb.ClientRectangle.Width, size.Height + padY);
+            e.Graphics.FillRectangle(RectangleBrush, rect);
+            e.Graphics.DrawString(title, Font, Brushes.White, new PointF(padX, pb.ClientRectangle.Height - size.Height - padY));
         }
 
         private void PbScreen_DoubleClick(object sender, EventArgs e)
@@ -332,11 +357,6 @@ namespace DoomLauncher
 
             if (SelectedFile != null)
                 screenshotForm.SetImage(Path.Combine(DataDirectory.GetFullPath(), SelectedFile.FileName));
-        }
-
-        private void ScreenshotForm_UpdateFile(object sender, IFileData fileData)
-        {
-            DataSourceAdapter.UpdateFile(fileData);
         }
 
         private void HandleClick(object sender, MouseEventArgs e)

@@ -162,16 +162,8 @@ namespace DoomLauncher.Forms
 
         private string GetTitle(IFileData fileData)
         {
-            if (!string.IsNullOrEmpty(fileData.Map))
-            {
-                string title = fileData.Map;
-                if (string.IsNullOrEmpty(fileData.UserTitle))
-                    return title;
-
-                return $"{title} {fileData.UserTitle}";
-            }
-
-            return string.IsNullOrEmpty(fileData.UserTitle) ? "N/A" : fileData.UserTitle;
+            string title = FileData.GetTitle(fileData);
+            return string.IsNullOrEmpty(title) ? "N/A" : fileData.UserTitle;
         }
 
         private void UpdateStatsHeights()
