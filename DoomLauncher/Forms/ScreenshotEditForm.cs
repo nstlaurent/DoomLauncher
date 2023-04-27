@@ -55,7 +55,7 @@ namespace DoomLauncher.Forms
 
         public bool HasMap => chkMap.Checked;
 
-        public string Map => cmbMap.SelectedItem as string;
+        public string Map => chkMap.Checked ? cmbMap.SelectedItem as string : null;
 
         public string Title
         {
