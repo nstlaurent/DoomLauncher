@@ -755,7 +755,7 @@ namespace DoomLauncher
                     return;
                 }
 
-                HandlePlay(new IGameFile[] { gameFile }, autoPlay: true);
+                HandlePlay(new IGameFile[] { gameFile }, playOptions: PlayOptions.AutoPlay);
             }
         }
 

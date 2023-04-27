@@ -88,6 +88,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_5_2_Update2, AppVersion.Version_3_5_2_Update2);
                 ExecuteUpdate(Pre_Version_3_5_3_Update1, AppVersion.Version_3_5_3_Update1);
                 ExecuteUpdate(Pre_Version_3_5_3_Update2, AppVersion.Version_3_5_3_Update2);
+                ExecuteUpdate(Pre_Version_3_5_3_Update3, AppVersion.Version_3_5_3_Update3);
             }
         }
 
@@ -841,6 +842,17 @@ namespace DoomLauncher
                 string query = @"alter table Files add column 'Map' TEXT;";
                 DataAccess.ExecuteNonQuery(query);
             }
+        }
+
+        private void Pre_Version_3_5_3_Update3()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "ShowPlayDialog",
+                Value = "true",
+                UserCanModify = true,
+                AvailableValues = "Yes;true;No;false"
+            });
         }
 
         private void UpdateMirrorUrls(string urls, string defaultUrl)

@@ -30,6 +30,7 @@ namespace DoomLauncher
         public static string AllowMultiplePlaySessionsName => "AllowMultiplePlaySessions";
         public static string AutomaticallyPullTitlpicName => "AutomaticallyPullTitlpic";
         public static string VisibleViewsName => "VisibleViews";
+        public static string ShowPlayDialogName => "ShowPlayDialog";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -129,6 +130,7 @@ namespace DoomLauncher
                 CopySaveFiles = Convert.ToBoolean(GetValue(config, CopySaveFilesName));
                 AllowMultiplePlaySessions = Convert.ToBoolean(GetValue(config, AllowMultiplePlaySessionsName));
                 AutomaticallyPullTitlpic = Convert.ToBoolean(GetValue(config, AutomaticallyPullTitlpicName));
+                ShowPlayDialog = Convert.ToBoolean(GetValue(config, ShowPlayDialogName));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
@@ -270,6 +272,7 @@ namespace DoomLauncher
         public bool CopySaveFiles { get; set; }
         public bool AllowMultiplePlaySessions { get; set; }
         public bool AutomaticallyPullTitlpic { get; set; }
+        public bool ShowPlayDialog { get; set; }
         public HashSet<string> VisibleViews { get; set; }
     }
 }

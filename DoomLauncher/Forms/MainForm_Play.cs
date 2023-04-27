@@ -19,10 +19,10 @@ namespace DoomLauncher
 
         private FilterForm m_filterForm;
 
-        private void HandlePlay()
+        private void HandlePlay(PlayOptions playOptions = PlayOptions.None)
         {
             if (GetCurrentViewControl() != null)
-                HandlePlay(SelectedItems(GetCurrentViewControl()));
+                HandlePlay(SelectedItems(GetCurrentViewControl()), playOptions: playOptions);
         }
 
         private bool AssertFile(string file)
@@ -39,7 +39,16 @@ namespace DoomLauncher
             return exists;
         }
 
-        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort = null, string map = null, bool autoPlay = false)
+        [Flags]
+        private enum PlayOptions
+        {
+            None,
+            AutoPlay,
+            ForceDialog
+        }
+
+        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort = null, string map = null, 
+            PlayOptions playOptions = PlayOptions.None)
         {
             LaunchData launchData = GetLaunchFiles(gameFiles, checkActiveSessions: true);
 
@@ -68,6 +77,8 @@ namespace DoomLauncher
                 m_currentPlayForm.SelectedSourcePort = sourcePort;
             if (map != null)
                 m_currentPlayForm.SelectedMap = map;
+
+            bool autoPlay = (playOptions.HasFlag(PlayOptions.AutoPlay) || !AppConfiguration.ShowPlayDialog) && !playOptions.HasFlag(PlayOptions.ForceDialog);
 
             if (autoPlay || m_currentPlayForm.ShowDialog(this) == DialogResult.OK)
             {

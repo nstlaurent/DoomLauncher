@@ -373,7 +373,7 @@ namespace DoomLauncher
 
         private void playToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HandlePlay();
+            HandlePlay(PlayOptions.ForceDialog);
         }
 
         private void btnPlay_Click(object sender, EventArgs e)
