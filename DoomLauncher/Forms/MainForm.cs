@@ -167,6 +167,12 @@ namespace DoomLauncher
 
         private void InitWindow()
         {
+            if (m_launchArgs.LaunchGameFileID != null && m_launchArgs.AutoClose)
+            {
+                WindowState = FormWindowState.Minimized;
+                return;
+            }
+
             //Only set location and window state if the location is valid, either way we always set Width, Height, and splitter values
             if (ValidatePosition(AppConfiguration))
             {
@@ -2563,7 +2569,7 @@ namespace DoomLauncher
                     IWshRuntimeLibrary.WshShell wsh = new IWshRuntimeLibrary.WshShell();
                     IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(filePath) as IWshRuntimeLibrary.IWshShortcut;
                     if (autoPlay)
-                        shortcut.Arguments = $"-{nameof(LaunchArgs.LaunchGameFileID)} {gameFile.GameFileID}";
+                        shortcut.Arguments = $"-{nameof(LaunchArgs.LaunchGameFileID)} {gameFile.GameFileID} -{nameof(LaunchArgs.AutoClose)}";
                     else
                         shortcut.Arguments = gameFile.FileName;
                     shortcut.TargetPath = string.Format(Path.Combine(Directory.GetCurrentDirectory(), Util.GetExecutableNoPath()));

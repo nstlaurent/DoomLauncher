@@ -44,6 +44,11 @@ namespace DoomLauncher
             nameof(LaunchArgs.LaunchGameFileID),
         };
 
+        private static readonly string[] FlagKeys = new string[]
+        {
+            nameof(LaunchArgs.AutoClose)
+        };
+
         static LaunchArgs GetLaunchArgs(string[] args)
         {
             LaunchArgs launchArgs = new LaunchArgs();
@@ -58,6 +63,14 @@ namespace DoomLauncher
                 }
 
                 arg = arg.Substring(1);
+
+                var flag = FlagKeys.FirstOrDefault(x => x.Equals(arg, StringComparison.OrdinalIgnoreCase));
+                if (flag != null)
+                {
+                    SetLaunchFlag(launchArgs, flag);
+                    continue;
+                }
+
                 var argKey = ArgKeys.FirstOrDefault(x => x.Equals(arg, StringComparison.OrdinalIgnoreCase));
                 if (!ArgKeys.Any(x => x.Equals(arg, StringComparison.OrdinalIgnoreCase)))
                     continue;
@@ -77,6 +90,15 @@ namespace DoomLauncher
             }
 
             return launchArgs;
+        }
+
+        private static void SetLaunchFlag(LaunchArgs launchArgs, string flag)
+        {
+            var pi = typeof(LaunchArgs).GetProperty(flag);
+            if (pi == null)
+                return;
+
+            pi.SetValue(launchArgs, true);
         }
     }
 }

@@ -523,6 +523,9 @@ namespace DoomLauncher
             if (session != null)
                 m_activeSessions.Remove(session);
 
+            if (m_launchArgs.AutoClose)
+                Close();
+
             IGameFileView view = GetCurrentViewControl();
             view.UpdateGameFile(adapter.GameFile);
             HandleSelectionChange(view, true);
