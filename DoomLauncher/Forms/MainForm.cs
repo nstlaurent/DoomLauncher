@@ -236,19 +236,25 @@ namespace DoomLauncher
 
         private void ctrlAssociationView_FileAdded(object sender, EventArgs e)
         {
-            IGameFileView view = GetCurrentViewControl();
-            view.UpdateGameFile(view.SelectedItem);
-            HandleSelectionChange(GetCurrentViewControl(), true);
+            UpdateCurrentView();
         }
 
         void ctrlAssociationView_FileDeleted(object sender, EventArgs e)
         {
-            IGameFileView view = GetCurrentViewControl();
-            view.UpdateGameFile(view.SelectedItem);
-            HandleSelectionChange(GetCurrentViewControl(), true);
+            UpdateCurrentView();
         }
 
         void ctrlAssociationView_FileOrderChanged(object sender, EventArgs e)
+        {
+            UpdateCurrentView();
+        }
+
+        void CtrlAssociationView_FileDetailsChanged(object sender, EventArgs e)
+        {
+            UpdateCurrentView();
+        }
+
+        private void UpdateCurrentView()
         {
             IGameFileView view = GetCurrentViewControl();
             view.UpdateGameFile(view.SelectedItem);

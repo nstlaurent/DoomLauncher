@@ -10,6 +10,7 @@ namespace DoomLauncher
         public event EventHandler FileAdded;
         public event EventHandler FileDeleted;
         public event EventHandler FileOrderChanged;
+        public event EventHandler FileDetailsChanged;
         public event EventHandler<RequestScreenshotsEventArgs> RequestScreenshots;
 
         private IGameFile m_gameFile;
@@ -219,7 +220,10 @@ namespace DoomLauncher
         private void HandleEdit()
         {
             if (CurrentView != null && CurrentView.EditAllowed && CurrentView.Edit())
+            {
                 SetData(m_gameFile);
+                FileDetailsChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
