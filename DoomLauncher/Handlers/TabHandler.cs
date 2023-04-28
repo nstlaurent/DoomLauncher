@@ -1,5 +1,4 @@
 ﻿using DoomLauncher.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -32,6 +31,7 @@ namespace DoomLauncher
         private TabPage CreateTabPage(ITabView tab)
         {
             TabPage page = new TabPage(tab.Title);
+            page.Name = tab.Key.ToString();
 
             if (tab is Control ctrl)
             {
@@ -93,7 +93,11 @@ namespace DoomLauncher
             {
                 TabItem item = m_tabLookup[tab.GameFileViewControl];
                 TabControl.TabPages.Remove(item.TabPage);
-                TabControl.TabPages.Insert(index, item.TabPage);
+
+                if (index < TabControl.TabPages.Count)
+                    TabControl.TabPages.Insert(index, item.TabPage);
+                else
+                    TabControl.TabPages.Add(item.TabPage);
             }
         }
 

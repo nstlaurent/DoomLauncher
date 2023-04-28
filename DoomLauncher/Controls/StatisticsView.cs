@@ -12,8 +12,19 @@ namespace DoomLauncher
     public partial class StatisticsView : UserControl, IFileAssociationView
     {
         private ContextMenuStrip m_menu;
+        private static readonly Tuple<string, string>[] ColumnFields = new Tuple<string, string>[]
+        {
+            new Tuple<string, string>("MapName", "Map"),
+            new Tuple<string, string>("FormattedKills", "Kills"),
+            new Tuple<string, string>("FormattedSecrets", "Secrets"),
+            new Tuple<string, string>("FormattedItems", "Items"),
+            new Tuple<string, string>("FormattedTime", "Time"),
+            new Tuple<string, string>("RecordTime", "Date"),
+            new Tuple<string, string>("Skill", "Skill"),
+            new Tuple<string, string>("SourcePort", "SourcePort"),
+        };
 
-        public StatisticsView()
+    public StatisticsView()
         {
             InitializeComponent();
 
@@ -21,19 +32,11 @@ namespace DoomLauncher
             dgvMain.AutoGenerateColumns = false;
             dgvMain.ShowCellToolTips = false;
             dgvMain.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            dgvMain.DefaultCellStyle.NullValue = "N/A";
 
-            SetColumnFields(new Tuple<string, string>[]
-            {
-                new Tuple<string, string>("MapName", "Map"),
-                new Tuple<string, string>("FormattedKills", "Kills"),
-                new Tuple<string, string>("FormattedSecrets", "Secrets"),
-                new Tuple<string, string>("FormattedItems", "Items"),
-                new Tuple<string, string>("FormattedTime", "Time"),
-                new Tuple<string, string>("RecordTime", "Date"),
-                new Tuple<string, string>("SourcePort", "SourcePort"),
-            });
+            SetColumnFields(ColumnFields);
 
-            dgvMain.Columns[dgvMain.Columns.Count - 2].DefaultCellStyle.Format = string.Format("{0} {1}",
+            dgvMain.Columns[dgvMain.Columns.Count - 3].DefaultCellStyle.Format = string.Format("{0} {1}",
                 CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
 
             Stylizer.StylizeControl(this, DesignMode);
@@ -46,21 +49,43 @@ namespace DoomLauncher
 
         public void SetData(IGameFile gameFile)
         {
+            SetDataByMap(gameFile, null);
+        }
+
+        public IEnumerable<IStatsData> SetDataByMap(IGameFile gameFile, string map)
+        {
             if (gameFile != null && gameFile.GameFileID.HasValue)
             {
                 IEnumerable<IStatsData> stats = DataSourceAdapter.GetStats(gameFile.GameFileID.Value);
+                if (map != null)
+                    stats = stats.Where(x => x.MapName.Equals(map, StringComparison.OrdinalIgnoreCase));
                 dgvMain.DataSource = new BindingListView<StatsBind>(GetStatsBind(stats));
                 dgvMain.ContextMenuStrip = m_menu;
+                return stats;
             }
             else
             {
                 dgvMain.DataSource = null;
+                return Array.Empty<IStatsData>();
             }
         }
 
         public void ClearData()
         {
             dgvMain.DataSource = null;
+        }
+
+        public void SetMapsVisible(bool visible)
+        {
+            dgvMain.Columns.Clear();
+
+            if (visible)
+            {
+                SetColumnFields(ColumnFields);
+                return;
+            }
+
+            SetColumnFields(ColumnFields.Skip(1));
         }
 
         private List<StatsBind> GetStatsBind(IEnumerable<IStatsData> stats)
@@ -70,7 +95,7 @@ namespace DoomLauncher
             IEnumerable<StatsBind> statsBind = from stat in stats
                                                join sp in sourcePorts on stat.SourcePortID equals sp.SourcePortID
                                                select new StatsBind(stat.MapName, stat.FormattedKills, stat.FormattedSecrets,
-                                               stat.FormattedItems, TimeSpan.FromSeconds(stat.LevelTime), stat.RecordTime, sp.Name, stat);
+                                               stat.FormattedItems, TimeSpan.FromSeconds(stat.LevelTime), stat.RecordTime, stat.Skill, sp.Name, stat);
             return statsBind.ToList();
         }
 
@@ -127,10 +152,12 @@ namespace DoomLauncher
             {
                 foreach (Tuple<string, string> item in columnFields)
                 {
-                    DataGridViewColumn col = new DataGridViewTextBoxColumn();
-                    col.HeaderText = item.Item2;
-                    col.Name = item.Item1;
-                    col.DataPropertyName = item.Item1;
+                    DataGridViewColumn col = new DataGridViewTextBoxColumn
+                    {
+                        HeaderText = item.Item2,
+                        Name = item.Item1,
+                        DataPropertyName = item.Item1
+                    };
                     dgvMain.Columns.Add(col);
                 }
 
@@ -149,7 +176,8 @@ namespace DoomLauncher
 
         private class StatsBind
         {
-            public StatsBind(string map, string kills, string secrets, string items, TimeSpan time, DateTime recordtime, string sourceport, IStatsData statsdatasource)
+            public StatsBind(string map, string kills, string secrets, string items, TimeSpan time, DateTime recordtime, int? skill, string sourceport,
+                IStatsData statsdatasource)
             {
                 MapName = map;
                 FormattedKills = kills;
@@ -158,6 +186,7 @@ namespace DoomLauncher
                 FormattedTime = time;
                 RecordTime = recordtime;
                 SourcePort = sourceport;
+                Skill = skill;
                 StatsData = statsdatasource;
             }
 
@@ -168,6 +197,7 @@ namespace DoomLauncher
             public TimeSpan FormattedTime { get; set; }
             public DateTime RecordTime { get; set; }
             public string SourcePort  { get; set; }
+            public int? Skill { get; set; }
             public IStatsData StatsData { get; set; }
         }
     }

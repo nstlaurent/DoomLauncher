@@ -169,8 +169,13 @@ namespace DoomLauncher
 
         public IGameFile GetGameFile(string fileName)
         {
-            List<DbParameter> parameters = new List<DbParameter> { DataAccess.DbAdapter.CreateParameter("FileName", fileName) };
-            DataTable dt = DataAccess.ExecuteSelect("select * from GameFiles where Filename = @FileName COLLATE NOCASE", parameters).Tables[0];
+            List<DbParameter> parameters = new List<DbParameter>
+            { 
+                DataAccess.DbAdapter.CreateParameter("FileName", fileName),
+                DataAccess.DbAdapter.CreateParameter("FileNamePath", '%' + Path.DirectorySeparatorChar + fileName),
+            };
+
+            DataTable dt = DataAccess.ExecuteSelect("select * from GameFiles where Filename = @FileName COLLATE NOCASE or Filename like @FileNamePath COLLATE NOCASE", parameters).Tables[0];
 
             if (dt.Rows.Count > 0)
                 return Util.TableToStructure(dt, typeof(GameFile)).Cast<GameFile>().ToList()[0];
@@ -225,7 +230,8 @@ namespace DoomLauncher
                     SettingsFilesSourcePort = @SettingsFilesSourcePort, SettingsFilesIWAD = @SettingsFilesIWAD,
                     SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, SettingsLoadLatestSave = @SettingsLoadLatestSave, 
                     FileName = @FileName, MapCount = @MapCount, 
-                    MinutesPlayed = @MinutesPlayed, SettingsGameProfileID = @SettingsGameProfileID, SettingsSaved = @SettingsSaved
+                    MinutesPlayed = @MinutesPlayed, SettingsGameProfileID = @SettingsGameProfileID, SettingsSaved = @SettingsSaved,
+                    SettingsExtraParamsOnly = @SettingsExtraParamsOnly
                     where GameFileID = @gameFileID");
             }
 
@@ -255,6 +261,7 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("SettingsStat", gameFile.SettingsStat),
                 DataAccess.DbAdapter.CreateParameter("SettingsLoadLatestSave", gameFile.SettingsLoadLatestSave),
                 DataAccess.DbAdapter.CreateParameter("SettingsSaved", gameFile.SettingsSaved),
+                DataAccess.DbAdapter.CreateParameter("SettingsExtraParamsOnly", gameFile.SettingsExtraParamsOnly),
                 DataAccess.DbAdapter.CreateParameter("SettingsGameProfileID", gameFile.SettingsGameProfileID ?? (object)DBNull.Value),
 
                 DataAccess.DbAdapter.CreateParameter("MapCount", !gameFile.MapCount.HasValue ? (object)DBNull.Value : gameFile.MapCount),
@@ -293,21 +300,26 @@ namespace DoomLauncher
             }
         }
 
-        public IEnumerable<ISourcePortData> GetSourcePorts()
+        public IEnumerable<ISourcePortData> GetSourcePorts(bool loadArchived = false) =>
+            GetSourcePorts(SourcePortLaunchType.SourcePort, loadArchived);
+
+        public IEnumerable<ISourcePortData> GetUtilities(bool loadArchived = false) =>
+            GetSourcePorts(SourcePortLaunchType.Utility, loadArchived);
+
+        private IEnumerable<ISourcePortData> GetSourcePorts(SourcePortLaunchType type, bool loadArchived)
         {
-            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where LaunchType = {0} order by Name collate nocase", (int)SourcePortLaunchType.SourcePort)).Tables[0];
+            int sqlArchive = loadArchived ? 1 : 0;
+            DataTable dt;
 
-            List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
-
-            foreach(DataRow dr in dt.Rows)                       
-                sourcePorts.Add(CreateSourcePortDataSource(dt, dr));
-
-            return sourcePorts;
-        }
-
-        public IEnumerable<ISourcePortData> GetUtilities()
-        {
-            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where LaunchType = {0} order by Name collate nocase", (int)SourcePortLaunchType.Utility)).Tables[0];
+            try
+            {
+                dt = DataAccess.ExecuteSelect($"select * from SourcePorts where LaunchType = {(int)type} and Archived = {sqlArchive} order by Name collate nocase").Tables[0];
+            }
+            catch
+            {
+                // This is for updates before Archived column existed...
+                dt = DataAccess.ExecuteSelect($"select * from SourcePorts where LaunchType = {(int)type}").Tables[0];
+            }
 
             List<ISourcePortData> sourcePorts = new List<ISourcePortData>();
 
@@ -334,6 +346,8 @@ namespace DoomLauncher
 
             if (dt.Columns.Contains("SettingsFiles"))
                 sourcePort.SettingsFiles = (string)CheckDBNull(dr["SettingsFiles"], string.Empty);
+            if (dt.Columns.Contains("Archived"))
+                sourcePort.Archived = Convert.ToInt32(dr["Archived"]) != 0;
 
             return sourcePort;
         }
@@ -358,8 +372,8 @@ namespace DoomLauncher
 
         public void InsertSourcePort(ISourcePortData sourcePort)
         {
-            string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption,ExtraParameters,AltSaveDirectory) 
-                values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption,@ExtraParameters,@AltSaveDirectory)";
+            string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption,ExtraParameters,AltSaveDirectory,Archived) 
+                values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption,@ExtraParameters,@AltSaveDirectory,@Archived)";
 
             DataAccess.ExecuteNonQuery(insert, GetSourcePortParams(sourcePort));
         }
@@ -369,7 +383,7 @@ namespace DoomLauncher
             string query = @"update SourcePorts set 
             Name = @Name, Executable = @Executable, SupportedExtensions = @SupportedExtensions,
             Directory = @Directory, SettingsFiles = @SettingsFiles, LaunchType = @LaunchType, FileOption = @FileOption, ExtraParameters = @ExtraParameters,
-            AltSaveDirectory = @AltSaveDirectory
+            AltSaveDirectory = @AltSaveDirectory, Archived = @Archived
             where SourcePortID = @sourcePortID";
 
             DataAccess.ExecuteNonQuery(query, GetSourcePortParams(sourcePort));
@@ -388,7 +402,8 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("LaunchType", sourcePort.LaunchType),
                 DataAccess.DbAdapter.CreateParameter("FileOption", sourcePort.FileOption ?? string.Empty),
                 DataAccess.DbAdapter.CreateParameter("ExtraParameters", sourcePort.ExtraParameters ?? string.Empty),
-                DataAccess.DbAdapter.CreateParameter("AltSaveDirectory", sourcePort.AltSaveDirectory == null ? string.Empty : sourcePort.AltSaveDirectory.GetPossiblyRelativePath())
+                DataAccess.DbAdapter.CreateParameter("AltSaveDirectory", sourcePort.AltSaveDirectory == null ? string.Empty : sourcePort.AltSaveDirectory.GetPossiblyRelativePath()),
+                DataAccess.DbAdapter.CreateParameter("Archived", sourcePort.Archived)
             };
 
             return parameters;
@@ -463,7 +478,8 @@ namespace DoomLauncher
         public void UpdateFile(IFileData file)
         {
             string query = @"update Files set 
-            SourcePortID = @SourcePortID, Description = @Description, FileOrder = @FileOrder, DateCreated = @DateCreated
+            SourcePortID = @SourcePortID, Description = @Description, FileOrder = @FileOrder, DateCreated = @DateCreated,
+            UserTitle = @UserTitle, UserDescription = @UserDescription, Map = @Map
             where FileID = @FileID";
 
             List<DbParameter> parameters = new List<DbParameter>
@@ -472,7 +488,10 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("Description", file.Description),
                 DataAccess.DbAdapter.CreateParameter("FileID", file.FileID),
                 DataAccess.DbAdapter.CreateParameter("FileOrder", file.FileOrder),
-                DataAccess.DbAdapter.CreateParameter("DateCreated", file.DateCreated)
+                DataAccess.DbAdapter.CreateParameter("DateCreated", file.DateCreated),
+                DataAccess.DbAdapter.CreateParameter("UserTitle", file.UserTitle),
+                DataAccess.DbAdapter.CreateParameter("Map", file.Map),
+                DataAccess.DbAdapter.CreateParameter("UserDescription", file.UserDescription),
             };
 
             DataAccess.ExecuteNonQuery(query, parameters);
@@ -614,6 +633,16 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(StatsData)).Cast<StatsData>().ToList();
         }
 
+        public IEnumerable<IStatsData> GetStats(IEnumerable<IGameFile> gameFiles)
+        {
+            if (!gameFiles.Any())
+                return Array.Empty<IStatsData>();
+
+            var gameFileIds = gameFiles.Select(x => x.GameFileID);
+            DataTable dt = DataAccess.ExecuteSelect($"select * from Stats where GameFileID in ({string.Join(",", gameFileIds)})").Tables[0];
+            return Util.TableToStructure(dt, typeof(StatsData)).Cast<StatsData>().ToList();
+        }
+
         public void InsertStats(IStatsData stats)
         {
             string insert = InsertStatement("Stats", stats, new string[] { "StatID", "SaveFile" }, out List<DbParameter> parameters);
@@ -665,7 +694,8 @@ namespace DoomLauncher
             string query = @"update GameProfiles set Name = @Name, SourcePortID = @SourcePortID, IWadID = @IWadID,
                     SettingsMap = @SettingsMap, SettingsSkill = @SettingsSkill, SettingsExtraParams = @SettingsExtraParams, SettingsFiles = @SettingsFiles,
                     SettingsFilesSourcePort = @SettingsFilesSourcePort, SettingsFilesIWAD = @SettingsFilesIWAD,
-                    SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, SettingsLoadLatestSave =@SettingsLoadLatestSave, SettingsSaved = @SettingsSaved
+                    SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, SettingsLoadLatestSave =@SettingsLoadLatestSave, 
+                    SettingsSaved = @SettingsSaved, SettingsExtraParamsOnly = @SettingsExtraParamsOnly
                     where GameProfileID = @gameProfileID";
 
             List<DbParameter> parameters = new List<DbParameter>
@@ -683,6 +713,7 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("SettingsLoadLatestSave", gameProfile.SettingsLoadLatestSave),
                 DataAccess.DbAdapter.CreateParameter("SettingsStat", gameProfile.SettingsStat),
                 DataAccess.DbAdapter.CreateParameter("SettingsSaved", gameProfile.SettingsSaved),
+                DataAccess.DbAdapter.CreateParameter("SettingsExtraParamsOnly", gameProfile.SettingsExtraParamsOnly),
                 DataAccess.DbAdapter.CreateParameter("GameProfileID", gameProfile.GameProfileID),
             };
 

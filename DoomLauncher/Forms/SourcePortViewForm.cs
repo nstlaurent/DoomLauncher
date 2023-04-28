@@ -55,16 +55,17 @@ namespace DoomLauncher
 
         private void ResetData()
         {
+            bool loadArchived = chkShowArchived.Checked;
             IEnumerable<ISourcePortData> data;
             if (m_launchType == SourcePortLaunchType.Utility)
             {
                 Text = "Utilities";
-                data = m_adapter.GetUtilities();
+                data = m_adapter.GetUtilities(loadArchived);
             }
             else
             {
                 Text = "Source Ports";
-                data = m_adapter.GetSourcePorts();
+                data = m_adapter.GetSourcePorts(loadArchived);
             }
 
             SetDataSource(data);
@@ -263,7 +264,7 @@ namespace DoomLauncher
         private string GetDeleteConfirm()
         {
             if (m_launchType == SourcePortLaunchType.SourcePort)
-                return "Deleting this source port will orphan demo files and save games associated with it. Are you sure you want to continue?";
+                return "Deleting this source port will orphan demo files and save games associated with it. Are you sure you want to continue?\n\nConsider archiving this port instead!";
             else
                 return "Are you sure you want to delete this utility?";
         }
@@ -279,6 +280,11 @@ namespace DoomLauncher
         public ISourcePortData GetSelectedSourcePort()
         {
              return SelectedItem;
+        }
+
+        private void chkShowArchived_CheckedChanged(object sender, EventArgs e)
+        {
+            ResetData();
         }
     }
 }

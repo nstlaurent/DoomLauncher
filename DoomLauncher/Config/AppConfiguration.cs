@@ -10,6 +10,7 @@ namespace DoomLauncher
     public class AppConfiguration
     {
         public event EventHandler GameFileViewTypeChanged;
+        public event EventHandler VisibleViewsChanged;
 
         public static string SplitTopBottomName => "SplitTopBottom";
         public static string SplitLeftRightName => "SplitLeftRight";
@@ -28,6 +29,8 @@ namespace DoomLauncher
         public static string CopySaveFilesName => "CopySaveFiles";
         public static string AllowMultiplePlaySessionsName => "AllowMultiplePlaySessions";
         public static string AutomaticallyPullTitlpicName => "AutomaticallyPullTitlpic";
+        public static string VisibleViewsName => "VisibleViews";
+        public static string ShowPlayDialogName => "ShowPlayDialog";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -127,12 +130,20 @@ namespace DoomLauncher
                 CopySaveFiles = Convert.ToBoolean(GetValue(config, CopySaveFilesName));
                 AllowMultiplePlaySessions = Convert.ToBoolean(GetValue(config, AllowMultiplePlaySessionsName));
                 AutomaticallyPullTitlpic = Convert.ToBoolean(GetValue(config, AutomaticallyPullTitlpicName));
+                ShowPlayDialog = Convert.ToBoolean(GetValue(config, ShowPlayDialogName));
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
                 {
                     GameFileViewType = newType;
                     GameFileViewTypeChanged?.Invoke(this, EventArgs.Empty);
+                }
+
+                var newVisibleViews = Util.SplitString(GetValue(config, VisibleViewsName));
+                if (VisibleViews == null || (newVisibleViews.Length != VisibleViews.Count))
+                {
+                    VisibleViews = newVisibleViews.ToHashSet(StringComparer.OrdinalIgnoreCase);
+                    VisibleViewsChanged?.Invoke(this, EventArgs.Empty);
                 }
 
                 DateParseFormats = Util.SplitString(GetValue(config, "DateParseFormats"));
@@ -261,5 +272,7 @@ namespace DoomLauncher
         public bool CopySaveFiles { get; set; }
         public bool AllowMultiplePlaySessions { get; set; }
         public bool AutomaticallyPullTitlpic { get; set; }
+        public bool ShowPlayDialog { get; set; }
+        public HashSet<string> VisibleViews { get; set; }
     }
 }

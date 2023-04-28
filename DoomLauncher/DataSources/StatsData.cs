@@ -14,6 +14,7 @@ namespace DoomLauncher
         public int TotalItems { get; set; }
         public string MapName { get; set; }
         public DateTime RecordTime { get; set; }
+        public int? Skill { get; set; }
 
         public string FormattedKills { get { return string.Format("{0} / {1}", KillCount.ToString("N0", CultureInfo.InvariantCulture), TotalKills.ToString("N0", CultureInfo.InvariantCulture)); } }
         public string FormattedSecrets { get { return string.Format("{0} / {1}", SecretCount.ToString("N0", CultureInfo.InvariantCulture), TotalSecrets.ToString("N0", CultureInfo.InvariantCulture)); } }
@@ -39,15 +40,13 @@ namespace DoomLauncher
 
         public override bool Equals(object obj)
         {
-            IStatsData stats = obj as IStatsData;
-
-            if (stats != null)
+            if (obj is IStatsData stats)
             {
                 return GameFileID == stats.GameFileID && KillCount == stats.KillCount && TotalKills == stats.TotalKills &&
                     SecretCount == stats.SecretCount && TotalSecrets == stats.TotalSecrets &&
                     ItemCount == stats.ItemCount && TotalItems == stats.TotalItems &&
-                    LevelTime == stats.LevelTime &&
-                    MapName.ToLower() == stats.MapName.ToLower();
+                    LevelTime == stats.LevelTime && Skill == Skill &&
+                    MapName.Equals(stats.MapName, StringComparison.OrdinalIgnoreCase);
             }
 
             return false;
@@ -55,8 +54,8 @@ namespace DoomLauncher
 
         public override int GetHashCode()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", GameFileID, KillCount, TotalKills, SecretCount, TotalSecrets, 
-                ItemCount, TotalItems, LevelTime, MapName.ToLower()).GetHashCode();
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", GameFileID, KillCount, TotalKills, SecretCount, TotalSecrets, 
+                ItemCount, TotalItems, LevelTime, Skill.HasValue ? Skill : 0, MapName.ToLower()).GetHashCode();
         }
     }
 }

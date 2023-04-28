@@ -56,13 +56,13 @@
             this.tblMain.Controls.Add(this.grpAdditionalFiles, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(4);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 3;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 214F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 244F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 246F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 246F));
-            this.tblMain.Size = new System.Drawing.Size(475, 505);
+            this.tblMain.Size = new System.Drawing.Size(475, 535);
             this.tblMain.TabIndex = 2;
             // 
             // flowLayoutPanel1
@@ -71,7 +71,7 @@
             this.flowLayoutPanel1.Controls.Add(this.btnSave);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 464);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 494);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(475, 242);
@@ -81,7 +81,7 @@
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button1.Location = new System.Drawing.Point(371, 4);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(100, 28);
             this.button1.TabIndex = 1;
@@ -92,7 +92,7 @@
             // 
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Location = new System.Drawing.Point(263, 4);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(100, 28);
             this.btnSave.TabIndex = 0;
@@ -105,10 +105,10 @@
             this.groupBox2.Controls.Add(this.sourcePortEdit1);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(4, 4);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox2.Size = new System.Drawing.Size(467, 206);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox2.Size = new System.Drawing.Size(467, 236);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Properties";
@@ -117,9 +117,9 @@
             // 
             this.sourcePortEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sourcePortEdit1.Location = new System.Drawing.Point(4, 19);
-            this.sourcePortEdit1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.sourcePortEdit1.Margin = new System.Windows.Forms.Padding(5);
             this.sourcePortEdit1.Name = "sourcePortEdit1";
-            this.sourcePortEdit1.Size = new System.Drawing.Size(459, 183);
+            this.sourcePortEdit1.Size = new System.Drawing.Size(459, 213);
             this.sourcePortEdit1.TabIndex = 0;
             // 
             // grpAdditionalFiles
@@ -127,10 +127,10 @@
             this.grpAdditionalFiles.Controls.Add(this.lblInfo);
             this.grpAdditionalFiles.Controls.Add(this.pbInfo);
             this.grpAdditionalFiles.Controls.Add(this.ctrlFiles);
-            this.grpAdditionalFiles.Location = new System.Drawing.Point(4, 218);
-            this.grpAdditionalFiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpAdditionalFiles.Location = new System.Drawing.Point(4, 248);
+            this.grpAdditionalFiles.Margin = new System.Windows.Forms.Padding(4);
             this.grpAdditionalFiles.Name = "grpAdditionalFiles";
-            this.grpAdditionalFiles.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpAdditionalFiles.Padding = new System.Windows.Forms.Padding(4);
             this.grpAdditionalFiles.Size = new System.Drawing.Size(467, 238);
             this.grpAdditionalFiles.TabIndex = 3;
             this.grpAdditionalFiles.TabStop = false;
@@ -149,7 +149,7 @@
             // pbInfo
             // 
             this.pbInfo.Location = new System.Drawing.Point(12, 23);
-            this.pbInfo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pbInfo.Margin = new System.Windows.Forms.Padding(4);
             this.pbInfo.Name = "pbInfo";
             this.pbInfo.Size = new System.Drawing.Size(21, 20);
             this.pbInfo.TabIndex = 22;
@@ -158,7 +158,7 @@
             // ctrlFiles
             // 
             this.ctrlFiles.Location = new System.Drawing.Point(12, 63);
-            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(5);
             this.ctrlFiles.Name = "ctrlFiles";
             this.ctrlFiles.Size = new System.Drawing.Size(443, 169);
             this.ctrlFiles.TabIndex = 21;
@@ -169,10 +169,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button1;
-            this.ClientSize = new System.Drawing.Size(475, 505);
+            this.ClientSize = new System.Drawing.Size(475, 535);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SourcePortEditForm";
             this.Text = "Source Port";
             this.tblMain.ResumeLayout(false);

@@ -34,7 +34,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cmbIwad = new System.Windows.Forms.ComboBox();
-            this.chkRemember = new DoomLauncher.CCheckBox();
+            this.chkRemember = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
             this.profileToolStrip = new System.Windows.Forms.ToolStrip();
@@ -46,30 +46,29 @@
             this.cmbProfiles = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.cmbMap = new CComboBox();
+            this.cmbMap = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cmbSkill = new System.Windows.Forms.ComboBox();
-            this.chkRecord = new DoomLauncher.CCheckBox();
+            this.chkRecord = new System.Windows.Forms.CheckBox();
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.cmbDemo = new System.Windows.Forms.ComboBox();
-            this.chkDemo = new DoomLauncher.CCheckBox();
-            this.chkMap = new DoomLauncher.CCheckBox();
+            this.chkDemo = new System.Windows.Forms.CheckBox();
+            this.chkMap = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.lnkOpenDemo = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.txtParameters = new System.Windows.Forms.TextBox();
-            this.chkPreview = new DoomLauncher.CCheckBox();
+            this.chkExtraParamsOnly = new System.Windows.Forms.CheckBox();
             this.lnkMore = new System.Windows.Forms.LinkLabel();
-            this.chkSaveStats = new DoomLauncher.CCheckBox();
+            this.chkSaveStats = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.lnkLoadSaveMore = new System.Windows.Forms.LinkLabel();
-            this.chkLoadLatestSave = new DoomLauncher.CCheckBox();
+            this.chkLoadLatestSave = new System.Windows.Forms.CheckBox();
             this.lnkFilterSettings = new System.Windows.Forms.LinkLabel();
-            this.chkScreenFilter = new DoomLauncher.CCheckBox();
+            this.chkScreenFilter = new System.Windows.Forms.CheckBox();
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
-            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
             this.pbInfo = new System.Windows.Forms.PictureBox();
@@ -82,6 +81,7 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.groupBox1.SuspendLayout();
             this.tblProfile.SuspendLayout();
             this.profileToolStrip.SuspendLayout();
@@ -159,6 +159,7 @@
             this.chkRemember.TabIndex = 4;
             this.chkRemember.TabStop = false;
             this.chkRemember.Text = "Remember Settings";
+            this.chkRemember.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -295,7 +296,9 @@
             // 
             // cmbMap
             // 
+            this.cmbMap.DisplayMember = "Name";
             this.cmbMap.Enabled = false;
+            this.cmbMap.FormattingEnabled = true;
             this.cmbMap.Location = new System.Drawing.Point(115, 23);
             this.cmbMap.Margin = new System.Windows.Forms.Padding(4);
             this.cmbMap.Name = "cmbMap";
@@ -335,6 +338,7 @@
             this.chkRecord.TabIndex = 12;
             this.chkRecord.TabStop = false;
             this.chkRecord.Text = "Record";
+            this.chkRecord.UseVisualStyleBackColor = true;
             this.chkRecord.CheckedChanged += new System.EventHandler(this.chkRecord_CheckedChanged);
             // 
             // txtDescription
@@ -370,6 +374,7 @@
             this.chkDemo.TabIndex = 15;
             this.chkDemo.TabStop = false;
             this.chkDemo.Text = "Play Demo";
+            this.chkDemo.UseVisualStyleBackColor = true;
             this.chkDemo.CheckedChanged += new System.EventHandler(this.chkDemo_CheckedChanged);
             // 
             // chkMap
@@ -382,6 +387,7 @@
             this.chkMap.TabIndex = 16;
             this.chkMap.TabStop = false;
             this.chkMap.Text = "Map";
+            this.chkMap.UseVisualStyleBackColor = true;
             this.chkMap.CheckedChanged += new System.EventHandler(this.chkMap_CheckedChanged);
             // 
             // groupBox2
@@ -437,21 +443,22 @@
             this.txtParameters.TabStop = false;
             this.txtParameters.Click += new System.EventHandler(this.TxtParameters_Click);
             // 
-            // chkPreview
+            // chkExtraParamsOnly
             // 
-            this.chkPreview.AutoSize = true;
-            this.chkPreview.Location = new System.Drawing.Point(8, 109);
-            this.chkPreview.Margin = new System.Windows.Forms.Padding(4);
-            this.chkPreview.Name = "chkPreview";
-            this.chkPreview.Size = new System.Drawing.Size(196, 20);
-            this.chkPreview.TabIndex = 21;
-            this.chkPreview.TabStop = false;
-            this.chkPreview.Text = "Preview Launch Parameters";
+            this.chkExtraParamsOnly.AutoSize = true;
+            this.chkExtraParamsOnly.Location = new System.Drawing.Point(8, 109);
+            this.chkExtraParamsOnly.Margin = new System.Windows.Forms.Padding(4);
+            this.chkExtraParamsOnly.Name = "chkPreview";
+            this.chkExtraParamsOnly.Size = new System.Drawing.Size(196, 20);
+            this.chkExtraParamsOnly.TabIndex = 21;
+            this.chkExtraParamsOnly.TabStop = false;
+            this.chkExtraParamsOnly.Text = "Extra Params Only";
+            this.chkExtraParamsOnly.UseVisualStyleBackColor = true;
             // 
             // lnkMore
             // 
             this.lnkMore.AutoSize = true;
-            this.lnkMore.Location = new System.Drawing.Point(228, 26);
+            this.lnkMore.Location = new System.Drawing.Point(218, 26);
             this.lnkMore.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkMore.Name = "lnkMore";
             this.lnkMore.Size = new System.Drawing.Size(71, 16);
@@ -472,6 +479,7 @@
             this.chkSaveStats.TabIndex = 19;
             this.chkSaveStats.TabStop = false;
             this.chkSaveStats.Text = "Save Statistics";
+            this.chkSaveStats.UseVisualStyleBackColor = true;
             // 
             // groupBox4
             // 
@@ -480,7 +488,7 @@
             this.groupBox4.Controls.Add(this.lnkFilterSettings);
             this.groupBox4.Controls.Add(this.chkScreenFilter);
             this.groupBox4.Controls.Add(this.lnkPreviewLaunchParameters);
-            this.groupBox4.Controls.Add(this.chkPreview);
+            this.groupBox4.Controls.Add(this.chkExtraParamsOnly);
             this.groupBox4.Controls.Add(this.chkSaveStats);
             this.groupBox4.Controls.Add(this.lnkMore);
             this.groupBox4.Location = new System.Drawing.Point(4, 362);
@@ -494,7 +502,7 @@
             // lnkLoadSaveMore
             // 
             this.lnkLoadSaveMore.AutoSize = true;
-            this.lnkLoadSaveMore.Location = new System.Drawing.Point(228, 54);
+            this.lnkLoadSaveMore.Location = new System.Drawing.Point(218, 54);
             this.lnkLoadSaveMore.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkLoadSaveMore.Name = "lnkLoadSaveMore";
             this.lnkLoadSaveMore.Size = new System.Drawing.Size(71, 16);
@@ -513,11 +521,12 @@
             this.chkLoadLatestSave.TabIndex = 25;
             this.chkLoadLatestSave.TabStop = false;
             this.chkLoadLatestSave.Text = "Load Latest Save";
+            this.chkLoadLatestSave.UseVisualStyleBackColor = true;
             // 
             // lnkFilterSettings
             // 
             this.lnkFilterSettings.AutoSize = true;
-            this.lnkFilterSettings.Location = new System.Drawing.Point(228, 81);
+            this.lnkFilterSettings.Location = new System.Drawing.Point(218, 81);
             this.lnkFilterSettings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkFilterSettings.Name = "lnkFilterSettings";
             this.lnkFilterSettings.Size = new System.Drawing.Size(55, 16);
@@ -536,18 +545,19 @@
             this.chkScreenFilter.TabIndex = 23;
             this.chkScreenFilter.TabStop = false;
             this.chkScreenFilter.Text = "Screen Filter";
+            this.chkScreenFilter.UseVisualStyleBackColor = true;
             this.chkScreenFilter.CheckedChanged += new System.EventHandler(this.chkScreenFilter_CheckedChanged);
             // 
             // lnkPreviewLaunchParameters
             // 
             this.lnkPreviewLaunchParameters.AutoSize = true;
-            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(228, 109);
+            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(218, 109);
             this.lnkPreviewLaunchParameters.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkPreviewLaunchParameters.Name = "lnkPreviewLaunchParameters";
             this.lnkPreviewLaunchParameters.Size = new System.Drawing.Size(40, 16);
             this.lnkPreviewLaunchParameters.TabIndex = 22;
             this.lnkPreviewLaunchParameters.TabStop = true;
-            this.lnkPreviewLaunchParameters.Text = "Show";
+            this.lnkPreviewLaunchParameters.Text = "Show Parameters";
             this.lnkPreviewLaunchParameters.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkPreviewLaunchParameters_LinkClicked);
             // 
             // groupBox3
@@ -580,17 +590,6 @@
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tblFiles.Size = new System.Drawing.Size(307, 480);
             this.tblFiles.TabIndex = 0;
-            // 
-            // ctrlFiles
-            // 
-            this.ctrlFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
-            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlFiles.ForeColor = System.Drawing.Color.White;
-            this.ctrlFiles.Location = new System.Drawing.Point(5, 54);
-            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(5);
-            this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(297, 391);
-            this.ctrlFiles.TabIndex = 20;
             // 
             // panel1
             // 
@@ -739,6 +738,15 @@
             this.flpButtons.Size = new System.Drawing.Size(267, 39);
             this.flpButtons.TabIndex = 5;
             // 
+            // ctrlFiles
+            // 
+            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlFiles.Location = new System.Drawing.Point(5, 54);
+            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(5);
+            this.ctrlFiles.Name = "ctrlFiles";
+            this.ctrlFiles.Size = new System.Drawing.Size(297, 391);
+            this.ctrlFiles.TabIndex = 20;
+            // 
             // PlayForm
             // 
             this.AcceptButton = this.btnOK;
@@ -784,24 +792,24 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ComboBox cmbIwad;
-        private CCheckBox chkRemember;
+        private System.Windows.Forms.CheckBox chkRemember;
         private System.Windows.Forms.GroupBox groupBox1;
-        private CComboBox cmbMap;
+        private System.Windows.Forms.ComboBox cmbMap;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox cmbSkill;
-        private CCheckBox chkRecord;
+        private System.Windows.Forms.CheckBox chkRecord;
         private System.Windows.Forms.TextBox txtDescription;
         private System.Windows.Forms.ComboBox cmbDemo;
-        private CCheckBox chkDemo;
-        private CCheckBox chkMap;
+        private System.Windows.Forms.CheckBox chkDemo;
+        private System.Windows.Forms.CheckBox chkMap;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtParameters;
-        private CCheckBox chkSaveStats;
+        private System.Windows.Forms.CheckBox chkSaveStats;
         private System.Windows.Forms.LinkLabel lnkMore;
-        private CCheckBox chkPreview;
+        private System.Windows.Forms.CheckBox chkExtraParamsOnly;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox3;
         private FilesCtrl ctrlFiles;
@@ -820,7 +828,7 @@
         private System.Windows.Forms.FlowLayoutPanel flp1;
         private System.Windows.Forms.LinkLabel lnkSpecific;
         private System.Windows.Forms.LinkLabel lnkCustomParameters;
-        private CCheckBox chkScreenFilter;
+        private System.Windows.Forms.CheckBox chkScreenFilter;
         private System.Windows.Forms.LinkLabel lnkFilterSettings;
         private System.Windows.Forms.Label lblProfile;
         private System.Windows.Forms.ComboBox cmbProfiles;
@@ -830,7 +838,7 @@
         private System.Windows.Forms.ToolStripMenuItem newProfileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editProfileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteProfileToolStripMenuItem;
-        private CCheckBox chkLoadLatestSave;
+        private System.Windows.Forms.CheckBox chkLoadLatestSave;
         private System.Windows.Forms.LinkLabel lnkLoadSaveMore;
     }
 }

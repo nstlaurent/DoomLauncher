@@ -93,18 +93,19 @@ namespace DoomLauncher
 
                 ApplicationUpdater applicationUpdater = new ApplicationUpdater(GetUpdateArchive(), AppDomain.CurrentDomain.BaseDirectory);
                 if (!applicationUpdater.Execute())
-                {
-                    TextBoxForm form = new TextBoxForm(true, MessageBoxButtons.OK)
-                    {
-                        Text = "Update Error",
-                        HeaderText = "The application was unable to update.Please download the update manually.",
-                        DisplayText = applicationUpdater.LastError,
-                        StartPosition = FormStartPosition.CenterScreen                        
-                    };
-
-                    form.ShowDialog(this);
-                }
+                    CreateUpdateFailureForm(applicationUpdater).ShowDialog(this);
             }
+        }
+
+        public static TextBoxForm CreateUpdateFailureForm(ApplicationUpdater applicationUpdater)
+        {
+            return new TextBoxForm(true, MessageBoxButtons.OK)
+            {
+                Text = "Update Error",
+                HeaderText = "The application was unable to update. Please download the update manually.",
+                DisplayText = applicationUpdater.LastError,
+                StartPosition = FormStartPosition.CenterScreen
+            };
         }
 
         private void UpdateDownloadProgress(int value)

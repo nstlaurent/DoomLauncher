@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WadReader;
 
 namespace DoomLauncher
@@ -15,11 +11,15 @@ namespace DoomLauncher
 
         public IEnumerable<IArchiveEntry> Entries => m_entries;
         public bool EntriesHaveExtensions => false;
+        public readonly bool IsValid;
+        public readonly string Filename;
 
         public WadArchiveReader(string file)
         {
+            Filename = file;
             m_fs = File.OpenRead(file);
             WadFileReader wadReader = new WadFileReader(m_fs);
+            IsValid = wadReader.IsValid;
             var lumps = wadReader.ReadLumps();
             foreach (var lump in lumps)
                 m_entries.Add(new WadEntry(m_fs, lump));

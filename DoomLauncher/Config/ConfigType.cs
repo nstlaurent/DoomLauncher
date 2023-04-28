@@ -7,6 +7,7 @@
         DefaultSkill,
         AutoSearch,
         FileManagement,
-        GameFileViewType
+        GameFileViewType,
+        VisibleViews
     }
 }

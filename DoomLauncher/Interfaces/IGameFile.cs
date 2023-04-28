@@ -7,6 +7,7 @@ namespace DoomLauncher.Interfaces
         int? GameFileID { get; set; }
         string FileName { get; set; }
         string FileNameNoPath { get; }
+        string LastDirectory { get; }
         string Title { get; set; }
         string Author { get; set; }
         DateTime? ReleaseDate { get; set; }
@@ -31,6 +32,7 @@ namespace DoomLauncher.Interfaces
         bool SettingsStat { get; set; }
         bool SettingsLoadLatestSave { get; set; }
         bool SettingsSaved { get; set; }
+        bool SettingsExtraParamsOnly { get; set; }
         int? SettingsGameProfileID { get; set; }
 
         int MinutesPlayed { get; set; }

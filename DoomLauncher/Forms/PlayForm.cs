@@ -37,13 +37,12 @@ namespace DoomLauncher
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
             InitializeComponent();
-
-            cmbMap.Combo.FormattingEnabled = true;
-
             ctrlFiles.Initialize("GameFileID", "FileNameNoPath");
             ctrlFiles.CellFormatting += ctrlFiles_CellFormatting;
             ctrlFiles.NewItemNeeded += ctrlFiles_NewItemNeeded;
+            ctrlFiles.ItemAdded += CtrlFiles_ItemAdded;
             ctrlFiles.ItemRemoving += CtrlFiles_ItemRemoving;
+            ctrlFiles.ItemRemoved += CtrlFiles_ItemRemoved;
             Load += PlayForm_Load;
 
             lnkCustomParameters.Visible = false;
@@ -75,7 +74,7 @@ namespace DoomLauncher
                 chkSaveStats,
                 chkLoadLatestSave,
                 chkScreenFilter,
-                chkPreview,
+                chkExtraParamsOnly,
                 chkRemember,
                 btnSaveSettings,
                 ctrlFiles,
@@ -86,8 +85,6 @@ namespace DoomLauncher
             };
 
             InitTabIndicies();
-            Stylizer.Stylize(this, DesignMode);
-            Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
         }
 
         private void InitTabIndicies()
@@ -123,17 +120,17 @@ namespace DoomLauncher
 
             GameFile = gameFile;
 
-            SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePortData), "Name");
-            SetAutoCompleteCustomSource(cmbIwad, Util.GetIWadsDataSource(m_adapter), typeof(IIWadData), "FileName");
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePortData), "Name");
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbIwad, Util.GetIWadsDataSource(m_adapter), typeof(IIWadData), "FileName");
 
             if (gameFile != null)
             {
                 Text = "Launch - " + (string.IsNullOrEmpty(gameFile.Title) ? gameFile.FileName : gameFile.Title);
                 if (!string.IsNullOrEmpty(gameFile.Map))
-                    SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
+                    AutoCompleteCombo.SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
             }
 
-            SetAutoCompleteCustomSource(cmbSkill, Util.GetSkills().ToList(), null, null);
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbSkill, Util.GetSkills().ToList(), null, null);
             cmbSkill.SelectedItem = "3";
 
             LoadProfiles();
@@ -154,6 +151,7 @@ namespace DoomLauncher
             {
                 chkSaveStats.Checked = gameProfile.SettingsStat;
                 chkLoadLatestSave.Checked = gameProfile.SettingsLoadLatestSave;
+                chkExtraParamsOnly.Checked = gameProfile.SettingsExtraParamsOnly;
 
                 if (gameProfile.SourcePortID.HasValue)
                     SelectedSourcePort = m_adapter.GetSourcePort(gameProfile.SourcePortID.Value);
@@ -187,15 +185,15 @@ namespace DoomLauncher
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             float infoHeight = dpiScale.ScaleFloatY(40);
-            lblInfo.BackColor = ColorTheme.Current.Window;
-            lblInfo.ForeColor = ColorTheme.Current.Text;
+            lblInfo.BackColor = SystemColors.Control;
+            lblInfo.ForeColor = SystemColors.ControlText;
 
             if (m_playSessionInProgress)
             {
                 tblFiles.RowStyles[0].Height = infoHeight;
                 pbInfo.Image = Properties.Resources.bon2b;
-                lblInfo.BackColor = ColorTheme.Current.Highlight;
-                lblInfo.ForeColor = ColorTheme.Current.HighlightText;
+                lblInfo.BackColor = SystemColors.Highlight;
+                lblInfo.ForeColor = SystemColors.HighlightText;
                 lblInfo.Text = string.Format("Play session already in progress. Features{0}like statistics tracking may not function.", Environment.NewLine);
                 return;
             }
@@ -214,10 +212,10 @@ namespace DoomLauncher
 
         private void SetDefaultSelections()
         {
-            if (cmbMap.Combo.Items.Count > 0)
-                cmbMap.Combo.SelectedIndex = 0;
+            if (cmbMap.Items.Count > 0)
+                cmbMap.SelectedIndex = 0;
             else
-                cmbMap.Combo.SelectedIndex = -1;
+                cmbMap.SelectedIndex = -1;
 
             chkMap.Checked = false;
 
@@ -255,7 +253,7 @@ namespace DoomLauncher
             {
                 List<IGameProfile> profiles = m_adapter.GetGameProfiles(GameFile.GameFileID.Value).OrderBy(x => x.Name).ToList();
                 profiles.Insert(0, (GameFile)GameFile);
-                SetAutoCompleteCustomSource(cmbProfiles, profiles, typeof(IGameProfile), "Name");
+                AutoCompleteCombo.SetAutoCompleteCustomSource(cmbProfiles, profiles, typeof(IGameProfile), "Name");
                 return profiles;
             }
 
@@ -263,50 +261,6 @@ namespace DoomLauncher
         }
 
         private static string[] MapSplit(IGameFile gameFile) => DataSources.GameFile.GetMaps(gameFile);
-
-        private static void SetAutoCompleteCustomSource(CComboBox cmb, IEnumerable<object> datasource, Type dataType, string property)
-        {
-            cmb.DataSource = datasource;
-            SetAutoCompleteCustomSource(cmb.Combo, datasource, dataType, property);
-            //cmb.DataSourceChanged();
-        }
-
-        private static void SetAutoCompleteCustomSource(ComboBox cmb, IEnumerable<object> datasource, Type dataType, string property)
-        {
-            AutoCompleteStringCollection collection = new AutoCompleteStringCollection();
-
-            if (dataType != null)
-            {
-                PropertyInfo pi = dataType.GetProperty(property);
-                collection.AddRange(datasource.Select(x => (string)pi.GetValue(x)).ToArray());
-            }
-            else
-            {
-                collection.AddRange(datasource.Cast<string>().ToArray());
-            }
-
-            cmb.DataSource = datasource;
-            cmb.AutoCompleteSource = AutoCompleteSource.CustomSource;
-            cmb.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            cmb.AutoCompleteCustomSource = collection;
-            cmb.DropDown += Cmb_DropDown;
-
-            if (!datasource.Any())
-                cmb.Text = string.Empty;
-        }
-
-        private static void Cmb_DropDown(object sender, EventArgs e)
-        {
-            ((ComboBox)sender).PreviewKeyDown += Cmb_PreviewKeyDown;
-        }
-
-        private static void Cmb_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            ComboBox cmb = (ComboBox)sender;
-            cmb.PreviewKeyDown -= Cmb_PreviewKeyDown;
-            if (cmb.DroppedDown)
-                cmb.Focus();
-        }
 
         private bool IsIwad(IGameFile gameFile)
         {
@@ -372,7 +326,7 @@ namespace DoomLauncher
             get
             {
                 if (!chkMap.Checked) return null;
-                return cmbMap.Combo.SelectedItem as string;
+                return cmbMap.SelectedItem as string;
             }
             set
             {
@@ -383,7 +337,7 @@ namespace DoomLauncher
                 else
                 {
                     chkMap.Checked = true;
-                    cmbMap.Combo.SelectedItem = value;
+                    cmbMap.SelectedItem = value;
                 }
             }
         }
@@ -432,9 +386,9 @@ namespace DoomLauncher
             get { return chkLoadLatestSave.Enabled && chkLoadLatestSave.Checked; }
         }
 
-        public bool PreviewLaunchParameters
+        public bool ExtraParametersOnly
         {
-            get { return chkPreview.Checked; }
+            get { return chkExtraParamsOnly.Checked; }
         }
 
         public bool ScreenFilter
@@ -494,7 +448,7 @@ namespace DoomLauncher
                 IEnumerable<IFileData> demoFiles = m_adapter.GetFiles(GameFile, FileType.Demo)
                     .Where(x => x.SourcePortID == sourcePort.SourcePortID);
 
-                SetAutoCompleteCustomSource(cmbDemo, demoFiles.ToList(), typeof(IFileData), "Description");
+                AutoCompleteCombo.SetAutoCompleteCustomSource(cmbDemo, demoFiles.ToList(), typeof(IFileData), "Description");
             }
         }
 
@@ -511,7 +465,6 @@ namespace DoomLauncher
         private void chkMap_CheckedChanged(object sender, EventArgs e)
         {
             cmbMap.Enabled = cmbSkill.Enabled = chkMap.Checked;
-            //cmbMap.SetEnabled(chkMap.Checked);
         }
 
         private void ctrlFiles_NewItemNeeded(object sender, AdditionalFilesEventArgs e)
@@ -524,7 +477,7 @@ namespace DoomLauncher
 
                 if (fileSelect.ShowDialog(this) == DialogResult.OK)
                 {
-                    IGameFile[] selectedFiles = fileSelect.SelectedFiles.Except(new IGameFile[] { GameFile }).ToArray();
+                    IGameFile[] selectedFiles = fileSelect.SelectedFiles.Except(new IGameFile[] { GameFile }).Union(GetAdditionalFiles()).ToArray();
 
                     if (selectedFiles.Length > 0)
                     {
@@ -575,6 +528,14 @@ namespace DoomLauncher
             }
         }
 
+        private void CtrlFiles_ItemAdded(object sender, AdditionalFilesEventArgs e)
+        {
+        }
+
+        private void CtrlFiles_ItemRemoved(object sender, AdditionalFilesEventArgs e)
+        {
+        }
+
         private void ResetSpecificFilesSelections(IGameFile[] selectedFiles)
         {
             foreach (IGameFile gameFile in selectedFiles)
@@ -613,7 +574,7 @@ namespace DoomLauncher
 
             var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID == SelectedIWad.GameFileID);
             if (gameFileIwad != null)
-                SetAutoCompleteCustomSource(cmbMap.Combo, MapSplit(gameFileIwad), null, null);
+                AutoCompleteCombo.SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFileIwad), null, null);
         }
 
         private void SetAdditionalFiles(bool reset)
@@ -691,6 +652,11 @@ namespace DoomLauncher
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            Accept();
+        }
+
+        public void Accept()
+        {
             if (SettingsValid(out string err))
             {
                 DialogResult = DialogResult.OK;
@@ -723,7 +689,8 @@ namespace DoomLauncher
 
         private void lnkOpenDemo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            List<IFileData> demoFiles = BasicFileView.CreateFileAssociation(this, m_adapter, m_appConfig.DemoDirectory, FileType.Demo, GameFile,
+            GenericFileView genericFileView = new GenericFileView();
+            List<IFileData> demoFiles = genericFileView.CreateFileAssociation(this, m_adapter, m_appConfig.DemoDirectory, FileType.Demo, GameFile,
                 cmbSourcePorts.SelectedItem as ISourcePortData);
 
             if (demoFiles.Count > 0)
@@ -946,6 +913,7 @@ namespace DoomLauncher
 
             gameProfile.SettingsStat = SaveStatistics;
             gameProfile.SettingsLoadLatestSave = LoadLatestSave;
+            gameProfile.SettingsExtraParamsOnly = ExtraParametersOnly;
 
             if (ShouldSaveAdditionalFiles())
             {
@@ -1043,19 +1011,18 @@ namespace DoomLauncher
 
             foreach (string file in fileNames)
             {
+                // This currently doesn't work for unmanaged files
                 var gameFile = m_adapter.GetGameFile(file.Replace(Path.GetExtension(file), ".zip"));
-
                 if (gameFile == null)
                 {
                     unavailable.Add(file);
+                    continue;
                 }
+
+                if (knowniwads.Any(x => x.FileName.Equals(gameFile.FileName, StringComparison.InvariantCultureIgnoreCase)))
+                    iwads.Add(gameFile);
                 else
-                {
-                    if (knowniwads.Any(x => x.FileName.Equals(gameFile.FileName, StringComparison.InvariantCultureIgnoreCase)))
-                        iwads.Add(gameFile);
-                    else
-                        gameFiles.Add(gameFile);
-                }
+                    gameFiles.Add(gameFile);
             }
 
             return gameFiles;

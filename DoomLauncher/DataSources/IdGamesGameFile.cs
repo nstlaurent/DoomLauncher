@@ -48,6 +48,8 @@ namespace DoomLauncher.DataSources
             set { size = value; }
         }
 
+        public override string LastDirectory => string.Empty;
+
         public void Dispose()
         {
             Dispose(true);

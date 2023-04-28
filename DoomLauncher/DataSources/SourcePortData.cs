@@ -15,6 +15,7 @@ namespace DoomLauncher.DataSources
         public string FileOption { get; set; }
         public string ExtraParameters { get; set; }
         public LauncherPath AltSaveDirectory { get; set; }
+        public bool Archived { get; set; }
 
         public string GetFullExecutablePath()
         {

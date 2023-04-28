@@ -69,7 +69,7 @@ namespace DoomLauncher
                 }
 
                 IGameFile file = SyncDataSource.GetGameFile(fileName);
-                IGameFile existing = DbDataSource.GetGameFile(file.FileName);
+                IGameFile existing = DbDataSource.GetGameFile(fileName);
 
                 if (existing != null)
                     file = existing;
@@ -393,23 +393,34 @@ namespace DoomLauncher
         private string MapStringFromGameFileWads(IArchiveReader reader)
         {
             List<string> maps = new List<string>();
-            IEnumerable<IArchiveEntry> wadEntries = GetEntriesByExtension(reader, ".wad");
-
-            foreach (IArchiveEntry entry in wadEntries)
+            if (reader is WadArchiveReader wadArchive)
             {
-                string extractFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), entry);
-                List<string> wadEntryMaps = Util.GetMapStringFromWad(extractFile);
-                foreach (string map in wadEntryMaps)
+                SetMapsFromWadFile(maps, wadArchive.Filename);
+            }
+            else
+            {
+                IEnumerable<IArchiveEntry> wadEntries = GetEntriesByExtension(reader, ".wad");
+                foreach (IArchiveEntry entry in wadEntries)
                 {
-                    if (m_mapSet.Contains(map))
-                        continue;
-
-                    m_mapSet.Add(map);
-                    maps.Add(map);
+                    string extractFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), entry);
+                    SetMapsFromWadFile(maps, extractFile);
                 }
             }
 
             return string.Join(", ", maps);
+        }
+
+        private void SetMapsFromWadFile(List<string> maps, string extractFile)
+        {
+            List<string> wadEntryMaps = Util.GetMapStringFromWad(extractFile);
+            foreach (string map in wadEntryMaps)
+            {
+                if (m_mapSet.Contains(map))
+                    continue;
+
+                m_mapSet.Add(map);
+                maps.Add(map);
+            }
         }
 
         public IGameFileDataSourceAdapter DbDataSource { get; set; }

@@ -40,6 +40,7 @@ namespace DoomLauncher
                 return new ColumnField[]
                 {
                     new ColumnField("FileNameNoPath", "File"),
+                    new ColumnField("LastDirectory", "Directory"),
                     new ColumnField("Title", "Title"),
                     new ColumnField("Author", "Author"),
                     new ColumnField("ReleaseDate", "Release Date"),
@@ -47,7 +48,7 @@ namespace DoomLauncher
                     new ColumnField("Comments", "Comments"),
                     new ColumnField("Rating", "Rating"),
                     new ColumnField("Downloaded", "Downloaded"),
-                    new ColumnField("LastPlayed", "Last Played")
+                    new ColumnField("LastPlayed", "Last Played"),
                 };
             }
         }

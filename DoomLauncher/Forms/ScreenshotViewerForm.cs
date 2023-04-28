@@ -1,4 +1,8 @@
-﻿using System;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Handlers;
+using DoomLauncher.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -8,17 +12,23 @@ namespace DoomLauncher.Forms
 {
     public partial class ScreenshotViewerForm : Form
     {
-        private string[] m_images = new string[] { };
+        private string[] m_images = Array.Empty<string>();
+        private IList<IFileData> m_files = Array.Empty<IFileData>();
         private int m_index;
         private bool m_slideshow;
+        private IGameFile m_gameFile;
+        private IDataSourceAdapter m_adapter;
 
-        private SlideShowPictureBox pbMain = new SlideShowPictureBox();
+        private readonly SlideShowPictureBox pbMain = new SlideShowPictureBox();
 
         public ScreenshotViewerForm()
         {
             InitializeComponent();
             pbMain.Dock = DockStyle.Fill;
-            tblMain.Controls.Add(pbMain, 0, 0);
+            tblContainer.Controls.Add(pbMain, 0, 0);
+
+            statsControl.SetMapsVisible(false);
+            statisticsView.SetMapsVisible(false);
 
             btnSave.Image = Icons.Save;
 
@@ -86,10 +96,14 @@ namespace DoomLauncher.Forms
             SetImage();
         }
 
-        public void SetImages(string[] filenames)
+        public void SetImageFileData(IDataSourceAdapter adapter, IGameFile gameFile, 
+            string[] imagePaths, IList<IFileData> screenshots)
         {
-            m_images = filenames.ToArray();
-            SetImage();
+            m_adapter = adapter;
+            m_gameFile = gameFile;
+            m_images = imagePaths;
+            m_files = screenshots;
+            statisticsView.DataSourceAdapter = adapter;
         }
 
         public void SetImage(string filename)
@@ -115,12 +129,74 @@ namespace DoomLauncher.Forms
                 pbMain.SetImage(Image.FromFile(GetImageFilename()));
                 image?.Dispose();
                 Text = string.Format("Screenshot Viewer - {0}/{1}", m_index + 1, m_images.Length);
+
+                SetUserDescription(GetFileData());
             }
+        }
+
+        private void SetUserDescription(IFileData fileData)
+        {
+            if (string.IsNullOrEmpty(fileData.UserTitle) && string.IsNullOrEmpty(fileData.UserDescription) && string.IsNullOrEmpty(fileData.Map))
+            {
+                ShowImageUserData(false);
+                return;
+            }
+
+            ShowImageUserData(true);
+            lblTitle.Text = GetTitle(fileData);
+            lblDescription.Text = string.IsNullOrEmpty(fileData.UserDescription) ? string.Empty : fileData.UserDescription;
+
+            if (string.IsNullOrEmpty(fileData.Map))
+            {
+                statsControl.Visible = false;
+                statisticsView.Visible = false;
+                UpdateStatsHeights();
+                return;
+            }
+
+            statsControl.Visible = true;
+            statisticsView.Visible = true;
+            var stats = statisticsView.SetDataByMap(m_gameFile, fileData.Map);
+            statsControl.Visible = stats.Any();
+            statsControl.SetStatistics(m_gameFile, stats);
+            UpdateStatsHeights();
+        }
+
+        private string GetTitle(IFileData fileData)
+        {
+            string title = FileData.GetTitle(fileData);
+            return string.IsNullOrEmpty(title) ? "N/A" : fileData.UserTitle;
+        }
+
+        private void UpdateStatsHeights()
+        {
+            if (statsControl.Visible)
+                tblData.RowStyles[1].Height = 120;
+            else
+                tblData.RowStyles[1].Height = 0;
+
+            if (statisticsView.Visible)
+                tblData.RowStyles[2].Height = 200;
+            else
+                tblData.RowStyles[2].Height = 0;
+        }
+
+        private void ShowImageUserData(bool set)
+        {
+            if (set)
+                tblContainer.ColumnStyles[1].Width = 50;
+            else
+                tblContainer.ColumnStyles[1].Width = 0;
         }
 
         private string GetImageFilename()
         {
             return m_images[m_index];
+        }
+
+        private IFileData GetFileData()
+        {
+            return m_files[m_index];
         }
 
         private void btnPrev_Click(object sender, EventArgs e)
@@ -180,9 +256,19 @@ namespace DoomLauncher.Forms
             }
         }
 
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (!ScreenshotEditForm.ShowDialogAndUpdate(this, m_adapter, m_gameFile, GetFileData()))
+                return;
+
+            SetImage();
+        }
+
         private void SetSlideshow(bool set)
         {
+            ShowImageUserData(!set);
             m_slideshow = set;
+
             if (set)
                 btnSlideshow.BackColor = SystemColors.Highlight;
             else

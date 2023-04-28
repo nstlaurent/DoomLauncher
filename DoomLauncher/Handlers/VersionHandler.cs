@@ -9,6 +9,7 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -81,6 +82,13 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_3_1, AppVersion.Version_3_3_1);
                 ExecuteUpdate(Pre_Version_3_3_2, AppVersion.Version_3_3_2);
                 ExecuteUpdate(Pre_Version_3_4_0, AppVersion.Version_3_4_0);
+                ExecuteUpdate(Pre_Version_3_4_0_Update1, AppVersion.Version_3_4_0_Update1);
+                ExecuteUpdate(Pre_Version_3_5_2, AppVersion.Version_3_5_2);
+                ExecuteUpdate(Pre_Version_3_5_2_Update1, AppVersion.Version_3_5_2_Update1);
+                ExecuteUpdate(Pre_Version_3_5_2_Update2, AppVersion.Version_3_5_2_Update2);
+                ExecuteUpdate(Pre_Version_3_5_3_Update1, AppVersion.Version_3_5_3_Update1);
+                ExecuteUpdate(Pre_Version_3_5_3_Update2, AppVersion.Version_3_5_3_Update2);
+                ExecuteUpdate(Pre_Version_3_5_3_Update3, AppVersion.Version_3_5_3_Update3);
             }
         }
 
@@ -675,6 +683,11 @@ namespace DoomLauncher
 
         private void Pre_Version_3_3_1()
         {
+
+            string query = @"update SourcePorts set 
+                    SupportedExtensions = @SupportedExtensions
+                    where SourcePortID = @sourcePortID";
+
             var sourcePorts = m_adapter.GetSourcePorts();
             foreach (var sourcePort in sourcePorts)
             {
@@ -682,7 +695,14 @@ namespace DoomLauncher
                     continue;
 
                 sourcePort.SupportedExtensions += ",.pke";
-                m_adapter.UpdateSourcePort(sourcePort);
+
+                List<DbParameter> parameters = new List<DbParameter>
+                {
+                    DataAccess.DbAdapter.CreateParameter("SupportedExtensions", sourcePort.SupportedExtensions),
+                    DataAccess.DbAdapter.CreateParameter("sourcePortID", sourcePort.SourcePortID)
+                };
+
+                DataAccess.ExecuteNonQuery(query, parameters);
             }
         }
 
@@ -716,6 +736,119 @@ namespace DoomLauncher
             m_adapter.InsertConfiguration(new ConfigurationData()
             {
                 Name = "AutomaticallyPullTitlpic",
+                Value = "true",
+                UserCanModify = true,
+                AvailableValues = "Yes;true;No;false"
+            });
+        }
+
+        private void Pre_Version_3_4_0_Update1()
+        {
+            var columnConfig = DataCache.Instance.GetColumnConfig().ToList();
+            var columnGroups = columnConfig.GroupBy(x => x.Parent);
+            List<ColumnConfig> newColumns = new List<ColumnConfig>(columnConfig.Count * 2);
+
+            // Insert LastDirectory after FileNameNoPath
+            foreach (var set in columnGroups)
+            {
+                if (set.Any(x => x.Column.Equals("LastDirectory", StringComparison.OrdinalIgnoreCase)))
+                    continue;  
+
+                List<ColumnConfig> sortColumns = set.ToList();
+                for (int i = 0; i < sortColumns.Count; i++)
+                {
+                    var col = sortColumns[i];
+                    newColumns.Add(col);
+                    if (!col.Column.Equals("FileNameNoPath", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    newColumns.Add(new ColumnConfig()
+                    {
+                        Parent = set.Key,
+                        Column = "LastDirectory",
+                        Width = 100,
+                        Sort = SortOrder.None
+                    });
+                }
+
+                newColumns.AddRange(sortColumns);
+            }
+
+            string data = DataCache.SerializeColumnConfig(newColumns);
+            DataCache.Instance.UpdateConfig(DataCache.Instance.DataSourceAdapter.GetConfiguration(), AppConfiguration.ColumnConfigName, data);
+        }
+
+        private void Pre_Version_3_5_2()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "VisibleViews",
+                Value = string.Join(";", TabKeys.KeyNames.Except(new string[] { TabKeys.LocalKey })),
+                UserCanModify = false,
+            });
+        }
+
+        private void Pre_Version_3_5_2_Update1()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(Stats);").Tables[0];
+            if (!dt.Select("name = 'Skill'").Any())
+                DataAccess.ExecuteNonQuery(@"alter table Stats add column 'Skill' INTEGER;");
+        }
+
+        private void Pre_Version_3_5_2_Update2()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
+            if (!dt.Select("name = 'Archived'").Any())
+            {
+                DataAccess.ExecuteNonQuery(@"alter table SourcePorts add column 'Archived' INTEGER;");
+                DataAccess.ExecuteNonQuery("update SourcePorts set Archived = 0");
+            }
+        }
+
+        private void Pre_Version_3_5_3_Update1()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
+            if (!dt.Select("name = 'SettingsExtraParamsOnly'").Any())
+            {
+                string query = @"alter table GameFiles add column 'SettingsExtraParamsOnly' INTEGER;";
+                DataAccess.ExecuteNonQuery(query);
+            }
+
+            dt = DataAccess.ExecuteSelect("pragma table_info(GameProfiles);").Tables[0];
+            if (!dt.Select("name = 'SettingsExtraParamsOnly'").Any())
+            {
+                string query = @"alter table GameProfiles add column 'SettingsExtraParamsOnly' INTEGER;";
+                DataAccess.ExecuteNonQuery(query);
+            }
+        }
+
+        private void Pre_Version_3_5_3_Update2()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(Files);").Tables[0];
+            if (!dt.Select("name = 'UserTitle'").Any())
+            {
+                string query = @"alter table Files add column 'UserTitle' TEXT;";
+                DataAccess.ExecuteNonQuery(query);
+            }
+
+            if (!dt.Select("name = 'UserDescription'").Any())
+            {
+                string query = @"alter table Files add column 'UserDescription' TEXT;";
+                DataAccess.ExecuteNonQuery(query);
+            }
+
+            if (!dt.Select("name = 'Map'").Any())
+            {
+                string query = @"alter table Files add column 'Map' TEXT;";
+                DataAccess.ExecuteNonQuery(query);
+            }
+        }
+
+        private void Pre_Version_3_5_3_Update3()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "ShowPlayDialog",
                 Value = "true",
                 UserCanModify = true,
                 AvailableValues = "Yes;true;No;false"

@@ -13,6 +13,7 @@ namespace DoomLauncher
         int TotalItems { get; set; }
         string MapName { get; set; }
         DateTime RecordTime { get; set; }
+        int? Skill { get; set; }
 
         string FormattedKills { get; }
         string FormattedSecrets { get; }

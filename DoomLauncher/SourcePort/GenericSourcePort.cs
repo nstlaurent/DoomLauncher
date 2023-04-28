@@ -81,32 +81,25 @@ namespace DoomLauncher.SourcePort
             return string.Format(" +map {0}", map);
         }
 
-        public virtual bool Supported()
-        {
-            return true;
-        }
+        public virtual bool Supported() => true;
 
-        public virtual bool StatisticsSupported()
-        {
-            return false;
-        }
+        public virtual bool StatisticsSupported() => false;
 
-        public virtual bool LoadSaveGameSupported()
-        {
-            return false;
-        }
+        public virtual bool LoadSaveGameSupported() => false;
 
-        public virtual IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats)
-        {
-            return null;
-        }
+        public virtual string GetScreenshotDirectory() => null;
 
+        public virtual string GetSaveGameDirectory() => null;
+
+        public virtual IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats) => null;
         public virtual ISaveGameReader CreateSaveGameReader(FileInfo file)
         {
             if (file.Extension.Equals(".zds", StringComparison.InvariantCultureIgnoreCase))
                 return new ZDoomSaveGameReader(file.FullName);
             else if (file.Extension.Equals(".dsg", StringComparison.InvariantCultureIgnoreCase))
                 return new DsgSaveGameReader(file.FullName);
+            else if (file.Extension.Equals(".hsg", StringComparison.InvariantCultureIgnoreCase))
+                return new HelionSaveGameReader(file.FullName);
 
             return null;
         }

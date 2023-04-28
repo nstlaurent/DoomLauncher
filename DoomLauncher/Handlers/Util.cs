@@ -2,11 +2,10 @@
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -473,105 +472,6 @@ namespace DoomLauncher
             return false;
         }
 
-        public static Image FixedSize(Image imgPhoto, int width, int height, Color backColor)
-        {
-            int sourceWidth = imgPhoto.Width;
-            int sourceHeight = imgPhoto.Height;
-            int sourceX = 0;
-            int sourceY = 0;
-            int destX = 0;
-            int destY = 0;
-
-            float nPercent;
-            float nPercentW = width / (float)sourceWidth;
-            float nPercentH = height / (float)sourceHeight;
-
-            if (nPercentH < nPercentW)
-            {
-                nPercent = nPercentH;
-                destX = Convert.ToInt16((width - (sourceWidth * nPercent)) / 2);
-            }
-            else
-            {
-                nPercent = nPercentW;
-                destY = Convert.ToInt16((height - (sourceHeight * nPercent)) / 2);
-            }
-
-            int destWidth = (int)(sourceWidth * nPercent);
-            int destHeight = (int)(sourceHeight * nPercent);
-
-            Bitmap bmPhoto = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
-            bmPhoto.SetResolution(imgPhoto.HorizontalResolution, imgPhoto.VerticalResolution);
-
-            Graphics grPhoto = Graphics.FromImage(bmPhoto);
-            grPhoto.Clear(backColor);
-            grPhoto.InterpolationMode = InterpolationMode.HighQualityBicubic;
-
-            grPhoto.DrawImage(imgPhoto,
-                new Rectangle(destX, destY, destWidth, destHeight),
-                new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
-                GraphicsUnit.Pixel);
-
-            grPhoto.Dispose();
-            return bmPhoto;
-        }
-
-        public static Image RotateImage(Image image, float angle)
-        {
-            Bitmap bm = image as Bitmap;
-
-            Matrix matrixOrigin = new Matrix();
-            matrixOrigin.Rotate(angle);
-
-            PointF[] points =
-            {
-                new PointF(0, 0),
-                new PointF(bm.Width, 0),
-                new PointF(bm.Width, bm.Height),
-                new PointF(0, bm.Height),
-            };
-            matrixOrigin.TransformPoints(points);
-            GetPointBounds(points, out float xMin, out float xMax,
-                out float yMin, out float yMax);
-
-            int width = (int)Math.Round(xMax - xMin);
-            int height = (int)Math.Round(yMax - yMin);
-            Bitmap result = new Bitmap(width, height);
-
-            Matrix matrixCenter = new Matrix();
-            matrixCenter.RotateAt(angle, new PointF(width / 2f, height / 2f));
-
-            using (Graphics gr = Graphics.FromImage(result))
-            {
-                gr.InterpolationMode = InterpolationMode.High;
-                gr.Clear(bm.GetPixel(0, 0));
-                gr.Transform = matrixCenter;
-
-                int x = (width - bm.Width) / 2;
-                int y = (height - bm.Height) / 2;
-                gr.DrawImage(bm, x, y);
-            }
-
-            return result;
-        }
-
-        private static void GetPointBounds(PointF[] points,
-            out float xmin, out float xmax,
-            out float ymin, out float ymax)
-        {
-            xmin = points[0].X;
-            xmax = xmin;
-            ymin = points[0].Y;
-            ymax = ymin;
-            foreach (PointF point in points)
-            {
-                if (xmin > point.X) xmin = point.X;
-                if (xmax < point.X) xmax = point.X;
-                if (ymin > point.Y) ymin = point.Y;
-                if (ymax < point.Y) ymax = point.Y;
-            }
-        }
-
         public static IEnumerable<T> GetChildElements<T>(this Control control) where T : class
         {
             foreach (Control subControl in control.Controls)
@@ -601,6 +501,43 @@ namespace DoomLauncher
             byte[] data = new byte[entry.Length];
             entry.Read(data, 0, data.Length);
             return data;
+        }
+
+        public static string GetDescription(this Enum value)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+            if (fi.GetCustomAttributes(typeof(DescriptionAttribute), false) is DescriptionAttribute[] attributes &&
+                attributes.Any())
+                return attributes.First().Description;
+
+            return value.ToString();
+        }
+
+        public static string GetInteropDirectory()
+        {
+            if (Environment.Is64BitOperatingSystem)
+                return "x64";
+
+            return "x86";
+        }
+
+        private static readonly SolidBrush RectangleBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
+
+        public static void DrawImageTitleBar(string title, Rectangle paintRect, PaintEventArgs e, Brush textBrush, Font font)
+        {
+            if (string.IsNullOrEmpty(title))
+                return;
+
+            DpiScale dpiScale = new DpiScale(e.Graphics);
+            int padX = dpiScale.ScaleIntX(3);
+            int padY = dpiScale.ScaleIntY(2);
+            title = GetClippedEllipsesText(e.Graphics, font, title, new SizeF(paintRect.Width, font.Height));
+
+            SizeF size = e.Graphics.MeasureString(title, font);
+            RectangleF rect = new RectangleF(0, paintRect.Height - size.Height - padY,
+                e.ClipRectangle.Width, size.Height + padY);
+            e.Graphics.FillRectangle(RectangleBrush, rect);
+            e.Graphics.DrawString(title, font, textBrush, new PointF(padX, paintRect.Height - size.Height - padY));
         }
     }
 }

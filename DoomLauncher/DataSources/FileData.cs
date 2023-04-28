@@ -20,9 +20,29 @@ namespace DoomLauncher
         public string Description { get; set; }
         public string OriginalFileName { get; set; }
         public string OriginalFilePath { get; set; }
+        public string UserTitle { get; set; }
+        public string UserDescription { get; set; }
+        public string Map { get; set; }
         public int FileOrder { get; set; }
 
         public virtual bool IsUrl { get { return false; } }
+
+        public static string GetTitle(IFileData fileData)
+        {
+            if (!string.IsNullOrEmpty(fileData.Map))
+            {
+                string title = fileData.Map;
+                if (string.IsNullOrEmpty(fileData.UserTitle))
+                    return title;
+
+                return $"{title} {fileData.UserTitle}";
+            }
+
+            if (!string.IsNullOrEmpty(fileData.UserTitle))
+                return fileData.UserTitle;
+
+            return string.Empty;
+        }
 
         public override bool Equals(object obj)
         {

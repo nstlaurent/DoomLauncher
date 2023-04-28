@@ -76,7 +76,17 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+
+    <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
+      <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress, Version=0.31.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.31.0\lib\net461\SharpCompress.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -91,7 +101,20 @@
     </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.5.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -108,22 +131,25 @@
     <Compile Include="Adapters\PlaySession.cs" />
     <Compile Include="Adapters\WadArchiveDataAdapter.cs" />
     <Compile Include="Archive\ArchiveReader.cs" />
-    <Compile Include="Archive\DirectoryArchiveEntry.cs" />
+    <Compile Include="Archive\Directory\DirectoryArchiveEntry.cs" />
     <Compile Include="Archive\EmptyArchiveReader.cs" />
     <Compile Include="Archive\FileArchiveReader.cs" />
-    <Compile Include="Archive\DirectoryArchiveReader.cs" />
+    <Compile Include="Archive\Directory\DirectoryArchiveReader.cs" />
     <Compile Include="Archive\IArchiveEntry.cs" />
-    <Compile Include="Archive\WadArchiveReader.cs" />
-    <Compile Include="Archive\WadEntry.cs" />
-    <Compile Include="Archive\ZipArchiveReader.cs" />
-    <Compile Include="Archive\ZipArchiveReaderEntry.cs" />
-    <Compile Include="Config\ColorTheme.cs" />
     <Compile Include="Controls\CCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\CTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Archive\Rar\RarArchiveEntry.cs" />
+    <Compile Include="Archive\Rar\RarArchiveReader.cs" />
+    <Compile Include="Archive\SevenZip\SevenZipArchiveEntry.cs" />
+    <Compile Include="Archive\SevenZip\SevenZipArchiveReader.cs" />
+    <Compile Include="Archive\Wad\WadArchiveReader.cs" />
+    <Compile Include="Archive\Wad\WadEntry.cs" />
+    <Compile Include="Archive\Zip\ZipArchiveReader.cs" />
+    <Compile Include="Archive\Zip\ZipArchiveReaderEntry.cs" />
     <Compile Include="Controls\GameFileTile.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -167,6 +193,8 @@
     <Compile Include="Controls\FlowLayoutPanelDB.Designer.cs">
       <DependentUpon>FlowLayoutPanelDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataSources\NewFileData.cs" />
+    <Compile Include="DataSources\PreviewImage.cs" />
     <Compile Include="Forms\FileManagementSelect.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -190,18 +218,33 @@
       <DependentUpon>GameFileTileExpanded.cs</DependentUpon>
     </Compile>
     <Compile Include="Config\GameFileListEventArgs.cs" />
+    <Compile Include="Forms\PlayRandomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PlayRandomForm.Designer.cs">
+      <DependentUpon>PlayRandomForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SaveInfo.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SaveInfo.Designer.cs">
       <DependentUpon>SaveInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ScreenshotEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ScreenshotEditForm.Designer.cs">
+      <DependentUpon>ScreenshotEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
+    <Compile Include="Handlers\AutoCompleteCombo.cs" />
     <Compile Include="Handlers\DoomImageUtil.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
     <Compile Include="Config\Icons.cs" />
+    <Compile Include="Handlers\ImageExtensions.cs" />
     <Compile Include="Handlers\MenuConstants.cs" />
+    <Compile Include="Handlers\ArchiveUtil.cs" />
     <Compile Include="Interfaces\IGameFileSortableView.cs" />
     <Compile Include="Interfaces\IGameFileTile.cs" />
     <Compile Include="Interfaces\IGameFileColumnView.cs" />
@@ -230,9 +273,13 @@
       <DependentUpon>TagSelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DataSources\StaticTagData.cs" />
+    <Compile Include="LaunchArgs.cs" />
+    <Compile Include="SaveGame\HelionSaveGameReader.cs" />
     <Compile Include="SourcePort\DsdaDoomSourcePort.cs" />
     <Compile Include="SourcePort\EternitySourcePort.cs" />
     <Compile Include="SourcePort\FdwlSourcePort.cs" />
+    <Compile Include="SourcePort\HelionSourcePort.cs" />
+    <Compile Include="SourcePort\NuggetDoomSourcePort.cs" />
     <Compile Include="SourcePort\WoofSourcePort.cs" />
     <Compile Include="Stylize\DarkTheme.cs" />
     <Compile Include="Stylize\DefaultTheme.cs" />
@@ -724,8 +771,14 @@
     <EmbeddedResource Include="Forms\MetaDataForm.resx">
       <DependentUpon>MetaDataForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PlayRandomForm.resx">
+      <DependentUpon>PlayRandomForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SaveInfo.resx">
       <DependentUpon>SaveInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ScreenshotEditForm.resx">
+      <DependentUpon>ScreenshotEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScreenshotViewerForm.resx">
       <DependentUpon>ScreenshotViewerForm.cs</DependentUpon>
@@ -977,9 +1030,11 @@
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
     <Error Condition="!Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.5\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.5\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\SevenZipSharp.Interop.19.0.2\build\SevenZipSharp.Interop.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SevenZipSharp.Interop.19.0.2\build\SevenZipSharp.Interop.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.5\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.5\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
+  <Import Project="..\packages\SevenZipSharp.Interop.19.0.2\build\SevenZipSharp.Interop.targets" Condition="Exists('..\packages\SevenZipSharp.Interop.19.0.2\build\SevenZipSharp.Interop.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

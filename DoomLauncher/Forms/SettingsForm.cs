@@ -40,6 +40,16 @@ namespace DoomLauncher
             UpdateScreenshotWidth(m_screenshotTrackBar);
 
             Stylizer.Stylize(this, DesignMode);
+            PopulateViews();
+        }
+
+        private void PopulateViews()
+        {
+            HashSet<string> visibleViews = DataCache.Instance.AppConfiguration.VisibleViews;
+            foreach (string key in TabKeys.KeyNames.Except(new string[] { TabKeys.LocalKey }))
+                chkListViews.Items.Add(key, visibleViews.Contains(key));
+
+            chkListViews.ItemCheck += chkListViews_ItemCheck;
         }
 
         private void PnlViewRestart_Paint(object sender, PaintEventArgs e)
@@ -305,6 +315,7 @@ namespace DoomLauncher
                 ConfigType.DefaultSkill.ToString("g"),
                 ConfigType.FileManagement.ToString("g"),
                 ConfigType.GameFileViewType.ToString("g"),
+                ConfigType.VisibleViews.ToString("g"),
             };
             string[] configValues = new string[]
             {
@@ -313,6 +324,7 @@ namespace DoomLauncher
                 cmbSkill.SelectedItem?.ToString(),
                 cmbFileManagement.SelectedValue.ToString(),
                 ((GameFileViewType)cmbViewType.SelectedIndex).ToString(),
+                string.Join(";", chkListViews.CheckedItems.Cast<string>())
             };
 
             IEnumerable<IConfigurationData> configuration = m_adapter.GetConfiguration().Where(x => configNames.Contains(x.Name));
@@ -372,6 +384,11 @@ namespace DoomLauncher
         private void CmbViewType_SelectedIndexChanged(object sender, EventArgs e)
         {
             pnlViewRestart.Visible = GameFileViewFactory.IsBaseViewTypeChange(m_appConfig.GameFileViewType, (GameFileViewType)cmbViewType.SelectedIndex);         
+        }
+
+        private void chkListViews_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            pnlViewRestart.Visible = true;
         }
 
         private static string AddSpaceBetweenWords(string item)

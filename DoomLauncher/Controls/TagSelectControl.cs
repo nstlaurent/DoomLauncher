@@ -175,9 +175,15 @@ namespace DoomLauncher.Controls
         private List<ITagData> GetStaticTags()
         {
             List<ITagData> tags = new List<ITagData>();
+            HashSet<string> visibleViews = DataCache.Instance.AppConfiguration.VisibleViews;
 
             foreach (var key in TabKeys.KeyNames)
+            {
+                if (key != TabKeys.LocalKey && !visibleViews.Contains(key))
+                    continue;
+
                 tags.Add(new StaticTagData() { Name = key, Favorite = true });
+            }
 
             return tags;
         }
@@ -300,10 +306,10 @@ namespace DoomLauncher.Controls
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             Image img = Icons.Pin;
             if (!Pinned)
-                img = Util.RotateImage(img, 90);
+                img = img.Rotate(90);
 
             btnPin.Image = img;
-            btnPin.Image = Util.FixedSize(img, (int)(img.Width * .8), (int)(img.Height * .8), Color.Transparent);
+            btnPin.Image = img.FixedSize((int)(img.Width * .8), (int)(img.Height * .8), Color.Transparent);
             btnPin.Width = img.Width + dpiScale.ScaleIntX(2);
             btnPin.Height = img.Height + dpiScale.ScaleIntY(4);
         }

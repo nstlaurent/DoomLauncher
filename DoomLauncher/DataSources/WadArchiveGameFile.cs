@@ -34,6 +34,7 @@ namespace DoomLauncher.DataSources
         public string[] filenames { get; set; }
         [JsonProperty("screenshots")]
         public Dictionary<string, string> screenshots { get; set; }
+        public override string LastDirectory => string.Empty;
     }
 
     class ScreenshotItem

@@ -46,12 +46,13 @@
             this.tblMain.Controls.Add(this.flpPaging, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblMain.Size = new System.Drawing.Size(478, 313);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tblMain.Size = new System.Drawing.Size(717, 482);
             this.tblMain.TabIndex = 1;
             // 
             // flpPaging
@@ -61,27 +62,29 @@
             this.flpPaging.Controls.Add(this.pagingControl);
             this.flpPaging.Controls.Add(this.label1);
             this.flpPaging.Controls.Add(this.cmbMaxItemsPerPage);
-            this.flpPaging.Location = new System.Drawing.Point(58, 283);
+            this.flpPaging.Location = new System.Drawing.Point(88, 436);
             this.flpPaging.Margin = new System.Windows.Forms.Padding(0);
             this.flpPaging.Name = "flpPaging";
-            this.flpPaging.Size = new System.Drawing.Size(362, 30);
+            this.flpPaging.Size = new System.Drawing.Size(541, 46);
             this.flpPaging.TabIndex = 1;
             this.flpPaging.WrapContents = false;
             // 
             // pagingControl
             // 
-            this.pagingControl.Location = new System.Drawing.Point(3, 3);
+            this.pagingControl.Location = new System.Drawing.Point(6, 8);
+            this.pagingControl.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.pagingControl.Name = "pagingControl";
-            this.pagingControl.Size = new System.Drawing.Size(223, 30);
+            this.pagingControl.Size = new System.Drawing.Size(334, 32);
             this.pagingControl.TabIndex = 2;
             // 
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(232, 11);
+            this.label1.Location = new System.Drawing.Point(350, 14);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 13);
+            this.label1.Size = new System.Drawing.Size(118, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "Items Per Page";
             // 
@@ -93,19 +96,24 @@
             this.cmbMaxItemsPerPage.Items.AddRange(new object[] {
             "30",
             "60",
-            "120"});
-            this.cmbMaxItemsPerPage.Location = new System.Drawing.Point(317, 7);
+            "120",
+            "240",
+            "500",
+            "1000"});
+            this.cmbMaxItemsPerPage.Location = new System.Drawing.Point(476, 10);
+            this.cmbMaxItemsPerPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbMaxItemsPerPage.Name = "cmbMaxItemsPerPage";
-            this.cmbMaxItemsPerPage.Size = new System.Drawing.Size(42, 21);
+            this.cmbMaxItemsPerPage.Size = new System.Drawing.Size(70, 28);
             this.cmbMaxItemsPerPage.TabIndex = 1;
             // 
             // GameFileTileViewControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tblMain);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "GameFileTileViewControl";
-            this.Size = new System.Drawing.Size(478, 313);
+            this.Size = new System.Drawing.Size(717, 482);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
             this.flpPaging.ResumeLayout(false);

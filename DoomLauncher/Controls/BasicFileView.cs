@@ -81,60 +81,81 @@ namespace DoomLauncher
             return CreateFileAssociation(this, DataSourceAdapter, DataDirectory, FileType, GameFile, null, true).Count > 0;
         }
 
-        public static List<IFileData> CreateFileAssociation(IWin32Window parent, IDataSourceAdapter adapter, LauncherPath directory, FileType type, IGameFile gameFile, 
+        public virtual bool ShowCreateNew(IWin32Window parent, IDataSourceAdapter adapter, ISourcePortData sourcePort, string filename, bool isMultiImport,
+            out NewFileData newFileData)
+        {
+            newFileData = null;
+            FileDetailsEditForm detailsForm = new FileDetailsEditForm();
+            detailsForm.Initialize(adapter);
+            detailsForm.StartPosition = FormStartPosition.CenterParent;
+            detailsForm.ShowDescription(!isMultiImport);
+            if (sourcePort != null)
+                detailsForm.SourcePort = sourcePort;
+            if (!isMultiImport)
+                detailsForm.Description = Path.GetFileName(filename);
+
+            if (detailsForm.ShowDialog(parent) == DialogResult.OK && detailsForm.SourcePort != null)
+            {
+                newFileData = new NewFileData()
+                {
+                    SourcePortID = detailsForm.SourcePort.SourcePortID,
+                    Description = detailsForm.Description,
+                };
+                return true;
+            }
+            else if (detailsForm.SourcePort == null)
+                MessageBox.Show(parent, "A source port must be selected.", "Error", MessageBoxButtons.OK);
+
+            return false;
+        }
+
+        public List<IFileData> CreateFileAssociation(IWin32Window parent, IDataSourceAdapter adapter, LauncherPath directory, FileType type, IGameFile gameFile, 
             ISourcePortData sourcePort, bool multiSelect = false)
         {
             List<IFileData> fileDataList = new List<IFileData>();
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Multiselect = multiSelect;
 
-            if (dialog.ShowDialog(parent) == DialogResult.OK)
+            if (dialog.ShowDialog(parent) != DialogResult.OK)
+                return fileDataList;
+
+            bool isMultiImport = dialog.FileNames.Length > 1;            
+
+            if (ShowCreateNew(parent, adapter, sourcePort, dialog.FileNames[0], isMultiImport, out var newFileData))
             {
-                bool isMultiImport = dialog.FileNames.Length > 1;
-
-                FileDetailsEditForm detailsForm = new FileDetailsEditForm();
-                detailsForm.Initialize(adapter);
-                detailsForm.StartPosition = FormStartPosition.CenterParent;
-                detailsForm.ShowDescription(!isMultiImport);
-                if (sourcePort != null)
-                    detailsForm.SourcePort = sourcePort;
-                if (!isMultiImport)
-                    detailsForm.Description = Path.GetFileName(dialog.FileNames[0]);
-
-                if (detailsForm.ShowDialog(parent) == DialogResult.OK && detailsForm.SourcePort != null)
+                foreach (string file in dialog.FileNames)
                 {
-                    foreach (string file in dialog.FileNames)
-                    {
-                        FileInfo fi = new FileInfo(file);
-                        IFileData fileData = CreateNewFileDataSource(detailsForm, fi, type, gameFile);
-                        if (isMultiImport)
-                            fileData.Description = Path.GetFileName(file);
+                    FileInfo fi = new FileInfo(file);
+                    IFileData fileData = CreateNewFileDataSource(newFileData, fi, type, gameFile);
+                    if (isMultiImport)
+                        fileData.Description = Path.GetFileName(file);
 
-                        fi.CopyTo(Path.Combine(directory.GetFullPath(), fileData.FileName));
+                    fi.CopyTo(Path.Combine(directory.GetFullPath(), fileData.FileName));
 
-                        adapter.InsertFile(fileData);
-                        var fileSearch = adapter.GetFiles(gameFile, type).FirstOrDefault(x => x.FileName == fileData.FileName);
-                        if (fileSearch != null) fileData = fileSearch;
-                        fileDataList.Add(fileData);
-                    }
-                }
-                else if (detailsForm.SourcePort == null)
-                {
-                    MessageBox.Show(parent, "A source port must be selected.", "Error", MessageBoxButtons.OK);
+                    adapter.InsertFile(fileData);
+                    var fileSearch = adapter.GetFiles(gameFile, type).FirstOrDefault(x => x.FileName == fileData.FileName);
+                    if (fileSearch != null)
+                        fileData = fileSearch;
+                    fileDataList.Add(fileData);
                 }
             }
 
             return fileDataList;
         }
 
-        private static FileData CreateNewFileDataSource(FileDetailsEditForm detailsForm, FileInfo fi, FileType type, IGameFile gameFile)
+        private static FileData CreateNewFileDataSource(NewFileData newFileData, FileInfo fi, FileType type, IGameFile gameFile)
         {
-            FileData fileData = new FileData();
-            fileData.FileName = string.Concat(Guid.NewGuid(), fi.Extension);
-            fileData.FileTypeID = type;
-            fileData.GameFileID = gameFile.GameFileID.Value;
-            fileData.Description = detailsForm.Description;
-            fileData.SourcePortID = detailsForm.SourcePort.SourcePortID;
+            FileData fileData = new FileData
+            {
+                FileName = string.Concat(Guid.NewGuid(), fi.Extension),
+                FileTypeID = type,
+                GameFileID = gameFile.GameFileID.Value,
+                Description = newFileData.Description,
+                SourcePortID = newFileData.SourcePortID,
+                UserTitle = newFileData.UserTitle,
+                UserDescription = newFileData.UserDescription,
+                Map = newFileData.Map,
+            };
             return fileData;
         }
 

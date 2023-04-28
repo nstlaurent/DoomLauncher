@@ -12,6 +12,7 @@ namespace DoomLauncher
     {
         public event AdditionalFilesEventHanlder CellFormatting;
         public event AdditionalFilesEventHanlder NewItemNeeded;
+        public event AdditionalFilesEventHanlder ItemAdded;
         public event AdditionalFilesEventHanlder ItemRemoved;
         public event AdditionalFilesEventHanlder ItemPriorityUp;
         public event AdditionalFilesEventHanlder ItemPriorityDown;
@@ -108,6 +109,8 @@ namespace DoomLauncher
                 Rebind();
                 if (dgvAdditionalFiles.Rows.Count > 0)
                     dgvAdditionalFiles.Rows[dgvAdditionalFiles.Rows.Count - 1].Selected = true;
+
+                ItemAdded?.Invoke(this, args);
             }
         }
 

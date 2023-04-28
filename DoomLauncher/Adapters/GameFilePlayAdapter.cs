@@ -9,12 +9,22 @@ using System.Text;
 
 namespace DoomLauncher
 {
+    [Flags]
+    public enum GameFilePlayAdapterOptions
+    {
+        None = 0,
+        ExtraParamsOnly = 1
+    }
+
     public class GameFilePlayAdapter
     {
         public event EventHandler ProcessExited;
 
-        public GameFilePlayAdapter()
+        private readonly GameFilePlayAdapterOptions m_options;
+
+        public GameFilePlayAdapter(GameFilePlayAdapterOptions options = GameFilePlayAdapterOptions.None)
         {
+            m_options = options;
             AdditionalFiles = Array.Empty<IGameFile>();
             ExtractFiles = true;
         }
@@ -33,34 +43,41 @@ namespace DoomLauncher
             SourcePort = sourcePort;
 
             string launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad);
-
-            if (!string.IsNullOrEmpty(launchParameters))
+            if (launchParameters == null)
             {
-                Directory.SetCurrentDirectory(sourcePort.Directory.GetFullPath());
-
-                try
-                {
-                    Process proc = Process.Start(sourcePort.GetFullExecutablePath(), launchParameters);
-                    proc.EnableRaisingEvents = true;
-                    proc.Exited += proc_Exited;
-                }
-                catch
-                {
-                    LastError = "Failed to execute the source port process.";
-                    return false;
-                }
-
-                return true;
-            }
-            else
-            {
+                LastError = "Failed to create launch parameters";
                 return false;
             }
+       
+            Directory.SetCurrentDirectory(sourcePort.Directory.GetFullPath());
+
+            try
+            {
+                Process proc = Process.Start(sourcePort.GetFullExecutablePath(), launchParameters);
+                proc.EnableRaisingEvents = true;
+                proc.Exited += proc_Exited;
+            }
+            catch
+            {
+                LastError = "Failed to execute the source port process.";
+                return false;
+            }
+
+            return true;
+            
         }
 
         public string GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
             IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad)
         {
+            if (m_options.HasFlag(GameFilePlayAdapterOptions.ExtraParamsOnly))
+            {
+                if (string.IsNullOrEmpty(ExtraParameters))
+                    return string.Empty;
+
+                return ExtraParameters;
+            }
+
             ISourcePort sourcePort = SourcePortUtil.CreateSourcePort(sourcePortData);
             StringBuilder sb = new StringBuilder();
 
@@ -231,17 +248,22 @@ namespace DoomLauncher
             try
             {
                 List<string> files = new List<string>();
-
                 foreach(var pathFile in pathFiles)
                 {
-                    if (File.Exists(pathFile.ExtractedFile))
+                    if (gameFile.IsUnmanaged())
                     {
-                        using (IArchiveReader reader = ArchiveReader.Create(pathFile.ExtractedFile))
-                        {
-                            var entry = reader.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
-                            if (entry != null)
-                                files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
-                        }
+                        files.Add(pathFile.ExtractedFile);
+                        continue;
+                    }
+
+                    if (!File.Exists(pathFile.ExtractedFile))
+                        continue;
+
+                    using (IArchiveReader reader = ArchiveReader.Create(pathFile.ExtractedFile))
+                    {
+                        var entry = reader.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
+                        if (entry != null)
+                            files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
                     }
                 }
 
@@ -341,7 +363,7 @@ namespace DoomLauncher
             // Return FileArchiveReader instead so the pk3 will be added as a file
             // Zip extensions are ignored in this case since Doom Launcher's base functionality revovles around reading zip contents
             // SpecificFilesForm will also read zip files explicitly to allow user to select files in the archive
-            if (!gameFile.IsDirectory() && gameFile.IsUnmanaged() && !Path.GetExtension(gameFile.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+            if (!gameFile.IsDirectory() && gameFile.IsUnmanaged() && !ArchiveUtil.ShouldReadPackagedArchive(gameFile.FileName))
                 return new FileArchiveReader(file);
 
             return ArchiveReader.Create(file);

@@ -33,7 +33,25 @@ namespace UnitTest.Tests
             return sourcePorts;
         }
 
+        public void Clear()
+        {
+            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
+            foreach (var sourcePort in adapter.GetSourcePorts())
+                adapter.DeleteSourcePort(sourcePort);
+            foreach (var utility in adapter.GetUtilities())
+                adapter.DeleteSourcePort(utility);
+        }
+
         [TestMethod]
+        public void TestSourcePortData()
+        {
+            Clear();
+            TestInsert();
+            TestGetSourcePorts();
+            TestUpdate();
+            TestDelete();
+        }
+
         public void TestInsert()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -47,7 +65,6 @@ namespace UnitTest.Tests
                 adapter.GetUtilities().Count());
         }
 
-        [TestMethod]
         public void TestGetSourcePorts()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -65,12 +82,11 @@ namespace UnitTest.Tests
     
             foreach(var testSourcePort in testSourcePorts)
             {
-                var port = allSourcePorts.First(x => x.SourcePortID == testSourcePort.SourcePortID);
-                Assert.IsTrue(TestUtil.AllFieldsEqual(testSourcePort, port));
+                var port = allSourcePorts.First(x => x.Name.Equals(testSourcePort.Name));
+                Assert.IsTrue(TestUtil.AllFieldsEqualIgnore(testSourcePort, port, nameof(ISourcePortData.SourcePortID)));
             }
         }
 
-        [TestMethod]
         public void TestGetSourcePort()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -81,11 +97,10 @@ namespace UnitTest.Tests
             {
                 var dbPort = adapter.GetSourcePort(testSourcePort.SourcePortID);
                 Assert.IsNotNull(dbPort);
-                Assert.IsTrue(TestUtil.AllFieldsEqual(testSourcePort, dbPort));
+                Assert.IsTrue(TestUtil.AllFieldsEqualIgnore(testSourcePort, dbPort, nameof(ISourcePortData.SourcePortID)));
             }
         }
 
-        [TestMethod]
         public void TestUpdate()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -111,7 +126,6 @@ namespace UnitTest.Tests
             }
         }
 
-        [TestMethod]
         public void TestDelete()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();

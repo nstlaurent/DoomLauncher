@@ -192,6 +192,7 @@ namespace DoomLauncher
             tabView.GameFileViewControl.SetContextMenuStrip(menu);
             tabView.GameFileViewControl.AllowDrop = dragDrop;
             tabView.DataSourceChanging += TabView_DataSourceChanging;
+            tabView.DataSourceChanged += TabView_DataSourceChanged;
             SetGameFileViewEvents(tabView.GameFileViewControl, dragDrop);
         }
 
@@ -204,11 +205,19 @@ namespace DoomLauncher
             GameFileViewFactory = new GameFileViewFactory(this, AppConfiguration.GameFileViewType);
             GameFileTileManager.Instance.Init(GameFileViewFactory);
 
-            tabViews.Add(CreateTabViewRecent(colConfig));
+            if (AppConfiguration.VisibleViews.Contains(TabKeys.RecentKey))
+                tabViews.Add(CreateTabViewRecent(colConfig));
+
+            // User can't remove local
             tabViews.Add(CreateTabViewLocal(colConfig));
-            tabViews.Add(CreateTabViewUntagged(colConfig));
-            tabViews.Add(CreateTabViewIwad(colConfig));
-            tabViews.Add(CreateTabViewIdGames(colConfig));
+
+            if (AppConfiguration.VisibleViews.Contains(TabKeys.UntaggedKey))
+                tabViews.Add(CreateTabViewUntagged(colConfig));
+            if (AppConfiguration.VisibleViews.Contains(TabKeys.IWadsKey))
+                tabViews.Add(CreateTabViewIwad(colConfig));
+            if (AppConfiguration.VisibleViews.Contains(TabKeys.IdGamesKey))
+                tabViews.Add(CreateTabViewIdGames(colConfig));
+
             tabViews.AddRange(CreateTagTabs(GameFileViewFactory.DefaultColumnTextFields, colConfig));
 
             m_tabHandler = new TabHandler(tabControl);
@@ -254,8 +263,9 @@ namespace DoomLauncher
             ColumnField[] columnTextFields = new ColumnField[]
             {
                 new ColumnField("FileNameNoPath", "File"),
+                new ColumnField("LastDirectory", "Directory"),
                 new ColumnField("Title", "Title"),
-                new ColumnField("LastPlayed", "Last Played")
+                new ColumnField("LastPlayed", "Last Played"),
             };
 
             IWadTabViewCtrl tabViewIwads = new IWadTabViewCtrl(TabKeys.IWadsKey, StaticTagData.GetFavoriteName(TabKeys.IWadsKey), DataSourceAdapter, DefaultGameFileSelectFields, DataCache.Instance.TagMapLookup, GameFileViewFactory);
@@ -429,6 +439,7 @@ namespace DoomLauncher
             DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory);
             DataCache.Instance.Init(DataSourceAdapter);
             DataCache.Instance.AppConfiguration.GameFileViewTypeChanged += AppConfiguration_GameFileViewTypeChanged;
+            DataCache.Instance.AppConfiguration.VisibleViewsChanged += AppConfiguration_VisibleViewsChanged;
             DataCache.Instance.TagMapLookup.TagMappingChanged += TagMapLookup_TagMappingChanged;
             DataCache.Instance.TagsChanged += DataCache_TagsChanged;
 
@@ -442,19 +453,21 @@ namespace DoomLauncher
             InitDownloadView();
 
             ctrlAssociationView.Initialize(DataSourceAdapter, AppConfiguration);
+            ctrlAssociationView.FileAdded += ctrlAssociationView_FileAdded;
             ctrlAssociationView.FileDeleted += ctrlAssociationView_FileDeleted;
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
+            ctrlAssociationView.FileDetailsChanged += CtrlAssociationView_FileDetailsChanged;
         }
 
-        private void Check_340Update()
+        private void CheckInteropUpdate()
         {
             if (LauncherPath.IsInstalled())
                 return;
 
             string[] dirs = new string[] { "x86", "x64" };
             string updateFile = Path.Combine("GameFiles\\Temp", UpdateControl.AppUpdateFileName);
-            if (!File.Exists(updateFile) || dirs.Any(x => Directory.Exists(x)))
+            if (!File.Exists(updateFile) || AllInteropsExist())
                 return;
 
             using (ZipArchive za = ZipFile.OpenRead(updateFile))
@@ -466,9 +479,28 @@ namespace DoomLauncher
 
                     var entries = za.Entries.Where(x => x.FullName.Contains(dir));
                     foreach (var entry in entries)
-                        entry.ExtractToFile(Path.Combine(Directory.GetCurrentDirectory(), dir, entry.Name));
+                        entry.ExtractToFile(Path.Combine(Directory.GetCurrentDirectory(), dir, entry.Name), true);
                 }
             }
+        }
+
+        private bool AllInteropsExist()
+        {
+            DirectoryInfo[] dirs = new DirectoryInfo[] { new DirectoryInfo("x86"), new DirectoryInfo("x64") };
+
+            foreach (DirectoryInfo dir in dirs)
+            {
+                if (!dir.Exists)
+                    return false;
+
+                FileInfo[] files = dir.GetFiles();
+                if (!files.Any(x => x.Name.Equals("SQLite.Interop.dll", StringComparison.OrdinalIgnoreCase)))
+                    return false;
+                if (!files.Any(x => x.Name.Equals("7z.dll", StringComparison.OrdinalIgnoreCase)))
+                    return false;
+            }
+
+            return true;
         }
 
         private void CleanUpFiles()
@@ -591,14 +623,24 @@ namespace DoomLauncher
         {
             if (GameFileViewFactory.IsBaseViewTypeChange(GameFileViewFactory.DefaultType, AppConfiguration.GameFileViewType))
             {
-                // Write any settings the user may have changed before the application is killed
-                HandleFormClosing();
-                Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Util.GetExecutableNoPath()));
+                Restart();
                 return;
             }
 
             GameFileViewFactory.UpdateDefaultType(AppConfiguration.GameFileViewType);
             GameFileTileManager.Instance.Init(GameFileViewFactory);
+        }
+
+        private void AppConfiguration_VisibleViewsChanged(object sender, EventArgs e)
+        {
+            Restart();
+        }
+
+        private void Restart()
+        {
+            // Write any settings the user may have changed before the application is killed
+            HandleFormClosing();
+            Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Util.GetExecutableNoPath()));
         }
 
         private void BuildUtilityToolStrip()
@@ -698,6 +740,22 @@ namespace DoomLauncher
                     HandleAddGameFiles(AddFileType.GameFile, new string[] { addFile });
                 else
                     HandlePlay(new IGameFile[] { launchFile });
+
+                return;
+            }
+
+            if (m_launchArgs.LaunchGameFileID != null)
+            {
+                GameFileGetOptions options = new GameFileGetOptions();
+                options.SearchField = new GameFileSearchField(GameFileFieldType.GameFileID, m_launchArgs.LaunchGameFileID.ToString());
+                var gameFile = DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
+                if (gameFile == null)
+                {
+                    MessageBox.Show(this, $"Failed to find game file by id: {m_launchArgs.LaunchGameFileID}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                HandlePlay(new IGameFile[] { gameFile }, playOptions: PlayOptions.AutoPlay);
             }
         }
 

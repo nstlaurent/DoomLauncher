@@ -86,5 +86,15 @@ namespace DoomLauncher
             ctrlStatsSecrets.SetStats(statTotal.SecretCount, statTotal.TotalSecrets, statTotal.FormattedSecrets);
             ctrlStatsItems.SetStats(statTotal.ItemCount, statTotal.TotalItems, statTotal.FormattedItems);
         }
+
+        public void SetMapsVisible(bool visible)
+        {
+            ctrlStatsMaps.Visible = visible;
+            pbMaps.Visible = visible;
+            if (visible)
+                tblStats.RowStyles[1].Height = 38;
+            else
+                tblStats.RowStyles[1].Height = 0;
+        }
     }
 }

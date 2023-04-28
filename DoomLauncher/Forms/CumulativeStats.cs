@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -15,12 +16,18 @@ namespace DoomLauncher
 
         public void SetStatistics(IEnumerable<IGameFile> gameFiles, IEnumerable<IStatsData> stats)
         {
-            int minutes = 0;
+            lblNote.Text = $"Note: Search filters apply ({gameFiles.Count()} Files)";
 
+            int statsMinutes = 0;
+            int launchMinutes = 0;
             foreach (IStatsData stat in stats)
-                minutes += (int)(stat.LevelTime / 60.0);
+                statsMinutes += (int)(stat.LevelTime / 60.0);
 
-            lblTimePlayed.Text = string.Concat("Time Played: ", Util.GetTimePlayedString(minutes));
+            foreach (IGameFile gameFile in gameFiles)
+                launchMinutes += gameFile.MinutesPlayed;
+
+            lblTimeLaunched.Text = Util.GetTimePlayedString(launchMinutes);
+            lblTimePlayed.Text = Util.GetTimePlayedString(statsMinutes);
             ctrlStats.SetStatistics(gameFiles, stats);
         }
     }

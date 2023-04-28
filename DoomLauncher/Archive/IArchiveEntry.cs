@@ -8,5 +8,6 @@
         string FullName { get; }
         void ExtractToFile(string file, bool overwrite = false);
         bool ExtractRequired { get; }
+        bool IsDirectory { get; }
     }
 }

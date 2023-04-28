@@ -54,11 +54,8 @@ namespace WadReader
             return lumps;
         }
 
-        public WadType WadType
-        {
-            get;
-            private set;
-        }
+        public readonly WadType WadType;
+        public int LumpCount => m_wadinfo.numlumps;
 
         private readonly wadinfo_t m_wadinfo;
         private readonly Stream m_stream;

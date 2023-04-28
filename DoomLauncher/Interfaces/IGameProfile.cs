@@ -17,5 +17,6 @@
         bool SettingsStat { get; set; }
         bool SettingsLoadLatestSave { get; set; }
         bool SettingsSaved { get; set; }
+        bool SettingsExtraParamsOnly { get; set; }
     }
 }

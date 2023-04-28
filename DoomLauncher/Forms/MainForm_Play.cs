@@ -19,10 +19,10 @@ namespace DoomLauncher
 
         private FilterForm m_filterForm;
 
-        private void HandlePlay()
+        private void HandlePlay(PlayOptions playOptions = PlayOptions.None)
         {
             if (GetCurrentViewControl() != null)
-                HandlePlay(SelectedItems(GetCurrentViewControl()));
+                HandlePlay(SelectedItems(GetCurrentViewControl()), playOptions: playOptions);
         }
 
         private bool AssertFile(string file)
@@ -39,14 +39,18 @@ namespace DoomLauncher
             return exists;
         }
 
-        private void HandlePlay(IEnumerable<IGameFile> gameFiles)
+        [Flags]
+        private enum PlayOptions
         {
-            HandlePlay(gameFiles, null);
+            None,
+            AutoPlay,
+            ForceDialog
         }
 
-        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort)
+        private void HandlePlay(IEnumerable<IGameFile> gameFiles, ISourcePortData sourcePort = null, string map = null, 
+            PlayOptions playOptions = PlayOptions.None)
         {
-            LaunchData launchData = GetLaunchFiles(gameFiles);
+            LaunchData launchData = GetLaunchFiles(gameFiles, checkActiveSessions: true);
 
             if (!launchData.Success)
             {
@@ -71,8 +75,12 @@ namespace DoomLauncher
             SetupPlayForm(launchData.GameFile);
             if (sourcePort != null) 
                 m_currentPlayForm.SelectedSourcePort = sourcePort;
+            if (map != null)
+                m_currentPlayForm.SelectedMap = map;
 
-            if (m_currentPlayForm.ShowDialog(this) == DialogResult.OK)
+            bool autoPlay = (playOptions.HasFlag(PlayOptions.AutoPlay) || !AppConfiguration.ShowPlayDialog) && !playOptions.HasFlag(PlayOptions.ForceDialog);
+
+            if (autoPlay || m_currentPlayForm.ShowDialog(this) == DialogResult.OK)
             {
                 try
                 {
@@ -93,10 +101,9 @@ namespace DoomLauncher
             }
         }
 
-        private LaunchData GetLaunchFiles(IEnumerable<IGameFile> gameFiles)
+        private LaunchData GetLaunchFiles(IEnumerable<IGameFile> gameFiles, bool checkActiveSessions)
         {
             IGameFile gameFile = null;
-
             if (gameFiles != null)
             {
                 if (gameFiles.Count() > 1)
@@ -111,8 +118,8 @@ namespace DoomLauncher
                 }
             }
 
-            if (m_activeSessions.Any() && !AppConfiguration.AllowMultiplePlaySessions)
-                return new LaunchData("Already Playing", "There is already a game in progress. Please exit that game first.");
+            if (checkActiveSessions && m_activeSessions.Any() && !AppConfiguration.AllowMultiplePlaySessions)
+                return new LaunchData("Already Playing", "There is already a game in progress. Please exit that game first.\n\nCheck the 'Allow Multiple Play Sessions' in the settings to enable this feature.");
 
             if (!DataSourceAdapter.GetSourcePorts().Any())
                 return new LaunchData("No Source Ports", "You must have at least one source port configured to play! Click the settings menu on the top left and select Source Ports to configure.");
@@ -188,7 +195,8 @@ namespace DoomLauncher
                 {
                     DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap,
                     GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
-                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave });
+                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave, 
+                        GameFileFieldType.SettingsExtraParamsOnly });
                 }
                 else
                 {
@@ -251,9 +259,6 @@ namespace DoomLauncher
             if (AppConfiguration.CopySaveFiles)
                 CopySaveGames(gameFile, sourcePort);
             CreateFileDetectors(sourcePort);
-
-            if (m_currentPlayForm.PreviewLaunchParameters)
-                ShowLaunchParameters(playAdapter, gameFile, sourcePort);
 
             bool isGameFileIwad = IsGameFileIwad(gameFile);
 
@@ -362,20 +367,41 @@ namespace DoomLauncher
             return statisticsReader;
         }
 
-        private void CreateFileDetectors(ISourcePortData sourcePort)
+        private void CreateFileDetectors(ISourcePortData sourcePortData)
+        {
+            ISourcePort sourcePort = SourcePortUtil.CreateSourcePort(sourcePortData);
+            CreateScreenshotDetectors(sourcePortData, sourcePort);
+            CreateSaveGameDetectors(sourcePortData, sourcePort);
+        }
+
+        private void CreateSaveGameDetectors(ISourcePortData sourcePortData, ISourcePort sourcePort)
+        {
+            m_saveFileDetectors = CreateDefaultSaveGameDetectors();
+            m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePortData.GetSavePath().GetFullPath()));
+
+            string saveDir = sourcePort.GetSaveGameDirectory();
+            if (!string.IsNullOrEmpty(saveDir) && Directory.Exists(saveDir))
+                m_saveFileDetectors.Add(CreateSaveGameDetector(saveDir));
+
+            Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
+        }
+
+        private void CreateScreenshotDetectors(ISourcePortData sourcePortData, ISourcePort sourcePort)
         {
             m_screenshotDetectors = CreateDefaultScreenshotDetectors();
-            m_screenshotDetectors.Add(CreateScreenshotDetector(sourcePort.Directory.GetFullPath()));
-            Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
+            m_screenshotDetectors.Add(CreateScreenshotDetector(sourcePortData.Directory.GetFullPath()));
 
-            m_saveFileDetectors = CreateDefaultSaveGameDetectors();
-            m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePort.GetSavePath().GetFullPath()));
-            Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
+            string screenshotDir = sourcePort.GetScreenshotDirectory();
+            if (!string.IsNullOrEmpty(screenshotDir) && Directory.Exists(screenshotDir))
+                m_screenshotDetectors.Add(CreateScreenshotDetector(screenshotDir));
+
+            Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
         }
 
         private GameFilePlayAdapter CreatePlayAdapter(PlayForm form, EventHandler processExited, AppConfiguration appConfig)
         {
-            GameFilePlayAdapter playAdapter = new GameFilePlayAdapter();
+            GameFilePlayAdapterOptions options = form.ExtraParametersOnly ? GameFilePlayAdapterOptions.ExtraParamsOnly : GameFilePlayAdapterOptions.None;
+            GameFilePlayAdapter playAdapter = new GameFilePlayAdapter(options);
             playAdapter.IWad = form.SelectedIWad;
             playAdapter.Map = form.SelectedMap;
             playAdapter.Skill = form.SelectedSkill;
@@ -403,7 +429,8 @@ namespace DoomLauncher
             }
 
             playAdapter.ProcessExited += processExited;
-            if (form.SelectedDemo != null) playAdapter.PlayDemoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
+            if (form.SelectedDemo != null)
+                playAdapter.PlayDemoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
             return playAdapter;
         }
 
@@ -507,6 +534,9 @@ namespace DoomLauncher
             if (session != null)
                 m_activeSessions.Remove(session);
 
+            if (m_launchArgs.AutoClose)
+                Close();
+
             IGameFileView view = GetCurrentViewControl();
             view.UpdateGameFile(adapter.GameFile);
             HandleSelectionChange(view, true);
@@ -597,7 +627,7 @@ namespace DoomLauncher
 
         private INewFileDetector CreateSaveGameDetector(string dir)
         {
-            return new NewFileDetector(new string[] { ".zds", ".dsg", ".esg" }, dir, true); //future - should be configurable
+            return new NewFileDetector(new string[] { ".zds", ".dsg", ".esg", ".hsg" }, dir, true); //future - should be configurable
         }
 
         private string[] GetNewScreenshots()

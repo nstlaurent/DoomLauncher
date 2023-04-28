@@ -14,7 +14,7 @@ namespace UnitTest.Tests
     {
         private static string[] s_iwads = new string[] { "DOOM.WAD", "DOOM2.WAD", "TNT.WAD" };
         private static string[] s_files = new string[] { "GAMEFILE1.WAD", "GAMEFILE2.WAD", "GAMEFILE3.WAD" };
-        private static string[] s_mods = new string[] { "SUPERCOOLMOD.WAD", "MOD2.WAD", "MOD3.WAD", "MOD4.WAD", "PORTMOD1.WAD", "PORTMOD2.WAD", "IWADMOD1.WAD" };
+        private static string[] s_mods = new string[] { "SUPERCOOLMOD.WAD", "MOD2.WAD", "MOD3.WAD", "MOD4.WAD", "PORTMOD1.WAD", "PORTMOD2.WAD", "IWADMOD1.WAD", "IWADMODZ.WAD" };
 
         [TestMethod]
         public void TestFiles()
@@ -24,12 +24,14 @@ namespace UnitTest.Tests
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = Util.GetAdditionalFiles(adapter, (GameFile)adapter.GetGameFile("COOLGAMEFILE.WAD"));
 
-            Assert.AreEqual(2, gameFiles.Count);
+            Assert.AreEqual(3, gameFiles.Count);
+            Assert.IsNotNull(gameFiles.First(x => x.FileName == "COOLGAMEFILE.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "SUPERCOOLMOD.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "MOD2.WAD"));
 
             gameFiles = Util.GetAdditionalFiles(adapter, (GameFile)adapter.GetGameFile("OTHERGAMEFILE.WAD"));
-            Assert.AreEqual(2, gameFiles.Count);
+            Assert.AreEqual(3, gameFiles.Count);
+            Assert.IsNotNull(gameFiles.First(x => x.FileName == "OTHERGAMEFILE.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "MOD3.WAD"));
             Assert.IsNotNull(gameFiles.First(x => x.FileName == "MOD4.WAD"));
 
@@ -251,6 +253,26 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void TestIwadWithModsFirst()
+        {
+            // Testing the feature where if files put before the iwad they should be put before this file
+            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
+            var mainFile = adapter.GetGameFile("GAMEFILE1.WAD");
+            FileLoadHandler handler = new FileLoadHandler(adapter, mainFile);
+            Assert.AreEqual(1, handler.GetCurrentAdditionalFiles().Count);
+
+            var iwad = adapter.GetGameFileIWads().First(x => x.FileName == "FIRSTIWAD.WAD");
+            var sourceport = adapter.GetSourcePorts().First(x => x.Name == "zdoom.exe");
+
+            handler.CalculateAdditionalFiles(iwad, sourceport);
+            var gameFiles = handler.GetCurrentAdditionalFiles();
+            Assert.AreEqual(3, gameFiles.Count);
+            Assert.AreEqual("IWADMODZ.WAD", gameFiles[0].FileName);
+            Assert.AreEqual("GAMEFILE1.WAD", gameFiles[1].FileName);
+            Assert.AreEqual("PORTMOD1.WAD", gameFiles[2].FileName);
+        }
+
+        [TestMethod]
         public void TestUserSet()
         {
             //base test
@@ -317,6 +339,7 @@ namespace UnitTest.Tests
             Array.ForEach(s_files, x => CreateGameFile(adapter, x, false, string.Empty));
             Array.ForEach(s_mods, x => CreateGameFile(adapter, x, false, string.Empty));
             CreateGameFile(adapter, "PLUTONIA.WAD", true, "IWADMOD1.WAD");
+            CreateGameFile(adapter, "FIRSTIWAD.WAD", true, "IWADMODZ.WAD", addFilesFirst: true);
             CreateGameFile(adapter, "COOLGAMEFILE.WAD", false, "SUPERCOOLMOD.WAD;MOD2.WAD;");
             CreateGameFile(adapter, "OTHERGAMEFILE.WAD", false, "MOD3.WAD;MOD4.WAD;");
             CreateSourcePort(adapter, "zdoom.exe", "PORTMOD1.WAD");
@@ -324,13 +347,13 @@ namespace UnitTest.Tests
             CreateSourcePort(adapter, "odamex.exe", string.Empty);
         }
 
-        private static void CreateGameFile(IDataSourceAdapter adapter, string name, bool isiwad, string addfiles)
+        private static void CreateGameFile(IDataSourceAdapter adapter, string name, bool isiwad, string addfiles, bool addFilesFirst = false)
         {
             GameFile gameFile = new GameFile()
             {
                 FileName = name,
                 Title = name,
-                SettingsFiles = addfiles
+                SettingsFiles = addFilesFirst ? string.Concat(addfiles, ";", name) : string.Concat(name, ";", addfiles)
             };
 
             adapter.InsertGameFile(gameFile);

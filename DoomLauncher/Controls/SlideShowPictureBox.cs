@@ -29,6 +29,9 @@ namespace DoomLauncher
         private Image m_drawImage;
         private Graphics m_currentGraphics;
 
+        public float ImageAlpha => m_alpha;
+        public int ImageIndex => m_index;
+
         private enum SlideshowState
         {
             SetImage,
@@ -39,15 +42,24 @@ namespace DoomLauncher
 
         public int ImageCount => m_images.Count;
 
+        public event EventHandler<int> ImageChanged;
+        public event EventHandler<PaintEventArgs> ImagePaint;
+
         public SlideShowPictureBox()
         {
             InitializeComponent();
             pbImage.BackColor = Color.Black;
+            pbImage.Paint += PbImage_Paint;
 
             m_timer.Interval = FadeMilliseconds / FadeTimes;
             m_timer.Tick += M_timer_Tick;
 
             Resize += SlideShowPictureBox_Resize;
+        }
+
+        private void PbImage_Paint(object sender, PaintEventArgs e)
+        {
+            ImagePaint?.Invoke(this, e);
         }
 
         public void Stop()
@@ -69,6 +81,7 @@ namespace DoomLauncher
         {
             ClearImage();
             pbImage.Image = image;
+            ImageChanged?.Invoke(this, m_index);
         }
 
         public Image GetImage() => pbImage.Image;
@@ -228,7 +241,7 @@ namespace DoomLauncher
             m_drawImage?.Dispose();
 
             using (var image = Image.FromFile(m_images[m_index]))
-                m_currentImage = Util.FixedSize(image, pbImage.Width, pbImage.Height, Color.Black);
+                m_currentImage = image.FixedSize(pbImage.Width, pbImage.Height, Color.Black);
             m_drawImage = new Bitmap(m_currentImage.Width, m_currentImage.Height);
             m_currentGraphics = Graphics.FromImage(m_drawImage);
         }
@@ -252,12 +265,13 @@ namespace DoomLauncher
                     new [] { 0.0F, 0.0F, 0.0F, m_alpha, 1.0F },
                 });
 
-                m_currentGraphics.FillRectangle(m_bgBrush, 0, 0, m_currentImage.Width, m_currentImage.Height);
+                Rectangle rect = new Rectangle(0, 0, m_currentImage.Width, m_currentImage.Height);
+                m_currentGraphics.FillRectangle(m_bgBrush, rect);
 
                 ImageAttributes imageAttrs = new ImageAttributes();
                 imageAttrs.SetColorMatrix(colorMatrix);
 
-                m_currentGraphics.DrawImage(m_currentImage, new Rectangle(0, 0, m_currentImage.Width, m_currentImage.Height), 0, 0,
+                m_currentGraphics.DrawImage(m_currentImage, rect, 0, 0,
                     m_drawImage.Width, m_drawImage.Height, GraphicsUnit.Pixel, imageAttrs);
                 pbImage.Image = m_drawImage;
                 pbImage.Refresh();

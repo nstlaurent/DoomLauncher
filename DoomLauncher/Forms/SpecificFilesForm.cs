@@ -22,7 +22,7 @@ namespace DoomLauncher
         private string[] m_supportedExtensions = new string[] { };
         private List<IGameFile> m_gameFiles;
         private LauncherPath m_directory, m_temp;
-        private List<SpecificFilePath> m_filePaths = new List<SpecificFilePath>();
+        private readonly List<SpecificFilePath> m_filePaths = new List<SpecificFilePath>();
         private CancellationTokenSource m_ct;
         private List<string> m_items = new List<string>();
         private List<int> m_checkedItems = new List<int>();
@@ -113,11 +113,8 @@ namespace DoomLauncher
 
             foreach (IGameFile gameFile in m_gameFiles)
             {
-                if (gameFile.IsDirectory() || !Path.GetExtension(gameFile.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                string file = Path.Combine(m_directory.GetFullPath(), gameFile.FileName);
-                using (IArchiveReader reader = ArchiveReader.Create(file))
+                string path = Path.Combine(m_directory.GetFullPath(), gameFile.FileName);
+                using (IArchiveReader reader = CreateArchiveReader(gameFile, path))
                 {
                     if (m_ct.IsCancellationRequested)
                         break;
@@ -126,18 +123,19 @@ namespace DoomLauncher
                     {
                         if (m_specificFiles == null || m_specificFiles.Length == 0)
                         {
-                            HandleDefaultSelection(file, reader);
+                            HandleDefaultSelection(path, reader);
                             continue;
                         }
 
                         foreach (IArchiveEntry entry in reader.Entries)
                         {
-                            if (string.IsNullOrEmpty(entry.Name))
+                            if (string.IsNullOrEmpty(entry.Name) || entry.IsDirectory)
                                 continue;
 
                             if (m_ct.IsCancellationRequested)
                                 break;
-                            HandleAddItem(file, entry.FullName, entry.Name, m_specificFiles.Contains(entry.FullName));
+
+                            HandleAddItem(path, entry.FullName, entry.Name, m_specificFiles.Contains(entry.FullName));
                         }
                     }
                     catch
@@ -148,10 +146,36 @@ namespace DoomLauncher
             }
         }
 
+        private static IArchiveReader CreateArchiveReader(IGameFile gameFile, string path)
+        {
+            // this ignored pk3 files specifically for some reason
+            if (!File.Exists(path) && !Directory.Exists(path))
+                return ArchiveReader.EmptyArchiveReader;
+
+            bool isPackagedArchive = ArchiveUtil.ShouldReadPackagedArchive(path);
+            if (gameFile.IsUnmanaged() && !isPackagedArchive)
+                return new FileArchiveReader(path);
+
+            // TODO IsPk necessary?
+            if (isPackagedArchive)
+                return ArchiveReader.Create(path);
+
+            if (ArchiveReader.IsPk(Path.GetExtension(path)))
+                return new ZipArchiveReader(path);
+
+            return ArchiveReader.EmptyArchiveReader;
+        }
+
         private void HandleDefaultSelection(string file, IArchiveReader reader)
         {
-            IEnumerable<IArchiveEntry> filteredEntries = reader.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && !x.Name.EndsWith(Path.PathSeparator.ToString()) &&
-                                                    m_supportedExtensions.Any(y => y.Equals(Path.GetExtension(x.Name), StringComparison.OrdinalIgnoreCase))).OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            IEnumerable<IArchiveEntry> filteredEntries;
+            
+            if (reader is FileArchiveReader)
+                filteredEntries = reader.Entries;
+            else
+                filteredEntries = reader.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && !x.Name.EndsWith(Path.PathSeparator.ToString()) &&
+                    m_supportedExtensions.Any(y => y.Equals(Path.GetExtension(x.Name), StringComparison.OrdinalIgnoreCase)))
+                    .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             if (chkPkContents.Checked)
             {
@@ -161,20 +185,19 @@ namespace DoomLauncher
                 {
                     string extractedFile = Util.ExtractTempFile(m_temp.GetFullPath(), entry);
                     using (IArchiveReader zaInner = ArchiveReader.Create(extractedFile))
-                    {
                         HandleDefaultSelection(extractedFile, zaInner);
-                    }
                 }
             }
 
             foreach (IArchiveEntry entry in reader.Entries)
             {
-                if (!string.IsNullOrEmpty(entry.Name))
-                {
-                    if (m_ct.IsCancellationRequested)
-                        break;
-                    HandleAddItem(file, entry.FullName, entry.Name, filteredEntries.Contains(entry));
-                }
+                if (string.IsNullOrEmpty(entry.Name) || entry.IsDirectory)
+                    continue;
+
+                if (m_ct.IsCancellationRequested)
+                    break;
+
+                HandleAddItem(file, entry.FullName, entry.Name, filteredEntries.Contains(entry));
             }
         }
 
@@ -188,14 +211,16 @@ namespace DoomLauncher
                 {
                     if (m_supportedExtensions.Any(x => x.Equals(Path.GetExtension(name), StringComparison.OrdinalIgnoreCase)))
                     {
-                        if (isChecked) m_checkedItems.Add(m_items.Count);
+                        if (isChecked)
+                            m_checkedItems.Add(m_items.Count);
                         m_items.Add(fullname);
                         m_filePaths.Add(new SpecificFilePath { ExtractedFile = file, InternalFilePath = fullname });
                     }
                 }
                 else
                 {
-                    if (isChecked) m_checkedItems.Add(m_items.Count);
+                    if (isChecked)
+                        m_checkedItems.Add(m_items.Count);
                     m_items.Add(fullname);
                     m_filePaths.Add(new SpecificFilePath { ExtractedFile = file, InternalFilePath = fullname });
                 }
@@ -208,25 +233,32 @@ namespace DoomLauncher
 
         public static string[] GetSupportedFiles(string gameFileDirectory, IGameFile gameFile, string[] supportedExtensions)
         {
-            List<string> ret = new List<string>();
-            string file = Path.Combine(gameFileDirectory, gameFile.FileName);
+            List<string> files = new List<string>();
+            string path = Path.Combine(gameFileDirectory, gameFile.FileName);
 
-            if (File.Exists(file))
+            // Directories do not have extensions, always add it
+            // Unmanaged pk3s should not be extracted
+            if (gameFile.IsDirectory() || (gameFile.IsUnmanaged() && !ArchiveUtil.ShouldReadPackagedArchive(gameFile.FileName)))
             {
-                using (IArchiveReader reader = ArchiveReader.Create(file))
+                files.Add(gameFile.FileName);
+                return files.ToArray();
+            }
+
+            using (IArchiveReader reader = CreateArchiveReader(gameFile, path))
+            {
+                foreach (IArchiveEntry entry in reader.Entries)
                 {
-                    foreach (IArchiveEntry entry in reader.Entries)
-                    {
-                        if (!string.IsNullOrEmpty(entry.Name) &&
-                            supportedExtensions.Any(x => x.Equals(Path.GetExtension(entry.Name), StringComparison.OrdinalIgnoreCase)))
-                        {
-                            ret.Add(entry.FullName);
-                        }
-                    }
+                    if (string.IsNullOrEmpty(entry.Name))
+                        continue;
+
+                    if (!supportedExtensions.Any(x => x.Equals(Path.GetExtension(entry.Name), StringComparison.OrdinalIgnoreCase)))
+                        continue;
+                    
+                    files.Add(entry.FullName);
                 }
             }
 
-            return ret.ToArray();
+            return files.ToArray();
         }
 
         public string[] GetSpecificFiles()

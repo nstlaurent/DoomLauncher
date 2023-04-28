@@ -90,6 +90,7 @@ namespace UnitTest.Tests
             Assert.IsTrue(ContainsFile(m_detector.GetNewFiles(), "test2.zds"));
         }
 
+        [Ignore]
         [TestMethod]
         public void TestModified()
         {

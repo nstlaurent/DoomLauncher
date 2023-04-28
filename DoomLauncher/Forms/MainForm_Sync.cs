@@ -38,6 +38,11 @@ namespace DoomLauncher
 
                 foreach (IGameFile updateGameFile in handler.UpdatedGameFiles)
                     UpdateDataSourceViews(updateGameFile);
+
+                IGameFileView view = GetCurrentViewControl();
+                IGameFile selectedFile = view.SelectedItem;
+                if (selectedFile != null && handler.UpdatedGameFiles.Contains(selectedFile))
+                    HandleSelectionChange(view, true);
             }
 
             if (handler != null && handler.FailedTitlePicFiles.Count > 0)
@@ -120,6 +125,8 @@ namespace DoomLauncher
             {
                 if (!handler.GetTitlePic(gameFile, out Image image))
                     continue;
+
+                image = image.ScaleDoomImage();
 
                 var screenshots = DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
                 if (ScreenshotHandler.FindScreenshot(screenshots, image, out MemoryStream imageStream))
@@ -319,14 +326,25 @@ namespace DoomLauncher
                     ProgressBarStart(form);
 
                     List<IGameFile> gameFiles = await Task.Run(() => FindIdGamesFiles(files));
-                    foreach (IGameFile gameFile in gameFiles)
-                        m_downloadHandler.Download(IdGamesDataSourceAdapter, gameFile as IGameFileDownloadable);
+                    if (gameFiles == null)
+                    {
+                        MessageBox.Show(this, "Failed to connect to id games.", "Connection Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        foreach (IGameFile gameFile in gameFiles)
+                            m_downloadHandler.Download(IdGamesDataSourceAdapter, gameFile as IGameFileDownloadable);
+                    }
 
                     ProgressBarEnd(form);
-                    DisplayFilesNotFound(files, gameFiles);
 
-                    if (gameFiles.Count > 0)
-                        DisplayDownloads();
+                    if (gameFiles != null)
+                    {
+                        DisplayFilesNotFound(files, gameFiles);
+
+                        if (gameFiles.Count > 0)
+                            DisplayDownloads();
+                    }
 
                     break;
 
@@ -370,11 +388,18 @@ namespace DoomLauncher
         {
             List<IGameFile> gameFiles = new List<IGameFile>();
 
-            foreach (string file in files)
+            try
             {
-                IGameFile gameFile = IdGamesDataSourceAdapter.GetGameFile(file);
-                if (gameFile != null)
-                    gameFiles.Add(gameFile);
+                foreach (string file in files)
+                {
+                    IGameFile gameFile = IdGamesDataSourceAdapter.GetGameFile(file);
+                    if (gameFile != null)
+                        gameFiles.Add(gameFile);
+                }
+            }
+            catch
+            {
+                return null;
             }
 
             return gameFiles;
@@ -399,6 +424,30 @@ namespace DoomLauncher
             form.StartPosition = FormStartPosition.CenterParent;
             form.ShowDialog(this);
             return form;
+        }
+
+        private void HandleResync(bool pullTitlepic)
+        {
+            IGameFileView view = GetCurrentViewControl();
+            if (view == null)
+                return;
+
+            bool? setPullTitlepic = null;
+            if (!pullTitlepic)
+                setPullTitlepic = false;
+            var allGameFiles = SelectedItems(view);
+
+            AddFileType addFileType = view.DoomLauncherParent is IWadTabViewCtrl ? AddFileType.IWad : AddFileType.GameFile;
+
+            var managed = allGameFiles.Where(x => !x.IsUnmanaged()).Select(x => Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), x.FileName)).ToArray();
+            if (managed.Length > 0)
+                HandleAddGameFiles(addFileType, managed, overrideManagement: FileManagement.Managed,
+                    overridePullTitlepic: setPullTitlepic);
+
+            var unmanaged = allGameFiles.Where(x => x.IsUnmanaged()).Select(x => x.FileName).ToArray();
+            if (unmanaged.Length > 0)
+                HandleAddGameFiles(addFileType, unmanaged, overrideManagement: FileManagement.Unmanaged,
+                    overridePullTitlepic: setPullTitlepic);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -109,8 +110,10 @@ namespace DoomLauncher.Handlers
 
             IGameFile lastIwad = m_selectedIWad;
             ISourcePortData lastSourcePort = m_selectedSourcePort;
-            if (lastIwad == null) lastIwad = iwad;
-            if (lastSourcePort == null) lastSourcePort = sourcePort;
+            if (lastIwad == null)
+                lastIwad = iwad;
+            if (lastSourcePort == null)
+                lastSourcePort = sourcePort;
 
             List<IGameFile> gameFiles = m_currentFiles;
             List<IGameFile> originalList = gameFiles.ToList();
@@ -121,11 +124,26 @@ namespace DoomLauncher.Handlers
             gameFiles.AddRange(newTypeFiles);
 
             gameFiles = SortByOriginal(gameFiles, originalList);
+            gameFiles = CheckIwadFileOrder(gameFiles, iwad, sourcePort);
             m_currentFiles = gameFiles.Distinct().ToList();
             m_currentNewFiles = gameFiles.Except(originalList).ToList();
 
             m_selectedIWad = iwad;
             m_selectedSourcePort = sourcePort;
+        }
+
+        private List<IGameFile> CheckIwadFileOrder(List<IGameFile> gameFiles, IGameFile iwad, ISourcePortData sourcePort)
+        {
+            var iwadAdditionalFiles = GetAdditionalFiles(AddFilesType.IWAD, iwad, sourcePort, removeIwad: false);
+
+            if (iwadAdditionalFiles.Count == 0)
+                return gameFiles;
+
+            if (iwadAdditionalFiles[0].GameFileID == iwad.GameFileID)
+                return gameFiles;
+
+            gameFiles.RemoveAll(x => iwadAdditionalFiles.Contains(x));
+            return GetAdditionalFiles(AddFilesType.IWAD, iwad, sourcePort).Union(gameFiles).ToList();
         }
 
         private void SetExtraAdditionalFilesFromSettings(IGameFile iwad, ISourcePortData sourcePort)
@@ -152,7 +170,8 @@ namespace DoomLauncher.Handlers
                 .Except(new IGameFile[] { m_gameFile }).ToList();
         }
 
-        private List<IGameFile> GetAdditionalFiles(AddFilesType type, IGameFile gameIwad, ISourcePortData sourcePort)
+        private List<IGameFile> GetAdditionalFiles(AddFilesType type, IGameFile gameIwad, ISourcePortData sourcePort,
+            bool removeIwad = true)
         {
             switch (type)
             {
@@ -160,7 +179,8 @@ namespace DoomLauncher.Handlers
                     if (gameIwad != null)
                     {
                         var ret = Util.GetAdditionalFiles(m_adapter, (GameFile)gameIwad).Except(Util.GetSourcePortAdditionalFiles(m_adapter, (GameFile)gameIwad)).ToList();
-                        ret.Remove(gameIwad);
+                        if (removeIwad)
+                            ret.Remove(gameIwad);
                         return ret;
                     }
                     break;
