@@ -60,6 +60,7 @@ namespace DoomLauncher
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
+            MaximizedBounds = Screen.GetWorkingArea(this);
             FormBorderStyle = FormBorderStyle.None;
         }
 
