@@ -104,7 +104,7 @@
             this.ctrlAssociationView = new DoomLauncher.GameFileAssociationView();
             this.ctrlSummary = new DoomLauncher.GameFileSummary();
             this.flpTags = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnTags = new System.Windows.Forms.Button();
+            this.btnTags = new DoomLauncher.FormButton();
             this.lblSelectedTag = new System.Windows.Forms.Label();
             this.titleBarControl1 = new DoomLauncher.Controls.TitleBarControl();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -1008,7 +1008,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
         private System.Windows.Forms.ToolStripMenuItem sortByToolStripMenuItem;
         private System.Windows.Forms.FlowLayoutPanel flpTags;
-        private System.Windows.Forms.Button btnTags;
+        private DoomLauncher.FormButton btnTags;
         private System.Windows.Forms.Label lblSelectedTag;
         private System.Windows.Forms.ToolStripMenuItem selectTagsToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitTagSelect;
