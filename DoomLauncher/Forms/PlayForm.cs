@@ -186,15 +186,15 @@ namespace DoomLauncher
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             float infoHeight = dpiScale.ScaleFloatY(40);
-            lblInfo.BackColor = SystemColors.Control;
-            lblInfo.ForeColor = SystemColors.ControlText;
+            lblInfo.BackColor = ColorTheme.Current.Window;
+            lblInfo.ForeColor = ColorTheme.Current.Text;
 
             if (m_playSessionInProgress)
             {
                 tblFiles.RowStyles[0].Height = infoHeight;
                 pbInfo.Image = Properties.Resources.bon2b;
-                lblInfo.BackColor = SystemColors.Highlight;
-                lblInfo.ForeColor = SystemColors.HighlightText;
+                lblInfo.BackColor = ColorTheme.Current.Window;
+                lblInfo.ForeColor = ColorTheme.Current.HighlightText;
                 lblInfo.Text = string.Format("Play session already in progress. Features{0}like statistics tracking may not function.", Environment.NewLine);
                 return;
             }

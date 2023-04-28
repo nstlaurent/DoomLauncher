@@ -9,7 +9,7 @@ namespace DoomLauncher
         public Color WindowLight => Color.FromArgb(255, 58, 58, 64);
         public Color Text => Color.White;
         public Color DisabledText => Color.FromArgb(255, 142, 142, 142);
-        public Color HighlightText => Color.White;
+        public Color HighlightText => Color.FromArgb(255, 90, 101, 234);
         public Color Highlight => Color.FromArgb(255, 90, 101, 234);
         public Color ButtonBackground => Color.FromArgb(255, 90, 101, 234);
         public Color CheckBoxBackground => Color.FromArgb(255, 48, 48, 54);
