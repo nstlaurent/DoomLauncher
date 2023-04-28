@@ -60,6 +60,7 @@ namespace DoomLauncher
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
+            FormBorderStyle = FormBorderStyle.None;
             Stylizer.Stylize(this, DesignMode);
         }
 

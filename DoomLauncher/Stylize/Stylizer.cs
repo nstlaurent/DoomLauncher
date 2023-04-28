@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -9,13 +9,18 @@ namespace DoomLauncher
     {
         private static readonly IThemeColors CurrentTheme = ColorTheme.Current;
 
-        public static void Stylize(Form form, bool designMode)
+        public static void Stylize(Form form, bool designMode, params Control[] ignoreControls)
         {
             if (designMode)
                 return;
 
             foreach (Control control in form.Controls)
+            {
+                if (ignoreControls.Contains(control))
+                    continue;
+
                 StylizeControl(control, designMode);
+            }
         }
 
         public static void StylizeControl(Control control, bool designMode)
@@ -25,6 +30,8 @@ namespace DoomLauncher
 
             if (control is DataGridView grid)
                 StyleGrid(grid);
+            else if (control is FormButton formButton)
+                StyleFormButton(formButton);
             else if (control is Button button)
                 StyleButton(button);
             else if (control is TextBox textBox)
@@ -180,6 +187,13 @@ namespace DoomLauncher
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
             button.BackColor = CurrentTheme.ButtonBackground;
+        }
+
+        private static void StyleFormButton(FormButton button)
+        {
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderSize = 0;
+            button.BackColor = CurrentTheme.Window;
         }
 
         private static void StyleCheckBox(CheckBox checkBox)

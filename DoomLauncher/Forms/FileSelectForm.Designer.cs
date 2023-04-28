@@ -38,7 +38,7 @@
             this.ctrlSearch = new DoomLauncher.SearchControl();
             this.lblText = new System.Windows.Forms.Label();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabControl = new DoomLauncher.CTabControl();
             this.tblMain.SuspendLayout();
             this.flpButtons.SuspendLayout();
             this.flpSearch.SuspendLayout();
@@ -177,7 +177,7 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.FlowLayoutPanel flpSearch;
         private SearchControl ctrlSearch;
-        private System.Windows.Forms.TabControl tabControl;
+        private DoomLauncher.CTabControl tabControl;
         private System.Windows.Forms.Label lblText;
         private System.Windows.Forms.Button btnSearch;
     }

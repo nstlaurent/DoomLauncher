@@ -150,6 +150,9 @@
     <Compile Include="Archive\Wad\WadEntry.cs" />
     <Compile Include="Archive\Zip\ZipArchiveReader.cs" />
     <Compile Include="Archive\Zip\ZipArchiveReaderEntry.cs" />
+    <Compile Include="Controls\FormButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\GameFileTile.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -31,9 +31,9 @@
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
             this.lblTitle = new System.Windows.Forms.Label();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.btnMaximize = new System.Windows.Forms.Button();
-            this.btnMinimize = new System.Windows.Forms.Button();
+            this.btnClose = new DoomLauncher.FormButton();
+            this.btnMaximize = new DoomLauncher.FormButton();
+            this.btnMinimize = new DoomLauncher.FormButton();
             this.tblMain.SuspendLayout();
             this.flpButtons.SuspendLayout();
             this.SuspendLayout();
@@ -51,8 +51,8 @@
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 1;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblMain.Size = new System.Drawing.Size(572, 30);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tblMain.Size = new System.Drawing.Size(429, 24);
             this.tblMain.TabIndex = 0;
             this.tblMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tblMain_MouseDown);
             // 
@@ -60,9 +60,10 @@
             // 
             this.lblTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Location = new System.Drawing.Point(3, 7);
+            this.lblTitle.Location = new System.Drawing.Point(2, 5);
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(33, 16);
+            this.lblTitle.Size = new System.Drawing.Size(27, 13);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Title";
             // 
@@ -73,17 +74,18 @@
             this.flpButtons.Controls.Add(this.btnMinimize);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(286, 0);
+            this.flpButtons.Location = new System.Drawing.Point(214, 0);
             this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(286, 30);
+            this.flpButtons.Size = new System.Drawing.Size(215, 24);
             this.flpButtons.TabIndex = 1;
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(239, 3);
+            this.btnClose.Location = new System.Drawing.Point(182, 0);
+            this.btnClose.Margin = new System.Windows.Forms.Padding(0);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(44, 23);
+            this.btnClose.Size = new System.Drawing.Size(33, 24);
             this.btnClose.TabIndex = 0;
             this.btnClose.Text = "X";
             this.btnClose.UseVisualStyleBackColor = true;
@@ -91,9 +93,10 @@
             // 
             // btnMaximize
             // 
-            this.btnMaximize.Location = new System.Drawing.Point(192, 3);
+            this.btnMaximize.Location = new System.Drawing.Point(151, 0);
+            this.btnMaximize.Margin = new System.Windows.Forms.Padding(0);
             this.btnMaximize.Name = "btnMaximize";
-            this.btnMaximize.Size = new System.Drawing.Size(41, 23);
+            this.btnMaximize.Size = new System.Drawing.Size(31, 24);
             this.btnMaximize.TabIndex = 1;
             this.btnMaximize.Text = "O";
             this.btnMaximize.UseVisualStyleBackColor = true;
@@ -101,9 +104,10 @@
             // 
             // btnMinimize
             // 
-            this.btnMinimize.Location = new System.Drawing.Point(147, 3);
+            this.btnMinimize.Location = new System.Drawing.Point(122, 0);
+            this.btnMinimize.Margin = new System.Windows.Forms.Padding(0);
             this.btnMinimize.Name = "btnMinimize";
-            this.btnMinimize.Size = new System.Drawing.Size(39, 23);
+            this.btnMinimize.Size = new System.Drawing.Size(29, 24);
             this.btnMinimize.TabIndex = 2;
             this.btnMinimize.Text = "-";
             this.btnMinimize.UseVisualStyleBackColor = true;
@@ -111,11 +115,12 @@
             // 
             // TitleBarControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tblMain);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "TitleBarControl";
-            this.Size = new System.Drawing.Size(572, 30);
+            this.Size = new System.Drawing.Size(429, 24);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
             this.flpButtons.ResumeLayout(false);
@@ -128,8 +133,8 @@
         private TableLayoutPanelDB tblMain;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.FlowLayoutPanel flpButtons;
-        private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.Button btnMaximize;
-        private System.Windows.Forms.Button btnMinimize;
+        private DoomLauncher.FormButton btnClose;
+        private DoomLauncher.FormButton btnMaximize;
+        private DoomLauncher.FormButton btnMinimize;
     }
 }

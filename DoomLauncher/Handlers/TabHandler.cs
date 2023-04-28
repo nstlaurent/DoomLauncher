@@ -15,7 +15,7 @@ namespace DoomLauncher
             public TabPage TabPage { get; set; }
         }
 
-        public TabHandler(TabControl tabControl)
+        public TabHandler(CTabControl tabControl)
         {            
             TabControl = tabControl;
         }
@@ -157,7 +157,7 @@ namespace DoomLauncher
             }
         }
 
-        public TabControl TabControl { get; private set; }
+        public CTabControl TabControl { get; private set; }
         public ITabView[] TabViews
         {
             get { return m_tabs.ToArray(); }
