@@ -96,9 +96,9 @@
             this.btnSave,
             this.btnSlideshow,
             this.btnEdit});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 4);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 5);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(120, 33);
+            this.toolStrip1.Size = new System.Drawing.Size(96, 31);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -108,7 +108,7 @@
             this.btnSave.Image = global::DoomLauncher.Properties.Resources.Save;
             this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(34, 28);
+            this.btnSave.Size = new System.Drawing.Size(28, 28);
             this.btnSave.Text = "Save Image";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -118,7 +118,7 @@
             this.btnSlideshow.Image = global::DoomLauncher.Properties.Resources.Video;
             this.btnSlideshow.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSlideshow.Name = "btnSlideshow";
-            this.btnSlideshow.Size = new System.Drawing.Size(34, 28);
+            this.btnSlideshow.Size = new System.Drawing.Size(28, 28);
             this.btnSlideshow.Text = "Slideshow";
             this.btnSlideshow.Click += new System.EventHandler(this.btnSlideshow_Click);
             // 
@@ -128,7 +128,7 @@
             this.btnEdit.Image = global::DoomLauncher.Properties.Resources.Edit;
             this.btnEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(34, 28);
+            this.btnEdit.Size = new System.Drawing.Size(28, 28);
             this.btnEdit.Text = "Edit";
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
@@ -137,7 +137,7 @@
             this.btnNext.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNext.Font = new System.Drawing.Font("MS Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNext.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.btnNext.ForeColor = System.Drawing.SystemColors.ControlText;
             this.btnNext.Location = new System.Drawing.Point(692, 0);
             this.btnNext.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.btnNext.Name = "btnNext";
@@ -154,7 +154,7 @@
             this.btnPrev.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnPrev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPrev.Font = new System.Drawing.Font("MS Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPrev.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.btnPrev.ForeColor = System.Drawing.SystemColors.ControlText;
             this.btnPrev.Location = new System.Drawing.Point(609, 0);
             this.btnPrev.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.btnPrev.Name = "btnPrev";
@@ -202,8 +202,10 @@
             // 
             // statisticsView
             // 
+            this.statisticsView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
             this.statisticsView.DataSourceAdapter = null;
             this.statisticsView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.statisticsView.ForeColor = System.Drawing.Color.White;
             this.statisticsView.GameFile = null;
             this.statisticsView.Location = new System.Drawing.Point(4, 190);
             this.statisticsView.Margin = new System.Windows.Forms.Padding(4, 10, 4, 5);
@@ -226,9 +228,9 @@
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
             this.lblTitle.IsPath = false;
-            this.lblTitle.Location = new System.Drawing.Point(313, 15);
+            this.lblTitle.Location = new System.Drawing.Point(324, 20);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(63, 29);
+            this.lblTitle.Size = new System.Drawing.Size(41, 19);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Title";
             this.lblTitle.UseMnemonic = false;
@@ -252,7 +254,7 @@
             this.lblDescription.Location = new System.Drawing.Point(6, 20);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(6, 20, 6, 0);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(109, 25);
+            this.lblDescription.Size = new System.Drawing.Size(79, 17);
             this.lblDescription.TabIndex = 1;
             this.lblDescription.Text = "Description";
             // 

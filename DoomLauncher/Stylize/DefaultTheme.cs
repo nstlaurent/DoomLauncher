@@ -19,6 +19,9 @@ namespace DoomLauncher
         public Color GridRow => SystemColors.Window;
         public Color GridRowAlt => SystemColors.ControlLight;
         public Color Separator => Color.Gray;
+        public Color StatBackgroundGradientFrom => Color.Gray;
+        public Color StatBackgroundGradientTo => Color.LightGray;
         public bool GridRowBorder => true;
+        public bool IsDark => true;
     }
 }

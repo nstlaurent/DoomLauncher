@@ -8,7 +8,7 @@ namespace DoomLauncher
     class StatBar : UserControl
     {
         private static readonly Font DisplayFont = new Font(FontFamily.GenericSerif, 10.0f, FontStyle.Bold);
-        private static readonly Brush FontBrush = new SolidBrush(Color.Black);
+        private static readonly Brush FontBrush = new SolidBrush(ColorTheme.Current.Text);
 
         private int m_count, m_total, m_maxHeight;
         private string m_text;
@@ -67,7 +67,8 @@ namespace DoomLauncher
 
             pt.Offset(offsetX, offsetY);
             rect = new Rectangle(pt, new Size(rect.Width - offsetX, rect.Height - offsetY));
-            Brush bgBrush = new LinearGradientBrush(rect, Color.DarkGray, Color.LightGray, 90.0f);
+            Brush bgBrush = new LinearGradientBrush(rect, ColorTheme.Current.StatBackgroundGradientFrom, 
+                ColorTheme.Current.StatBackgroundGradientTo, 90.0f);
             Rectangle percentRect = new Rectangle(rect.Location, new Size(width, rect.Height));
             Brush brush = GetPercentBrush(rect, percent, total);
 
@@ -92,9 +93,25 @@ namespace DoomLauncher
         private static Brush GetPercentBrush(Rectangle rect, double percent, int total)
         {
             if (percent >= 1.0 || total == 0)
-                return new LinearGradientBrush(rect, Color.LightGreen, Color.Green, LinearGradientMode.ForwardDiagonal);
-            else
-                return new LinearGradientBrush(rect, Color.LightBlue, Color.Blue, LinearGradientMode.ForwardDiagonal);
+                return GetCompleteBrush(rect);
+
+            return GetUncompleteBrush(rect);
+        }
+
+        private static Brush GetUncompleteBrush(Rectangle rect)
+        {
+            if (ColorTheme.Current.IsDark)
+                return new SolidBrush(ColorTheme.Current.Highlight);
+
+            return new LinearGradientBrush(rect, Color.LightBlue, Color.Blue, LinearGradientMode.ForwardDiagonal);
+        }
+
+        private static Brush GetCompleteBrush(Rectangle rect)
+        {
+            if (ColorTheme.Current.IsDark)
+                return new LinearGradientBrush(rect, Color.Green, Color.DarkGreen, LinearGradientMode.ForwardDiagonal);
+
+            return new LinearGradientBrush(rect, Color.LightGreen, Color.Green, LinearGradientMode.ForwardDiagonal);
         }
 
         private static Pen GetPrecentPen(double percent, int total)

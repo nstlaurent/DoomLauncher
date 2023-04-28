@@ -19,6 +19,9 @@ namespace DoomLauncher
         Color GridRow { get; }
         Color GridRowAlt { get; }
         Color Separator { get; }
+        Color StatBackgroundGradientFrom { get; }
+        Color StatBackgroundGradientTo { get; }
         bool GridRowBorder { get; }
+        bool IsDark { get; }
     }
 }
