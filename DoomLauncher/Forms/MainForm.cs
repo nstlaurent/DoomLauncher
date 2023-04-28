@@ -170,6 +170,8 @@ namespace DoomLauncher
         private void InitWindow()
         {
             Stylizer.Stylize(this, DesignMode);
+            Stylizer.StylizeControl(mnuLocal, DesignMode);
+            Stylizer.StylizeControl(mnuIdGames, DesignMode);
 
             if (m_launchArgs.LaunchGameFileID != null && m_launchArgs.AutoClose)
             {
@@ -1935,6 +1937,8 @@ namespace DoomLauncher
 
                 sortToolStrip.DropDownItems[i].Text = text;
             }
+
+            Stylizer.StylizeControl(mnuLocal, DesignMode);
         }
 
         private void SetVisibleLocalMenuItems(IGameFileView view)
