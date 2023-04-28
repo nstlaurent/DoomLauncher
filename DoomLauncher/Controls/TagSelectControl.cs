@@ -196,7 +196,6 @@ namespace DoomLauncher.Controls
         private void InitGrid(DataGridView view)
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
-            GameFileViewControl.StyleGrid(view);
 
             view.Columns.Clear();
 

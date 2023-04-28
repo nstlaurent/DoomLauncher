@@ -40,25 +40,6 @@ namespace DoomLauncher
             Stylizer.StylizeControl(this, DesignMode);
         }
 
-        public static void StyleGrid(DataGridView view)
-        {
-            return;
-            view.RowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
-            view.AlternatingRowsDefaultCellStyle.ForeColor = SystemColors.WindowText;
-            view.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
-
-            if (SystemInformation.HighContrast)
-                view.AlternatingRowsDefaultCellStyle.BackColor = view.DefaultCellStyle.BackColor;
-            else
-                view.AlternatingRowsDefaultCellStyle.BackColor = SystemColors.ControlLight;
-
-            view.DefaultCellStyle.NullValue = "N/A";
-            view.RowHeadersVisible = false;
-            view.AutoGenerateColumns = false;
-            view.ShowCellToolTips = false;
-            view.BackgroundColor = SystemColors.Window;
-        }
-
         public static void StyleDisplayLabel(Label label)
         {
             label.AutoSize = true;
@@ -261,8 +242,6 @@ namespace DoomLauncher
 
         private void SetupGridView()
         {
-            StyleGrid(dgvMain);
-
             dgvMain.SelectionChanged += dgvMain_SelectionChanged;
             dgvMain.CellClick += dgvMain_CellClick;
             dgvMain.ColumnDisplayIndexChanged += dgvMain_ColumnDisplayIndexChanged;

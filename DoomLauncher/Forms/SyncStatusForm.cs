@@ -11,7 +11,6 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            GameFileViewControl.StyleGrid(dgvFiles);
             dgvFiles.Columns[dgvFiles.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Stylizer.Stylize(this, DesignMode);
         }

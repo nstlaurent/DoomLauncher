@@ -16,8 +16,6 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            GameFileViewControl.StyleGrid(dgvMain);
-
             SetColumnFields(new Tuple<string, string>[]
             {
                 new Tuple<string, string>("Description", "Description"),

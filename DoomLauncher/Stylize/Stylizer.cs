@@ -234,12 +234,13 @@ namespace DoomLauncher
             view.ForeColor = CurrentTheme.Text;
             view.BackgroundColor = CurrentTheme.WindowDark;
             view.RowsDefaultCellStyle.ForeColor = CurrentTheme.Text;
-            view.RowsDefaultCellStyle.BackColor = CurrentTheme.WindowDark;
+            view.RowsDefaultCellStyle.BackColor = CurrentTheme.GridRow;
             view.AlternatingRowsDefaultCellStyle.ForeColor = CurrentTheme.Text;
-            view.AlternatingRowsDefaultCellStyle.BackColor = CurrentTheme.WindowDark;
+            view.AlternatingRowsDefaultCellStyle.BackColor = CurrentTheme.GridRowAlt;
             view.DefaultCellStyle.SelectionBackColor = CurrentTheme.Highlight;
 
-            view.CellPainting += View_CellPainting;
+            if (!CurrentTheme.GridRowBorder)
+                view.CellPainting += View_CellPainting;
         }
 
         private static void View_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)

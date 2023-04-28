@@ -24,7 +24,6 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            GameFileViewControl.StyleGrid(dgvSourcePorts);
             dgvSourcePorts.MultiSelect = false;
 
             m_adapter = adapter;

@@ -16,5 +16,8 @@ namespace DoomLauncher
         Color TextBoxBackground { get; }
         Color Border { get; }
         Color LinkText { get; }
+        Color GridRow { get; }
+        Color GridRowAlt { get; }
+        bool GridRowBorder { get; }
     }
 }
