@@ -39,6 +39,7 @@ namespace DoomLauncher
             tblMain.RowStyles[s_linkRow].Height = 0;
             lnk.Visible = false;
             chk.Visible = false;
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public void SetCheckBox(string text)

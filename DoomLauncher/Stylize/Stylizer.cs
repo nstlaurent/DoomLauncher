@@ -59,7 +59,6 @@ namespace DoomLauncher
         {
             textBox.BackColor = CurrentTheme.TextBoxBackground;
             textBox.ForeColor = CurrentTheme.Text;
-            //textBox.BorderStyle = BorderStyle.None;
         }
 
         private static void TextBox_Paint(object sender, PaintEventArgs e)
