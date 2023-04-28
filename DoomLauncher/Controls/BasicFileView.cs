@@ -12,7 +12,7 @@ namespace DoomLauncher
     public abstract class BasicFileView : UserControl, IFileAssociationView
     {
         protected ContextMenuStrip m_menu;
-        private IFileData[] m_files = new IFileData[] { };
+        private IFileData[] m_files = Array.Empty<IFileData>();
 
         public abstract void SetData(IGameFile gameFile);
 
@@ -413,6 +413,7 @@ namespace DoomLauncher
         public void SetContextMenu(ContextMenuStrip menu)
         {
             m_menu = menu;
+            Stylizer.StylizeControl(m_menu, DesignMode);
         }
 
         protected abstract List<IFileData> GetSelectedFiles();

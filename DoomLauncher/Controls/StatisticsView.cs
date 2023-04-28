@@ -24,7 +24,7 @@ namespace DoomLauncher
             new Tuple<string, string>("SourcePort", "SourcePort"),
         };
 
-    public StatisticsView()
+        public StatisticsView()
         {
             InitializeComponent();
 
@@ -45,6 +45,7 @@ namespace DoomLauncher
         public void SetContextMenu(ContextMenuStrip menu)
         {
             m_menu = menu;
+            Stylizer.StylizeControl(m_menu, DesignMode);
         }
 
         public void SetData(IGameFile gameFile)

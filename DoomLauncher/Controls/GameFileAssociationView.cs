@@ -40,6 +40,7 @@ namespace DoomLauncher
             btnOpenFile.Image = Icons.FolderOpen;
 
             Stylizer.StylizeControl(this, DesignMode);
+            Stylizer.StylizeControl(mnuOptions, DesignMode);
         }
 
         private void CtrlScreenshotView_RequestScreenshots(object sender, RequestScreenshotsEventArgs e)

@@ -172,6 +172,7 @@ namespace DoomLauncher
             Stylizer.Stylize(this, DesignMode);
             Stylizer.StylizeControl(mnuLocal, DesignMode);
             Stylizer.StylizeControl(mnuIdGames, DesignMode);
+            Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
 
             if (m_launchArgs.LaunchGameFileID != null && m_launchArgs.AutoClose)
             {

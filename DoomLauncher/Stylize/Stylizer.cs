@@ -118,12 +118,16 @@ namespace DoomLauncher
 
             foreach (var item in control.DropDownItems)
             {
-                if (!(item is ToolStripMenuItem menuItem))
+                if (item is ToolStripMenuItem menuItem)
+                {
+                    menuItem.BackColor = CurrentTheme.Window;
+                    menuItem.ForeColor = CurrentTheme.Text;
+                    StyleMenuDropDownItems(menuItem);
                     continue;
+                }
 
-                menuItem.BackColor = CurrentTheme.Window;
-                menuItem.ForeColor = CurrentTheme.Text;
-                StyleMenuDropDownItems(menuItem);
+                if (item is ToolStripSeparator toolStripSeparator)
+                    toolStripSeparator.Paint += ToolStripSeparator_Paint;
             }
         }
 
@@ -146,20 +150,13 @@ namespace DoomLauncher
             }
         }
 
-        private static void Separator_Paint(object sender, PaintEventArgs e)
-        {
-            
-        }
-
         private static void StyleMenuDropDownItems(ToolStripMenuItem menuItem)
         {
             foreach (var subItem in menuItem.DropDownItems)
             {
                 if (subItem is ToolStripSeparator separator)
                 {
-                    //separator.Paint += Separator_Paint;
-                    separator.BackColor = CurrentTheme.Window;
-                    separator.ForeColor = CurrentTheme.Text;
+                    separator.Paint += ToolStripSeparator_Paint;
                     continue;
                 }
 
@@ -254,6 +251,21 @@ namespace DoomLauncher
         private static void ComboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             e.Graphics.FillRectangle(new SolidBrush(CurrentTheme.Window), e.Bounds);
+        }
+
+        private static void ToolStripSeparator_Paint(object sender, PaintEventArgs e)
+        {
+            ToolStripSeparator toolStripSeparator = (ToolStripSeparator)sender;
+            int width = toolStripSeparator.Width;
+            int height = toolStripSeparator.Height;
+
+            Color foreColor = CurrentTheme.Separator;
+            Color backColor = CurrentTheme.Window;
+
+            DpiScale dpiScale = new DpiScale(e.Graphics);
+            int pad = dpiScale.ScaleIntX(8);
+            e.Graphics.FillRectangle(new SolidBrush(backColor), 0, 0, width, height);
+            e.Graphics.DrawLine(new Pen(foreColor), pad, height / 2, width, height / 2);
         }
     }
 }

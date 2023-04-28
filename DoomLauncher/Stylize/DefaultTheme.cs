@@ -18,6 +18,7 @@ namespace DoomLauncher
         public Color LinkText => Highlight;
         public Color GridRow => SystemColors.Window;
         public Color GridRowAlt => SystemColors.ControlLight;
+        public Color Separator => Color.Gray;
         public bool GridRowBorder => true;
     }
 }
