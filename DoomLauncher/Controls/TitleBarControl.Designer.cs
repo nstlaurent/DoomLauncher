@@ -87,18 +87,19 @@
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(33, 24);
             this.btnClose.TabIndex = 0;
-            this.btnClose.Text = "X";
+            this.btnClose.Text = "❌";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // btnMaximize
             // 
+            this.btnMaximize.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMaximize.Location = new System.Drawing.Point(151, 0);
             this.btnMaximize.Margin = new System.Windows.Forms.Padding(0);
             this.btnMaximize.Name = "btnMaximize";
             this.btnMaximize.Size = new System.Drawing.Size(31, 24);
             this.btnMaximize.TabIndex = 1;
-            this.btnMaximize.Text = "O";
+            this.btnMaximize.Text = "▢";
             this.btnMaximize.UseVisualStyleBackColor = true;
             this.btnMaximize.Click += new System.EventHandler(this.btnMaximize_Click);
             // 
@@ -109,7 +110,7 @@
             this.btnMinimize.Name = "btnMinimize";
             this.btnMinimize.Size = new System.Drawing.Size(29, 24);
             this.btnMinimize.TabIndex = 2;
-            this.btnMinimize.Text = "-";
+            this.btnMinimize.Text = "−";
             this.btnMinimize.UseVisualStyleBackColor = true;
             this.btnMinimize.Click += new System.EventHandler(this.btnMinimize_Click);
             // 
@@ -118,7 +119,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tblMain);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "TitleBarControl";
             this.Size = new System.Drawing.Size(429, 24);
             this.tblMain.ResumeLayout(false);
