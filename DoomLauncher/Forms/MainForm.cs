@@ -60,6 +60,7 @@ namespace DoomLauncher
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
+            Stylizer.Stylize(this, DesignMode);
         }
 
         protected override void OnClientSizeChanged(EventArgs e)

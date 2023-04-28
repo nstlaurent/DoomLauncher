@@ -85,6 +85,7 @@ namespace DoomLauncher
             };
 
             InitTabIndicies();
+            Stylizer.Stylize(this, DesignMode);
         }
 
         private void InitTabIndicies()

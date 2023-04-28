@@ -76,7 +76,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-
     <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
       <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
     </Reference>
@@ -136,6 +135,7 @@
     <Compile Include="Archive\FileArchiveReader.cs" />
     <Compile Include="Archive\Directory\DirectoryArchiveReader.cs" />
     <Compile Include="Archive\IArchiveEntry.cs" />
+    <Compile Include="Config\ColorTheme.cs" />
     <Compile Include="Controls\CCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -908,9 +908,7 @@
       <DependentUpon>TagSelectForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
-    <None Include="DoomLauncher.sqlite">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="DoomLauncher.sqlite" />
     <None Include="Help.docx" />
     <None Include="Help.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
