@@ -94,7 +94,7 @@
             this.chkIncludeAll = new System.Windows.Forms.CheckBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
-            this.btnDownloads = new System.Windows.Forms.Button();
+            this.btnDownloads = new DoomLauncher.FormButton();
             this.btnUpdate = new DoomLauncher.GlowButton();
             this.tblDataView = new System.Windows.Forms.TableLayoutPanel();
             this.splitLeftRight = new System.Windows.Forms.SplitContainer();
@@ -956,7 +956,7 @@
         private GameFileAssociationView ctrlAssociationView;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-        private System.Windows.Forms.Button btnDownloads;
+        private DoomLauncher.FormButton btnDownloads;
         private System.Windows.Forms.ToolStripMenuItem viewWebPageToolStripMenuItem;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;

@@ -61,7 +61,6 @@ namespace DoomLauncher
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
             FormBorderStyle = FormBorderStyle.None;
-            Stylizer.Stylize(this, DesignMode);
         }
 
         protected override void OnClientSizeChanged(EventArgs e)
@@ -169,6 +168,8 @@ namespace DoomLauncher
 
         private void InitWindow()
         {
+            Stylizer.Stylize(this, DesignMode);
+
             if (m_launchArgs.LaunchGameFileID != null && m_launchArgs.AutoClose)
             {
                 WindowState = FormWindowState.Minimized;
