@@ -60,8 +60,8 @@ namespace DoomLauncher
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
+            Stylizer.RemoveTitleBar(this);
             MaximizedBounds = Screen.GetWorkingArea(this);
-            FormBorderStyle = FormBorderStyle.None;
         }
 
         protected override void OnClientSizeChanged(EventArgs e)
@@ -419,7 +419,7 @@ namespace DoomLauncher
                 form.SetMaxLength(48);
                 form.DisplayText = gameFile.FileNameNoPath;
                 form.StartPosition = FormStartPosition.CenterParent;
-                form.Text = string.Format("Rename {0}", gameFile.FileNameNoPath);
+                form.Title = string.Format("Rename {0}", gameFile.FileNameNoPath);
 
                 int idx = form.DisplayText.IndexOf('.');
                 if (idx != -1)
@@ -2368,7 +2368,7 @@ namespace DoomLauncher
         {
             TextBoxForm form = new TextBoxForm();
             form.StartPosition = FormStartPosition.CenterParent;
-            form.Text = title;
+            form.Title = title;
             form.HeaderText = header;
             form.DisplayText = text;
 
@@ -2471,7 +2471,7 @@ namespace DoomLauncher
             string tabText = tabView == null ? string.Empty : tabView.Title;
 
             CumulativeStats form = new CumulativeStats();
-            form.Text = $"Cumulative Stats - {tabText}";
+            form.Title = $"Cumulative Stats - {tabText.Replace("● ", string.Empty)}";
             form.SetStatistics(view.DataSource, DataSourceAdapter.GetStats(view.DataSource));
             form.StartPosition = FormStartPosition.CenterParent;
             form.ShowDialog(this);

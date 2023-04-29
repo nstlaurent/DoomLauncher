@@ -29,6 +29,11 @@ namespace DoomLauncher.Controls
             Stylizer.StylizeControl(this, DesignMode);
         }
 
+        public void SetControlBox(bool set)
+        {
+            flpButtons.Visible = set;
+        }
+
         private void FlpButtons_DoubleClick(object sender, EventArgs e)
         {
             SetMinMax();

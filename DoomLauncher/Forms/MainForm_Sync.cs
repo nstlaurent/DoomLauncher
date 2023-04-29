@@ -377,7 +377,7 @@ namespace DoomLauncher
                 }
 
                 TextBoxForm form = new TextBoxForm(true, MessageBoxButtons.OK);
-                form.Text = "Files Not Found";
+                form.Title = "Files Not Found";
                 form.HeaderText = "The following files were not found in the idgames database:";
                 form.DisplayText = sb.ToString();
                 form.ShowDialog(this);

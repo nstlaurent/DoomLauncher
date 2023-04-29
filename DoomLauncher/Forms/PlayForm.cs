@@ -6,10 +6,8 @@ using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -85,7 +83,8 @@ namespace DoomLauncher
             };
 
             InitTabIndicies();
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         private void InitTabIndicies()
@@ -126,7 +125,7 @@ namespace DoomLauncher
 
             if (gameFile != null)
             {
-                Text = "Launch - " + (string.IsNullOrEmpty(gameFile.Title) ? gameFile.FileName : gameFile.Title);
+                titleBar.Title = "Launch - " + (string.IsNullOrEmpty(gameFile.Title) ? gameFile.FileName : gameFile.Title);
                 if (!string.IsNullOrEmpty(gameFile.Map))
                     AutoCompleteCombo.SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
             }
@@ -733,7 +732,7 @@ namespace DoomLauncher
                         TextBoxForm form = new TextBoxForm(true, MessageBoxButtons.OK)
                         {
                             StartPosition = FormStartPosition.CenterParent,
-                            Text = "Not Found",
+                            Title = "Not Found",
                             HeaderText = "The following required files were not found:",
                             DisplayText = string.Join(Environment.NewLine, unavailable.ToArray())
                         };
@@ -891,7 +890,7 @@ namespace DoomLauncher
             form.SetMaxLength(48);
             form.DisplayText = displayText;
             form.StartPosition = FormStartPosition.CenterParent;
-            form.Text = "Enter Profile Name";
+            form.Title = "Enter Profile Name";
             form.SelectDisplayText(0, form.DisplayText.Length);
             if (showCheckBox)
                 form.SetCheckBox("Copy current profile");
@@ -1033,7 +1032,7 @@ namespace DoomLauncher
         {
             TextBoxForm form = new TextBoxForm(true, MessageBoxButtons.OKCancel)
             {
-                Text = "Extra Parameters",
+                Title = "Extra Parameters",
                 DisplayText = txtParameters.Text,
                 StartPosition = FormStartPosition.CenterParent,
                 AcceptButton = null

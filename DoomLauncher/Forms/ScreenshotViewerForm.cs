@@ -1,6 +1,4 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Handlers;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -35,7 +33,8 @@ namespace DoomLauncher.Forms
             KeyPreview = true;
             KeyUp += ScreenshotViewerForm_KeyUp;
             MouseWheel += ScreenshotViewerForm_MouseWheel;
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         private void ScreenshotViewerForm_MouseWheel(object sender, MouseEventArgs e)
@@ -128,7 +127,7 @@ namespace DoomLauncher.Forms
                 Image image = pbMain.GetImage();
                 pbMain.SetImage(Image.FromFile(GetImageFilename()));
                 image?.Dispose();
-                Text = string.Format("Screenshot Viewer - {0}/{1}", m_index + 1, m_images.Length);
+                titleBar.Title = string.Format("Screenshot Viewer - {0}/{1}", m_index + 1, m_images.Length);
 
                 SetUserDescription(GetFileData());
             }
@@ -247,7 +246,7 @@ namespace DoomLauncher.Forms
 
             if (m_slideshow)
             {
-                Text = "Slideshow";
+                titleBar.Title = "Slideshow";
                 pbMain.SetImages(m_images.ToList(), m_index);
             }
             else

@@ -34,7 +34,7 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.tabControl = new CTabControl();
+            this.tabControl = new DoomLauncher.CTabControl();
             this.tabPageConfig = new System.Windows.Forms.TabPage();
             this.tabPageDefault = new System.Windows.Forms.TabPage();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -63,6 +63,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.cmbViewType = new System.Windows.Forms.ComboBox();
+            this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.tblOuter.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -79,13 +80,15 @@
             // 
             this.tblOuter.ColumnCount = 1;
             this.tblOuter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblOuter.Controls.Add(this.flowLayoutPanel1, 0, 1);
-            this.tblOuter.Controls.Add(this.tabControl, 0, 0);
+            this.tblOuter.Controls.Add(this.flowLayoutPanel1, 0, 2);
+            this.tblOuter.Controls.Add(this.tabControl, 0, 1);
+            this.tblOuter.Controls.Add(this.titleBar, 0, 0);
             this.tblOuter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblOuter.Location = new System.Drawing.Point(0, 0);
             this.tblOuter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblOuter.Name = "tblOuter";
-            this.tblOuter.RowCount = 2;
+            this.tblOuter.RowCount = 3;
+            this.tblOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tblOuter.Size = new System.Drawing.Size(608, 436);
@@ -133,11 +136,14 @@
             this.tabControl.Controls.Add(this.tabPageFileManagement);
             this.tabControl.Controls.Add(this.tabPageView);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.Location = new System.Drawing.Point(4, 5);
+            this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControl.Location = new System.Drawing.Point(4, 45);
             this.tabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tabControl.Multiline = true;
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(600, 377);
+            this.tabControl.Size = new System.Drawing.Size(600, 337);
+            this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl.TabIndex = 1;
             // 
             // tabPageConfig
@@ -147,7 +153,7 @@
             this.tabPageConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPageConfig.Name = "tabPageConfig";
             this.tabPageConfig.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tabPageConfig.Size = new System.Drawing.Size(592, 344);
+            this.tabPageConfig.Size = new System.Drawing.Size(592, 304);
             this.tabPageConfig.TabIndex = 0;
             this.tabPageConfig.Text = "Configuration";
             // 
@@ -166,7 +172,7 @@
             this.tabPageDefault.Margin = new System.Windows.Forms.Padding(0);
             this.tabPageDefault.Name = "tabPageDefault";
             this.tabPageDefault.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tabPageDefault.Size = new System.Drawing.Size(592, 344);
+            this.tabPageDefault.Size = new System.Drawing.Size(592, 304);
             this.tabPageDefault.TabIndex = 1;
             this.tabPageDefault.Text = "Launch Settings";
             // 
@@ -262,7 +268,7 @@
             this.tabPageFileManagement.Location = new System.Drawing.Point(4, 29);
             this.tabPageFileManagement.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPageFileManagement.Name = "tabPageFileManagement";
-            this.tabPageFileManagement.Size = new System.Drawing.Size(592, 344);
+            this.tabPageFileManagement.Size = new System.Drawing.Size(592, 304);
             this.tabPageFileManagement.TabIndex = 2;
             this.tabPageFileManagement.Text = "File Management";
             // 
@@ -325,10 +331,10 @@
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(4, 16);
+            this.label3.Location = new System.Drawing.Point(4, 14);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(74, 17);
+            this.label3.Size = new System.Drawing.Size(84, 20);
             this.label3.TabIndex = 0;
             this.label3.Text = "Managed";
             // 
@@ -337,10 +343,10 @@
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(4, 65);
+            this.label5.Location = new System.Drawing.Point(4, 63);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(94, 17);
+            this.label5.Size = new System.Drawing.Size(107, 20);
             this.label5.TabIndex = 1;
             this.label5.Text = "Unmanaged";
             // 
@@ -349,10 +355,10 @@
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(4, 114);
+            this.label6.Location = new System.Drawing.Point(4, 112);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(59, 17);
+            this.label6.Size = new System.Drawing.Size(69, 20);
             this.label6.TabIndex = 2;
             this.label6.Text = "Prompt";
             // 
@@ -398,7 +404,7 @@
             this.tabPageView.Location = new System.Drawing.Point(4, 29);
             this.tabPageView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPageView.Name = "tabPageView";
-            this.tabPageView.Size = new System.Drawing.Size(592, 344);
+            this.tabPageView.Size = new System.Drawing.Size(592, 304);
             this.tabPageView.TabIndex = 3;
             this.tabPageView.Text = "View";
             // 
@@ -418,7 +424,7 @@
             this.chkListViews.Location = new System.Drawing.Point(85, 101);
             this.chkListViews.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkListViews.Name = "chkListViews";
-            this.chkListViews.Size = new System.Drawing.Size(420, 130);
+            this.chkListViews.Size = new System.Drawing.Size(420, 119);
             this.chkListViews.TabIndex = 14;
             // 
             // pnlViewRestart
@@ -461,6 +467,17 @@
             this.cmbViewType.Size = new System.Drawing.Size(293, 28);
             this.cmbViewType.TabIndex = 11;
             this.cmbViewType.SelectedIndexChanged += new System.EventHandler(this.CmbViewType_SelectedIndexChanged);
+            // 
+            // titleBar
+            // 
+            this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.titleBar.ForeColor = System.Drawing.Color.White;
+            this.titleBar.Location = new System.Drawing.Point(3, 3);
+            this.titleBar.Name = "titleBar";
+            this.titleBar.Size = new System.Drawing.Size(602, 34);
+            this.titleBar.TabIndex = 2;
+            this.titleBar.Title = "Settings";
             // 
             // SettingsForm
             // 
@@ -528,5 +545,6 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckedListBox chkListViews;
+        private Controls.TitleBarControl titleBar;
     }
 }

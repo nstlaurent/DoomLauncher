@@ -112,7 +112,7 @@ namespace DoomLauncher
         {
             ProgressBarForm progress = new ProgressBarForm
             {
-                Text = "Fetching data...",
+                Title = "Fetching data...",
                 Minimum = 0,
                 Maximum = 0
             };

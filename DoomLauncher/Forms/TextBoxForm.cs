@@ -10,6 +10,8 @@ namespace DoomLauncher
         private static readonly int s_linkRow = 2;
         private string m_url;
 
+        const int TitleBarHeight = 40;
+
         public TextBoxForm()
             : this(true, MessageBoxButtons.OK)
         {
@@ -31,7 +33,7 @@ namespace DoomLauncher
 
             if (!multiline)
             {
-                Height = dpiScale.ScaleIntY(100);
+                Height = dpiScale.ScaleIntY(100 + TitleBarHeight);
                 Width = dpiScale.ScaleIntX(300);
             }
 
@@ -39,7 +41,15 @@ namespace DoomLauncher
             tblMain.RowStyles[s_linkRow].Height = 0;
             lnk.Visible = false;
             chk.Visible = false;
-            Stylizer.Stylize(this, DesignMode);
+
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            MaximizedBounds = Screen.GetWorkingArea(this);
+        }
+
+        public string Title
+        {
+            get { return titleBar.Title; }
+            set { titleBar.Title = value; }
         }
 
         public void SetCheckBox(string text)
@@ -47,7 +57,7 @@ namespace DoomLauncher
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             chk.Visible = true;
             chk.Text = text;
-            tblMain.RowStyles[s_checkBoxRow].Height = dpiScale.ScaleIntY(32);
+            tblMain.RowStyles[s_checkBoxRow].Height = dpiScale.ScaleIntY(32 + TitleBarHeight);
             Height += dpiScale.ScaleIntY(32);
         }
 
@@ -57,7 +67,7 @@ namespace DoomLauncher
             lnk.Visible = true;
             lnk.Text = text;
             m_url = url;
-            tblMain.RowStyles[s_linkRow].Height = dpiScale.ScaleIntY(32);
+            tblMain.RowStyles[s_linkRow].Height = dpiScale.ScaleIntY(32 + TitleBarHeight);
             Height += dpiScale.ScaleIntY(32);
         }
 

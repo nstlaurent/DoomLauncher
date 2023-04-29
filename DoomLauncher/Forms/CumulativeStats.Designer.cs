@@ -39,6 +39,7 @@
             this.lblTimeLaunched = new System.Windows.Forms.Label();
             this.lblTimePlayed = new System.Windows.Forms.Label();
             this.ctrlStats = new DoomLauncher.StatsControl();
+            this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.tblMain.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -47,7 +48,7 @@
             // 
             this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(399, 297);
+            this.btnOK.Location = new System.Drawing.Point(399, 336);
             this.btnOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(112, 35);
@@ -60,28 +61,29 @@
             this.tblMain.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.lblNote, 0, 0);
-            this.tblMain.Controls.Add(this.btnOK, 0, 3);
-            this.tblMain.Controls.Add(this.tableLayoutPanel1, 0, 1);
-            this.tblMain.Controls.Add(this.ctrlStats, 0, 2);
+            this.tblMain.Controls.Add(this.lblNote, 0, 1);
+            this.tblMain.Controls.Add(this.btnOK, 0, 4);
+            this.tblMain.Controls.Add(this.tableLayoutPanel1, 0, 2);
+            this.tblMain.Controls.Add(this.ctrlStats, 0, 3);
+            this.tblMain.Controls.Add(this.titleBar, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Margin = new System.Windows.Forms.Padding(0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 4;
+            this.tblMain.RowCount = 5;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 160F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tblMain.Size = new System.Drawing.Size(516, 342);
+            this.tblMain.Size = new System.Drawing.Size(516, 379);
             this.tblMain.TabIndex = 2;
             // 
             // lblNote
             // 
             this.lblNote.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblNote.AutoSize = true;
-            this.lblNote.Location = new System.Drawing.Point(5, 15);
+            this.lblNote.Location = new System.Drawing.Point(5, 56);
             this.lblNote.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblNote.Name = "lblNote";
             this.lblNote.Size = new System.Drawing.Size(47, 20);
@@ -98,7 +100,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lblTimeLaunched, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblTimePlayed, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(1, 51);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(1, 92);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
@@ -122,7 +124,7 @@
             // 
             this.lblDisplay1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDisplay1.AutoSize = true;
-            this.lblDisplay1.Location = new System.Drawing.Point(3, 7);
+            this.lblDisplay1.Location = new System.Drawing.Point(4, 8);
             this.lblDisplay1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblDisplay1.Name = "lblDisplay1";
             this.lblDisplay1.Size = new System.Drawing.Size(183, 20);
@@ -152,18 +154,29 @@
             // ctrlStats
             // 
             this.ctrlStats.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlStats.Location = new System.Drawing.Point(5, 132);
+            this.ctrlStats.Location = new System.Drawing.Point(5, 173);
             this.ctrlStats.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ctrlStats.Name = "ctrlStats";
             this.ctrlStats.Size = new System.Drawing.Size(506, 150);
             this.ctrlStats.TabIndex = 13;
+            // 
+            // titleBar
+            // 
+            this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.titleBar.ForeColor = System.Drawing.Color.White;
+            this.titleBar.Location = new System.Drawing.Point(4, 4);
+            this.titleBar.Name = "titleBar";
+            this.titleBar.Size = new System.Drawing.Size(508, 34);
+            this.titleBar.TabIndex = 14;
+            this.titleBar.Title = "Cumulative Stats";
             // 
             // CumulativeStats
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(516, 342);
+            this.ClientSize = new System.Drawing.Size(516, 379);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -188,5 +201,6 @@
         private System.Windows.Forms.Label lblTimeLaunched;
         private System.Windows.Forms.Label lblTimePlayed;
         private StatsControl ctrlStats;
+        private Controls.TitleBarControl titleBar;
     }
 }

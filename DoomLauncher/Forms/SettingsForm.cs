@@ -39,7 +39,8 @@ namespace DoomLauncher
             PopulateConfiguration();
             UpdateScreenshotWidth(m_screenshotTrackBar);
 
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            MaximizedBounds = Screen.GetWorkingArea(this);
             PopulateViews();
         }
 
@@ -65,7 +66,7 @@ namespace DoomLauncher
         public void SetCancelAllowed(bool set)
         {
             btnCancel.Visible = set;
-            ControlBox = set;
+            titleBar.SetControlBox(set);
         }
 
         private int GetDefaultControlWidth()

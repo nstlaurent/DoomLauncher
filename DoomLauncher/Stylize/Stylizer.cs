@@ -1,26 +1,35 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace DoomLauncher
 {
+    public enum StylizerOptions
+    {
+        None,
+        RemoveTitleBar
+    }
+
     internal class Stylizer
     {
         private static readonly IThemeColors CurrentTheme = ColorTheme.Current;
 
-        public static void Stylize(Form form, bool designMode, params Control[] ignoreControls)
+        public static void Stylize(Form form, bool designMode, StylizerOptions options = StylizerOptions.None)
         {
             if (designMode)
                 return;
 
-            foreach (Control control in form.Controls)
-            {
-                if (ignoreControls.Contains(control))
-                    continue;
+            if (options.HasFlag(StylizerOptions.RemoveTitleBar))
+                RemoveTitleBar(form);
 
+            foreach (Control control in form.Controls)
                 StylizeControl(control, designMode);
-            }
+        }
+
+        public static void RemoveTitleBar(Form form)
+        {
+            form.ControlBox = false;
+            form.Text = string.Empty;
+            form.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
 
         public static void StylizeControl(Control control, bool designMode)
@@ -135,6 +144,7 @@ namespace DoomLauncher
         {
             cms.BackColor = CurrentTheme.Window;
             cms.ForeColor = CurrentTheme.Text;
+            
 
             cms.ShowCheckMargin = false;
             cms.ShowImageMargin = false;
@@ -196,7 +206,6 @@ namespace DoomLauncher
         {
             checkBox.ForeColor = CurrentTheme.Text;
             checkBox.BackColor = CurrentTheme.CheckBoxBackground;
-            //checkBox.Appearance = Appearance.Button;
             checkBox.FlatStyle = FlatStyle.Flat;
             checkBox.TextAlign = ContentAlignment.MiddleRight;
             checkBox.FlatAppearance.BorderSize = 0;

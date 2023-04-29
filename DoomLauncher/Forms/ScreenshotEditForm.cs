@@ -9,7 +9,8 @@ namespace DoomLauncher.Forms
         public ScreenshotEditForm()
         {
             InitializeComponent();
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         public static bool ShowDialogAndUpdate(IWin32Window owner, IDataSourceAdapter adapter, IGameFile gameFile, IFileData fileData)

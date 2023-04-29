@@ -178,7 +178,7 @@ namespace DoomLauncher
         {
             TextBoxForm textBoxForm = new TextBoxForm(true, MessageBoxButtons.OKCancel)
             {
-                Text = "Maps",
+                Title = "Maps",
                 HeaderText = "Enter map names, separated by commas.",
                 DisplayText = m_maps,
                 StartPosition = FormStartPosition.CenterScreen

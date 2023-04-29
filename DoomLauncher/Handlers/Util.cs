@@ -138,7 +138,7 @@ namespace DoomLauncher
             else
             {
                 TextBoxForm txt = new TextBoxForm();
-                txt.Text = "Unexpected Error";
+                txt.Title = "Unexpected Error";
                 txt.HeaderText = "An unexpected error occurred. Please submit the error report by clicking the link below. The report has been copied to your clipboard." + Environment.NewLine;
                 txt.DisplayText = ex.ToString();
                 txt.SetLink("Click here to submit", GitHubRepository);

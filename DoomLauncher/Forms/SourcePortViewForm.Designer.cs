@@ -44,6 +44,7 @@
             this.btnNext = new System.Windows.Forms.Button();
             this.flpTop = new System.Windows.Forms.FlowLayoutPanel();
             this.chkShowArchived = new System.Windows.Forms.CheckBox();
+            this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.tblMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSourcePorts)).BeginInit();
             this.tableLayoutPanelDB1.SuspendLayout();
@@ -55,18 +56,20 @@
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.dgvSourcePorts, 0, 1);
-            this.tblMain.Controls.Add(this.tableLayoutPanelDB1, 0, 2);
-            this.tblMain.Controls.Add(this.flpTop, 0, 0);
+            this.tblMain.Controls.Add(this.dgvSourcePorts, 0, 2);
+            this.tblMain.Controls.Add(this.tableLayoutPanelDB1, 0, 3);
+            this.tblMain.Controls.Add(this.flpTop, 0, 1);
+            this.tblMain.Controls.Add(this.titleBar, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 3;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tblMain.RowCount = 4;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.tblMain.Size = new System.Drawing.Size(832, 544);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tblMain.Size = new System.Drawing.Size(936, 680);
             this.tblMain.TabIndex = 0;
             // 
             // dgvSourcePorts
@@ -85,12 +88,12 @@
             this.dgvSourcePorts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvSourcePorts.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvSourcePorts.GridColor = System.Drawing.SystemColors.ActiveBorder;
-            this.dgvSourcePorts.Location = new System.Drawing.Point(4, 34);
-            this.dgvSourcePorts.Margin = new System.Windows.Forms.Padding(4);
+            this.dgvSourcePorts.Location = new System.Drawing.Point(4, 83);
+            this.dgvSourcePorts.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dgvSourcePorts.Name = "dgvSourcePorts";
             this.dgvSourcePorts.RowHeadersWidth = 51;
             this.dgvSourcePorts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSourcePorts.Size = new System.Drawing.Size(824, 467);
+            this.dgvSourcePorts.Size = new System.Drawing.Size(928, 543);
             this.dgvSourcePorts.TabIndex = 0;
             this.dgvSourcePorts.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSourcePorts_CellDoubleClick);
             // 
@@ -126,13 +129,13 @@
             this.tableLayoutPanelDB1.Controls.Add(this.flpButtons, 0, 0);
             this.tableLayoutPanelDB1.Controls.Add(this.btnNext, 1, 0);
             this.tableLayoutPanelDB1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanelDB1.Location = new System.Drawing.Point(0, 505);
+            this.tableLayoutPanelDB1.Location = new System.Drawing.Point(0, 631);
             this.tableLayoutPanelDB1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanelDB1.Name = "tableLayoutPanelDB1";
             this.tableLayoutPanelDB1.RowCount = 1;
             this.tableLayoutPanelDB1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelDB1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.tableLayoutPanelDB1.Size = new System.Drawing.Size(832, 39);
+            this.tableLayoutPanelDB1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tableLayoutPanelDB1.Size = new System.Drawing.Size(936, 49);
             this.tableLayoutPanelDB1.TabIndex = 1;
             // 
             // flpButtons
@@ -144,15 +147,15 @@
             this.flpButtons.Location = new System.Drawing.Point(0, 0);
             this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(416, 39);
+            this.flpButtons.Size = new System.Drawing.Size(468, 49);
             this.flpButtons.TabIndex = 2;
             // 
             // btnNew
             // 
-            this.btnNew.Location = new System.Drawing.Point(4, 4);
-            this.btnNew.Margin = new System.Windows.Forms.Padding(4);
+            this.btnNew.Location = new System.Drawing.Point(4, 5);
+            this.btnNew.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(100, 28);
+            this.btnNew.Size = new System.Drawing.Size(112, 35);
             this.btnNew.TabIndex = 2;
             this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = true;
@@ -160,10 +163,10 @@
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(112, 4);
-            this.btnEdit.Margin = new System.Windows.Forms.Padding(4);
+            this.btnEdit.Location = new System.Drawing.Point(124, 5);
+            this.btnEdit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(100, 28);
+            this.btnEdit.Size = new System.Drawing.Size(112, 35);
             this.btnEdit.TabIndex = 4;
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
@@ -171,10 +174,10 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(220, 4);
-            this.btnDelete.Margin = new System.Windows.Forms.Padding(4);
+            this.btnDelete.Location = new System.Drawing.Point(244, 5);
+            this.btnDelete.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(100, 28);
+            this.btnDelete.Size = new System.Drawing.Size(112, 35);
             this.btnDelete.TabIndex = 3;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
@@ -183,10 +186,10 @@
             // btnNext
             // 
             this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNext.Location = new System.Drawing.Point(724, 4);
-            this.btnNext.Margin = new System.Windows.Forms.Padding(4, 4, 8, 4);
+            this.btnNext.Location = new System.Drawing.Point(815, 5);
+            this.btnNext.Margin = new System.Windows.Forms.Padding(4, 5, 9, 5);
             this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(100, 28);
+            this.btnNext.Size = new System.Drawing.Size(112, 35);
             this.btnNext.TabIndex = 3;
             this.btnNext.Text = "Next";
             this.btnNext.UseVisualStyleBackColor = true;
@@ -197,32 +200,44 @@
             // 
             this.flpTop.Controls.Add(this.chkShowArchived);
             this.flpTop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTop.Location = new System.Drawing.Point(3, 0);
+            this.flpTop.Location = new System.Drawing.Point(3, 40);
             this.flpTop.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.flpTop.Name = "flpTop";
-            this.flpTop.Size = new System.Drawing.Size(829, 30);
+            this.flpTop.Size = new System.Drawing.Size(933, 38);
             this.flpTop.TabIndex = 2;
             // 
             // chkShowArchived
             // 
             this.chkShowArchived.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowArchived.AutoSize = true;
-            this.chkShowArchived.Location = new System.Drawing.Point(3, 3);
+            this.chkShowArchived.Location = new System.Drawing.Point(3, 4);
+            this.chkShowArchived.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowArchived.Name = "chkShowArchived";
-            this.chkShowArchived.Size = new System.Drawing.Size(118, 20);
+            this.chkShowArchived.Size = new System.Drawing.Size(140, 24);
             this.chkShowArchived.TabIndex = 0;
             this.chkShowArchived.Text = "Show Archived";
             this.chkShowArchived.UseVisualStyleBackColor = true;
             this.chkShowArchived.CheckedChanged += new System.EventHandler(this.chkShowArchived_CheckedChanged);
             // 
+            // titleBar
+            // 
+            this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.titleBar.ForeColor = System.Drawing.Color.White;
+            this.titleBar.Location = new System.Drawing.Point(3, 3);
+            this.titleBar.Name = "titleBar";
+            this.titleBar.Size = new System.Drawing.Size(930, 34);
+            this.titleBar.TabIndex = 3;
+            this.titleBar.Title = "Title";
+            // 
             // SourcePortViewForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(832, 544);
+            this.ClientSize = new System.Drawing.Size(936, 680);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "SourcePortViewForm";
             this.Text = "Source Ports";
             this.tblMain.ResumeLayout(false);
@@ -250,5 +265,6 @@
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.FlowLayoutPanel flpTop;
         private System.Windows.Forms.CheckBox chkShowArchived;
+        private Controls.TitleBarControl titleBar;
     }
 }

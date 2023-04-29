@@ -44,6 +44,7 @@
             this.lblTitle = new DoomLauncher.GrowLabel();
             this.flpData = new System.Windows.Forms.FlowLayoutPanel();
             this.lblDescription = new DoomLauncher.GrowLabel();
+            this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.tblMain.SuspendLayout();
             this.tblButtons.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -56,12 +57,14 @@
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.tblButtons, 0, 1);
-            this.tblMain.Controls.Add(this.tblContainer, 0, 0);
+            this.tblMain.Controls.Add(this.tblButtons, 0, 2);
+            this.tblMain.Controls.Add(this.tblContainer, 0, 1);
+            this.tblMain.Controls.Add(this.titleBar, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 2;
+            this.tblMain.RowCount = 3;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
             this.tblMain.Size = new System.Drawing.Size(1378, 844);
@@ -96,9 +99,9 @@
             this.btnSave,
             this.btnSlideshow,
             this.btnEdit});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 5);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 4);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(96, 31);
+            this.toolStrip1.Size = new System.Drawing.Size(120, 33);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -108,7 +111,7 @@
             this.btnSave.Image = global::DoomLauncher.Properties.Resources.Save;
             this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(28, 28);
+            this.btnSave.Size = new System.Drawing.Size(34, 28);
             this.btnSave.Text = "Save Image";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -118,7 +121,7 @@
             this.btnSlideshow.Image = global::DoomLauncher.Properties.Resources.Video;
             this.btnSlideshow.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSlideshow.Name = "btnSlideshow";
-            this.btnSlideshow.Size = new System.Drawing.Size(28, 28);
+            this.btnSlideshow.Size = new System.Drawing.Size(34, 28);
             this.btnSlideshow.Text = "Slideshow";
             this.btnSlideshow.Click += new System.EventHandler(this.btnSlideshow_Click);
             // 
@@ -128,7 +131,7 @@
             this.btnEdit.Image = global::DoomLauncher.Properties.Resources.Edit;
             this.btnEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(28, 28);
+            this.btnEdit.Size = new System.Drawing.Size(34, 28);
             this.btnEdit.Text = "Edit";
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
@@ -166,18 +169,19 @@
             // 
             // tblContainer
             // 
+            this.tblContainer.AutoScroll = true;
             this.tblContainer.ColumnCount = 2;
             this.tblContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tblContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tblContainer.Controls.Add(this.tblData, 1, 0);
             this.tblContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblContainer.Location = new System.Drawing.Point(0, 0);
+            this.tblContainer.Location = new System.Drawing.Point(0, 40);
             this.tblContainer.Margin = new System.Windows.Forms.Padding(0);
             this.tblContainer.Name = "tblContainer";
             this.tblContainer.RowCount = 1;
             this.tblContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblContainer.Size = new System.Drawing.Size(1378, 800);
+            this.tblContainer.Size = new System.Drawing.Size(1378, 760);
             this.tblContainer.TabIndex = 2;
             // 
             // tblData
@@ -197,7 +201,7 @@
             this.tblData.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tblData.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tblData.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblData.Size = new System.Drawing.Size(689, 800);
+            this.tblData.Size = new System.Drawing.Size(689, 760);
             this.tblData.TabIndex = 0;
             // 
             // statisticsView
@@ -228,9 +232,9 @@
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
             this.lblTitle.IsPath = false;
-            this.lblTitle.Location = new System.Drawing.Point(324, 20);
+            this.lblTitle.Location = new System.Drawing.Point(313, 15);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(41, 19);
+            this.lblTitle.Size = new System.Drawing.Size(63, 29);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Title";
             this.lblTitle.UseMnemonic = false;
@@ -243,7 +247,7 @@
             this.flpData.Location = new System.Drawing.Point(0, 380);
             this.flpData.Margin = new System.Windows.Forms.Padding(0);
             this.flpData.Name = "flpData";
-            this.flpData.Size = new System.Drawing.Size(689, 420);
+            this.flpData.Size = new System.Drawing.Size(689, 380);
             this.flpData.TabIndex = 2;
             // 
             // lblDescription
@@ -254,9 +258,20 @@
             this.lblDescription.Location = new System.Drawing.Point(6, 20);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(6, 20, 6, 0);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(79, 17);
+            this.lblDescription.Size = new System.Drawing.Size(109, 25);
             this.lblDescription.TabIndex = 1;
             this.lblDescription.Text = "Description";
+            // 
+            // titleBar
+            // 
+            this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.titleBar.ForeColor = System.Drawing.Color.White;
+            this.titleBar.Location = new System.Drawing.Point(3, 3);
+            this.titleBar.Name = "titleBar";
+            this.titleBar.Size = new System.Drawing.Size(1372, 34);
+            this.titleBar.TabIndex = 3;
+            this.titleBar.Title = "Screenshot";
             // 
             // ScreenshotViewerForm
             // 
@@ -295,5 +310,6 @@
         private System.Windows.Forms.FlowLayoutPanel flpData;
         private StatisticsView statisticsView;
         private StatsControl statsControl;
+        private Controls.TitleBarControl titleBar;
     }
 }

@@ -317,7 +317,7 @@ namespace DoomLauncher
         {
             TextBoxForm form = new TextBoxForm
             {
-                Text = "Launch Parameters",
+                Title = "Launch Parameters",
                 StartPosition = FormStartPosition.CenterParent
             };
 
@@ -559,7 +559,7 @@ namespace DoomLauncher
         {
             TextBoxForm form = new TextBoxForm();
             form.StartPosition = FormStartPosition.CenterParent;
-            form.Text = "Statistic Reader Errors";
+            form.Title = "Statistic Reader Errors";
             form.HeaderText = string.Concat("The following errors were reported by the statistics reader.", 
                 Environment.NewLine, "The statistics may be incomplete or missing.");
 

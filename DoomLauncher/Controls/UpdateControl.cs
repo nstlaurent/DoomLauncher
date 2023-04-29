@@ -40,7 +40,7 @@ namespace DoomLauncher
         {
             m_updateDownloadProgress = new ProgressBarForm
             {
-                Text = "Downloading",
+                Title = "Downloading",
                 DisplayText = "Downloading Update...",
                 Minimum = 0,
                 Maximum = 100,
@@ -101,7 +101,7 @@ namespace DoomLauncher
         {
             return new TextBoxForm(true, MessageBoxButtons.OK)
             {
-                Text = "Update Error",
+                Title = "Update Error",
                 HeaderText = "The application was unable to update. Please download the update manually.",
                 DisplayText = applicationUpdater.LastError,
                 StartPosition = FormStartPosition.CenterScreen

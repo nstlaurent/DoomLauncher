@@ -12,8 +12,9 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            this.Load += ProgressBarForm_Load;
-            Stylizer.Stylize(this, DesignMode);
+            Load += ProgressBarForm_Load;
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         void ProgressBarForm_Load(object sender, EventArgs e)
@@ -58,6 +59,12 @@ namespace DoomLauncher
         {
             get { return lblProcess.Text; }
             set { lblProcess.Text = value; }
+        }
+
+        public string Title
+        {
+            get { return titleBar.Title; }
+            set { titleBar.Title = value; }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

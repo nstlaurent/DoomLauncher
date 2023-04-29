@@ -11,7 +11,14 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            MaximizedBounds = Screen.GetWorkingArea(this);
+        }
+
+        public string Title
+        {
+            get { return titleBar.Title; }
+            set { titleBar.Title = value; }
         }
 
         public void SetStatistics(IEnumerable<IGameFile> gameFiles, IEnumerable<IStatsData> stats)
