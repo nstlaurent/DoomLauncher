@@ -290,8 +290,9 @@ namespace DoomLauncher
             using (var b = new SolidBrush(ColorTheme.Current.Window))
                 g.FillRectangle(b, rect);
 
-            var size = 12;
-            var checkBoxRect = new Rectangle(0, (rect.Height / 2) - (size / 2), size, size);
+            DpiScale dpiScale = new DpiScale(g);
+            var size = new Size(dpiScale.ScaleIntX(12), dpiScale.ScaleIntY(12));
+            var checkBoxRect = new Rectangle(0, 0, size.Width, size.Height);
             using (var b = new SolidBrush(ColorTheme.Current.CheckBoxBackground))
                 g.FillRectangle(b, checkBoxRect);
 
@@ -302,7 +303,8 @@ namespace DoomLauncher
             {
                 using (var b = new SolidBrush(fillColor))
                 {
-                    Rectangle selectRect = new Rectangle(2, (rect.Height / 2) - ((size - 4) / 2), size - 3, size - 3);
+                    Rectangle selectRect = new Rectangle(dpiScale.ScaleIntX(2), dpiScale.ScaleIntX(2),
+                        size.Width - dpiScale.ScaleIntX(3), size.Height - dpiScale.ScaleIntX(3));
                     g.FillRectangle(b, selectRect);
                 }
             }
@@ -315,7 +317,7 @@ namespace DoomLauncher
                     Alignment = StringAlignment.Near
                 };
 
-                var modRect = new Rectangle(size + 4, 0, rect.Width - size, rect.Height);
+                var modRect = new Rectangle(size.Width + dpiScale.ScaleIntX(4), dpiScale.ScaleIntY(1), rect.Width, checkBoxRect.Height);
                 g.DrawString(Text, Font, b, modRect, stringFormat);
             }
         }
