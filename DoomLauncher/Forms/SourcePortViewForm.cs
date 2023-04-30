@@ -31,11 +31,11 @@ namespace DoomLauncher
             m_tabViews = tabViews;
             m_launchType = type;
 
-            ResetData();
-            dgvSourcePorts.Columns[dgvSourcePorts.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
             MaximizedBounds = Screen.GetWorkingArea(this);
+
+            ResetData();
+            dgvSourcePorts.Columns[dgvSourcePorts.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
         public void DisplayInitSetupButton()
@@ -59,12 +59,12 @@ namespace DoomLauncher
             IEnumerable<ISourcePortData> data;
             if (m_launchType == SourcePortLaunchType.Utility)
             {
-                Text = "Utilities";
+                titleBar.Title = "Utilities";
                 data = m_adapter.GetUtilities(loadArchived);
             }
             else
             {
-                Text = "Source Ports";
+                titleBar.Title = "Source Ports";
                 data = m_adapter.GetSourcePorts(loadArchived);
             }
 
