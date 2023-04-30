@@ -165,9 +165,10 @@
             this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
             this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.titleBar.ForeColor = System.Drawing.Color.White;
-            this.titleBar.Location = new System.Drawing.Point(4, 4);
+            this.titleBar.Location = new System.Drawing.Point(1, 1);
+            this.titleBar.Margin = new System.Windows.Forms.Padding(0);
             this.titleBar.Name = "titleBar";
-            this.titleBar.Size = new System.Drawing.Size(508, 34);
+            this.titleBar.Size = new System.Drawing.Size(514, 40);
             this.titleBar.TabIndex = 14;
             this.titleBar.Title = "Cumulative Stats";
             // 

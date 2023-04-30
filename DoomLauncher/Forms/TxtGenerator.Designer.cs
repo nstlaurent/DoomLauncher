@@ -494,11 +494,11 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.tblLayout2);
-            this.tabPage2.Location = new System.Drawing.Point(4, 54);
+            this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tabPage2.Size = new System.Drawing.Size(606, 609);
+            this.tabPage2.Size = new System.Drawing.Size(769, 634);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Included";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -540,7 +540,7 @@
             this.tblLayout2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
             this.tblLayout2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
             this.tblLayout2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-            this.tblLayout2.Size = new System.Drawing.Size(598, 599);
+            this.tblLayout2.Size = new System.Drawing.Size(761, 624);
             this.tblLayout2.TabIndex = 0;
             // 
             // chkGraphics
@@ -716,16 +716,16 @@
             this.txtOtherFilesRequired.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtOtherFilesRequired.Multiline = true;
             this.txtOtherFilesRequired.Name = "txtOtherFilesRequired";
-            this.txtOtherFilesRequired.Size = new System.Drawing.Size(350, 205);
+            this.txtOtherFilesRequired.Size = new System.Drawing.Size(513, 205);
             this.txtOtherFilesRequired.TabIndex = 35;
             // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.tableLayoutPanel1);
-            this.tabPage3.Location = new System.Drawing.Point(4, 54);
+            this.tabPage3.Location = new System.Drawing.Point(4, 29);
             this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(606, 609);
+            this.tabPage3.Size = new System.Drawing.Size(769, 634);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Play Info";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -765,7 +765,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 609);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(769, 634);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // txtOtherGameStyles
@@ -774,7 +774,7 @@
             this.txtOtherGameStyles.Location = new System.Drawing.Point(244, 190);
             this.txtOtherGameStyles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtOtherGameStyles.Name = "txtOtherGameStyles";
-            this.txtOtherGameStyles.Size = new System.Drawing.Size(358, 26);
+            this.txtOtherGameStyles.Size = new System.Drawing.Size(521, 26);
             this.txtOtherGameStyles.TabIndex = 41;
             // 
             // cmbDeathmatch
@@ -785,7 +785,7 @@
             this.cmbDeathmatch.Location = new System.Drawing.Point(244, 153);
             this.cmbDeathmatch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbDeathmatch.Name = "cmbDeathmatch";
-            this.cmbDeathmatch.Size = new System.Drawing.Size(358, 28);
+            this.cmbDeathmatch.Size = new System.Drawing.Size(521, 28);
             this.cmbDeathmatch.TabIndex = 40;
             // 
             // cmbCoop
@@ -796,7 +796,7 @@
             this.cmbCoop.Location = new System.Drawing.Point(244, 116);
             this.cmbCoop.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbCoop.Name = "cmbCoop";
-            this.cmbCoop.Size = new System.Drawing.Size(358, 28);
+            this.cmbCoop.Size = new System.Drawing.Size(521, 28);
             this.cmbCoop.TabIndex = 39;
             // 
             // cmbSingle
@@ -807,7 +807,7 @@
             this.cmbSingle.Location = new System.Drawing.Point(244, 79);
             this.cmbSingle.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbSingle.Name = "cmbSingle";
-            this.cmbSingle.Size = new System.Drawing.Size(358, 28);
+            this.cmbSingle.Size = new System.Drawing.Size(521, 28);
             this.cmbSingle.TabIndex = 38;
             // 
             // label18
@@ -898,7 +898,7 @@
             this.cmbGame.Location = new System.Drawing.Point(244, 5);
             this.cmbGame.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbGame.Name = "cmbGame";
-            this.cmbGame.Size = new System.Drawing.Size(358, 28);
+            this.cmbGame.Size = new System.Drawing.Size(521, 28);
             this.cmbGame.TabIndex = 36;
             // 
             // txtMaps
@@ -907,7 +907,7 @@
             this.txtMaps.Location = new System.Drawing.Point(244, 42);
             this.txtMaps.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtMaps.Name = "txtMaps";
-            this.txtMaps.Size = new System.Drawing.Size(358, 26);
+            this.txtMaps.Size = new System.Drawing.Size(521, 26);
             this.txtMaps.TabIndex = 37;
             // 
             // chkDifficulty
@@ -924,10 +924,10 @@
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.tableLayoutPanel2);
-            this.tabPage4.Location = new System.Drawing.Point(4, 54);
+            this.tabPage4.Location = new System.Drawing.Point(4, 29);
             this.tabPage4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(606, 609);
+            this.tabPage4.Size = new System.Drawing.Size(769, 634);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Construction";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -965,7 +965,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(606, 609);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(769, 634);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
             // label26
@@ -1047,7 +1047,7 @@
             this.cmbBase.Location = new System.Drawing.Point(244, 5);
             this.cmbBase.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbBase.Name = "cmbBase";
-            this.cmbBase.Size = new System.Drawing.Size(358, 28);
+            this.cmbBase.Size = new System.Drawing.Size(521, 28);
             this.cmbBase.TabIndex = 28;
             // 
             // txtBuildTime
@@ -1056,7 +1056,7 @@
             this.txtBuildTime.Location = new System.Drawing.Point(244, 79);
             this.txtBuildTime.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtBuildTime.Name = "txtBuildTime";
-            this.txtBuildTime.Size = new System.Drawing.Size(358, 26);
+            this.txtBuildTime.Size = new System.Drawing.Size(521, 26);
             this.txtBuildTime.TabIndex = 29;
             // 
             // txtEditorsUsed
@@ -1065,7 +1065,7 @@
             this.txtEditorsUsed.Location = new System.Drawing.Point(244, 116);
             this.txtEditorsUsed.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtEditorsUsed.Name = "txtEditorsUsed";
-            this.txtEditorsUsed.Size = new System.Drawing.Size(358, 26);
+            this.txtEditorsUsed.Size = new System.Drawing.Size(521, 26);
             this.txtEditorsUsed.TabIndex = 30;
             // 
             // txtKnownBugs
@@ -1074,7 +1074,7 @@
             this.txtKnownBugs.Location = new System.Drawing.Point(244, 153);
             this.txtKnownBugs.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtKnownBugs.Name = "txtKnownBugs";
-            this.txtKnownBugs.Size = new System.Drawing.Size(358, 26);
+            this.txtKnownBugs.Size = new System.Drawing.Size(521, 26);
             this.txtKnownBugs.TabIndex = 31;
             // 
             // txtMayNotRun
@@ -1083,7 +1083,7 @@
             this.txtMayNotRun.Location = new System.Drawing.Point(244, 190);
             this.txtMayNotRun.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtMayNotRun.Name = "txtMayNotRun";
-            this.txtMayNotRun.Size = new System.Drawing.Size(358, 26);
+            this.txtMayNotRun.Size = new System.Drawing.Size(521, 26);
             this.txtMayNotRun.TabIndex = 32;
             // 
             // txtTestedWith
@@ -1092,16 +1092,16 @@
             this.txtTestedWith.Location = new System.Drawing.Point(244, 227);
             this.txtTestedWith.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtTestedWith.Name = "txtTestedWith";
-            this.txtTestedWith.Size = new System.Drawing.Size(358, 26);
+            this.txtTestedWith.Size = new System.Drawing.Size(521, 26);
             this.txtTestedWith.TabIndex = 33;
             // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.tableLayoutPanel3);
-            this.tabPage5.Location = new System.Drawing.Point(4, 54);
+            this.tabPage5.Location = new System.Drawing.Point(4, 29);
             this.tabPage5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(606, 609);
+            this.tabPage5.Size = new System.Drawing.Size(769, 634);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Permissions";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -1133,7 +1133,7 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(606, 609);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(769, 634);
             this.tableLayoutPanel3.TabIndex = 3;
             // 
             // label31
@@ -1158,7 +1158,7 @@
             this.cmbPermission.Location = new System.Drawing.Point(244, 5);
             this.cmbPermission.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbPermission.Name = "cmbPermission";
-            this.cmbPermission.Size = new System.Drawing.Size(358, 28);
+            this.cmbPermission.Size = new System.Drawing.Size(521, 28);
             this.cmbPermission.TabIndex = 28;
             // 
             // label32
@@ -1189,7 +1189,7 @@
             this.txtWebSites.Location = new System.Drawing.Point(244, 42);
             this.txtWebSites.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtWebSites.Name = "txtWebSites";
-            this.txtWebSites.Size = new System.Drawing.Size(358, 26);
+            this.txtWebSites.Size = new System.Drawing.Size(521, 26);
             this.txtWebSites.TabIndex = 31;
             // 
             // txtFtpSites
@@ -1198,7 +1198,7 @@
             this.txtFtpSites.Location = new System.Drawing.Point(244, 79);
             this.txtFtpSites.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtFtpSites.Name = "txtFtpSites";
-            this.txtFtpSites.Size = new System.Drawing.Size(358, 26);
+            this.txtFtpSites.Size = new System.Drawing.Size(521, 26);
             this.txtFtpSites.TabIndex = 32;
             // 
             // titleBar
@@ -1206,9 +1206,10 @@
             this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
             this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.titleBar.ForeColor = System.Drawing.Color.White;
-            this.titleBar.Location = new System.Drawing.Point(3, 3);
+            this.titleBar.Location = new System.Drawing.Point(0, 0);
+            this.titleBar.Margin = new System.Windows.Forms.Padding(0);
             this.titleBar.Name = "titleBar";
-            this.titleBar.Size = new System.Drawing.Size(779, 34);
+            this.titleBar.Size = new System.Drawing.Size(785, 40);
             this.titleBar.TabIndex = 3;
             this.titleBar.Title = "Text File Generator";
             // 

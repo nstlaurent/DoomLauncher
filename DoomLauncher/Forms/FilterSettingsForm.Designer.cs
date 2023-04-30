@@ -78,7 +78,8 @@
             // 
             titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
             titleBar.ForeColor = System.Drawing.Color.White;
-            titleBar.Location = new System.Drawing.Point(3, 3);
+            titleBar.Location = new System.Drawing.Point(0, 0);
+            titleBar.Margin = new System.Windows.Forms.Padding(0);
             titleBar.Name = "titleBar";
             titleBar.Size = new System.Drawing.Size(419, 34);
             titleBar.TabIndex = 2;

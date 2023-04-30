@@ -88,7 +88,7 @@
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(4, 344);
+            this.label2.Location = new System.Drawing.Point(4, 319);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 20);
@@ -102,7 +102,7 @@
             this.txtDescription.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(642, 502);
+            this.txtDescription.Size = new System.Drawing.Size(634, 452);
             this.txtDescription.TabIndex = 2;
             // 
             // flowLayoutPanel1
@@ -111,16 +111,16 @@
             this.flowLayoutPanel1.Controls.Add(this.btnSave);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(150, 610);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(150, 560);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(650, 49);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(642, 49);
             this.flowLayoutPanel1.TabIndex = 4;
             // 
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(534, 5);
+            this.button1.Location = new System.Drawing.Point(526, 5);
             this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(112, 35);
@@ -131,7 +131,7 @@
             // btnSave
             // 
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Location = new System.Drawing.Point(414, 5);
+            this.btnSave.Location = new System.Drawing.Point(406, 5);
             this.btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(112, 35);
@@ -144,7 +144,7 @@
             this.txtTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.txtTitle.Location = new System.Drawing.Point(153, 11);
             this.txtTitle.Name = "txtTitle";
-            this.txtTitle.Size = new System.Drawing.Size(643, 26);
+            this.txtTitle.Size = new System.Drawing.Size(636, 26);
             this.txtTitle.TabIndex = 5;
             // 
             // label3
@@ -165,7 +165,7 @@
             this.flpMap.Location = new System.Drawing.Point(150, 49);
             this.flpMap.Margin = new System.Windows.Forms.Padding(0);
             this.flpMap.Name = "flpMap";
-            this.flpMap.Size = new System.Drawing.Size(650, 49);
+            this.flpMap.Size = new System.Drawing.Size(642, 49);
             this.flpMap.TabIndex = 7;
             // 
             // chkMap
@@ -215,9 +215,10 @@
             this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
             this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.titleBar.ForeColor = System.Drawing.Color.White;
-            this.titleBar.Location = new System.Drawing.Point(3, 3);
+            this.titleBar.Location = new System.Drawing.Point(0, 0);
+            this.titleBar.Margin = new System.Windows.Forms.Padding(0);
             this.titleBar.Name = "titleBar";
-            this.titleBar.Size = new System.Drawing.Size(794, 34);
+            this.titleBar.Size = new System.Drawing.Size(800, 40);
             this.titleBar.TabIndex = 2;
             this.titleBar.Title = "Edit";
             // 

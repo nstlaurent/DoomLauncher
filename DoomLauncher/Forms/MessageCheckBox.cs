@@ -36,6 +36,7 @@ namespace DoomLauncher.Forms
             lblText.Anchor = AnchorStyles.Left;
 
             m_height = this.Height;
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public void SetShowCheckBox(bool set)

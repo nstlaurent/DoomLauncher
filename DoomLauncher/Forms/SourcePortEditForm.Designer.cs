@@ -122,7 +122,7 @@
             this.sourcePortEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sourcePortEdit1.ForeColor = System.Drawing.Color.White;
             this.sourcePortEdit1.Location = new System.Drawing.Point(4, 24);
-            this.sourcePortEdit1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.sourcePortEdit1.Margin = new System.Windows.Forms.Padding(6);
             this.sourcePortEdit1.Name = "sourcePortEdit1";
             this.sourcePortEdit1.Size = new System.Drawing.Size(518, 266);
             this.sourcePortEdit1.TabIndex = 0;
@@ -165,7 +165,7 @@
             this.ctrlFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
             this.ctrlFiles.ForeColor = System.Drawing.Color.White;
             this.ctrlFiles.Location = new System.Drawing.Point(14, 79);
-            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(6);
             this.ctrlFiles.Name = "ctrlFiles";
             this.ctrlFiles.Size = new System.Drawing.Size(498, 211);
             this.ctrlFiles.TabIndex = 21;
@@ -175,9 +175,10 @@
             this.titleBarControl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
             this.titleBarControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.titleBarControl1.ForeColor = System.Drawing.Color.White;
-            this.titleBarControl1.Location = new System.Drawing.Point(3, 3);
+            this.titleBarControl1.Location = new System.Drawing.Point(0, 0);
+            this.titleBarControl1.Margin = new System.Windows.Forms.Padding(0);
             this.titleBarControl1.Name = "titleBarControl1";
-            this.titleBarControl1.Size = new System.Drawing.Size(528, 34);
+            this.titleBarControl1.Size = new System.Drawing.Size(534, 40);
             this.titleBarControl1.TabIndex = 5;
             this.titleBarControl1.Title = "Source Port";
             // 

@@ -5,7 +5,7 @@ namespace DoomLauncher
 {
     public partial class TagForm : Form
     {
-        private TagControl m_tabCtrl;
+        private readonly TagControl m_tabCtrl;
 
         public TagForm()
         {
@@ -15,9 +15,8 @@ namespace DoomLauncher
             m_tabCtrl.Dock = DockStyle.Fill;
             tblMain.Controls.Add(m_tabCtrl, 0, 1);
 
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
             MaximizedBounds = Screen.GetWorkingArea(this);
-            FormBorderStyle = FormBorderStyle.None;
         }
 
         public void Init(IDataSourceAdapter adapter)

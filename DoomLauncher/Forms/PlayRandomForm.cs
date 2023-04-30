@@ -39,6 +39,8 @@ namespace DoomLauncher.Forms
                 items.Add(((PlayRandomType)item).GetDescription());
 
             cmbType.DataSource = items;
+
+            Stylizer.Stylize(this, DesignMode);
         }
 
         public void Initialize(ITabView tabView)
