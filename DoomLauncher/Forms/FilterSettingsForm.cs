@@ -26,7 +26,7 @@ namespace DoomLauncher.Forms
             chkVertical.Checked = settings.VerticalScanlines;
             chkHorizontal.Checked = settings.HorizontalScanlines;
 
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
         }
 
         public ScreenFilter GetFilterSettings()
