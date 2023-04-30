@@ -35,16 +35,20 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnGenerate = new System.Windows.Forms.Button();
             this.lblText = new System.Windows.Forms.Label();
+            this.tblMain = new System.Windows.Forms.TableLayoutPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.titleBar = new DoomLauncher.Controls.TitleBarControl();
+            this.tblMain.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbType
             // 
             this.cmbType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbType.FormattingEnabled = true;
-            this.cmbType.Location = new System.Drawing.Point(8, 21);
-            this.cmbType.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmbType.Location = new System.Drawing.Point(19, 17);
             this.cmbType.Name = "cmbType";
-            this.cmbType.Size = new System.Drawing.Size(172, 21);
+            this.cmbType.Size = new System.Drawing.Size(256, 28);
             this.cmbType.TabIndex = 0;
             // 
             // chkRandomMap
@@ -52,10 +56,9 @@
             this.chkRandomMap.AutoSize = true;
             this.chkRandomMap.Checked = true;
             this.chkRandomMap.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkRandomMap.Location = new System.Drawing.Point(8, 50);
-            this.chkRandomMap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chkRandomMap.Location = new System.Drawing.Point(19, 62);
             this.chkRandomMap.Name = "chkRandomMap";
-            this.chkRandomMap.Size = new System.Drawing.Size(123, 17);
+            this.chkRandomMap.Size = new System.Drawing.Size(180, 24);
             this.chkRandomMap.TabIndex = 1;
             this.chkRandomMap.Text = "Select Random Map";
             this.chkRandomMap.UseVisualStyleBackColor = true;
@@ -63,10 +66,9 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(170, 166);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnOK.Location = new System.Drawing.Point(262, 240);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(59, 23);
+            this.btnOK.Size = new System.Drawing.Size(88, 35);
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -75,20 +77,18 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(233, 166);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnCancel.Location = new System.Drawing.Point(357, 240);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(55, 23);
+            this.btnCancel.Size = new System.Drawing.Size(82, 35);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnGenerate
             // 
-            this.btnGenerate.Location = new System.Drawing.Point(184, 15);
-            this.btnGenerate.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnGenerate.Location = new System.Drawing.Point(283, 8);
             this.btnGenerate.Name = "btnGenerate";
-            this.btnGenerate.Size = new System.Drawing.Size(105, 27);
+            this.btnGenerate.Size = new System.Drawing.Size(158, 42);
             this.btnGenerate.TabIndex = 4;
             this.btnGenerate.Text = "Generate";
             this.btnGenerate.UseVisualStyleBackColor = true;
@@ -97,32 +97,71 @@
             // lblText
             // 
             this.lblText.AutoSize = true;
-            this.lblText.Location = new System.Drawing.Point(8, 72);
-            this.lblText.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblText.Location = new System.Drawing.Point(19, 96);
             this.lblText.Name = "lblText";
-            this.lblText.Size = new System.Drawing.Size(39, 13);
+            this.lblText.Size = new System.Drawing.Size(58, 20);
             this.lblText.TabIndex = 5;
             this.lblText.Text = "Output";
+            // 
+            // tblMain
+            // 
+            this.tblMain.ColumnCount = 1;
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblMain.Controls.Add(this.panel1, 0, 1);
+            this.tblMain.Controls.Add(this.titleBar, 0, 0);
+            this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblMain.Location = new System.Drawing.Point(0, 0);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(0);
+            this.tblMain.Name = "tblMain";
+            this.tblMain.RowCount = 2;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.Size = new System.Drawing.Size(454, 328);
+            this.tblMain.TabIndex = 6;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.cmbType);
+            this.panel1.Controls.Add(this.lblText);
+            this.panel1.Controls.Add(this.chkRandomMap);
+            this.panel1.Controls.Add(this.btnGenerate);
+            this.panel1.Controls.Add(this.btnOK);
+            this.panel1.Controls.Add(this.btnCancel);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 40);
+            this.panel1.Margin = new System.Windows.Forms.Padding(0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(454, 288);
+            this.panel1.TabIndex = 0;
+            // 
+            // titleBar
+            // 
+            this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.titleBar.ForeColor = System.Drawing.Color.White;
+            this.titleBar.Location = new System.Drawing.Point(0, 0);
+            this.titleBar.Margin = new System.Windows.Forms.Padding(0);
+            this.titleBar.Name = "titleBar";
+            this.titleBar.Size = new System.Drawing.Size(454, 40);
+            this.titleBar.TabIndex = 1;
+            this.titleBar.Title = "Play Random";
             // 
             // PlayRandomForm
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(296, 196);
-            this.Controls.Add(this.lblText);
-            this.Controls.Add(this.btnGenerate);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.chkRandomMap);
-            this.Controls.Add(this.cmbType);
+            this.ClientSize = new System.Drawing.Size(454, 328);
+            this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "PlayRandomForm";
             this.Text = "Play Random";
+            this.tblMain.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -134,5 +173,8 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.Label lblText;
+        private System.Windows.Forms.TableLayoutPanel tblMain;
+        private System.Windows.Forms.Panel panel1;
+        private Controls.TitleBarControl titleBar;
     }
 }

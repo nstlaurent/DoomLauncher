@@ -40,7 +40,7 @@ namespace DoomLauncher.Forms
 
             cmbType.DataSource = items;
 
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
         }
 
         public void Initialize(ITabView tabView)

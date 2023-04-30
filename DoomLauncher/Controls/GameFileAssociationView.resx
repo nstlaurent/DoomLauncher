@@ -123,17 +123,4 @@
   <metadata name="mnuOptions.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>136, 17</value>
-  </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnMoveDown.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACjSURBVDhP5YyxDcJAEAQ/hSZISAkgcwdUQicUAxJFQEwR
-        JiKmAtgxtxa8/MYOHDHSSPf3t5umpJLXkHk0O/kMmUfzbwVbuXqPLX0F3JJp8OFDblgEpYK15Lbdn+KB
-        d7mU0FXAHzfek01zeYkF3uRC5gXs+POODNmGvKSW+483Mzu/v8ImLynZGTa/SnrDplQyKGw4PEuHmQeH
-        zUwe5DHmKUjpBVZ7VimoHQFPAAAAAElFTkSuQmCC
-</value>
-  </data>
 </root>

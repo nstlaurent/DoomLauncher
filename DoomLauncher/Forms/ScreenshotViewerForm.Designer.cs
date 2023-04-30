@@ -30,13 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScreenshotViewerForm));
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
-            this.tblButtons = new System.Windows.Forms.TableLayoutPanel();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.btnSave = new System.Windows.Forms.ToolStripButton();
-            this.btnSlideshow = new System.Windows.Forms.ToolStripButton();
-            this.btnEdit = new System.Windows.Forms.ToolStripButton();
-            this.btnNext = new System.Windows.Forms.Button();
-            this.btnPrev = new System.Windows.Forms.Button();
             this.tblContainer = new System.Windows.Forms.TableLayoutPanel();
             this.tblData = new System.Windows.Forms.TableLayoutPanel();
             this.statisticsView = new DoomLauncher.StatisticsView();
@@ -45,21 +38,28 @@
             this.flpData = new System.Windows.Forms.FlowLayoutPanel();
             this.lblDescription = new DoomLauncher.GrowLabel();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
+            this.tblButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnSave = new DoomLauncher.FormButton();
+            this.btnSlideshow = new DoomLauncher.FormButton();
+            this.btnEdit = new DoomLauncher.FormButton();
+            this.btnPrev = new System.Windows.Forms.Button();
+            this.btnNext = new System.Windows.Forms.Button();
             this.tblMain.SuspendLayout();
-            this.tblButtons.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             this.tblContainer.SuspendLayout();
             this.tblData.SuspendLayout();
             this.flpData.SuspendLayout();
+            this.tblButtons.SuspendLayout();
+            this.flpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblMain
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.tblButtons, 0, 2);
             this.tblMain.Controls.Add(this.tblContainer, 0, 1);
             this.tblMain.Controls.Add(this.titleBar, 0, 0);
+            this.tblMain.Controls.Add(this.tblButtons, 0, 2);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
             this.tblMain.Name = "tblMain";
@@ -67,105 +67,9 @@
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblMain.Size = new System.Drawing.Size(1378, 844);
             this.tblMain.TabIndex = 1;
-            // 
-            // tblButtons
-            // 
-            this.tblButtons.BackColor = System.Drawing.SystemColors.Control;
-            this.tblButtons.ColumnCount = 4;
-            this.tblButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tblButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tblButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tblButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tblButtons.Controls.Add(this.toolStrip1, 0, 0);
-            this.tblButtons.Controls.Add(this.btnNext, 2, 0);
-            this.tblButtons.Controls.Add(this.btnPrev, 1, 0);
-            this.tblButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblButtons.Location = new System.Drawing.Point(0, 800);
-            this.tblButtons.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.tblButtons.Name = "tblButtons";
-            this.tblButtons.RowCount = 1;
-            this.tblButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblButtons.Size = new System.Drawing.Size(1378, 41);
-            this.tblButtons.TabIndex = 1;
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnSave,
-            this.btnSlideshow,
-            this.btnEdit});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 4);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(120, 33);
-            this.toolStrip1.TabIndex = 2;
-            this.toolStrip1.Text = "toolStrip1";
-            // 
-            // btnSave
-            // 
-            this.btnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnSave.Image = global::DoomLauncher.Properties.Resources.Save;
-            this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(34, 28);
-            this.btnSave.Text = "Save Image";
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnSlideshow
-            // 
-            this.btnSlideshow.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnSlideshow.Image = global::DoomLauncher.Properties.Resources.Video;
-            this.btnSlideshow.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnSlideshow.Name = "btnSlideshow";
-            this.btnSlideshow.Size = new System.Drawing.Size(34, 28);
-            this.btnSlideshow.Text = "Slideshow";
-            this.btnSlideshow.Click += new System.EventHandler(this.btnSlideshow_Click);
-            // 
-            // btnEdit
-            // 
-            this.btnEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnEdit.Image = global::DoomLauncher.Properties.Resources.Edit;
-            this.btnEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(34, 28);
-            this.btnEdit.Text = "Edit";
-            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-            // 
-            // btnNext
-            // 
-            this.btnNext.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNext.Font = new System.Drawing.Font("MS Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNext.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnNext.Location = new System.Drawing.Point(692, 0);
-            this.btnNext.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(77, 41);
-            this.btnNext.TabIndex = 0;
-            this.btnNext.Text = "⇨";
-            this.btnNext.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
-            this.btnNext.UseVisualStyleBackColor = true;
-            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-            // 
-            // btnPrev
-            // 
-            this.btnPrev.BackColor = System.Drawing.SystemColors.Control;
-            this.btnPrev.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnPrev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPrev.Font = new System.Drawing.Font("MS Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPrev.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnPrev.Location = new System.Drawing.Point(609, 0);
-            this.btnPrev.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(77, 41);
-            this.btnPrev.TabIndex = 1;
-            this.btnPrev.Text = "⇦";
-            this.btnPrev.UseVisualStyleBackColor = false;
-            this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
             // 
             // tblContainer
             // 
@@ -274,6 +178,101 @@
             this.titleBar.TabIndex = 3;
             this.titleBar.Title = "Screenshot";
             // 
+            // tblButtons
+            // 
+            this.tblButtons.ColumnCount = 4;
+            this.tblButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tblButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tblButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblButtons.Controls.Add(this.flpButtons, 0, 0);
+            this.tblButtons.Controls.Add(this.btnPrev, 1, 0);
+            this.tblButtons.Controls.Add(this.btnNext, 2, 0);
+            this.tblButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblButtons.Location = new System.Drawing.Point(0, 800);
+            this.tblButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tblButtons.Name = "tblButtons";
+            this.tblButtons.RowCount = 1;
+            this.tblButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblButtons.Size = new System.Drawing.Size(1378, 44);
+            this.tblButtons.TabIndex = 4;
+            // 
+            // flpButtons
+            // 
+            this.flpButtons.Controls.Add(this.btnSave);
+            this.flpButtons.Controls.Add(this.btnSlideshow);
+            this.flpButtons.Controls.Add(this.btnEdit);
+            this.flpButtons.Location = new System.Drawing.Point(0, 0);
+            this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.flpButtons.Name = "flpButtons";
+            this.flpButtons.Size = new System.Drawing.Size(134, 40);
+            this.flpButtons.TabIndex = 4;
+            // 
+            // btnSave
+            // 
+            this.btnSave.Image = global::DoomLauncher.Properties.Resources.Save;
+            this.btnSave.Location = new System.Drawing.Point(0, 0);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(0);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(40, 40);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnSlideshow
+            // 
+            this.btnSlideshow.Image = global::DoomLauncher.Properties.Resources.Video;
+            this.btnSlideshow.Location = new System.Drawing.Point(40, 0);
+            this.btnSlideshow.Margin = new System.Windows.Forms.Padding(0);
+            this.btnSlideshow.Name = "btnSlideshow";
+            this.btnSlideshow.Size = new System.Drawing.Size(40, 40);
+            this.btnSlideshow.TabIndex = 1;
+            this.btnSlideshow.UseVisualStyleBackColor = true;
+            this.btnSlideshow.Click += new System.EventHandler(this.btnSlideshow_Click);
+            // 
+            // btnEdit
+            // 
+            this.btnEdit.Image = global::DoomLauncher.Properties.Resources.Edit;
+            this.btnEdit.Location = new System.Drawing.Point(80, 0);
+            this.btnEdit.Margin = new System.Windows.Forms.Padding(0);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(40, 40);
+            this.btnEdit.TabIndex = 2;
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
+            // 
+            // btnPrev
+            // 
+            this.btnPrev.BackColor = System.Drawing.SystemColors.Control;
+            this.btnPrev.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnPrev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPrev.Font = new System.Drawing.Font("MS Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPrev.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnPrev.Location = new System.Drawing.Point(609, 0);
+            this.btnPrev.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.btnPrev.Name = "btnPrev";
+            this.btnPrev.Size = new System.Drawing.Size(77, 44);
+            this.btnPrev.TabIndex = 1;
+            this.btnPrev.Text = "⇦";
+            this.btnPrev.UseVisualStyleBackColor = false;
+            this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
+            // 
+            // btnNext
+            // 
+            this.btnNext.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNext.Font = new System.Drawing.Font("MS Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNext.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnNext.Location = new System.Drawing.Point(692, 0);
+            this.btnNext.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(77, 44);
+            this.btnNext.TabIndex = 0;
+            this.btnNext.Text = "⇨";
+            this.btnNext.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
+            this.btnNext.UseVisualStyleBackColor = true;
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            // 
             // ScreenshotViewerForm
             // 
             this.ClientSize = new System.Drawing.Size(1378, 844);
@@ -281,15 +280,13 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ScreenshotViewerForm";
             this.tblMain.ResumeLayout(false);
-            this.tblButtons.ResumeLayout(false);
-            this.tblButtons.PerformLayout();
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
             this.tblContainer.ResumeLayout(false);
             this.tblData.ResumeLayout(false);
             this.tblData.PerformLayout();
             this.flpData.ResumeLayout(false);
             this.flpData.PerformLayout();
+            this.tblButtons.ResumeLayout(false);
+            this.flpButtons.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -297,20 +294,20 @@
         #endregion
 
         private TableLayoutPanelDB tblMain;
-        private System.Windows.Forms.TableLayoutPanel tblButtons;
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnPrev;
-        private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton btnSave;
-        private System.Windows.Forms.ToolStripButton btnSlideshow;
         private System.Windows.Forms.TableLayoutPanel tblContainer;
         private System.Windows.Forms.TableLayoutPanel tblData;
         private GrowLabel lblDescription;
         private GrowLabel lblTitle;
-        private System.Windows.Forms.ToolStripButton btnEdit;
         private System.Windows.Forms.FlowLayoutPanel flpData;
         private StatisticsView statisticsView;
         private StatsControl statsControl;
         private Controls.TitleBarControl titleBar;
+        private System.Windows.Forms.FlowLayoutPanel flpButtons;
+        private FormButton btnSave;
+        private FormButton btnSlideshow;
+        private FormButton btnEdit;
+        private System.Windows.Forms.TableLayoutPanel tblButtons;
     }
 }

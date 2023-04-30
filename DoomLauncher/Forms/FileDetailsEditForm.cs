@@ -9,7 +9,7 @@ namespace DoomLauncher
         public FileDetailsEditForm()
         {
             InitializeComponent();
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
         }
 
         public void Initialize(IDataSourceAdapter adapter)

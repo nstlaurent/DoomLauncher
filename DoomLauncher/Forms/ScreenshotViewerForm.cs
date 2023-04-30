@@ -29,6 +29,10 @@ namespace DoomLauncher.Forms
             statisticsView.SetMapsVisible(false);
 
             btnSave.Image = Icons.Save;
+            btnSlideshow.Image = Icons.Video;
+            btnEdit.Image = Icons.Edit;
+            btnPrev.ForeColor = ColorTheme.Current.Text;
+            btnNext.ForeColor = ColorTheme.Current.Text;
 
             KeyPreview = true;
             KeyUp += ScreenshotViewerForm_KeyUp;
@@ -269,9 +273,9 @@ namespace DoomLauncher.Forms
             m_slideshow = set;
 
             if (set)
-                btnSlideshow.BackColor = SystemColors.Highlight;
+                btnSlideshow.BackColor = ColorTheme.Current.Highlight;
             else
-                btnSlideshow.BackColor = SystemColors.Control;
+                btnSlideshow.BackColor = ColorTheme.Current.Window;
         }
     }
 }

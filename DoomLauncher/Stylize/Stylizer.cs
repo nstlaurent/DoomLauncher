@@ -37,6 +37,11 @@ namespace DoomLauncher
             if (designMode)
                 return;
 
+            if (control.Name == "btnSave" || control.Name == "btnSlideshow")
+            {
+                int lol = 1;
+            }
+
             if (control is DataGridView grid)
                 StyleGrid(grid);
             else if (control is FormButton formButton)
