@@ -69,7 +69,6 @@
             this.lnkPreviewLaunchParameters = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
-            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
             this.pbInfo = new System.Windows.Forms.PictureBox();
@@ -82,7 +81,10 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnProfileMenu = new DoomLauncher.FormButton();
+            this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox1.SuspendLayout();
             this.tblProfile.SuspendLayout();
             this.profileToolStrip.SuspendLayout();
@@ -98,6 +100,7 @@
             this.pnlLeft.SuspendLayout();
             this.pnlBottom.SuspendLayout();
             this.flpButtons.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbSourcePorts
@@ -181,11 +184,13 @@
             // 
             this.tblProfile.ColumnCount = 3;
             this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 68F));
-            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 241F));
             this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblProfile.Controls.Add(this.profileToolStrip, 2, 0);
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblProfile.Controls.Add(this.lblProfile, 0, 0);
             this.tblProfile.Controls.Add(this.cmbProfiles, 1, 0);
+            this.tblProfile.Controls.Add(this.panel2, 2, 0);
             this.tblProfile.Location = new System.Drawing.Point(4, 24);
             this.tblProfile.Margin = new System.Windows.Forms.Padding(0);
             this.tblProfile.Name = "tblProfile";
@@ -202,7 +207,7 @@
             this.profileToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.profileToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1});
-            this.profileToolStrip.Location = new System.Drawing.Point(309, 7);
+            this.profileToolStrip.Location = new System.Drawing.Point(4, 8);
             this.profileToolStrip.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.profileToolStrip.Name = "profileToolStrip";
             this.profileToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -270,7 +275,7 @@
             this.cmbProfiles.Location = new System.Drawing.Point(72, 5);
             this.cmbProfiles.Margin = new System.Windows.Forms.Padding(4, 5, 0, 5);
             this.cmbProfiles.Name = "cmbProfiles";
-            this.cmbProfiles.Size = new System.Drawing.Size(237, 28);
+            this.cmbProfiles.Size = new System.Drawing.Size(249, 28);
             this.cmbProfiles.TabIndex = 9;
             this.cmbProfiles.TabStop = false;
             this.cmbProfiles.ValueMember = "GameProfileID";
@@ -592,17 +597,6 @@
             this.tblFiles.Size = new System.Drawing.Size(347, 596);
             this.tblFiles.TabIndex = 0;
             // 
-            // ctrlFiles
-            // 
-            this.ctrlFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
-            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlFiles.ForeColor = System.Drawing.Color.White;
-            this.ctrlFiles.Location = new System.Drawing.Point(6, 67);
-            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(6);
-            this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(335, 485);
-            this.ctrlFiles.TabIndex = 20;
-            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.lblInfo);
@@ -752,6 +746,27 @@
             this.flpButtons.Size = new System.Drawing.Size(300, 49);
             this.flpButtons.TabIndex = 5;
             // 
+            // btnProfileMenu
+            // 
+            this.btnProfileMenu.Image = global::DoomLauncher.Properties.Resources.Bars;
+            this.btnProfileMenu.Location = new System.Drawing.Point(4, 6);
+            this.btnProfileMenu.Name = "btnProfileMenu";
+            this.btnProfileMenu.Size = new System.Drawing.Size(34, 33);
+            this.btnProfileMenu.TabIndex = 13;
+            this.btnProfileMenu.UseVisualStyleBackColor = true;
+            this.btnProfileMenu.Click += new System.EventHandler(this.btnProfileMenu_Click);
+            // 
+            // ctrlFiles
+            // 
+            this.ctrlFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlFiles.ForeColor = System.Drawing.Color.White;
+            this.ctrlFiles.Location = new System.Drawing.Point(6, 67);
+            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(6);
+            this.ctrlFiles.Name = "ctrlFiles";
+            this.ctrlFiles.Size = new System.Drawing.Size(335, 485);
+            this.ctrlFiles.TabIndex = 20;
+            // 
             // titleBar
             // 
             this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
@@ -763,6 +778,17 @@
             this.titleBar.Size = new System.Drawing.Size(756, 40);
             this.titleBar.TabIndex = 2;
             this.titleBar.Title = "Launch";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.profileToolStrip);
+            this.panel2.Controls.Add(this.btnProfileMenu);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(321, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(40, 39);
+            this.panel2.TabIndex = 14;
             // 
             // PlayForm
             // 
@@ -799,6 +825,8 @@
             this.pnlBottom.ResumeLayout(false);
             this.pnlBottom.PerformLayout();
             this.flpButtons.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -858,5 +886,7 @@
         private System.Windows.Forms.CheckBox chkLoadLatestSave;
         private System.Windows.Forms.LinkLabel lnkLoadSaveMore;
         private Controls.TitleBarControl titleBar;
+        private FormButton btnProfileMenu;
+        private System.Windows.Forms.Panel panel2;
     }
 }

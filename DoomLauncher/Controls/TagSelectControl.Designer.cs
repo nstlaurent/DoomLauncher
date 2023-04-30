@@ -34,7 +34,7 @@
             this.tblTop = new System.Windows.Forms.TableLayoutPanel();
             this.flpSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.btnSearch = new System.Windows.Forms.Button();
+            this.btnSearch = new DoomLauncher.FormButton();
             this.btnPin = new System.Windows.Forms.Button();
             this.menu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.manageTagsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -177,7 +177,7 @@
         private System.Windows.Forms.FlowLayoutPanel flpSearch;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.DataGridView dgvTags;
-        private System.Windows.Forms.Button btnSearch;
+        private DoomLauncher.FormButton btnSearch;
         private System.Windows.Forms.TableLayoutPanel tblTop;
         private System.Windows.Forms.Button btnPin;
         private System.Windows.Forms.ContextMenuStrip menu;

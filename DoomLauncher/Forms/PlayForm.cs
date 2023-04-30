@@ -84,6 +84,11 @@ namespace DoomLauncher
 
             InitTabIndicies();
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
+            profileToolStrip.Visible = false;
+            toolStripDropDownButton1.Visible = false;
+            btnProfileMenu.Location = new System.Drawing.Point(0, 0);
+            btnProfileMenu.Image = Icons.Bars;
             MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
@@ -1041,6 +1046,12 @@ namespace DoomLauncher
             form.SelectDisplayText(0, 0);
             if (form.ShowDialog(this) == DialogResult.OK)
                 txtParameters.Text = form.DisplayText;
+        }
+
+        private void btnProfileMenu_Click(object sender, EventArgs e)
+        {
+            Stylizer.StylizeControl(toolStripDropDownButton1.DropDown, DesignMode);
+            toolStripDropDownButton1.ShowDropDown();
         }
     }
 }

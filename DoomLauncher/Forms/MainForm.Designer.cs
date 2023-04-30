@@ -89,29 +89,30 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manualUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctrlSearch = new DoomLauncher.SearchControl();
             this.chkAutoSearch = new System.Windows.Forms.CheckBox();
             this.chkIncludeAll = new System.Windows.Forms.CheckBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
-            this.btnDownloads = new DoomLauncher.FormButton();
-            this.btnUpdate = new DoomLauncher.GlowButton();
             this.tblDataView = new System.Windows.Forms.TableLayoutPanel();
             this.splitLeftRight = new System.Windows.Forms.SplitContainer();
             this.splitTagSelect = new System.Windows.Forms.SplitContainer();
             this.splitTopBottom = new System.Windows.Forms.SplitContainer();
-            this.tabControl = new DoomLauncher.CTabControl();
-            this.ctrlAssociationView = new DoomLauncher.GameFileAssociationView();
-            this.ctrlSummary = new DoomLauncher.GameFileSummary();
             this.flpTags = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnTags = new DoomLauncher.FormButton();
             this.lblSelectedTag = new System.Windows.Forms.Label();
-            this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.mnuIdGames = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewWebPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnMainMenu = new DoomLauncher.FormButton();
+            this.ctrlSearch = new DoomLauncher.SearchControl();
+            this.btnDownloads = new DoomLauncher.FormButton();
+            this.btnUpdate = new DoomLauncher.GlowButton();
+            this.tabControl = new DoomLauncher.CTabControl();
+            this.ctrlAssociationView = new DoomLauncher.GameFileAssociationView();
+            this.ctrlSummary = new DoomLauncher.GameFileSummary();
+            this.btnTags = new DoomLauncher.FormButton();
+            this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.mnuLocal.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblTop.SuspendLayout();
@@ -388,7 +389,7 @@
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 98.03922F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 1.960784F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 210F));
-            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 243F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 257F));
             this.tblTop.Controls.Add(this.flpSearch, 0, 0);
             this.tblTop.Controls.Add(this.btnDownloads, 3, 0);
             this.tblTop.Controls.Add(this.btnUpdate, 2, 0);
@@ -405,6 +406,7 @@
             // 
             this.flpSearch.AutoSize = true;
             this.flpSearch.Controls.Add(this.toolStrip1);
+            this.flpSearch.Controls.Add(this.btnMainMenu);
             this.flpSearch.Controls.Add(this.ctrlSearch);
             this.flpSearch.Controls.Add(this.chkAutoSearch);
             this.flpSearch.Controls.Add(this.chkIncludeAll);
@@ -414,7 +416,7 @@
             this.flpSearch.Location = new System.Drawing.Point(0, 0);
             this.flpSearch.Margin = new System.Windows.Forms.Padding(0);
             this.flpSearch.Name = "flpSearch";
-            this.flpSearch.Size = new System.Drawing.Size(1038, 49);
+            this.flpSearch.Size = new System.Drawing.Size(1024, 49);
             this.flpSearch.TabIndex = 0;
             // 
             // toolStrip1
@@ -612,21 +614,11 @@
             this.manualUpdateToolStripMenuItem.Text = "Manual Update...";
             this.manualUpdateToolStripMenuItem.Click += new System.EventHandler(this.manualUpdateToolStripMenuItem_Click);
             // 
-            // ctrlSearch
-            // 
-            this.ctrlSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ctrlSearch.Location = new System.Drawing.Point(55, 5);
-            this.ctrlSearch.Margin = new System.Windows.Forms.Padding(4, 2, 4, 5);
-            this.ctrlSearch.Name = "ctrlSearch";
-            this.ctrlSearch.SearchText = "";
-            this.ctrlSearch.Size = new System.Drawing.Size(213, 31);
-            this.ctrlSearch.TabIndex = 0;
-            // 
             // chkAutoSearch
             // 
             this.chkAutoSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAutoSearch.AutoSize = true;
-            this.chkAutoSearch.Location = new System.Drawing.Point(276, 10);
+            this.chkAutoSearch.Location = new System.Drawing.Point(322, 11);
             this.chkAutoSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkAutoSearch.Name = "chkAutoSearch";
             this.chkAutoSearch.Size = new System.Drawing.Size(124, 24);
@@ -638,7 +630,7 @@
             // 
             this.chkIncludeAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIncludeAll.AutoSize = true;
-            this.chkIncludeAll.Location = new System.Drawing.Point(407, 10);
+            this.chkIncludeAll.Location = new System.Drawing.Point(453, 11);
             this.chkIncludeAll.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.chkIncludeAll.Name = "chkIncludeAll";
             this.chkIncludeAll.Size = new System.Drawing.Size(108, 24);
@@ -653,7 +645,7 @@
             this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
             this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnSearch.Location = new System.Drawing.Point(522, 2);
+            this.btnSearch.Location = new System.Drawing.Point(568, 2);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(4, 2, 4, 5);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(120, 38);
@@ -671,7 +663,7 @@
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPlay.Image = global::DoomLauncher.Properties.Resources.Play;
             this.btnPlay.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnPlay.Location = new System.Drawing.Point(650, 2);
+            this.btnPlay.Location = new System.Drawing.Point(696, 2);
             this.btnPlay.Margin = new System.Windows.Forms.Padding(4, 2, 4, 5);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(112, 38);
@@ -680,43 +672,6 @@
             this.btnPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnPlay.UseVisualStyleBackColor = true;
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
-            // 
-            // btnDownloads
-            // 
-            this.btnDownloads.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloads.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnDownloads.FlatAppearance.BorderSize = 0;
-            this.btnDownloads.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDownloads.Image = global::DoomLauncher.Properties.Resources.th;
-            this.btnDownloads.Location = new System.Drawing.Point(1366, 2);
-            this.btnDownloads.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
-            this.btnDownloads.Name = "btnDownloads";
-            this.btnDownloads.Size = new System.Drawing.Size(144, 34);
-            this.btnDownloads.TabIndex = 1;
-            this.btnDownloads.Text = "Downloads";
-            this.btnDownloads.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.btnDownloads.UseVisualStyleBackColor = true;
-            this.btnDownloads.Click += new System.EventHandler(this.btnDownloads_Click);
-            // 
-            // btnUpdate
-            // 
-            this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdate.BackGroundGlowColor = System.Drawing.Color.Blue;
-            this.btnUpdate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnUpdate.FlatAppearance.BorderSize = 0;
-            this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUpdate.Image = global::DoomLauncher.Properties.Resources.bon2b;
-            this.btnUpdate.Location = new System.Drawing.Point(1086, 2);
-            this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
-            this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(180, 34);
-            this.btnUpdate.TabIndex = 2;
-            this.btnUpdate.Text = "Update Available";
-            this.btnUpdate.TextGlowColor = System.Drawing.Color.White;
-            this.btnUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.btnUpdate.UseVisualStyleBackColor = true;
-            this.btnUpdate.Visible = false;
-            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
             // tblDataView
             // 
@@ -791,46 +746,6 @@
             this.splitTopBottom.SplitterWidth = 6;
             this.splitTopBottom.TabIndex = 8;
             // 
-            // tabControl
-            // 
-            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.tabControl.HotTrack = true;
-            this.tabControl.Location = new System.Drawing.Point(0, 0);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tabControl.Multiline = true;
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1019, 545);
-            this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.tabControl.TabIndex = 6;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
-            // 
-            // ctrlAssociationView
-            // 
-            this.ctrlAssociationView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
-            this.ctrlAssociationView.DataSourceAdapter = null;
-            this.ctrlAssociationView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlAssociationView.ForeColor = System.Drawing.Color.White;
-            this.ctrlAssociationView.Location = new System.Drawing.Point(0, 0);
-            this.ctrlAssociationView.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.ctrlAssociationView.Name = "ctrlAssociationView";
-            this.ctrlAssociationView.SaveGameDirectory = null;
-            this.ctrlAssociationView.ScreenshotDirectory = null;
-            this.ctrlAssociationView.Size = new System.Drawing.Size(1019, 242);
-            this.ctrlAssociationView.TabIndex = 7;
-            // 
-            // ctrlSummary
-            // 
-            this.ctrlSummary.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctrlSummary.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrlSummary.Location = new System.Drawing.Point(0, 0);
-            this.ctrlSummary.Margin = new System.Windows.Forms.Padding(4, 0, 4, 5);
-            this.ctrlSummary.Name = "ctrlSummary";
-            this.ctrlSummary.Size = new System.Drawing.Size(471, 793);
-            this.ctrlSummary.TabIndex = 4;
-            this.ctrlSummary.TagText = "Tags:";
-            // 
             // flpTags
             // 
             this.flpTags.Controls.Add(this.btnTags);
@@ -841,23 +756,6 @@
             this.flpTags.Name = "flpTags";
             this.flpTags.Size = new System.Drawing.Size(1512, 40);
             this.flpTags.TabIndex = 6;
-            // 
-            // btnTags
-            // 
-            this.btnTags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTags.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnTags.FlatAppearance.BorderSize = 0;
-            this.btnTags.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTags.Image = global::DoomLauncher.Properties.Resources.Tags;
-            this.btnTags.Location = new System.Drawing.Point(0, 0);
-            this.btnTags.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.btnTags.Name = "btnTags";
-            this.btnTags.Size = new System.Drawing.Size(99, 34);
-            this.btnTags.TabIndex = 5;
-            this.btnTags.Text = "Tags";
-            this.btnTags.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.btnTags.UseVisualStyleBackColor = true;
-            this.btnTags.Click += new System.EventHandler(this.btnTags_Click);
             // 
             // lblSelectedTag
             // 
@@ -870,18 +768,6 @@
             this.lblSelectedTag.Size = new System.Drawing.Size(117, 22);
             this.lblSelectedTag.TabIndex = 6;
             this.lblSelectedTag.Text = "Selected Tag";
-            // 
-            // titleBar
-            // 
-            this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
-            this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.titleBar.ForeColor = System.Drawing.Color.White;
-            this.titleBar.Location = new System.Drawing.Point(0, 0);
-            this.titleBar.Margin = new System.Windows.Forms.Padding(0);
-            this.titleBar.Name = "titleBar";
-            this.titleBar.Size = new System.Drawing.Size(1512, 46);
-            this.titleBar.TabIndex = 7;
-            this.titleBar.Title = "Doom Launcher";
             // 
             // mnuIdGames
             // 
@@ -905,6 +791,132 @@
             this.viewWebPageToolStripMenuItem.Size = new System.Drawing.Size(217, 32);
             this.viewWebPageToolStripMenuItem.Text = "View Web Page...";
             this.viewWebPageToolStripMenuItem.Click += new System.EventHandler(this.viewWebPageToolStripMenuItem_Click);
+            // 
+            // btnMainMenu
+            // 
+            this.btnMainMenu.Image = global::DoomLauncher.Properties.Resources.Bars;
+            this.btnMainMenu.Location = new System.Drawing.Point(54, 3);
+            this.btnMainMenu.Name = "btnMainMenu";
+            this.btnMainMenu.Size = new System.Drawing.Size(40, 40);
+            this.btnMainMenu.TabIndex = 9;
+            this.btnMainMenu.UseVisualStyleBackColor = true;
+            this.btnMainMenu.Click += new System.EventHandler(this.btnMainMenu_Click);
+            // 
+            // ctrlSearch
+            // 
+            this.ctrlSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ctrlSearch.Location = new System.Drawing.Point(101, 6);
+            this.ctrlSearch.Margin = new System.Windows.Forms.Padding(4, 2, 4, 5);
+            this.ctrlSearch.Name = "ctrlSearch";
+            this.ctrlSearch.SearchText = "";
+            this.ctrlSearch.Size = new System.Drawing.Size(213, 31);
+            this.ctrlSearch.TabIndex = 0;
+            // 
+            // btnDownloads
+            // 
+            this.btnDownloads.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDownloads.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnDownloads.FlatAppearance.BorderSize = 0;
+            this.btnDownloads.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDownloads.Image = global::DoomLauncher.Properties.Resources.th;
+            this.btnDownloads.Location = new System.Drawing.Point(1366, 2);
+            this.btnDownloads.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
+            this.btnDownloads.Name = "btnDownloads";
+            this.btnDownloads.Size = new System.Drawing.Size(144, 34);
+            this.btnDownloads.TabIndex = 1;
+            this.btnDownloads.Text = "Downloads";
+            this.btnDownloads.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnDownloads.UseVisualStyleBackColor = true;
+            this.btnDownloads.Click += new System.EventHandler(this.btnDownloads_Click);
+            // 
+            // btnUpdate
+            // 
+            this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUpdate.BackGroundGlowColor = System.Drawing.Color.Blue;
+            this.btnUpdate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnUpdate.FlatAppearance.BorderSize = 0;
+            this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUpdate.Image = global::DoomLauncher.Properties.Resources.bon2b;
+            this.btnUpdate.Location = new System.Drawing.Point(1072, 2);
+            this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(180, 34);
+            this.btnUpdate.TabIndex = 2;
+            this.btnUpdate.Text = "Update Available";
+            this.btnUpdate.TextGlowColor = System.Drawing.Color.White;
+            this.btnUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Visible = false;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
+            // 
+            // tabControl
+            // 
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControl.HotTrack = true;
+            this.tabControl.Location = new System.Drawing.Point(0, 0);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tabControl.Multiline = true;
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(1019, 545);
+            this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabControl.TabIndex = 6;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
+            // 
+            // ctrlAssociationView
+            // 
+            this.ctrlAssociationView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.ctrlAssociationView.DataSourceAdapter = null;
+            this.ctrlAssociationView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlAssociationView.ForeColor = System.Drawing.Color.White;
+            this.ctrlAssociationView.Location = new System.Drawing.Point(0, 0);
+            this.ctrlAssociationView.Margin = new System.Windows.Forms.Padding(6);
+            this.ctrlAssociationView.Name = "ctrlAssociationView";
+            this.ctrlAssociationView.SaveGameDirectory = null;
+            this.ctrlAssociationView.ScreenshotDirectory = null;
+            this.ctrlAssociationView.Size = new System.Drawing.Size(1019, 242);
+            this.ctrlAssociationView.TabIndex = 7;
+            // 
+            // ctrlSummary
+            // 
+            this.ctrlSummary.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlSummary.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ctrlSummary.Location = new System.Drawing.Point(0, 0);
+            this.ctrlSummary.Margin = new System.Windows.Forms.Padding(4, 0, 4, 5);
+            this.ctrlSummary.Name = "ctrlSummary";
+            this.ctrlSummary.Size = new System.Drawing.Size(471, 793);
+            this.ctrlSummary.TabIndex = 4;
+            this.ctrlSummary.TagText = "Tags:";
+            // 
+            // btnTags
+            // 
+            this.btnTags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTags.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnTags.FlatAppearance.BorderSize = 0;
+            this.btnTags.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTags.Image = global::DoomLauncher.Properties.Resources.Tags;
+            this.btnTags.Location = new System.Drawing.Point(0, 0);
+            this.btnTags.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.btnTags.Name = "btnTags";
+            this.btnTags.Size = new System.Drawing.Size(99, 34);
+            this.btnTags.TabIndex = 5;
+            this.btnTags.Text = "Tags";
+            this.btnTags.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnTags.UseVisualStyleBackColor = true;
+            this.btnTags.Click += new System.EventHandler(this.btnTags_Click);
+            // 
+            // titleBar
+            // 
+            this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.titleBar.ForeColor = System.Drawing.Color.White;
+            this.titleBar.Location = new System.Drawing.Point(0, 0);
+            this.titleBar.Margin = new System.Windows.Forms.Padding(0);
+            this.titleBar.Name = "titleBar";
+            this.titleBar.Size = new System.Drawing.Size(1512, 46);
+            this.titleBar.TabIndex = 7;
+            this.titleBar.Title = "Doom Launcher";
             // 
             // MainForm
             // 
@@ -1031,6 +1043,7 @@
         private System.Windows.Forms.CheckBox chkIncludeAll;
         private System.Windows.Forms.ToolStripMenuItem manualUpdateToolStripMenuItem;
         private Controls.TitleBarControl titleBar;
+        private FormButton btnMainMenu;
     }
 }
 

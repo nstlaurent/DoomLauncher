@@ -173,6 +173,8 @@ namespace DoomLauncher
             Stylizer.StylizeControl(mnuLocal, DesignMode);
             Stylizer.StylizeControl(mnuIdGames, DesignMode);
             Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
+            toolStrip1.Visible = false;
+            btnMainMenu.Image = Icons.Bars;
 
             if (m_launchArgs.LaunchGameFileID != null && m_launchArgs.AutoClose)
             {
@@ -2695,6 +2697,12 @@ namespace DoomLauncher
                 if (!applicationUpdater.Execute())
                     UpdateControl.CreateUpdateFailureForm(applicationUpdater).ShowDialog(this);
             }
+        }
+
+        private void btnMainMenu_Click(object sender, EventArgs e)
+        {
+            Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
+            toolStripDropDownButton1.ShowDropDown();
         }
 
         private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
