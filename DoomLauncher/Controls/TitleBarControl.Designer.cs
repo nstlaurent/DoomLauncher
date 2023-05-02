@@ -51,21 +51,22 @@
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 1;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tblMain.Size = new System.Drawing.Size(429, 24);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tblMain.Size = new System.Drawing.Size(572, 30);
             this.tblMain.TabIndex = 0;
+            this.tblMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tblMain_MouseDoubleClick);
             this.tblMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tblMain_MouseDown);
             // 
             // lblTitle
             // 
             this.lblTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Location = new System.Drawing.Point(2, 5);
-            this.lblTitle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblTitle.Location = new System.Drawing.Point(3, 7);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(27, 13);
+            this.lblTitle.Size = new System.Drawing.Size(33, 16);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Title";
+            this.lblTitle.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lblTitle_MouseDoubleClick);
             // 
             // flpButtons
             // 
@@ -74,18 +75,18 @@
             this.flpButtons.Controls.Add(this.btnMinimize);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(214, 0);
+            this.flpButtons.Location = new System.Drawing.Point(286, 0);
             this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(215, 24);
+            this.flpButtons.Size = new System.Drawing.Size(286, 30);
             this.flpButtons.TabIndex = 1;
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(182, 0);
+            this.btnClose.Location = new System.Drawing.Point(242, 0);
             this.btnClose.Margin = new System.Windows.Forms.Padding(0);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(33, 24);
+            this.btnClose.Size = new System.Drawing.Size(44, 30);
             this.btnClose.TabIndex = 0;
             this.btnClose.Text = "❌";
             this.btnClose.UseVisualStyleBackColor = true;
@@ -94,10 +95,10 @@
             // btnMaximize
             // 
             this.btnMaximize.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMaximize.Location = new System.Drawing.Point(151, 0);
+            this.btnMaximize.Location = new System.Drawing.Point(201, 0);
             this.btnMaximize.Margin = new System.Windows.Forms.Padding(0);
             this.btnMaximize.Name = "btnMaximize";
-            this.btnMaximize.Size = new System.Drawing.Size(31, 24);
+            this.btnMaximize.Size = new System.Drawing.Size(41, 30);
             this.btnMaximize.TabIndex = 1;
             this.btnMaximize.Text = "▢";
             this.btnMaximize.UseVisualStyleBackColor = true;
@@ -105,10 +106,10 @@
             // 
             // btnMinimize
             // 
-            this.btnMinimize.Location = new System.Drawing.Point(122, 0);
+            this.btnMinimize.Location = new System.Drawing.Point(162, 0);
             this.btnMinimize.Margin = new System.Windows.Forms.Padding(0);
             this.btnMinimize.Name = "btnMinimize";
-            this.btnMinimize.Size = new System.Drawing.Size(29, 24);
+            this.btnMinimize.Size = new System.Drawing.Size(39, 30);
             this.btnMinimize.TabIndex = 2;
             this.btnMinimize.Text = "−";
             this.btnMinimize.UseVisualStyleBackColor = true;
@@ -116,12 +117,12 @@
             // 
             // TitleBarControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tblMain);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "TitleBarControl";
-            this.Size = new System.Drawing.Size(429, 24);
+            this.Size = new System.Drawing.Size(572, 30);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
             this.flpButtons.ResumeLayout(false);
