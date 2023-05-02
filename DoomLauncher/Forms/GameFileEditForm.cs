@@ -17,7 +17,6 @@ namespace DoomLauncher
             InitializeComponent();
             btnCopyFrom.Visible = false;
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         public void SetCopyFromFileAllowed(IDataSourceAdapter adapter, ITabView view)

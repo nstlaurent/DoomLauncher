@@ -37,7 +37,6 @@ namespace DoomLauncher
             txtSearch.PreviewKeyDown += TxtSearch_PreviewKeyDown;
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         private void TxtSearch_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)

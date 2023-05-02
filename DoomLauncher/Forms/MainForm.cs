@@ -39,7 +39,7 @@ namespace DoomLauncher
         private Popup m_tagPopup;
 
         private string m_launchFile;
-        private LaunchArgs m_launchArgs;
+        private readonly LaunchArgs m_launchArgs;
         private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
         private FormWindowState m_windowState;
         private bool m_progressBarCancelled;
@@ -61,7 +61,6 @@ namespace DoomLauncher
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
             Stylizer.RemoveTitleBar(this);
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         protected override void OnClientSizeChanged(EventArgs e)
@@ -192,6 +191,9 @@ namespace DoomLauncher
                     StartPosition = FormStartPosition.Manual;
                     Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
                 }
+
+                Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
+                titleBar.HandleWindowStateChange(AppConfiguration.WindowState);
             }
 
             // Save the height and set after splitter, otherwise splitter resizing will be incorrect

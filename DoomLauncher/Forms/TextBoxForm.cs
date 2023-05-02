@@ -43,7 +43,6 @@ namespace DoomLauncher
             chk.Visible = false;
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         public string Title

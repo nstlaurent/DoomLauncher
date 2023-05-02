@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -15,6 +16,12 @@ namespace DoomLauncher.Controls
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
+        public FormWindowState WindowState { get; private set; }
+        private bool m_dragging;
+        private bool m_settingState;
+        private Size? m_size;
+        private Point? m_location;
+
         public string Title
         {
             get => lblTitle.Text; 
@@ -27,6 +34,66 @@ namespace DoomLauncher.Controls
             flpButtons.MouseDown += FlpButtons_MouseDown;
             flpButtons.DoubleClick += FlpButtons_DoubleClick;
             Stylizer.StylizeControl(this, DesignMode);
+            Load += TitleBarControl_Load;
+        }
+
+        public void HandleWindowStateChange(FormWindowState state)
+        {
+            if (state == FormWindowState.Maximized)
+                SetMaximized();
+        }
+
+        private void TitleBarControl_Load(object sender, EventArgs e)
+        {
+            ParentForm.LocationChanged += TitleBarControl_LocationChanged;
+            WindowState = ParentForm.WindowState;
+
+            if (WindowState == FormWindowState.Normal)
+            {
+                m_size = ParentForm.ClientSize;
+                m_location = ParentForm.Location;
+            }
+        }
+
+        private void TitleBarControl_LocationChanged(object sender, EventArgs e)
+        {
+            if (!m_settingState && m_dragging && WindowState == FormWindowState.Maximized)
+            {
+                m_dragging = false;
+                SetNormal(false);
+            }
+
+            if (WindowState == FormWindowState.Normal)
+                m_location = ParentForm.Location;
+        }
+
+        private void SetNormal(bool centerY)
+        {
+            WindowState = FormWindowState.Normal;
+            ParentForm.WindowState = FormWindowState.Normal;
+            var bounds = Screen.GetWorkingArea(ParentForm);
+
+            if (m_size == null || ParentForm is MainForm)
+            {
+                ParentForm.Location = new Point(bounds.X + (int)(bounds.Width * 0.12),
+                    centerY ? bounds.Y + (int)(bounds.Height * 0.12) : 0);
+                ParentForm.Size = new Size((int)(bounds.Width * 0.75), (int)(bounds.Height * 0.75));
+                return;
+            }
+
+            if (m_location.HasValue)
+                ParentForm.Location = m_location.Value;
+            ParentForm.Size = m_size.Value;
+        }
+
+        private void SetMaximized()
+        {
+            WindowState = FormWindowState.Maximized;
+            ParentForm.WindowState = FormWindowState.Normal;
+            var bounds = Screen.GetWorkingArea(ParentForm);
+            ParentForm.Location = bounds.Location;
+            ParentForm.Width = bounds.Width;
+            ParentForm.Height = bounds.Height;
         }
 
         public void SetControlBox(bool set)
@@ -67,8 +134,7 @@ namespace DoomLauncher.Controls
             if (e.Clicks != 1)
                 return;
 
-            if (ParentForm.WindowState != FormWindowState.Maximized)
-                ParentForm.WindowState = FormWindowState.Normal;
+            m_dragging = true;
 
             ReleaseCapture();
             SendMessage(ParentForm.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
@@ -86,14 +152,17 @@ namespace DoomLauncher.Controls
 
         private void SetMinMax()
         {
-            if (ParentForm.WindowState == FormWindowState.Maximized)
-                ParentForm.WindowState = FormWindowState.Normal;
+            m_settingState = true;
+            if (WindowState == FormWindowState.Maximized)
+                SetNormal(true);
             else
-                ParentForm.WindowState = FormWindowState.Maximized;
+                SetMaximized();
+            m_settingState = false;
         }
 
         private void btnMinimize_Click(object sender, EventArgs e)
         {
+            WindowState = FormWindowState.Minimized;
             ParentForm.WindowState = FormWindowState.Minimized;
         }
     }

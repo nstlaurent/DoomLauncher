@@ -10,7 +10,6 @@ namespace DoomLauncher
         {
             InitializeComponent();
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         public TagSelectControl TagSelectControl => tagSelectControl;

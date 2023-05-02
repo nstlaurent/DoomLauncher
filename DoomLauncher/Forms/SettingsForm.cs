@@ -40,7 +40,6 @@ namespace DoomLauncher
             UpdateScreenshotWidth(m_screenshotTrackBar);
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            MaximizedBounds = Screen.GetWorkingArea(this);
             PopulateViews();
         }
 

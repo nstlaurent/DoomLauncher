@@ -89,7 +89,6 @@ namespace DoomLauncher
             toolStripDropDownButton1.Visible = false;
             btnProfileMenu.Location = new System.Drawing.Point(0, 0);
             btnProfileMenu.Image = Icons.Bars;
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         private void InitTabIndicies()

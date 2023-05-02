@@ -16,7 +16,6 @@ namespace DoomLauncher
             tblMain.Controls.Add(m_tabCtrl, 0, 1);
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         public void Init(IDataSourceAdapter adapter)

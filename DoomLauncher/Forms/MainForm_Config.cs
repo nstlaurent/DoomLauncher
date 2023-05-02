@@ -27,7 +27,7 @@ namespace DoomLauncher
                     DataCache.Instance.UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
                     DataCache.Instance.UpdateConfig(config, AppConfiguration.AppXName, Location.X.ToString());
                     DataCache.Instance.UpdateConfig(config, AppConfiguration.AppYName, Location.Y.ToString());
-                    DataCache.Instance.UpdateConfig(config, AppConfiguration.WindowStateName, WindowState.ToString());
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.WindowStateName, titleBar.WindowState.ToString());
                 }
 
                 DataCache.Instance.UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());

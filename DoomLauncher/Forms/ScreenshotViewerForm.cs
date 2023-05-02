@@ -38,7 +38,6 @@ namespace DoomLauncher.Forms
             KeyUp += ScreenshotViewerForm_KeyUp;
             MouseWheel += ScreenshotViewerForm_MouseWheel;
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         private void ScreenshotViewerForm_MouseWheel(object sender, MouseEventArgs e)

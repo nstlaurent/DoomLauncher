@@ -29,7 +29,6 @@ namespace DoomLauncher
             dtRelease.CustomFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         public void SetData(IDataSourceAdapter adapter)

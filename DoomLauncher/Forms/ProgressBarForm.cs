@@ -14,7 +14,6 @@ namespace DoomLauncher
 
             Load += ProgressBarForm_Load;
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            MaximizedBounds = Screen.GetWorkingArea(this);
         }
 
         void ProgressBarForm_Load(object sender, EventArgs e)
