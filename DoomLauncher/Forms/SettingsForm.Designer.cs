@@ -30,7 +30,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
-            this.tblOuter = new System.Windows.Forms.TableLayoutPanel();
+            this.tblOuter = new DoomLauncher.TableLayoutPanelDB();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
@@ -47,7 +47,7 @@
             this.cmbIwad = new System.Windows.Forms.ComboBox();
             this.tabPageFileManagement = new System.Windows.Forms.TabPage();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.tblFileOptions = new System.Windows.Forms.TableLayoutPanel();
+            this.tblFileOptions = new DoomLauncher.TableLayoutPanelDB();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -513,7 +513,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tblOuter;
+        private DoomLauncher.TableLayoutPanelDB tblOuter;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSave;
@@ -530,7 +530,7 @@
         private System.Windows.Forms.Label lblLaunchSettings;
         private System.Windows.Forms.TabPage tabPageFileManagement;
         private System.Windows.Forms.ComboBox cmbFileManagement;
-        private System.Windows.Forms.TableLayoutPanel tblFileOptions;
+        private DoomLauncher.TableLayoutPanelDB tblFileOptions;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;

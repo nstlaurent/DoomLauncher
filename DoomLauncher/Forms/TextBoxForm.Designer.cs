@@ -29,14 +29,14 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
-            this.tblMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tblMain = new DoomLauncher.TableLayoutPanelDB();
             this.txtText = new System.Windows.Forms.TextBox();
             this.lblHeader = new DoomLauncher.GrowLabel();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.lnk = new System.Windows.Forms.LinkLabel();
-            this.chk = new System.Windows.Forms.CheckBox();
+            this.chk = new DoomLauncher.CCheckBox();
             this.tblContainer = new System.Windows.Forms.TableLayoutPanel();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.tblMain.SuspendLayout();
@@ -147,7 +147,6 @@
             this.chk.Size = new System.Drawing.Size(107, 24);
             this.chk.TabIndex = 5;
             this.chk.Text = "CheckBox";
-            this.chk.UseVisualStyleBackColor = true;
             // 
             // tblContainer
             // 
@@ -198,14 +197,14 @@
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tblMain;
+        private DoomLauncher.TableLayoutPanelDB tblMain;
         private System.Windows.Forms.TextBox txtText;
         private GrowLabel lblHeader;
         private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.LinkLabel lnk;
-        private System.Windows.Forms.CheckBox chk;
+        private DoomLauncher.CCheckBox chk;
         private System.Windows.Forms.TableLayoutPanel tblContainer;
         private Controls.TitleBarControl titleBar;
     }

@@ -109,13 +109,16 @@ namespace DoomLauncher
         private static Brush GetCompleteBrush(Rectangle rect)
         {
             if (ColorTheme.Current.IsDark)
-                return new LinearGradientBrush(rect, Color.Green, Color.DarkGreen, LinearGradientMode.ForwardDiagonal);
+                return new SolidBrush(ColorTheme.Current.Highlight);
 
             return new LinearGradientBrush(rect, Color.LightGreen, Color.Green, LinearGradientMode.ForwardDiagonal);
         }
 
         private static Pen GetPrecentPen(double percent, int total)
         {
+            if (ColorTheme.Current.IsDark)
+                return new Pen(Color.Black);
+
             if (percent >= 1.0 || total == 0)
                 return new Pen(Color.Green);
             else

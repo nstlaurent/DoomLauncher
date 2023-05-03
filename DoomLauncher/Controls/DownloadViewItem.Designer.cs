@@ -29,9 +29,9 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
-            this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.flp = new System.Windows.Forms.FlowLayoutPanel();
+            this.tblMain = new DoomLauncher.TableLayoutPanelDB();
+            this.progressBar = new DoomLauncher.CProgressBar();
+            this.flp = new DoomLauncher.FlowLayoutPanelDB();
             this.btnCancel = new System.Windows.Forms.Button();
             this.lblText = new System.Windows.Forms.Label();
             this.tblMain.SuspendLayout();

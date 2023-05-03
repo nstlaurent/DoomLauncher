@@ -28,6 +28,7 @@ namespace DoomLauncher
         public void SetCancelAllowed(bool set)
         {
             btnCancel.Visible = set;
+            titleBar.CanClose = set;
         }
 
         public ProgressBarStyle ProgressBarStyle
@@ -68,10 +69,7 @@ namespace DoomLauncher
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            if (Cancelled != null)
-            {
-                Cancelled(this, new EventArgs());
-            }
+            Cancelled?.Invoke(this, new EventArgs());
         }
     }
 }

@@ -56,11 +56,13 @@ namespace DoomLauncher
             m_splash.Invalidate();
 
             InitializeComponent();
+            Stylizer.RemoveTitleBar(this);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+
             InitIcons();
             ClearSummary();
 
             m_workingDirectory = LauncherPath.GetDataDirectory();
-            Stylizer.RemoveTitleBar(this);
         }
 
         protected override void OnClientSizeChanged(EventArgs e)
@@ -168,7 +170,6 @@ namespace DoomLauncher
 
         private void InitWindow()
         {
-            Stylizer.Stylize(this, DesignMode);
             Stylizer.StylizeControl(mnuLocal, DesignMode);
             Stylizer.StylizeControl(mnuIdGames, DesignMode);
             Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);

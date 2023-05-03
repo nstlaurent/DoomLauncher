@@ -29,7 +29,7 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
-            this.tblMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tblMain = new DoomLauncher.TableLayoutPanelDB();
             this.label9 = new System.Windows.Forms.Label();
             this.lblTags = new System.Windows.Forms.LinkLabel();
             this.txtAuthor = new System.Windows.Forms.TextBox();

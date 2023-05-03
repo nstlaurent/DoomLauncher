@@ -40,13 +40,13 @@
             this.txtExtensions = new System.Windows.Forms.TextBox();
             this.lblParameters = new System.Windows.Forms.Label();
             this.txtParameters = new System.Windows.Forms.TextBox();
-            this.lblFileOption = new System.Windows.Forms.Label();
-            this.txtFileOption = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tblAltSave = new System.Windows.Forms.TableLayoutPanel();
             this.txtAltSave = new System.Windows.Forms.TextBox();
             this.btnAltSaveBrowse = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
+            this.lblFileOption = new System.Windows.Forms.Label();
+            this.txtFileOption = new System.Windows.Forms.TextBox();
             this.chkArchive = new System.Windows.Forms.CheckBox();
             this.tblMain.SuspendLayout();
             this.tblExec.SuspendLayout();
@@ -195,26 +195,6 @@
             this.txtParameters.Size = new System.Drawing.Size(245, 22);
             this.txtParameters.TabIndex = 9;
             // 
-            // lblFileOption
-            // 
-            this.lblFileOption.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblFileOption.AutoSize = true;
-            this.lblFileOption.Location = new System.Drawing.Point(4, 187);
-            this.lblFileOption.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblFileOption.Name = "lblFileOption";
-            this.lblFileOption.Size = new System.Drawing.Size(71, 16);
-            this.lblFileOption.TabIndex = 3;
-            this.lblFileOption.Text = "File Option";
-            // 
-            // txtFileOption
-            // 
-            this.txtFileOption.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtFileOption.Location = new System.Drawing.Point(164, 184);
-            this.txtFileOption.Margin = new System.Windows.Forms.Padding(4);
-            this.txtFileOption.Name = "txtFileOption";
-            this.txtFileOption.Size = new System.Drawing.Size(245, 22);
-            this.txtFileOption.TabIndex = 7;
-            // 
             // label4
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -272,6 +252,26 @@
             this.label5.Size = new System.Drawing.Size(52, 16);
             this.label5.TabIndex = 12;
             this.label5.Text = "Archive";
+            // 
+            // lblFileOption
+            // 
+            this.lblFileOption.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFileOption.AutoSize = true;
+            this.lblFileOption.Location = new System.Drawing.Point(4, 187);
+            this.lblFileOption.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblFileOption.Name = "lblFileOption";
+            this.lblFileOption.Size = new System.Drawing.Size(71, 16);
+            this.lblFileOption.TabIndex = 3;
+            this.lblFileOption.Text = "File Option";
+            // 
+            // txtFileOption
+            // 
+            this.txtFileOption.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtFileOption.Location = new System.Drawing.Point(164, 184);
+            this.txtFileOption.Margin = new System.Windows.Forms.Padding(4);
+            this.txtFileOption.Name = "txtFileOption";
+            this.txtFileOption.Size = new System.Drawing.Size(245, 22);
+            this.txtFileOption.TabIndex = 7;
             // 
             // chkArchive
             // 

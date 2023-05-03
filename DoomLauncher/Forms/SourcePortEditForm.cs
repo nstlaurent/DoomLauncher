@@ -31,10 +31,10 @@ namespace DoomLauncher
 
             sourcePortEdit1.ShowOptions(type == SourcePortLaunchType.Utility);
 
-            if (type == SourcePortLaunchType.Utility && tblMain.RowStyles[1].Height > 0)
+            if (type == SourcePortLaunchType.Utility && tblMain.RowStyles[2].Height > 0)
             {
                 grpAdditionalFiles.Visible = false;
-                tblMain.RowStyles[1].Height = 0;
+                tblMain.RowStyles[2].Height = 0;
                 Height -= grpAdditionalFiles.Height;
             }
 

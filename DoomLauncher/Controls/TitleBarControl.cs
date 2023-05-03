@@ -28,6 +28,13 @@ namespace DoomLauncher.Controls
             set => lblTitle.Text = value;
         }
 
+        public bool CanClose { get; set; } = true;
+        public bool ControlBox
+        {
+            get { return flpButtons.Visible; }
+            set { flpButtons.Visible = value; }
+        }
+
         public TitleBarControl()
         {
             InitializeComponent();
@@ -45,6 +52,9 @@ namespace DoomLauncher.Controls
 
         private void TitleBarControl_Load(object sender, EventArgs e)
         {
+            if (ParentForm == null)
+                return;
+
             ParentForm.LocationChanged += TitleBarControl_LocationChanged;
             WindowState = ParentForm.WindowState;
 
@@ -142,7 +152,8 @@ namespace DoomLauncher.Controls
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            ParentForm.Close();
+            if (CanClose)
+                ParentForm.Close();
         }
 
         private void btnMaximize_Click(object sender, EventArgs e)

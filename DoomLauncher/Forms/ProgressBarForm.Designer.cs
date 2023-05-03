@@ -30,11 +30,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProgressBarForm));
-            this.tblMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tblMain = new DoomLauncher.TableLayoutPanelDB();
             this.btnCancel = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblProcess = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.progressBar1 = new DoomLauncher.CProgressBar();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.tblMain.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -49,22 +49,22 @@
             this.tblMain.Controls.Add(this.titleBar, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(4);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 3;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
-            this.tblMain.Size = new System.Drawing.Size(515, 176);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
+            this.tblMain.Size = new System.Drawing.Size(482, 141);
             this.tblMain.TabIndex = 0;
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnCancel.Location = new System.Drawing.Point(399, 134);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnCancel.Location = new System.Drawing.Point(378, 107);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(112, 35);
+            this.btnCancel.Size = new System.Drawing.Size(100, 28);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -75,28 +75,28 @@
             this.panel1.Controls.Add(this.lblProcess);
             this.panel1.Controls.Add(this.progressBar1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 40);
+            this.panel1.Location = new System.Drawing.Point(0, 32);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(515, 87);
+            this.panel1.Size = new System.Drawing.Size(482, 70);
             this.panel1.TabIndex = 1;
             // 
             // lblProcess
             // 
             this.lblProcess.AutoSize = true;
-            this.lblProcess.Location = new System.Drawing.Point(18, 11);
+            this.lblProcess.Location = new System.Drawing.Point(16, 9);
             this.lblProcess.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblProcess.Name = "lblProcess";
-            this.lblProcess.Size = new System.Drawing.Size(99, 20);
+            this.lblProcess.Size = new System.Drawing.Size(84, 16);
             this.lblProcess.TabIndex = 1;
             this.lblProcess.Text = "Processing...";
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(18, 35);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.progressBar1.Location = new System.Drawing.Point(16, 28);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(4);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(484, 35);
+            this.progressBar1.Size = new System.Drawing.Size(453, 28);
             this.progressBar1.TabIndex = 0;
             // 
             // titleBar
@@ -107,18 +107,18 @@
             this.titleBar.Location = new System.Drawing.Point(0, 0);
             this.titleBar.Margin = new System.Windows.Forms.Padding(0);
             this.titleBar.Name = "titleBar";
-            this.titleBar.Size = new System.Drawing.Size(515, 40);
+            this.titleBar.Size = new System.Drawing.Size(482, 32);
             this.titleBar.TabIndex = 2;
             this.titleBar.Title = "Progress";
             // 
             // ProgressBarForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(515, 176);
+            this.ClientSize = new System.Drawing.Size(482, 141);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "ProgressBarForm";
             this.ShowIcon = false;
             this.Text = "Progress";
@@ -130,12 +130,11 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TableLayoutPanel tblMain;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblProcess;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private Controls.TitleBarControl titleBar;
+        private TableLayoutPanelDB tblMain;
+        private CProgressBar progressBar1;
     }
 }

@@ -40,8 +40,7 @@ namespace DoomLauncher
         public void DisplayInitSetupButton()
         {
             IsInitSetup = true;
-
-            btnNext.ForeColor = Color.DarkGreen;
+            
             btnNext.Text = "Next >>";
             btnNext.Visible = true;
         }

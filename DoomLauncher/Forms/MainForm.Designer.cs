@@ -62,9 +62,9 @@
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.createShortcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createAutoPlayShortcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tblTop = new System.Windows.Forms.TableLayoutPanel();
-            this.flpSearch = new System.Windows.Forms.FlowLayoutPanel();
+            this.tblMain = new DoomLauncher.TableLayoutPanelDB();
+            this.tblTop = new DoomLauncher.TableLayoutPanelDB();
+            this.flpSearch = new DoomLauncher.FlowLayoutPanelDB();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.addFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,7 +97,7 @@
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnDownloads = new DoomLauncher.FormButton();
             this.btnUpdate = new DoomLauncher.GlowButton();
-            this.tblDataView = new System.Windows.Forms.TableLayoutPanel();
+            this.tblDataView = new DoomLauncher.TableLayoutPanelDB();
             this.splitLeftRight = new System.Windows.Forms.SplitContainer();
             this.splitTagSelect = new System.Windows.Forms.SplitContainer();
             this.splitTopBottom = new System.Windows.Forms.SplitContainer();
@@ -922,7 +922,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 942);
-            this.ControlBox = false;
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);

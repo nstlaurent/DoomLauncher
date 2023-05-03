@@ -69,7 +69,7 @@
             this.chkExtraParamsOnly = new DoomLauncher.CCheckBox();
             this.chkSaveStats = new DoomLauncher.CCheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.tblFiles = new System.Windows.Forms.TableLayoutPanel();
+            this.tblFiles = new DoomLauncher.TableLayoutPanelDB();
             this.ctrlFiles = new DoomLauncher.FilesCtrl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
@@ -77,12 +77,12 @@
             this.flp1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lnkSpecific = new System.Windows.Forms.LinkLabel();
             this.lnkCustomParameters = new System.Windows.Forms.LinkLabel();
-            this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tblInner = new System.Windows.Forms.TableLayoutPanel();
+            this.tblMain = new DoomLauncher.TableLayoutPanelDB();
+            this.tblInner = new DoomLauncher.TableLayoutPanelDB();
             this.pnlLeft = new System.Windows.Forms.Panel();
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnSaveSettings = new System.Windows.Forms.Button();
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpButtons = new DoomLauncher.FlowLayoutPanelDB();
             this.chkRemember = new DoomLauncher.CCheckBox();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.groupBox1.SuspendLayout();
@@ -108,7 +108,7 @@
             this.cmbSourcePorts.DisplayMember = "Name";
             this.cmbSourcePorts.FormattingEnabled = true;
             this.cmbSourcePorts.Location = new System.Drawing.Point(68, 57);
-            this.cmbSourcePorts.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbSourcePorts.Margin = new System.Windows.Forms.Padding(4);
             this.cmbSourcePorts.Name = "cmbSourcePorts";
             this.cmbSourcePorts.Size = new System.Drawing.Size(256, 24);
             this.cmbSourcePorts.TabIndex = 0;
@@ -118,7 +118,7 @@
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point(55, 6);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(100, 28);
             this.btnOK.TabIndex = 1;
@@ -131,7 +131,7 @@
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(163, 6);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(100, 28);
             this.btnCancel.TabIndex = 2;
@@ -144,7 +144,7 @@
             this.cmbIwad.DisplayMember = "FileName";
             this.cmbIwad.FormattingEnabled = true;
             this.cmbIwad.Location = new System.Drawing.Point(68, 91);
-            this.cmbIwad.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbIwad.Margin = new System.Windows.Forms.Padding(4);
             this.cmbIwad.Name = "cmbIwad";
             this.cmbIwad.Size = new System.Drawing.Size(256, 24);
             this.cmbIwad.TabIndex = 3;
@@ -159,9 +159,9 @@
             this.groupBox1.Controls.Add(this.cmbSourcePorts);
             this.groupBox1.Controls.Add(this.cmbIwad);
             this.groupBox1.Location = new System.Drawing.Point(4, 4);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(341, 131);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
@@ -254,7 +254,7 @@
             this.newProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.File;
             this.newProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(202, 26);
             this.newProfileToolStripMenuItem.Text = "New Profile...";
             this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
             // 
@@ -263,7 +263,7 @@
             this.editProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Edit;
             this.editProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.editProfileToolStripMenuItem.Name = "editProfileToolStripMenuItem";
-            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(202, 26);
             this.editProfileToolStripMenuItem.Text = "Rename Profile...";
             this.editProfileToolStripMenuItem.Click += new System.EventHandler(this.editProfileToolStripMenuItem_Click);
             // 
@@ -272,7 +272,7 @@
             this.deleteProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Delete;
             this.deleteProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.deleteProfileToolStripMenuItem.Name = "deleteProfileToolStripMenuItem";
-            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(202, 26);
             this.deleteProfileToolStripMenuItem.Text = "Delete Profile";
             this.deleteProfileToolStripMenuItem.Click += new System.EventHandler(this.deleteProfileToolStripMenuItem_Click);
             // 
@@ -313,7 +313,7 @@
             this.cmbMap.Enabled = false;
             this.cmbMap.FormattingEnabled = true;
             this.cmbMap.Location = new System.Drawing.Point(115, 23);
-            this.cmbMap.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbMap.Margin = new System.Windows.Forms.Padding(4);
             this.cmbMap.Name = "cmbMap";
             this.cmbMap.Size = new System.Drawing.Size(212, 24);
             this.cmbMap.TabIndex = 6;
@@ -335,7 +335,7 @@
             this.cmbSkill.Enabled = false;
             this.cmbSkill.FormattingEnabled = true;
             this.cmbSkill.Location = new System.Drawing.Point(115, 57);
-            this.cmbSkill.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbSkill.Margin = new System.Windows.Forms.Padding(4);
             this.cmbSkill.Name = "cmbSkill";
             this.cmbSkill.Size = new System.Drawing.Size(212, 24);
             this.cmbSkill.TabIndex = 10;
@@ -345,7 +345,7 @@
             // 
             this.txtDescription.Enabled = false;
             this.txtDescription.Location = new System.Drawing.Point(115, 138);
-            this.txtDescription.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtDescription.Margin = new System.Windows.Forms.Padding(4);
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.Size = new System.Drawing.Size(212, 22);
             this.txtDescription.TabIndex = 13;
@@ -357,7 +357,7 @@
             this.cmbDemo.Enabled = false;
             this.cmbDemo.FormattingEnabled = true;
             this.cmbDemo.Location = new System.Drawing.Point(115, 90);
-            this.cmbDemo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbDemo.Margin = new System.Windows.Forms.Padding(4);
             this.cmbDemo.Name = "cmbDemo";
             this.cmbDemo.Size = new System.Drawing.Size(212, 24);
             this.cmbDemo.TabIndex = 14;
@@ -378,9 +378,9 @@
             this.groupBox2.Controls.Add(this.chkRecord);
             this.groupBox2.Controls.Add(this.txtDescription);
             this.groupBox2.Location = new System.Drawing.Point(4, 142);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox2.Size = new System.Drawing.Size(341, 213);
             this.groupBox2.TabIndex = 17;
             this.groupBox2.TabStop = false;
@@ -410,7 +410,7 @@
             // txtParameters
             // 
             this.txtParameters.Location = new System.Drawing.Point(115, 171);
-            this.txtParameters.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtParameters.Margin = new System.Windows.Forms.Padding(4);
             this.txtParameters.Name = "txtParameters";
             this.txtParameters.Size = new System.Drawing.Size(212, 22);
             this.txtParameters.TabIndex = 17;
@@ -421,7 +421,7 @@
             // 
             this.chkMap.AutoSize = true;
             this.chkMap.Location = new System.Drawing.Point(9, 26);
-            this.chkMap.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkMap.Margin = new System.Windows.Forms.Padding(4);
             this.chkMap.Name = "chkMap";
             this.chkMap.Size = new System.Drawing.Size(56, 20);
             this.chkMap.TabIndex = 16;
@@ -433,7 +433,7 @@
             // 
             this.chkDemo.AutoSize = true;
             this.chkDemo.Location = new System.Drawing.Point(9, 92);
-            this.chkDemo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkDemo.Margin = new System.Windows.Forms.Padding(4);
             this.chkDemo.Name = "chkDemo";
             this.chkDemo.Size = new System.Drawing.Size(96, 20);
             this.chkDemo.TabIndex = 15;
@@ -445,7 +445,7 @@
             // 
             this.chkRecord.AutoSize = true;
             this.chkRecord.Location = new System.Drawing.Point(8, 142);
-            this.chkRecord.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkRecord.Margin = new System.Windows.Forms.Padding(4);
             this.chkRecord.Name = "chkRecord";
             this.chkRecord.Size = new System.Drawing.Size(74, 20);
             this.chkRecord.TabIndex = 12;
@@ -476,9 +476,9 @@
             this.groupBox4.Controls.Add(this.chkSaveStats);
             this.groupBox4.Controls.Add(this.lnkMore);
             this.groupBox4.Location = new System.Drawing.Point(4, 362);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox4.Size = new System.Drawing.Size(341, 145);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
@@ -499,7 +499,7 @@
             // 
             this.chkLoadLatestSave.AutoSize = true;
             this.chkLoadLatestSave.Location = new System.Drawing.Point(8, 53);
-            this.chkLoadLatestSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkLoadLatestSave.Margin = new System.Windows.Forms.Padding(4);
             this.chkLoadLatestSave.Name = "chkLoadLatestSave";
             this.chkLoadLatestSave.Size = new System.Drawing.Size(134, 20);
             this.chkLoadLatestSave.TabIndex = 25;
@@ -522,7 +522,7 @@
             // 
             this.chkScreenFilter.AutoSize = true;
             this.chkScreenFilter.Location = new System.Drawing.Point(8, 81);
-            this.chkScreenFilter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkScreenFilter.Margin = new System.Windows.Forms.Padding(4);
             this.chkScreenFilter.Name = "chkScreenFilter";
             this.chkScreenFilter.Size = new System.Drawing.Size(104, 20);
             this.chkScreenFilter.TabIndex = 23;
@@ -546,7 +546,7 @@
             // 
             this.chkExtraParamsOnly.AutoSize = true;
             this.chkExtraParamsOnly.Location = new System.Drawing.Point(8, 109);
-            this.chkExtraParamsOnly.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkExtraParamsOnly.Margin = new System.Windows.Forms.Padding(4);
             this.chkExtraParamsOnly.Name = "chkExtraParamsOnly";
             this.chkExtraParamsOnly.Size = new System.Drawing.Size(139, 20);
             this.chkExtraParamsOnly.TabIndex = 21;
@@ -559,7 +559,7 @@
             this.chkSaveStats.Checked = true;
             this.chkSaveStats.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkSaveStats.Location = new System.Drawing.Point(8, 25);
-            this.chkSaveStats.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkSaveStats.Margin = new System.Windows.Forms.Padding(4);
             this.chkSaveStats.Name = "chkSaveStats";
             this.chkSaveStats.Size = new System.Drawing.Size(117, 20);
             this.chkSaveStats.TabIndex = 19;
@@ -571,9 +571,9 @@
             this.groupBox3.Controls.Add(this.tblFiles);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(353, 4);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox3.Size = new System.Drawing.Size(315, 500);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
@@ -603,7 +603,7 @@
             this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ctrlFiles.ForeColor = System.Drawing.Color.White;
             this.ctrlFiles.Location = new System.Drawing.Point(5, 54);
-            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(5);
             this.ctrlFiles.Name = "ctrlFiles";
             this.ctrlFiles.Size = new System.Drawing.Size(297, 388);
             this.ctrlFiles.TabIndex = 20;
@@ -632,7 +632,7 @@
             // pbInfo
             // 
             this.pbInfo.Location = new System.Drawing.Point(4, 9);
-            this.pbInfo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pbInfo.Margin = new System.Windows.Forms.Padding(4);
             this.pbInfo.Name = "pbInfo";
             this.pbInfo.Size = new System.Drawing.Size(21, 20);
             this.pbInfo.TabIndex = 24;
@@ -683,7 +683,7 @@
             this.tblMain.Controls.Add(this.titleBar, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(4);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 3;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
@@ -735,7 +735,7 @@
             // btnSaveSettings
             // 
             this.btnSaveSettings.Location = new System.Drawing.Point(177, 6);
-            this.btnSaveSettings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSaveSettings.Margin = new System.Windows.Forms.Padding(4);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(109, 28);
             this.btnSaveSettings.TabIndex = 6;
@@ -746,12 +746,13 @@
             // 
             // flpButtons
             // 
+            this.flpButtons.CaptureArrowKeys = false;
             this.flpButtons.Controls.Add(this.btnCancel);
             this.flpButtons.Controls.Add(this.btnOK);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flpButtons.Location = new System.Drawing.Point(405, 0);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flpButtons.Margin = new System.Windows.Forms.Padding(4);
             this.flpButtons.Name = "flpButtons";
             this.flpButtons.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.flpButtons.Size = new System.Drawing.Size(267, 39);
@@ -763,7 +764,7 @@
             this.chkRemember.Checked = true;
             this.chkRemember.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkRemember.Location = new System.Drawing.Point(12, 11);
-            this.chkRemember.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkRemember.Margin = new System.Windows.Forms.Padding(4);
             this.chkRemember.Name = "chkRemember";
             this.chkRemember.Size = new System.Drawing.Size(148, 20);
             this.chkRemember.TabIndex = 4;
@@ -791,7 +792,7 @@
             this.ClientSize = new System.Drawing.Size(672, 579);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "PlayForm";
             this.Text = "Launch";
             this.groupBox1.ResumeLayout(false);
@@ -845,11 +846,8 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private FilesCtrl ctrlFiles;
         private System.Windows.Forms.TableLayoutPanel tblFiles;
-        private System.Windows.Forms.TableLayoutPanel tblMain;
-        private System.Windows.Forms.TableLayoutPanel tblInner;
         private System.Windows.Forms.Panel pnlLeft;
         private System.Windows.Forms.Panel pnlBottom;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblInfo;
         private System.Windows.Forms.PictureBox pbInfo;
@@ -880,5 +878,8 @@
         private CCheckBox chkExtraParamsOnly;
         private CCheckBox chkScreenFilter;
         private CCheckBox chkLoadLatestSave;
+        private TableLayoutPanelDB tblMain;
+        private TableLayoutPanelDB tblInner;
+        private FlowLayoutPanelDB flpButtons;
     }
 }

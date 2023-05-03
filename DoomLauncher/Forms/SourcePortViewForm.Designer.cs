@@ -43,7 +43,7 @@
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnNext = new System.Windows.Forms.Button();
             this.flpTop = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkShowArchived = new System.Windows.Forms.CheckBox();
+            this.chkShowArchived = new DoomLauncher.CCheckBox();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.tblMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSourcePorts)).BeginInit();

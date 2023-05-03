@@ -6,6 +6,7 @@ namespace DoomLauncher
 {
     public partial class TextBoxForm : Form
     {
+        private static readonly int s_headerRow = 0;
         private static readonly int s_checkBoxRow = 1;
         private static readonly int s_linkRow = 2;
         private string m_url;
@@ -56,7 +57,7 @@ namespace DoomLauncher
             DpiScale dpiScale = new DpiScale(CreateGraphics());
             chk.Visible = true;
             chk.Text = text;
-            tblMain.RowStyles[s_checkBoxRow].Height = dpiScale.ScaleIntY(32 + TitleBarHeight);
+            tblMain.RowStyles[s_checkBoxRow].Height = dpiScale.ScaleIntY(32);
             Height += dpiScale.ScaleIntY(32);
         }
 
@@ -66,7 +67,7 @@ namespace DoomLauncher
             lnk.Visible = true;
             lnk.Text = text;
             m_url = url;
-            tblMain.RowStyles[s_linkRow].Height = dpiScale.ScaleIntY(32 + TitleBarHeight);
+            tblMain.RowStyles[s_linkRow].Height = dpiScale.ScaleIntY(32);
             Height += dpiScale.ScaleIntY(32);
         }
 
@@ -103,7 +104,7 @@ namespace DoomLauncher
             set
             {
                 lblHeader.Text = value;
-                tblMain.RowStyles[0].Height = lblHeader.Height + 3;
+                tblMain.RowStyles[s_headerRow].Height = lblHeader.Height + 3;
             }
         }
 

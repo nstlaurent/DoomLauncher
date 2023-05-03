@@ -139,6 +139,9 @@
     <Compile Include="Controls\CCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\CProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\CTabControl.cs">
       <SubType>Component</SubType>
     </Compile>

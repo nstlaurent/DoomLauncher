@@ -119,7 +119,7 @@ namespace DoomLauncher
             tblMain.Height = height + dpiScale.ScaleIntY(8);
 
             tabControl.TabPages[0].Controls.Add(tblMain);
-            Height = tblMain.Height + dpiScale.ScaleIntY(108);
+            Height = tblMain.Height + dpiScale.ScaleIntY(108+32);
             Width = dpiScale.ScaleIntX(452);
         }
 

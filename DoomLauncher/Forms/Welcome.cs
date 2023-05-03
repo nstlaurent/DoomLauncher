@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace DoomLauncher.Forms
@@ -8,6 +9,12 @@ namespace DoomLauncher.Forms
         public Welcome()
         {
             InitializeComponent();
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            lblInfo.BackColor = Color.Transparent;
+            lblWelcome.BackColor = Color.Transparent;
+            lblInfo.ForeColor = Color.White;
+            lblWelcome.ForeColor = Color.White;
+            lnkHelp.LinkColor = Color.White;
         }
 
         private void lnkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

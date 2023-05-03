@@ -12,7 +12,7 @@ namespace DoomLauncher
 
             m_tagEdit = new TagEdit();
             m_tagEdit.Dock = DockStyle.Fill;
-            tblMain.Controls.Add(m_tagEdit, 0, 0);
+            tblMain.Controls.Add(m_tagEdit, 0, 1);
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
         }
