@@ -13,12 +13,14 @@ namespace DoomLauncher
         protected override void OnPaint(PaintEventArgs e)
         {
             Rectangle rect = e.ClipRectangle;
-
             DpiScale dpiScale = new DpiScale(e.Graphics);
             int padX = dpiScale.ScaleIntX(2);
             int padY = dpiScale.ScaleIntY(2);
 
-            rect.Width = (int)(rect.Width * ((double)Value / Maximum)) - (padX*2);
+            if (Maximum != 0)
+                rect.Width = (int)(rect.Width * ((double)Value / Maximum));
+            rect.Width -= (padX * 2);
+
             if (ProgressBarRenderer.IsSupported)
                 ProgressBarRenderer.DrawHorizontalBar(e.Graphics, e.ClipRectangle);
             rect.Height -= padY * 2;
