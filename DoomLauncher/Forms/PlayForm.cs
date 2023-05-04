@@ -35,6 +35,8 @@ namespace DoomLauncher
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
             InitializeComponent();
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
             ctrlFiles.Initialize("GameFileID", "FileNameNoPath");
             ctrlFiles.CellFormatting += ctrlFiles_CellFormatting;
             ctrlFiles.NewItemNeeded += ctrlFiles_NewItemNeeded;
@@ -83,8 +85,6 @@ namespace DoomLauncher
             };
 
             InitTabIndicies();
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
-            Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
             profileToolStrip.Visible = false;
             toolStripDropDownButton1.Visible = false;
             btnProfileMenu.Location = new System.Drawing.Point(0, 0);
