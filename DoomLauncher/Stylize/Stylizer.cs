@@ -226,7 +226,7 @@ namespace DoomLauncher
         private static void StyleGrid(DataGridView view)
         {
             view.BackgroundColor = CurrentTheme.WindowDark;
-
+            
             view.DefaultCellStyle.NullValue = "N/A";
             view.RowHeadersVisible = false;
             view.AutoGenerateColumns = false;
@@ -235,6 +235,7 @@ namespace DoomLauncher
 
             view.ColumnHeadersDefaultCellStyle.BackColor = CurrentTheme.Window;
             view.ColumnHeadersDefaultCellStyle.ForeColor = CurrentTheme.Text;
+            view.ColumnHeadersDefaultCellStyle.SelectionBackColor = view.ColumnHeadersDefaultCellStyle.BackColor;
             view.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
 
             view.ForeColor = CurrentTheme.Text;
