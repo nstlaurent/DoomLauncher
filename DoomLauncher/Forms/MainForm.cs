@@ -185,7 +185,7 @@ namespace DoomLauncher
             //Only set location and window state if the location is valid, either way we always set Width, Height, and splitter values
             if (ValidatePosition(AppConfiguration))
             {
-                WindowState = AppConfiguration.WindowState;
+                WindowState = AppConfiguration.WindowState == FormWindowState.Minimized ? FormWindowState.Maximized : AppConfiguration.WindowState;
 
                 if (WindowState != FormWindowState.Maximized)
                 {
@@ -341,6 +341,8 @@ namespace DoomLauncher
                         UpdateSavedTabSearch(tabView, searchFields);
                         tabView.SetGameFiles(searchFields);
                     }
+                    
+                    HandleSelectionChange(GetCurrentViewControl(), false);
                 }
             }
         }
