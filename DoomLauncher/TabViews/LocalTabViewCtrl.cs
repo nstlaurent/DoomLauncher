@@ -35,7 +35,7 @@ namespace DoomLauncher
                     if (tag != null)
                         columnView.CustomRowPaintForeColor = Color.FromArgb(tag.Color.Value);
                     else
-                        columnView.CustomRowPaintForeColor = CDataGridView.DefaultForeColor;
+                        columnView.CustomRowPaintForeColor = ColorTheme.Current.Text;
                 }
             }
         }
