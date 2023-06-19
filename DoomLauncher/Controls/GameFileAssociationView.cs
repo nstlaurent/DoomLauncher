@@ -368,6 +368,23 @@ namespace DoomLauncher
                 CreateMenuItem(menu, "Set First", setFirstToolStripMenuItem_Click);
             }
 
+            var customMenuOptions = view.MenuOptions;
+            if (customMenuOptions.Count > 0)
+            {
+                AddSeperator(menu);
+                foreach (var option in customMenuOptions)
+                {
+                    CreateMenuItem(menu, option.Title, (sender, eventArgs) =>
+                    {
+                        if (!option.Action())
+                            return;
+                        // Update data and assume the file order changed
+                        SetData(m_gameFile);
+                        FileOrderChanged?.Invoke(this, EventArgs.Empty);
+                    });
+                }
+            }
+
             FinalizeMenu(menu);
 
             return menu;

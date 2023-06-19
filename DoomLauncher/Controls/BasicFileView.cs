@@ -425,5 +425,6 @@ namespace DoomLauncher
         public virtual bool EditAllowed { get { return true; } }
         public virtual bool ViewAllowed { get { return true; } }
         public virtual bool ChangeOrderAllowed { get { return true; } }
+        public virtual IList<MenuOptions> MenuOptions { get { return Array.Empty<MenuOptions>(); } }
     }
 }

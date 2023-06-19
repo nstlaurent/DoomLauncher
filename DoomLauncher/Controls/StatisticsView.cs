@@ -175,6 +175,8 @@ namespace DoomLauncher
         public bool ViewAllowed { get { return false; } }
         public bool ChangeOrderAllowed { get { return false; } }
 
+        public IList<MenuOptions> MenuOptions { get { return Array.Empty<MenuOptions>(); } }
+
         private class StatsBind
         {
             public StatsBind(string map, string kills, string secrets, string items, TimeSpan time, DateTime recordtime, int? skill, string sourceport,

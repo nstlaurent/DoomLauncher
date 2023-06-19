@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
+using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -438,5 +439,41 @@ namespace DoomLauncher
         private IFileData SelectedFile { get; set; }
 
         public override bool EditAllowed => true;
+
+        public override IList<MenuOptions> MenuOptions
+        {
+            get
+            {
+                return new MenuOptions[]
+                {
+                    new MenuOptions()
+                    {
+                        Title = "Sort by Map",
+                        Action = SortByMap
+                    }
+                };
+            }
+        }
+
+        private bool SortByMap()
+        {
+            if (Files.Count() <= 1)
+                return false;
+
+            var files = Files.ToList();
+            var firstFile = files[0];
+            files.Sort(new FileMapComparer());
+            int order = 0;
+            foreach (var file in files)
+                file.FileOrder = order++;
+
+            foreach (IFileData fileUpdate in files)
+                DataSourceAdapter.UpdateFile(fileUpdate);
+
+            if (firstFile.FileOrder != 0)
+                ThumbnailManager.UpdateThumbnail(GameFile);
+
+            return true;
+        }
     }
 }

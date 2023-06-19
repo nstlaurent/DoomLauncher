@@ -90,7 +90,7 @@ namespace DoomLauncher
             if (IWad != null)
             {
                 if (!AssertGameFile(gameFile, gameFileDirectory, tempDirectory, sourcePort, sb)) return null;
-                if (!HandleGameFileIWad(IWad, sourcePort, sb, gameFileDirectory, tempDirectory)) return null;
+                if (!HandleGameFileIWad(IWad, sourcePort, sourcePortData, sb, gameFileDirectory, tempDirectory, true)) return null;
             }
 
             List<string> launchFiles = new List<string>();
@@ -160,21 +160,17 @@ namespace DoomLauncher
             return false;
         }
 
-        private bool HandleGameFileIWad(IGameFile gameFile, ISourcePort sourcePort, StringBuilder sb, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        private bool HandleGameFileIWad(IGameFile gameFile, ISourcePort sourcePort, ISourcePortData sourcePortData, StringBuilder sb, 
+            LauncherPath gameFileDirectory, LauncherPath tempDirectory, bool checkSpecific)
         {
             try
             {
-                using (IArchiveReader reader = CreateArchiveReader(gameFile, gameFileDirectory))
-                {
-                    IArchiveEntry entry = reader.Entries.First();
-                    string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
-                    ExtractEntryFile(entry, extractFile);
+                string[] extensions = sourcePortData.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                var file = GetFilesFromGameFileSettings(gameFile, gameFileDirectory, tempDirectory, checkSpecific, extensions).FirstOrDefault();
+                if (file == null)
+                    return false;
 
-                    if (!entry.ExtractRequired)
-                        extractFile = entry.FullName;
-
-                    sb.Append(sourcePort.IwadParameter(new SpData(extractFile, gameFile, AdditionalFiles)));
-                }
+                sb.Append(sourcePort.IwadParameter(new SpData(file, gameFile, AdditionalFiles)));
             }
             catch (FileNotFoundException)
             {
@@ -194,21 +190,6 @@ namespace DoomLauncher
             }
 
             return true;
-        }
-
-        private void ExtractEntryFile(IArchiveEntry entry, string extractFile)
-        {
-            try
-            {
-                if (ExtractFiles && entry.ExtractRequired)
-                    entry.ExtractToFile(extractFile, true);
-            }
-            catch (IOException)
-            {
-                if (IgnoreExtractError)
-                    return;
-                throw;
-            }
         }
 
         private bool HandleGameFile(IGameFile gameFile, List<string> launchFiles, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
