@@ -1,7 +1,15 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace DoomLauncher.Interfaces
 {
+    public class MenuOptions
+    {
+        public string Title { get; set; }
+        public Func<bool> Action { get; set; }
+    }
+
     interface IFileAssociationView
     {
         void SetContextMenu(ContextMenuStrip menu);
@@ -28,5 +36,7 @@ namespace DoomLauncher.Interfaces
         bool ExportAll();
 
         IGameFile GameFile { get; set; }
+
+        IList<MenuOptions> MenuOptions { get; }
     }
 }

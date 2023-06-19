@@ -54,7 +54,7 @@ namespace DoomLauncher
 
             return true;
         }
-
+        
         public static IEnumerable<IFileData> HandleNewScreenshots(ISourcePortData sourcePort, IGameFile gameFile, string[] files)
         {
             List<IFileData> ret = new List<IFileData>();
@@ -75,7 +75,7 @@ namespace DoomLauncher
                         GameFileID = gameFile.GameFileID.Value,
                         SourcePortID = sourcePort.SourcePortID,
                         FileTypeID = FileType.Screenshot,
-                        FileOrder = 0,
+                        FileOrder = short.MaxValue,
                     };
 
                     DataCache.Instance.DataSourceAdapter.InsertFile(fileData);
