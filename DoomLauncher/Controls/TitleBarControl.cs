@@ -17,6 +17,7 @@ namespace DoomLauncher.Controls
         public static extern bool ReleaseCapture();
 
         public FormWindowState WindowState { get; private set; }
+        private bool m_maximized;
         private bool m_dragging;
         private bool m_settingState;
         private Size? m_size;
@@ -75,10 +76,13 @@ namespace DoomLauncher.Controls
 
             if (WindowState == FormWindowState.Normal)
                 m_location = ParentForm.Location;
+            else if (WindowState == FormWindowState.Minimized && ParentForm.WindowState != FormWindowState.Minimized)
+                WindowState = m_maximized ? FormWindowState.Maximized : FormWindowState.Normal;
         }
 
         private void SetNormal(bool centerY)
         {
+            m_maximized = false;
             WindowState = FormWindowState.Normal;
             ParentForm.WindowState = FormWindowState.Normal;
             var bounds = Screen.GetWorkingArea(ParentForm);
@@ -98,6 +102,7 @@ namespace DoomLauncher.Controls
 
         private void SetMaximized()
         {
+            m_maximized = true;
             WindowState = FormWindowState.Maximized;
             ParentForm.WindowState = FormWindowState.Normal;
             var bounds = Screen.GetWorkingArea(ParentForm);
@@ -164,7 +169,7 @@ namespace DoomLauncher.Controls
         private void SetMinMax()
         {
             m_settingState = true;
-            if (WindowState == FormWindowState.Maximized)
+            if (m_maximized)
                 SetNormal(true);
             else
                 SetMaximized();
