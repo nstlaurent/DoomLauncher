@@ -217,6 +217,7 @@
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
     <Compile Include="Handlers\DoomImageUtil.cs" />
+    <Compile Include="Handlers\FileMapComparer.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
     <Compile Include="Config\Icons.cs" />
     <Compile Include="Handlers\ImageExtensions.cs" />
