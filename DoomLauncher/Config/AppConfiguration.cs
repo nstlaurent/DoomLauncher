@@ -133,10 +133,8 @@ namespace DoomLauncher
                 AllowMultiplePlaySessions = Convert.ToBoolean(GetValue(config, AllowMultiplePlaySessionsName));
                 AutomaticallyPullTitlpic = Convert.ToBoolean(GetValue(config, AutomaticallyPullTitlpicName));
                 ShowPlayDialog = Convert.ToBoolean(GetValue(config, ShowPlayDialogName));
-                ColorTheme = ColorThemeType.Default;
 
                 List<EventHandler> events = new List<EventHandler>();
-
                 if (Enum.TryParse(GetValue(config, "ColorThemeType"), out ColorThemeType colorThemeType))
                 {
                     if (colorThemeType != ColorTheme)
