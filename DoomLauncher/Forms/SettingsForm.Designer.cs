@@ -57,6 +57,8 @@
             this.cmbFileManagement = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.tabPageView = new System.Windows.Forms.TabPage();
+            this.cmbTheme = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.chkListViews = new System.Windows.Forms.CheckedListBox();
             this.pnlViewRestart = new System.Windows.Forms.Panel();
@@ -64,8 +66,6 @@
             this.label11 = new System.Windows.Forms.Label();
             this.cmbViewType = new System.Windows.Forms.ComboBox();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
-            this.label14 = new System.Windows.Forms.Label();
-            this.cmbTheme = new System.Windows.Forms.ComboBox();
             this.tblOuter.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -87,7 +87,7 @@
             this.tblOuter.Controls.Add(this.titleBar, 0, 0);
             this.tblOuter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblOuter.Location = new System.Drawing.Point(0, 0);
-            this.tblOuter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblOuter.Margin = new System.Windows.Forms.Padding(4);
             this.tblOuter.Name = "tblOuter";
             this.tblOuter.RowCount = 3;
             this.tblOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
@@ -112,7 +112,7 @@
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(436, 4);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(100, 28);
             this.btnCancel.TabIndex = 1;
@@ -123,7 +123,7 @@
             // 
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Location = new System.Drawing.Point(328, 4);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(100, 28);
             this.btnSave.TabIndex = 0;
@@ -140,7 +140,7 @@
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl.Location = new System.Drawing.Point(4, 36);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Multiline = true;
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -152,10 +152,10 @@
             // 
             this.tabPageConfig.BackColor = System.Drawing.SystemColors.Control;
             this.tabPageConfig.Location = new System.Drawing.Point(4, 29);
-            this.tabPageConfig.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPageConfig.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageConfig.Name = "tabPageConfig";
-            this.tabPageConfig.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPageConfig.Size = new System.Drawing.Size(524, 237);
+            this.tabPageConfig.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPageConfig.Size = new System.Drawing.Size(524, 301);
             this.tabPageConfig.TabIndex = 0;
             this.tabPageConfig.Text = "Configuration";
             // 
@@ -173,8 +173,8 @@
             this.tabPageDefault.Location = new System.Drawing.Point(4, 29);
             this.tabPageDefault.Margin = new System.Windows.Forms.Padding(0);
             this.tabPageDefault.Name = "tabPageDefault";
-            this.tabPageDefault.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPageDefault.Size = new System.Drawing.Size(525, 237);
+            this.tabPageDefault.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPageDefault.Size = new System.Drawing.Size(524, 301);
             this.tabPageDefault.TabIndex = 1;
             this.tabPageDefault.Text = "Launch Settings";
             // 
@@ -182,7 +182,7 @@
             // 
             this.pictureBox1.Image = global::DoomLauncher.Properties.Resources.bon2b;
             this.pictureBox1.Location = new System.Drawing.Point(13, 124);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(28, 22);
             this.pictureBox1.TabIndex = 16;
@@ -203,7 +203,7 @@
             this.cmbSkill.DisplayMember = "Name";
             this.cmbSkill.FormattingEnabled = true;
             this.cmbSkill.Location = new System.Drawing.Point(64, 82);
-            this.cmbSkill.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbSkill.Margin = new System.Windows.Forms.Padding(4);
             this.cmbSkill.Name = "cmbSkill";
             this.cmbSkill.Size = new System.Drawing.Size(261, 24);
             this.cmbSkill.TabIndex = 13;
@@ -243,7 +243,7 @@
             this.cmbSourcePorts.DisplayMember = "Name";
             this.cmbSourcePorts.FormattingEnabled = true;
             this.cmbSourcePorts.Location = new System.Drawing.Point(64, 16);
-            this.cmbSourcePorts.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbSourcePorts.Margin = new System.Windows.Forms.Padding(4);
             this.cmbSourcePorts.Name = "cmbSourcePorts";
             this.cmbSourcePorts.Size = new System.Drawing.Size(261, 24);
             this.cmbSourcePorts.TabIndex = 9;
@@ -254,7 +254,7 @@
             this.cmbIwad.DisplayMember = "FileName";
             this.cmbIwad.FormattingEnabled = true;
             this.cmbIwad.Location = new System.Drawing.Point(64, 49);
-            this.cmbIwad.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbIwad.Margin = new System.Windows.Forms.Padding(4);
             this.cmbIwad.Name = "cmbIwad";
             this.cmbIwad.Size = new System.Drawing.Size(261, 24);
             this.cmbIwad.TabIndex = 10;
@@ -268,9 +268,9 @@
             this.tabPageFileManagement.Controls.Add(this.cmbFileManagement);
             this.tabPageFileManagement.Controls.Add(this.label10);
             this.tabPageFileManagement.Location = new System.Drawing.Point(4, 29);
-            this.tabPageFileManagement.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPageFileManagement.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageFileManagement.Name = "tabPageFileManagement";
-            this.tabPageFileManagement.Size = new System.Drawing.Size(525, 237);
+            this.tabPageFileManagement.Size = new System.Drawing.Size(524, 301);
             this.tabPageFileManagement.TabIndex = 2;
             this.tabPageFileManagement.Text = "File Management";
             // 
@@ -278,7 +278,7 @@
             // 
             this.pictureBox2.Image = global::DoomLauncher.Properties.Resources.bon2b;
             this.pictureBox2.Location = new System.Drawing.Point(19, 217);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(28, 22);
             this.pictureBox2.TabIndex = 20;
@@ -296,7 +296,7 @@
             this.tblFileOptions.Controls.Add(this.label6, 0, 2);
             this.tblFileOptions.Controls.Add(this.label7, 1, 0);
             this.tblFileOptions.Location = new System.Drawing.Point(19, 68);
-            this.tblFileOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblFileOptions.Margin = new System.Windows.Forms.Padding(4);
             this.tblFileOptions.Name = "tblFileOptions";
             this.tblFileOptions.RowCount = 4;
             this.tblFileOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
@@ -380,7 +380,7 @@
             this.cmbFileManagement.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFileManagement.FormattingEnabled = true;
             this.cmbFileManagement.Location = new System.Drawing.Point(19, 17);
-            this.cmbFileManagement.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbFileManagement.Margin = new System.Windows.Forms.Padding(4);
             this.cmbFileManagement.Name = "cmbFileManagement";
             this.cmbFileManagement.Size = new System.Drawing.Size(261, 24);
             this.cmbFileManagement.TabIndex = 10;
@@ -406,16 +406,37 @@
             this.tabPageView.Controls.Add(this.label11);
             this.tabPageView.Controls.Add(this.cmbViewType);
             this.tabPageView.Location = new System.Drawing.Point(4, 29);
-            this.tabPageView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPageView.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageView.Name = "tabPageView";
             this.tabPageView.Size = new System.Drawing.Size(524, 301);
             this.tabPageView.TabIndex = 3;
             this.tabPageView.Text = "View";
             // 
+            // cmbTheme
+            // 
+            this.cmbTheme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTheme.FormattingEnabled = true;
+            this.cmbTheme.Location = new System.Drawing.Point(120, 17);
+            this.cmbTheme.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbTheme.Name = "cmbTheme";
+            this.cmbTheme.Size = new System.Drawing.Size(261, 24);
+            this.cmbTheme.TabIndex = 17;
+            this.cmbTheme.SelectedIndexChanged += new System.EventHandler(this.cmbTheme_SelectedIndexChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(10, 20);
+            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(50, 16);
+            this.label14.TabIndex = 16;
+            this.label14.Text = "Theme";
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(79, 99);
+            this.label13.Location = new System.Drawing.Point(10, 100);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(87, 16);
             this.label13.TabIndex = 15;
@@ -425,7 +446,7 @@
             // 
             this.chkListViews.CheckOnClick = true;
             this.chkListViews.FormattingEnabled = true;
-            this.chkListViews.Location = new System.Drawing.Point(76, 118);
+            this.chkListViews.Location = new System.Drawing.Point(13, 119);
             this.chkListViews.Name = "chkListViews";
             this.chkListViews.Size = new System.Drawing.Size(374, 89);
             this.chkListViews.TabIndex = 14;
@@ -434,7 +455,7 @@
             // 
             this.pnlViewRestart.Controls.Add(this.label12);
             this.pnlViewRestart.Location = new System.Drawing.Point(1, 222);
-            this.pnlViewRestart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlViewRestart.Margin = new System.Windows.Forms.Padding(4);
             this.pnlViewRestart.Name = "pnlViewRestart";
             this.pnlViewRestart.Size = new System.Drawing.Size(519, 75);
             this.pnlViewRestart.TabIndex = 13;
@@ -453,7 +474,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(79, 58);
+            this.label11.Location = new System.Drawing.Point(10, 54);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(71, 16);
@@ -464,8 +485,8 @@
             // 
             this.cmbViewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbViewType.FormattingEnabled = true;
-            this.cmbViewType.Location = new System.Drawing.Point(189, 54);
-            this.cmbViewType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbViewType.Location = new System.Drawing.Point(120, 51);
+            this.cmbViewType.Margin = new System.Windows.Forms.Padding(4);
             this.cmbViewType.Name = "cmbViewType";
             this.cmbViewType.Size = new System.Drawing.Size(261, 24);
             this.cmbViewType.TabIndex = 11;
@@ -485,27 +506,6 @@
             this.titleBar.TabIndex = 2;
             this.titleBar.Title = "Settings";
             // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(79, 19);
-            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(50, 16);
-            this.label14.TabIndex = 16;
-            this.label14.Text = "Theme";
-            // 
-            // cmbTheme
-            // 
-            this.cmbTheme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTheme.FormattingEnabled = true;
-            this.cmbTheme.Location = new System.Drawing.Point(189, 16);
-            this.cmbTheme.Margin = new System.Windows.Forms.Padding(4);
-            this.cmbTheme.Name = "cmbTheme";
-            this.cmbTheme.Size = new System.Drawing.Size(261, 24);
-            this.cmbTheme.TabIndex = 17;
-            this.cmbTheme.SelectedIndexChanged += new System.EventHandler(this.cmbTheme_SelectedIndexChanged);
-            // 
             // SettingsForm
             // 
             this.AcceptButton = this.btnSave;
@@ -515,7 +515,7 @@
             this.ClientSize = new System.Drawing.Size(540, 413);
             this.Controls.Add(this.tblOuter);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SettingsForm";
             this.Text = "Settings";
             this.tblOuter.ResumeLayout(false);
