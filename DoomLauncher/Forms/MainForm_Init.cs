@@ -7,10 +7,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,174 +16,6 @@ namespace DoomLauncher
 {
     public partial class MainForm
     {
-        private bool VerifyDatabase()
-        {
-            bool check = false;
-            try
-            {
-                if (File.Exists(Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName)))
-                {
-                    check = true;
-                    // Still attempt to delete the init database here for people that manually update (not installed)
-                    if (File.Exists(DbDataSourceAdapter.InitDatabaseFileName))
-                        File.Delete(DbDataSourceAdapter.InitDatabaseFileName);
-                    return check;
-                }
-
-                check = InitFileCheck(DbDataSourceAdapter.DatabaseFileName, DbDataSourceAdapter.InitDatabaseFileName, false);
-
-                if (!check)
-                {
-                    MessageBox.Show(this, "Initialization failure. Could not find DoomLauncher database",
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                Util.DisplayUnexpectedException(this, ex);
-            }
-
-            return check;
-        }
-
-        private bool VerifyGameFilesDirectory()
-        {
-            if (Directory.Exists(AppConfiguration.GameFileDirectory.GetFullPath()))
-                return true;
-
-            bool check = false;
-
-            try
-            {
-                InitGameFilesDebug();
-                check = InitFileCheck("GameFiles", "GameFiles_", true);
-
-                if (!check)
-                {
-                    MessageBox.Show(this, "Initialization failure. Could not find DoomLauncher GameFiles directory. Please update your settings to continue.",
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    DialogResult result;
-                    bool success = false;
-
-                    do
-                    {
-                        success = ShowSettings(true, out result);
-                    } while (result != DialogResult.Cancel && !success);
-
-                    check = success;
-                }
-            }
-            catch (Exception ex)
-            {
-                Util.DisplayUnexpectedException(this, ex);
-            }
-
-            return check;
-        }
-
-        [Conditional("DEBUG")]
-        private void InitGameFilesDebug()
-        {
-            try
-            {
-                string basePath = "GameFiles";
-
-                if (!Directory.Exists(basePath))
-                {
-                    Directory.CreateDirectory(Path.Combine(basePath, "Demos"));
-                    Directory.CreateDirectory(Path.Combine(basePath, "SaveGames"));
-                    Directory.CreateDirectory(Path.Combine(basePath, "Screenshots"));
-                    Directory.CreateDirectory(Path.Combine(basePath, "Temp"));
-                }
-            }
-            catch
-            {
-                // For local debug code only, just catch if we testing in debug outside of dev
-            }
-        }
-
-        private bool InitFileCheck(string initFile, string file, bool directory)
-        {
-            string dataSource = Path.Combine(Directory.GetCurrentDirectory(), initFile);
-            string initDataSource = Path.Combine(Directory.GetCurrentDirectory(), file);
-
-            if (directory)
-            {
-                DirectoryInfo diInit = new DirectoryInfo(initDataSource);
-                DirectoryInfo diSource = new DirectoryInfo(dataSource);
-
-                if (diSource.Exists)
-                {
-                    if (diInit.Exists)
-                        diInit.Delete(true);
-                }
-                else
-                {
-                    if (diInit.Exists)
-                        diInit.MoveTo(dataSource);
-                    else
-                        return false;
-                }
-            }
-            else
-            {
-                FileInfo fiInit = new FileInfo(initDataSource);
-
-                if (File.Exists(dataSource))
-                {
-                    if (fiInit.Exists)
-                        fiInit.Delete();
-                }
-                else
-                {
-                    if (fiInit.Exists)
-                        fiInit.MoveTo(dataSource);
-                    else
-                        return false;
-                }
-            }
-
-            return true;
-        }
-
-        private void BackupDatabase(string dataSource)
-        {
-            FileInfo fi = new FileInfo(dataSource);
-
-            if (fi.Exists)
-            {
-                Directory.CreateDirectory(Path.Combine(LauncherPath.GetDataDirectory(), "Backup"));
-                string backupName = GetBackupFileName(fi);
-
-                FileInfo fiBackup = new FileInfo(backupName);
-                if (!fiBackup.Exists)
-                    fi.CopyTo(backupName);
-
-                CleanupBackupDirectory();
-            }
-        }
-
-        private void CleanupBackupDirectory()
-        {
-            string[] files = Directory.GetFiles(Path.Combine(LauncherPath.GetDataDirectory(), "Backup"), "*.sqlite");
-            List<FileInfo> filesInfo = new List<FileInfo>();
-            Array.ForEach(files, x => filesInfo.Add(new FileInfo(x)));
-            List<FileInfo> filesInfoOrdered = filesInfo.OrderBy(x => x.CreationTime).ToList();
-
-            while (filesInfoOrdered.Count > 10)
-            {
-                filesInfoOrdered.First().Delete();
-                filesInfoOrdered.RemoveAt(0);
-            }
-        }
-
-        private string GetBackupFileName(FileInfo fi)
-        {
-            string end = DateTime.Now.ToString("yyyy_MM_dd") + fi.Extension;
-            return Path.Combine(fi.DirectoryName, "Backup", fi.Name.Replace(fi.Extension, end));
-        }
-
         private void SetupTabBase(ITabView tabView, ColumnField[] columnTextFields, ColumnConfig[] colConfig, ContextMenuStrip menu, bool dragDrop)
         {
             tabView.SetColumnConfig(columnTextFields, colConfig);
@@ -410,8 +240,6 @@ namespace DoomLauncher
                 HandleDelete();
         }
 
-        private ProgressBarForm m_progressBarUpdate;
-
         private async Task Initialize()
         {
             string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
@@ -422,13 +250,11 @@ namespace DoomLauncher
             if (m_versionHandler.UpdateRequired())
             {
                 m_versionHandler.UpdateProgress += handler_UpdateProgress;
-
-                m_progressBarUpdate = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
-                ProgressBarStart(m_progressBarUpdate);
+                ProgressBarStart(ProgressBarType.Update);
 
                 await Task.Run(() => ExecuteVersionUpdate());
 
-                ProgressBarEnd(m_progressBarUpdate);
+                ProgressBarEnd(ProgressBarType.Update);
 
                 AppConfiguration.Refresh(); //We have to refresh here because a column may have been added to the Configuration table
             }
@@ -440,6 +266,7 @@ namespace DoomLauncher
             DataCache.Instance.Init(DataSourceAdapter);
             DataCache.Instance.AppConfiguration.GameFileViewTypeChanged += AppConfiguration_GameFileViewTypeChanged;
             DataCache.Instance.AppConfiguration.VisibleViewsChanged += AppConfiguration_VisibleViewsChanged;
+            DataCache.Instance.AppConfiguration.ColorThemeChanged += AppConfiguration_ColorThemeChanged;
             DataCache.Instance.TagMapLookup.TagMappingChanged += TagMapLookup_TagMappingChanged;
             DataCache.Instance.TagsChanged += DataCache_TagsChanged;
 
@@ -458,49 +285,6 @@ namespace DoomLauncher
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
             ctrlAssociationView.FileDetailsChanged += CtrlAssociationView_FileDetailsChanged;
-        }
-
-        private void CheckInteropUpdate()
-        {
-            if (LauncherPath.IsInstalled())
-                return;
-
-            string[] dirs = new string[] { "x86", "x64" };
-            string updateFile = Path.Combine("GameFiles\\Temp", UpdateControl.AppUpdateFileName);
-            if (!File.Exists(updateFile) || AllInteropsExist())
-                return;
-
-            using (ZipArchive za = ZipFile.OpenRead(updateFile))
-            {
-                foreach (string dir in dirs)
-                {
-                    if (!Directory.Exists(dir))
-                        Directory.CreateDirectory(dir);
-
-                    var entries = za.Entries.Where(x => x.FullName.Contains(dir));
-                    foreach (var entry in entries)
-                        entry.ExtractToFile(Path.Combine(Directory.GetCurrentDirectory(), dir, entry.Name), true);
-                }
-            }
-        }
-
-        private bool AllInteropsExist()
-        {
-            DirectoryInfo[] dirs = new DirectoryInfo[] { new DirectoryInfo("x86"), new DirectoryInfo("x64") };
-
-            foreach (DirectoryInfo dir in dirs)
-            {
-                if (!dir.Exists)
-                    return false;
-
-                FileInfo[] files = dir.GetFiles();
-                if (!files.Any(x => x.Name.Equals("SQLite.Interop.dll", StringComparison.OrdinalIgnoreCase)))
-                    return false;
-                if (!files.Any(x => x.Name.Equals("7z.dll", StringComparison.OrdinalIgnoreCase)))
-                    return false;
-            }
-
-            return true;
         }
 
         private void CleanUpFiles()
@@ -636,6 +420,11 @@ namespace DoomLauncher
             Restart();
         }
 
+        private void AppConfiguration_ColorThemeChanged(object sender, EventArgs e)
+        {
+            Restart();
+        }
+
         private void Restart()
         {
             // Write any settings the user may have changed before the application is killed
@@ -727,7 +516,7 @@ namespace DoomLauncher
             welcome.ShowDialog();
         }
 
-        private void MainForm_Shown(object sender, EventArgs e)
+        private async void MainForm_Shown(object sender, EventArgs e)
         {
             if (m_launchFile != null)
             {
@@ -737,7 +526,7 @@ namespace DoomLauncher
                 m_launchFile = null;
 
                 if (launchFile == null && File.Exists(addFile))
-                    HandleAddGameFiles(AddFileType.GameFile, new string[] { addFile });
+                    await HandleAddGameFiles(AddFileType.GameFile, new string[] { addFile });
                 else
                     HandlePlay(new IGameFile[] { launchFile });
 
@@ -793,7 +582,8 @@ namespace DoomLauncher
 
         void UpdateVersionProgress()
         {
-            m_progressBarUpdate.Value = m_versionHandler.ProgressPercent;
+            if (m_progressBars.TryGetValue(ProgressBarType.Update, out var progressBar))
+                progressBar.Value = m_versionHandler.ProgressPercent;
         }
 
         private void SetupSearchFilters()
@@ -802,45 +592,6 @@ namespace DoomLauncher
 
             ctrlSearch.SearchTextChanged += ctrlSearch_SearchTextChanged;
             Util.SetDefaultSearchFields(ctrlSearch);
-        }
-
-        private void CreateSendToLink()
-        {
-            //http://stackoverflow.com/questions/234231/creating-application-shortcut-in-a-directory
-            Type t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); //Windows Script Host Shell Object
-            dynamic shell = Activator.CreateInstance(t);
-            try
-            {
-                string sendToPath = Environment.ExpandEnvironmentVariables(@"%AppData%\Microsoft\Windows\SendTo");
-                var lnk = shell.CreateShortcut(Path.Combine(sendToPath, "DoomLauncher.lnk"));
-
-                // This should always exist, but a user did report not having this folder on Windows 10...
-                if (!Directory.Exists(sendToPath))
-                    Directory.CreateDirectory(sendToPath);
-
-                try
-                {
-                    lnk.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), Util.GetExecutableNoPath());
-                    lnk.IconLocation = string.Format(Path.Combine(Directory.GetCurrentDirectory(), "DoomLauncher.ico"));
-                    lnk.Save();
-                }
-                catch
-                {
-                    // Do not crash just for failing to create SendTo link
-                }
-                finally
-                {
-                    Marshal.FinalReleaseComObject(lnk);
-                }
-            }
-            catch
-            {
-                // Do not crash just for failing to create SendTo link
-            }
-            finally
-            {
-                Marshal.FinalReleaseComObject(shell);
-            }
         }
 
         void ctrlSearch_SearchTextChanged(object sender, EventArgs e)

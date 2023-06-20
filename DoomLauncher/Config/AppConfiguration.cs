@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Config;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +12,7 @@ namespace DoomLauncher
     {
         public event EventHandler GameFileViewTypeChanged;
         public event EventHandler VisibleViewsChanged;
+        public event EventHandler ColorThemeChanged;
 
         public static string SplitTopBottomName => "SplitTopBottom";
         public static string SplitLeftRightName => "SplitLeftRight";
@@ -131,23 +133,36 @@ namespace DoomLauncher
                 AllowMultiplePlaySessions = Convert.ToBoolean(GetValue(config, AllowMultiplePlaySessionsName));
                 AutomaticallyPullTitlpic = Convert.ToBoolean(GetValue(config, AutomaticallyPullTitlpicName));
                 ShowPlayDialog = Convert.ToBoolean(GetValue(config, ShowPlayDialogName));
+                ColorTheme = ColorThemeType.Default;
+
+                List<EventHandler> events = new List<EventHandler>();
+
+                if (Enum.TryParse(GetValue(config, "ColorThemeType"), out ColorThemeType colorThemeType))
+                {
+                    if (colorThemeType != ColorTheme)
+                        events.Add(ColorThemeChanged);
+                    ColorTheme = colorThemeType;
+                }
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
                 if (newType != GameFileViewType)
                 {
                     GameFileViewType = newType;
-                    GameFileViewTypeChanged?.Invoke(this, EventArgs.Empty);
+                    events.Add(GameFileViewTypeChanged);
                 }
 
                 var newVisibleViews = Util.SplitString(GetValue(config, VisibleViewsName));
                 if (VisibleViews == null || (newVisibleViews.Length != VisibleViews.Count))
                 {
                     VisibleViews = newVisibleViews.ToHashSet(StringComparer.OrdinalIgnoreCase);
-                    VisibleViewsChanged?.Invoke(this, EventArgs.Empty);
+                    events.Add(VisibleViewsChanged);
                 }
 
                 DateParseFormats = Util.SplitString(GetValue(config, "DateParseFormats"));
                 ScreenshotCaptureDirectories = Util.SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
+
+                foreach (var invokeEvent in events)
+                    invokeEvent?.Invoke(this, EventArgs.Empty);
             }
             catch
             {
@@ -274,5 +289,6 @@ namespace DoomLauncher
         public bool AutomaticallyPullTitlpic { get; set; }
         public bool ShowPlayDialog { get; set; }
         public HashSet<string> VisibleViews { get; set; }
+        public ColorThemeType ColorTheme { get; set; }
     }
 }

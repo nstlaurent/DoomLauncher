@@ -122,6 +122,11 @@ namespace DoomLauncher
 #if DEBUG
             throw ex;
 #else
+            if (form == null)
+            {
+                DisplayException(form, ex);
+                return;
+            }
             if (form.InvokeRequired)
                 form.Invoke(new Action<Form, Exception>(DisplayUnexpectedException), form, ex);
             else

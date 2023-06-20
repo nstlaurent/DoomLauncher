@@ -1,4 +1,5 @@
-﻿using DoomLauncher.DataSources;
+﻿using DoomLauncher.Config;
+using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using System;
@@ -286,12 +287,14 @@ namespace DoomLauncher
             cmbSkill.DataSource = Util.GetSkills();
             cmbFileManagement.DataSource = Enum.GetValues(typeof(FileManagement));
             cmbViewType.DataSource = new string[] { "Grid", "Tile Large", "Tile Small" };
+            cmbTheme.DataSource = new string[] { "Default", "Dark" };
 
             cmbSourcePorts.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultSourcePort, typeof(int));
             cmbIwad.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultIWad, typeof(int));
             cmbSkill.SelectedItem = m_appConfig.GetTypedConfigValue(ConfigType.DefaultSkill, typeof(string));
             cmbFileManagement.SelectedIndex = (int)Enum.Parse(typeof(FileManagement), (string)m_appConfig.GetTypedConfigValue(ConfigType.FileManagement, typeof(string)));
             cmbViewType.SelectedIndex = (int)Enum.Parse(typeof(GameFileViewType), (string)m_appConfig.GetTypedConfigValue(ConfigType.GameFileViewType, typeof(string)));
+            cmbTheme.SelectedIndex = (int)Enum.Parse(typeof(ColorThemeType), (string)m_appConfig.GetTypedConfigValue(ConfigType.ColorThemeType, typeof(string)));
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -316,6 +319,7 @@ namespace DoomLauncher
                 ConfigType.FileManagement.ToString("g"),
                 ConfigType.GameFileViewType.ToString("g"),
                 ConfigType.VisibleViews.ToString("g"),
+                ConfigType.ColorThemeType.ToString("g"),
             };
             string[] configValues = new string[]
             {
@@ -324,7 +328,8 @@ namespace DoomLauncher
                 cmbSkill.SelectedItem?.ToString(),
                 cmbFileManagement.SelectedValue.ToString(),
                 ((GameFileViewType)cmbViewType.SelectedIndex).ToString(),
-                string.Join(";", chkListViews.CheckedItems.Cast<string>())
+                string.Join(";", chkListViews.CheckedItems.Cast<string>()),
+                ((ColorThemeType)cmbTheme.SelectedIndex).ToString(),
             };
 
             IEnumerable<IConfigurationData> configuration = m_adapter.GetConfiguration().Where(x => configNames.Contains(x.Name));
@@ -384,6 +389,11 @@ namespace DoomLauncher
         private void CmbViewType_SelectedIndexChanged(object sender, EventArgs e)
         {
             pnlViewRestart.Visible = GameFileViewFactory.IsBaseViewTypeChange(m_appConfig.GameFileViewType, (GameFileViewType)cmbViewType.SelectedIndex);         
+        }
+
+        private void cmbTheme_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            pnlViewRestart.Visible = true;
         }
 
         private void chkListViews_ItemCheck(object sender, ItemCheckEventArgs e)

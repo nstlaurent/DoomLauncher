@@ -8,9 +8,6 @@ namespace DoomLauncher
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main(string[] args)
         {
@@ -20,12 +17,29 @@ namespace DoomLauncher
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainForm(GetLaunchArgs(args)));
+
+                var splash = new SplashScreen();
+                splash.StartPosition = FormStartPosition.CenterScreen;
+                splash.Show();
+                splash.Invalidate();
+
+                if (!ProgramInit.Init())
+                    return;
+
+                MainForm form = new MainForm(GetLaunchArgs(args), splash);
+                form.Load += Form_Load;
+                Application.Run(form);
             }
             catch (Exception ex)
             {
                 Util.DisplayUnexpectedException(null, ex);
             }
+        }
+
+        private static async void Form_Load(object sender, EventArgs e)
+        {
+            MainForm form = sender as MainForm;
+            await form.Init();
         }
 
         static string AssemblyDirectory

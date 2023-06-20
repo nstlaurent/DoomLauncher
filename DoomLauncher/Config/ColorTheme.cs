@@ -2,6 +2,6 @@
 {
     public static class ColorTheme
     {
-        public static IThemeColors Current { get; set; } = new DarkTheme();
+        public static IThemeColors Current { get; set; } = new DefaultTheme();
     }
 }

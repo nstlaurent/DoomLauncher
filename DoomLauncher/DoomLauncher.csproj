@@ -136,6 +136,7 @@
     <Compile Include="Archive\Directory\DirectoryArchiveReader.cs" />
     <Compile Include="Archive\IArchiveEntry.cs" />
     <Compile Include="Config\ColorTheme.cs" />
+    <Compile Include="Config\ColorThemeType.cs" />
     <Compile Include="Controls\CCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -281,6 +282,7 @@
     </Compile>
     <Compile Include="DataSources\StaticTagData.cs" />
     <Compile Include="LaunchArgs.cs" />
+    <Compile Include="Program.Init.cs" />
     <Compile Include="SaveGame\HelionSaveGameReader.cs" />
     <Compile Include="SourcePort\DsdaDoomSourcePort.cs" />
     <Compile Include="SourcePort\EternitySourcePort.cs" />

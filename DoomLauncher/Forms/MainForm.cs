@@ -40,24 +40,41 @@ namespace DoomLauncher
 
         private string m_launchFile;
         private readonly LaunchArgs m_launchArgs;
-        private Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
+        private readonly Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
         private FormWindowState m_windowState;
         private bool m_progressBarCancelled;
 
-        public MainForm(LaunchArgs launchArgs)
+        private enum ProgressBarType
         {
-            Load += MainForm_Load;
+            Copy,
+            Sync,
+            Update,
+            Delete,
+            Search,
+            CreateZip
+        }
+
+        private readonly Dictionary<ProgressBarType, ProgressBarForm> m_progressBars = new Dictionary<ProgressBarType, ProgressBarForm>();
+
+        public MainForm(LaunchArgs launchArgs, SplashScreen splashScreen)
+        {
             m_launchFile = launchArgs.LaunchFileName;
             m_launchArgs = launchArgs;
-
-            m_splash = new SplashScreen();
-            m_splash.StartPosition = FormStartPosition.CenterScreen;
-            m_splash.Show();
-            m_splash.Invalidate();
+            m_splash = splashScreen;
 
             InitializeComponent();
             Stylizer.RemoveTitleBar(this);
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+
+            var copyProgressBar = CreateProgressBar("Copying...", ProgressBarStyle.Marquee);
+            copyProgressBar.Cancelled += m_progressBarFormCopy_Cancelled;
+
+            m_progressBars[ProgressBarType.Copy] = CreateProgressBar("Copying...", ProgressBarStyle.Continuous);
+            m_progressBars[ProgressBarType.Sync] = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
+            m_progressBars[ProgressBarType.Update] = copyProgressBar;
+            m_progressBars[ProgressBarType.Delete] = CreateProgressBar("Deleting...", ProgressBarStyle.Continuous);
+            m_progressBars[ProgressBarType.Search] = CreateProgressBar("Searching...", ProgressBarStyle.Continuous);
+            m_progressBars[ProgressBarType.CreateZip] = CreateProgressBar("Creating zip...", ProgressBarStyle.Marquee);
 
             InitIcons();
             ClearSummary();
@@ -89,36 +106,9 @@ namespace DoomLauncher
             btnTags.Image = Icons.Tags;
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        public async Task Init()
         {
-            HandleLoad();
-        }
-
-        private async void HandleLoad()
-        {
-            bool success = false;
-            CleanOldLibraries();
-            CheckInteropUpdate();
-
-            if (VerifyDatabase())
-            {
-                string dataSource = Path.Combine(LauncherPath.GetDataDirectory(), DbDataSourceAdapter.DatabaseFileName);
-                DataSourceAdapter = DbDataSourceAdapter.CreateAdapter();
-                DataCache.Instance.Init(DataSourceAdapter);
-
-                BackupDatabase(dataSource);
-                CreateSendToLink();
-                KillRunningApps();
-
-                if (VerifyGameFilesDirectory())
-                {
-                    await Initialize();
-                    success = true;
-                }
-            }
-
-            if (!success)
-                Close();
+            await Initialize();
 
             await CheckFirstInit();
             UpdateLocal();
@@ -129,30 +119,7 @@ namespace DoomLauncher
             HandleTabSelectionChange();
             InvokeHideSplashScreen();
 
-            Task.Run(() => CheckForAppUpdate());
-        }
-
-        private void CleanOldLibraries()
-        {
-            // Need to remove the old sqlite interop, only if it wasn't done through the installer
-            // The installer doesn't really support x86/x64 folders so the x64 dll is dumped in the main for now
-            if (LauncherPath.IsInstalled())
-                return;
-
-            try
-            {
-                string[] libraries = new string[] { "SQLite.Interop.dll", "SQLite.Interop.dll.bak", "7z.dll" };
-                foreach (string library in libraries)
-                {
-                    if (!File.Exists(library))
-                        continue;
-                    File.Delete(library);
-                }
-            }
-            catch
-            {
-                // Do not crash if it fails to delete for any reason
-            }
+            _ = Task.Run(() => CheckForAppUpdate());
         }
 
         private void InvokeHideSplashScreen()
@@ -217,29 +184,6 @@ namespace DoomLauncher
             }
 
             m_windowState = WindowState;
-        }
-
-        private void KillRunningApps()
-        {
-            try
-            {
-                Process currentProc = Process.GetCurrentProcess();
-                foreach (Process proc in Process.GetProcessesByName("DoomLauncher").Where(x => x.Id != currentProc.Id))
-                {
-                    proc.CloseMainWindow();
-
-                    Stopwatch sw = Stopwatch.StartNew();
-                    while (sw.Elapsed.TotalSeconds < 10 && !proc.HasExited)
-                    {
-                        System.Threading.Thread.Sleep(100);
-                        proc.Refresh();
-                    }
-                }
-            }
-            catch
-            {
-                MessageBox.Show(this, "Doom Launcher is already running and could not be stopped. It is not recommended to have more than instance running!", "Already Running", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
         }
 
         public IGameFileView GetCurrentViewControl()
@@ -1390,19 +1334,19 @@ namespace DoomLauncher
             HandleAddDirectory();
         }
 
-        private void HandleAddDirectory()
+        private async void HandleAddDirectory()
         {
-            HandleAddFiles(AddFileType.GameFile, Array.Empty<string>(), "Select Folder", browseDirectory: true);
+            await HandleAddFiles(AddFileType.GameFile, Array.Empty<string>(), "Select Folder", browseDirectory: true);
         }
 
-        private void HandleAddFiles()
+        private async void HandleAddFiles()
         {
-            HandleAddFiles(AddFileType.GameFile, new string[] { "Zip", "WAD", "pk3", "txt", "zdl" }, "Select Game Files");
+            await HandleAddFiles(AddFileType.GameFile, new string[] { "Zip", "WAD", "pk3", "txt", "zdl" }, "Select Game Files");
         }
 
-        private void addIWADsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void addIWADsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HandleAddIWads();
+            await HandleAddIWads();
         }
 
         private async Task HandleAddIWads()
@@ -1539,21 +1483,12 @@ namespace DoomLauncher
 
         private async Task HandleCopyFiles(AddFileType type, string[] fileNames, FileManagement fileManagement, ITagData tag)
         {
-            ProgressBarForm progressBar = CreateProgressBar("Copying...", ProgressBarStyle.Marquee);
-            progressBar.Cancelled += m_progressBarFormCopy_Cancelled;
-
-            ProgressBarStart(progressBar);
-
-            FileAddResults fileAddResults = new FileAddResults();
-
-            if (fileManagement == FileManagement.Managed)
-                await Task.Run(() => fileAddResults = CopyFiles(fileNames, AppConfiguration.GameFileDirectory.GetFullPath(), progressBar));
-            else
-                fileAddResults = UnmanagedAddCheck(fileNames, AppConfiguration.GameFileDirectory.GetFullPath());
-
+            // doesn't render
+            var copyProgressBar = ProgressBarStart(ProgressBarType.Copy);
+            FileAddResults fileAddResults = await CopyFiles(fileNames, fileManagement, copyProgressBar);
             string[] files = fileAddResults.GetAllFiles().ToArray();
 
-            ProgressBarEnd(progressBar);
+            ProgressBarEnd(ProgressBarType.Copy);
 
             switch (type)
             {
@@ -1576,6 +1511,17 @@ namespace DoomLauncher
                 fileAddResults.Errors.ForEach(x => sb.Append(string.Concat(tab, x.FileName, ": ", x.Error, Environment.NewLine)));
                 MessageBox.Show(this, sb.ToString(), "Failed to Add", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private async Task<FileAddResults> CopyFiles(string[] fileNames, FileManagement fileManagement, ProgressBarForm progressBar)
+        {
+            await Task.Delay(10000);
+            FileAddResults fileAddResults = new FileAddResults();
+            if (fileManagement == FileManagement.Managed)
+                await Task.Run(() => fileAddResults = CopyFiles(fileNames, AppConfiguration.GameFileDirectory.GetFullPath(), progressBar));
+            else
+                fileAddResults = UnmanagedAddCheck(fileNames, AppConfiguration.GameFileDirectory.GetFullPath());
+            return fileAddResults;
         }
 
         private FileAddResults UnmanagedAddCheck(string[] fileNames, string directory)
@@ -1869,7 +1815,7 @@ namespace DoomLauncher
         {
             m_progressBarCancelled = true;
             if (sender is ProgressBarForm progressBarForm)
-                ProgressBarEnd(progressBarForm);
+                ProgressBarEnd(ProgressBarType.Copy);
         }
 
         private void UpdateProgressBar(ProgressBarForm form, string text, int value)
@@ -1885,7 +1831,7 @@ namespace DoomLauncher
             }
         }
 
-        private void ctrlView_DragDrop(object sender, DragEventArgs e)
+        private async void ctrlView_DragDrop(object sender, DragEventArgs e)
         {
             if (sender is IGameFileView ctrl && e.Data.GetData(DataFormats.FileDrop) is string[] files)
             {
@@ -1894,9 +1840,9 @@ namespace DoomLauncher
                     tag = tagTabView.TagDataSource;
 
                 if (ctrl.DoomLauncherParent != null && ctrl.DoomLauncherParent is IWadTabViewCtrl)
-                    HandleAddGameFiles(AddFileType.IWad, files);
+                    await HandleAddGameFiles(AddFileType.IWad, files);
                 else
-                    HandleAddGameFiles(AddFileType.GameFile, files, tag);
+                    await HandleAddGameFiles(AddFileType.GameFile, files, tag);
             }
         }
 
@@ -2503,52 +2449,41 @@ namespace DoomLauncher
             return form;
         }
 
-        private void ProgressBarStart(ProgressBarForm form)
+        private ProgressBarForm ProgressBarStart(ProgressBarType type)
         {
             m_progressBarCancelled = false;
 
             if (InvokeRequired)
             {
-                Invoke(new Action<ProgressBarForm>(ProgressBarStart), form);
+                return (ProgressBarForm)Invoke(new Func<ProgressBarType, Form>(ProgressBarStart), type);
             }
             else
             {
-                this.Enabled = false;
-                form.Show(this);
+                UseWaitCursor = true;
+                if (!m_progressBars.TryGetValue(type, out var progressBar))
+                    return null;
+
+                progressBar.StartPosition = FormStartPosition.CenterParent;
+                progressBar.Show(this);
+                return progressBar;
             }
         }
 
-        private void ProgressBarEnd(ProgressBarForm form)
+        private void ProgressBarEnd(ProgressBarType type)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<ProgressBarForm>(ProgressBarEnd), new object[] { form });
+                Invoke(new Action<ProgressBarType>(ProgressBarEnd), new object[] { type });
             }
             else
             {
-                this.Enabled = true;
-                if (form != null)
-                    form.Close();
+                UseWaitCursor = false;
+                if (!m_progressBars.TryGetValue(type, out var progressBar))
+                    return;
+
+                progressBar.Hide();
             }
         }
-
-        //private void wadarchiveStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    IGameFileDataSource gameFile = SelectedItems(GetCurrentViewControl()).FirstOrDefault();
-
-        //    if (gameFile != null)
-        //    {
-        //        string file = Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), gameFile.FileName);
-        //        ZipArchive za = ZipFile.OpenRead(file);
-        //        ZipArchiveEntry zae = za.Entries.First();
-        //        string extractFile = Path.Combine(AppConfiguration.TempDirectory.GetFullPath(), zae.Name);
-        //        zae.ExtractToFile(extractFile, true);               
-
-        //        WadArchiveDataAdapter adapter = new WadArchiveDataAdapter();
-        //        string test = adapter.Test(Path.Combine(AppConfiguration.TempDirectory.GetFullPath(), extractFile)).FileName;
-        //        MessageBox.Show(test);
-        //    }
-        //}
 
         private void utilitiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2637,10 +2572,10 @@ namespace DoomLauncher
                 if (fileDialog.ShowDialog(this) == DialogResult.OK && !string.IsNullOrEmpty(fileDialog.FileName))
                 {
                     ProgressBarForm progressBar = CreateProgressBar("Creating zip...", ProgressBarStyle.Marquee);
-                    ProgressBarStart(progressBar);
+                    ProgressBarStart(ProgressBarType.CreateZip);
                     bool success = false;
                     await Task.Run(() => success = CreateZipFromDirectory(folderDialog.SelectedPath, fileDialog.FileName));
-                    ProgressBarEnd(progressBar);
+                    ProgressBarEnd(ProgressBarType.CreateZip);
 
                     if (!success)
                         MessageBox.Show(this, "Failed to create zip file. File may be in use.", "Zip Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2664,7 +2599,7 @@ namespace DoomLauncher
             return true;
         }
 
-        private void addFIlesRecursivelyToolStripMenuItem1_Click(object sender, EventArgs e)
+        private async void addFIlesRecursivelyToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
 
@@ -2680,15 +2615,15 @@ namespace DoomLauncher
                 foreach (string ext in extensions)
                     files = files.Union(Directory.EnumerateFiles(dialog.SelectedPath, ext, SearchOption.AllDirectories));
 
-                HandleAddGameFiles(AddFileType.GameFile, files.ToArray());
+                await HandleAddGameFiles(AddFileType.GameFile, files.ToArray());
             }
         }
 
-        private void resyncToolStripMenuItem_Click(object sender, EventArgs e) =>
-            HandleResync(true);
+        private async void resyncToolStripMenuItem_Click(object sender, EventArgs e) =>
+            await HandleResync(true);
 
-        private void resyncIgnoreTitlepicToolStripMenuItem_Click(object sender, EventArgs e) =>
-            HandleResync(false);
+        private async void resyncIgnoreTitlepicToolStripMenuItem_Click(object sender, EventArgs e) =>
+            await HandleResync(false);
 
         private void manualUpdateToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2711,7 +2646,7 @@ namespace DoomLauncher
         }
 
         private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
-        private IDataSourceAdapter DataSourceAdapter { get; set; }
+        private IDataSourceAdapter DataSourceAdapter => DataCache.Instance.DataSourceAdapter;
         private IGameFileDataSourceAdapter DirectoryDataSourceAdapter { get; set; }
         private IGameFileDataSourceAdapter IdGamesDataSourceAdapter { get; set; }
     }

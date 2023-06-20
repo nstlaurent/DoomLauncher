@@ -1,4 +1,5 @@
-﻿using DoomLauncher.DataSources;
+﻿using DoomLauncher.Config;
+using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -32,8 +33,15 @@ namespace DoomLauncher
             DefaultImage = Image.FromFile(Path.Combine(LauncherPath.GetDataDirectory(), "TileImages", "DoomLauncherTile.png"));
             DefaultPalette = Palette.From(Properties.Resources.DoomPalette);
 
-            // TODO load theme from settings
-            ColorTheme.Current = new DarkTheme();
+            switch (AppConfiguration.ColorTheme)
+            {
+                case ColorThemeType.Dark:
+                    ColorTheme.Current = new DarkTheme();
+                    break;
+                default:
+                    ColorTheme.Current = new DefaultTheme();
+                    break;
+            }
 
             UpdateTags();
         }

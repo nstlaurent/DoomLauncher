@@ -8,6 +8,7 @@
         AutoSearch,
         FileManagement,
         GameFileViewType,
-        VisibleViews
+        VisibleViews,
+        ColorThemeType
     }
 }

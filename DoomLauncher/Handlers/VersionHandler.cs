@@ -89,6 +89,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_5_3_Update1, AppVersion.Version_3_5_3_Update1);
                 ExecuteUpdate(Pre_Version_3_5_3_Update2, AppVersion.Version_3_5_3_Update2);
                 ExecuteUpdate(Pre_Version_3_5_3_Update3, AppVersion.Version_3_5_3_Update3);
+                ExecuteUpdate(Pre_Version_3_7_0, AppVersion.Version_3_7_0);
             }
         }
 
@@ -852,6 +853,16 @@ namespace DoomLauncher
                 Value = "true",
                 UserCanModify = true,
                 AvailableValues = "Yes;true;No;false"
+            });
+        }
+
+        private void Pre_Version_3_7_0()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "ColorThemeType",
+                Value = "Default",
+                UserCanModify = false,
             });
         }
 
