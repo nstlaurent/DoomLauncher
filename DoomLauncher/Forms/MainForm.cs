@@ -110,12 +110,13 @@ namespace DoomLauncher
         {
             await Initialize();
 
+            InitWindow();
+
             await CheckFirstInit();
             UpdateLocal();
 
             SetupSearchFilters();
 
-            InitWindow();
             HandleTabSelectionChange();
             InvokeHideSplashScreen();
 

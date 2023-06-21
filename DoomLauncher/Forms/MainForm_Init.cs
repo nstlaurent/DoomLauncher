@@ -481,6 +481,7 @@ namespace DoomLauncher
         {
             if (!DataSourceAdapter.GetSourcePorts().Any()) //If no source ports setup then it's the first time setup, display welcome/setup info
             {
+                titleBar.SetNormal();
                 InvokeHideSplashScreen();
                 DisplayWelcome();
                 HandleEditSourcePorts(true);

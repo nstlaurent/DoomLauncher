@@ -27,6 +27,8 @@ namespace DoomLauncher
             ShowCommentsSection(false);
 
             txtComments.WarnLinkClick = false;
+
+            SetStatistics(null, Array.Empty<IStatsData>());
         }
 
         private void PbImage_Paint(object sender, PaintEventArgs e)
@@ -151,7 +153,7 @@ namespace DoomLauncher
 
         public void SetStatistics(IGameFile gameFile, IEnumerable<IStatsData> stats)
         {
-            if (stats.Any())
+            if (gameFile != null && stats.Any())
             {
                 DpiScale dpiScale = new DpiScale(CreateGraphics());
                 ctrlStats.Visible = true;

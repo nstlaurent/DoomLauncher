@@ -51,6 +51,8 @@ namespace DoomLauncher.Controls
                 SetMaximized();
         }
 
+        public void SetNormal() => SetNormal(true);
+
         private void TitleBarControl_Load(object sender, EventArgs e)
         {
             if (ParentForm == null)
