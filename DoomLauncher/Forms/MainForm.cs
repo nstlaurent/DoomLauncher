@@ -41,20 +41,9 @@ namespace DoomLauncher
         private string m_launchFile;
         private readonly LaunchArgs m_launchArgs;
         private readonly Dictionary<ITabView, GameFileSearchField[]> m_savedTabSearches = new Dictionary<ITabView, GameFileSearchField[]>();
+        private readonly Dictionary<ProgressBarType, ProgressBarForm> m_progressBars = new Dictionary<ProgressBarType, ProgressBarForm>();
         private FormWindowState m_windowState;
         private bool m_progressBarCancelled;
-
-        private enum ProgressBarType
-        {
-            Copy,
-            Sync,
-            Update,
-            Delete,
-            Search,
-            CreateZip
-        }
-
-        private readonly Dictionary<ProgressBarType, ProgressBarForm> m_progressBars = new Dictionary<ProgressBarType, ProgressBarForm>();
 
         public MainForm(LaunchArgs launchArgs, SplashScreen splashScreen)
         {
@@ -66,6 +55,15 @@ namespace DoomLauncher
             Stylizer.RemoveTitleBar(this);
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
 
+            InitProgressBars();
+            InitIcons();
+            ClearSummary();
+
+            m_workingDirectory = LauncherPath.GetDataDirectory();
+        }
+
+        private void InitProgressBars()
+        {
             var copyProgressBar = CreateProgressBar("Copying...", ProgressBarStyle.Marquee);
             copyProgressBar.Cancelled += m_progressBarFormCopy_Cancelled;
 
@@ -75,11 +73,6 @@ namespace DoomLauncher
             m_progressBars[ProgressBarType.Delete] = CreateProgressBar("Deleting...", ProgressBarStyle.Continuous);
             m_progressBars[ProgressBarType.Search] = CreateProgressBar("Searching...", ProgressBarStyle.Continuous);
             m_progressBars[ProgressBarType.CreateZip] = CreateProgressBar("Creating zip...", ProgressBarStyle.Marquee);
-
-            InitIcons();
-            ClearSummary();
-
-            m_workingDirectory = LauncherPath.GetDataDirectory();
         }
 
         protected override void OnClientSizeChanged(EventArgs e)
@@ -1484,7 +1477,6 @@ namespace DoomLauncher
 
         private async Task HandleCopyFiles(AddFileType type, string[] fileNames, FileManagement fileManagement, ITagData tag)
         {
-            // doesn't render
             var copyProgressBar = ProgressBarStart(ProgressBarType.Copy);
             FileAddResults fileAddResults = await CopyFiles(fileNames, fileManagement, copyProgressBar);
             string[] files = fileAddResults.GetAllFiles().ToArray();
@@ -1516,7 +1508,6 @@ namespace DoomLauncher
 
         private async Task<FileAddResults> CopyFiles(string[] fileNames, FileManagement fileManagement, ProgressBarForm progressBar)
         {
-            await Task.Delay(10000);
             FileAddResults fileAddResults = new FileAddResults();
             if (fileManagement == FileManagement.Managed)
                 await Task.Run(() => fileAddResults = CopyFiles(fileNames, AppConfiguration.GameFileDirectory.GetFullPath(), progressBar));
@@ -1658,7 +1649,7 @@ namespace DoomLauncher
                 }
 
                 if (progressBar != null)
-                    UpdateProgressBar(progressBar, string.Format("Copying {0}...", file), Convert.ToInt32(count / (double)fileNames.Count * 100));
+                    UpdateProgressBar(progressBar, $"Copying {file}...", Convert.ToInt32(count / (double)fileNames.Count * 100));
 
                 FileInfo fi = new FileInfo(file);
                 if (ArchiveUtil.IsTransformableToZip(fi.Extension))
@@ -2572,7 +2563,6 @@ namespace DoomLauncher
 
                 if (fileDialog.ShowDialog(this) == DialogResult.OK && !string.IsNullOrEmpty(fileDialog.FileName))
                 {
-                    ProgressBarForm progressBar = CreateProgressBar("Creating zip...", ProgressBarStyle.Marquee);
                     ProgressBarStart(ProgressBarType.CreateZip);
                     bool success = false;
                     await Task.Run(() => success = CreateZipFromDirectory(folderDialog.SelectedPath, fileDialog.FileName));

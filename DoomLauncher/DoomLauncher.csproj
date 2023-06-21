@@ -283,6 +283,7 @@
     <Compile Include="DataSources\StaticTagData.cs" />
     <Compile Include="LaunchArgs.cs" />
     <Compile Include="Program.Init.cs" />
+    <Compile Include="ProgressBarType.cs" />
     <Compile Include="SaveGame\HelionSaveGameReader.cs" />
     <Compile Include="SourcePort\DsdaDoomSourcePort.cs" />
     <Compile Include="SourcePort\EternitySourcePort.cs" />

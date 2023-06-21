@@ -14,16 +14,9 @@ namespace DoomLauncher
     {
         private async Task SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
         {
-            //if (m_progressBarSync == null)
-            //{
-                //m_progressBarSync = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
-                ProgressBarStart(ProgressBarType.Sync);
-            //}
-
+            ProgressBarStart(ProgressBarType.Sync);
             SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
-
             ProgressBarEnd(ProgressBarType.Sync);
-            //m_progressBarSync = null;
             SyncLocalDatabaseComplete(handler, updateViews);
         }
 
@@ -269,8 +262,6 @@ namespace DoomLauncher
 
         private async Task HandleSyncStatusGameFilesOption(SyncFileOption option, IEnumerable<string> files)
         {
-            ProgressBarForm form = CreateProgressBar(string.Empty, ProgressBarStyle.Marquee);
-
             switch (option)
             {
                 case SyncFileOption.Add:
@@ -283,7 +274,6 @@ namespace DoomLauncher
                     break;
 
                 case SyncFileOption.Delete:
-                    form.DisplayText = "Deleting...";
                     ProgressBarStart(ProgressBarType.Delete);
 
                     await Task.Run(() => DeleteLocalGameFiles(files));
