@@ -861,7 +861,7 @@ namespace DoomLauncher
             m_adapter.InsertConfiguration(new ConfigurationData()
             {
                 Name = "ColorThemeType",
-                Value = "Default",
+                Value = "Dark",
                 UserCanModify = false,
             });
         }
