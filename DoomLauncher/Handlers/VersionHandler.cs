@@ -90,6 +90,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_5_3_Update2, AppVersion.Version_3_5_3_Update2);
                 ExecuteUpdate(Pre_Version_3_5_3_Update3, AppVersion.Version_3_5_3_Update3);
                 ExecuteUpdate(Pre_Version_3_7_0, AppVersion.Version_3_7_0);
+                ExecuteUpdate(Pre_Version_3_7_0_Update1, AppVersion.Version_3_7_0_Update1);
             }
         }
 
@@ -863,6 +864,17 @@ namespace DoomLauncher
                 Name = "ColorThemeType",
                 Value = "Dark",
                 UserCanModify = false,
+            });
+        }
+
+        private void Pre_Version_3_7_0_Update1()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "ImportScreenshots",
+                Value = "true",
+                UserCanModify = true,
+                AvailableValues = "Yes;true;No;false"
             });
         }
 

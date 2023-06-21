@@ -388,6 +388,12 @@ namespace DoomLauncher
 
         private void CreateScreenshotDetectors(ISourcePortData sourcePortData, ISourcePort sourcePort)
         {
+            if (!AppConfiguration.ImportScreenshots)
+            {
+                m_screenshotDetectors = new List<INewFileDetector>();
+                return;
+            }
+
             m_screenshotDetectors = CreateDefaultScreenshotDetectors();
             m_screenshotDetectors.Add(CreateScreenshotDetector(sourcePortData.Directory.GetFullPath()));
 

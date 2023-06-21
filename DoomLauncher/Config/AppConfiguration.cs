@@ -33,6 +33,7 @@ namespace DoomLauncher
         public static string AutomaticallyPullTitlpicName => "AutomaticallyPullTitlpic";
         public static string VisibleViewsName => "VisibleViews";
         public static string ShowPlayDialogName => "ShowPlayDialog";
+        public static string ImportScreenshotsName => "ImportScreenshots";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -133,6 +134,7 @@ namespace DoomLauncher
                 AllowMultiplePlaySessions = Convert.ToBoolean(GetValue(config, AllowMultiplePlaySessionsName));
                 AutomaticallyPullTitlpic = Convert.ToBoolean(GetValue(config, AutomaticallyPullTitlpicName));
                 ShowPlayDialog = Convert.ToBoolean(GetValue(config, ShowPlayDialogName));
+                ImportScreenshots = Convert.ToBoolean(GetValue(config, ImportScreenshotsName));
 
                 List<EventHandler> events = new List<EventHandler>();
                 if (Enum.TryParse(GetValue(config, "ColorThemeType"), out ColorThemeType colorThemeType))
@@ -286,6 +288,7 @@ namespace DoomLauncher
         public bool AllowMultiplePlaySessions { get; set; }
         public bool AutomaticallyPullTitlpic { get; set; }
         public bool ShowPlayDialog { get; set; }
+        public bool ImportScreenshots { get; set; }
         public HashSet<string> VisibleViews { get; set; }
         public ColorThemeType ColorTheme { get; set; }
     }
