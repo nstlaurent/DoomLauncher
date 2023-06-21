@@ -8,7 +8,7 @@ namespace DoomLauncher
     class StatBar : UserControl
     {
         private static readonly Font DisplayFont = new Font(FontFamily.GenericSerif, 10.0f, FontStyle.Bold);
-        private static readonly Brush FontBrush = new SolidBrush(ColorTheme.Current.Text);
+        private static readonly Brush FontBrush = new SolidBrush(ColorTheme.Current.StatText);
 
         private int m_count, m_total, m_maxHeight;
         private string m_text;

@@ -21,6 +21,7 @@ namespace DoomLauncher
         Color Separator { get; }
         Color StatBackgroundGradientFrom { get; }
         Color StatBackgroundGradientTo { get; }
+        Color StatText { get; }
         bool GridRowBorder { get; }
         bool IsDark { get; }
     }

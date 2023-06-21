@@ -21,6 +21,7 @@ namespace DoomLauncher
         public Color Separator => Color.Gray;
         public Color StatBackgroundGradientFrom => WindowDark;
         public Color StatBackgroundGradientTo => Window;
+        public Color StatText => Color.White;
         public bool GridRowBorder => false;
         public bool IsDark => true;
     }
