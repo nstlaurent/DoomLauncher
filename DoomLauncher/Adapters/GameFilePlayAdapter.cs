@@ -32,6 +32,7 @@ namespace DoomLauncher
         public bool Launch(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
             IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad)
         {
+            LastError = string.Empty;
             if (!Directory.Exists(sourcePort.Directory.GetFullPath()))
             {
                 LastError = string.Concat("The source port directory does not exist:", Environment.NewLine, Environment.NewLine, 
@@ -45,7 +46,8 @@ namespace DoomLauncher
             string launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad);
             if (launchParameters == null)
             {
-                LastError = "Failed to create launch parameters";
+                if (string.IsNullOrEmpty(LastError))
+                    LastError = "Failed to create launch parameters";
                 return false;
             }
        
@@ -322,7 +324,7 @@ namespace DoomLauncher
                         {
                             string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
                             if (ExtractFiles)
-                                entry.ExtractToFile(extractFile, true);
+                                TryExtractFile(entry, extractFile);
                             files.Add(extractFile);
                         }
                         else
@@ -334,6 +336,30 @@ namespace DoomLauncher
             }
 
             return files;
+        }
+
+        private static void TryExtractFile(IArchiveEntry entry, string extractFile)
+        {
+            try
+            {
+                entry.ExtractToFile(extractFile, true);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    if (File.Exists(extractFile))
+                    {
+                        // Sometimes the read only flag can be set and the file can't be overwritten. This is our temp directory anyway so turn it off.
+                        File.SetAttributes(extractFile, File.GetAttributes(extractFile) & ~FileAttributes.ReadOnly);
+                        entry.ExtractToFile(extractFile, true);
+                    }
+                }
+                catch
+                {
+                    throw ex;
+                }
+            }
         }
 
         private IArchiveReader CreateArchiveReader(IGameFile gameFile, LauncherPath gameFileDirectory)
