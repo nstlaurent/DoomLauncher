@@ -168,9 +168,12 @@ namespace DoomLauncher
             try
             {
                 string[] extensions = sourcePortData.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                var file = GetFilesFromGameFileSettings(gameFile, gameFileDirectory, tempDirectory, checkSpecific, extensions).FirstOrDefault();
+                var file = GetFilesFromGameFileSettings(gameFile, gameFileDirectory, tempDirectory, checkSpecific, extensions, GetIwadSpecificFiles(gameFile)).FirstOrDefault();
                 if (file == null)
+                {
+                    LastError = "Failed to find any IWAD files in the select IWAD archive.\nView the IWAD and click 'Select Individual Files...' to ensure the IWAD file is selected.";
                     return false;
+                }
 
                 sb.Append(sourcePort.IwadParameter(new SpData(file, gameFile, AdditionalFiles)));
             }
@@ -194,6 +197,14 @@ namespace DoomLauncher
             return true;
         }
 
+        private string[] GetIwadSpecificFiles(IGameFile gameFile)
+        {
+            if (string.IsNullOrEmpty(gameFile.SettingsSpecificFiles))
+                return Array.Empty<string>();
+
+            return gameFile.SettingsSpecificFiles.Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         private bool HandleGameFile(IGameFile gameFile, List<string> launchFiles, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
             ISourcePortData sourcePort, bool checkSpecific)
         {
@@ -206,7 +217,7 @@ namespace DoomLauncher
             try
             {
                 string[] extensions = sourcePort.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                launchFiles.AddRange(GetFilesFromGameFileSettings(gameFile, gameFileDirectory, tempDirectory, checkSpecific, extensions));
+                launchFiles.AddRange(GetFilesFromGameFileSettings(gameFile, gameFileDirectory, tempDirectory, checkSpecific, extensions, SpecificFiles));
             }
             catch (FileNotFoundException)
             {
@@ -295,14 +306,14 @@ namespace DoomLauncher
         }
 
         private List<string> GetFilesFromGameFileSettings(IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
-            bool checkSpecific, string[] extensions)
+            bool checkSpecific, string[] extensions, string[] specificFiles)
         {
             List<string> files = new List<string>();
 
             using (IArchiveReader reader = CreateArchiveReader(gameFile, gameFileDirectory))
             {
                 IEnumerable<IArchiveEntry> entries;
-                if (checkSpecific && SpecificFiles != null && SpecificFiles.Length > 0)
+                if (checkSpecific && specificFiles != null && specificFiles.Length > 0)
                 {
                     entries = reader.Entries;
                 }
@@ -315,8 +326,8 @@ namespace DoomLauncher
                 foreach (IArchiveEntry entry in entries)
                 {
                     bool useFile = true;
-                    if (checkSpecific && SpecificFiles != null && SpecificFiles.Length > 0)
-                        useFile = SpecificFiles.Contains(entry.FullName);
+                    if (checkSpecific && specificFiles != null && specificFiles.Length > 0)
+                        useFile = specificFiles.Contains(entry.FullName);
 
                     if (useFile)
                     {
@@ -362,7 +373,7 @@ namespace DoomLauncher
             }
         }
 
-        private IArchiveReader CreateArchiveReader(IGameFile gameFile, LauncherPath gameFileDirectory)
+        private static IArchiveReader CreateArchiveReader(IGameFile gameFile, LauncherPath gameFileDirectory)
         {
             string file = Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName);
 
