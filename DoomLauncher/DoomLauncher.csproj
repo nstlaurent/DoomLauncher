@@ -253,6 +253,7 @@
     <Compile Include="Handlers\ImageExtensions.cs" />
     <Compile Include="Handlers\MenuConstants.cs" />
     <Compile Include="Handlers\ArchiveUtil.cs" />
+    <Compile Include="Handlers\VersionUpdateResults.cs" />
     <Compile Include="Interfaces\IGameFileSortableView.cs" />
     <Compile Include="Interfaces\IGameFileTile.cs" />
     <Compile Include="Interfaces\IGameFileColumnView.cs" />

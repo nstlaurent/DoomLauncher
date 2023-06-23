@@ -17,6 +17,7 @@ namespace DoomLauncher
     {
         private readonly IDataSourceAdapter m_adapter;
         private readonly AppConfiguration m_appConfig;
+        private bool m_restartRequired;
 
         public event EventHandler UpdateProgress;
         public event EventHandler UpdateComplete;
@@ -51,8 +52,9 @@ namespace DoomLauncher
             }
         }
 
-        public void HandleVersionUpdate()
+        public VersionUpdateResults HandleVersionUpdate()
         {
+            m_restartRequired = false;
             if (UpdateRequired())
             {
                 ExecuteUpdate(Pre_0_9_2, AppVersion.Unknown);
@@ -92,6 +94,8 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_7_0, AppVersion.Version_3_7_0);
                 ExecuteUpdate(Pre_Version_3_7_0_Update1, AppVersion.Version_3_7_0_Update1);
             }
+
+            return new VersionUpdateResults(m_restartRequired);
         }
 
         private AppVersion GetVersion()
@@ -869,6 +873,7 @@ namespace DoomLauncher
 
         private void Pre_Version_3_7_0_Update1()
         {
+            m_restartRequired = true;
             m_adapter.InsertConfiguration(new ConfigurationData()
             {
                 Name = "ImportScreenshots",

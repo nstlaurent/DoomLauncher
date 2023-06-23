@@ -44,6 +44,7 @@ namespace DoomLauncher
         private readonly Dictionary<ProgressBarType, ProgressBarForm> m_progressBars = new Dictionary<ProgressBarType, ProgressBarForm>();
         private FormWindowState m_windowState;
         private bool m_progressBarCancelled;
+        private bool m_writeConfigOnClose = true;
 
         public MainForm(LaunchArgs launchArgs, SplashScreen splashScreen)
         {
@@ -64,15 +65,15 @@ namespace DoomLauncher
 
         private void InitProgressBars()
         {
-            var copyProgressBar = CreateProgressBar("Copying...", ProgressBarStyle.Continuous);
+            var copyProgressBar = CreateProgressBar("Copying...", ProgressBarStyle.Continuous, true);
             copyProgressBar.Cancelled += m_progressBarFormCopy_Cancelled;
 
             m_progressBars[ProgressBarType.Copy] = copyProgressBar;
-            m_progressBars[ProgressBarType.Sync] = CreateProgressBar("Syncing...", ProgressBarStyle.Marquee);
-            m_progressBars[ProgressBarType.Update] = CreateProgressBar("Updating...", ProgressBarStyle.Marquee);
-            m_progressBars[ProgressBarType.Delete] = CreateProgressBar("Deleting...", ProgressBarStyle.Marquee);
-            m_progressBars[ProgressBarType.Search] = CreateProgressBar("Searching...", ProgressBarStyle.Marquee);
-            m_progressBars[ProgressBarType.CreateZip] = CreateProgressBar("Creating zip...", ProgressBarStyle.Marquee);
+            m_progressBars[ProgressBarType.Sync] = CreateProgressBar("Syncing...", ProgressBarStyle.Marquee, false);
+            m_progressBars[ProgressBarType.Update] = CreateProgressBar("Updating...", ProgressBarStyle.Marquee, false);
+            m_progressBars[ProgressBarType.Delete] = CreateProgressBar("Deleting...", ProgressBarStyle.Marquee, false);
+            m_progressBars[ProgressBarType.Search] = CreateProgressBar("Searching...", ProgressBarStyle.Marquee, false);
+            m_progressBars[ProgressBarType.CreateZip] = CreateProgressBar("Creating zip...", ProgressBarStyle.Marquee, false);
         }
 
         protected override void OnClientSizeChanged(EventArgs e)
@@ -2422,11 +2423,12 @@ namespace DoomLauncher
             form.ShowDialog(this);
         }
 
-        private ProgressBarForm CreateProgressBar(string text, ProgressBarStyle style)
+        private ProgressBarForm CreateProgressBar(string text, ProgressBarStyle style, bool cancelAllowed)
         {
             ProgressBarForm form = new ProgressBarForm();
             form.StartPosition = FormStartPosition.CenterParent;
             form.DisplayText = text;
+            form.SetCancelAllowed(cancelAllowed);
 
             if (style == ProgressBarStyle.Marquee)
             {

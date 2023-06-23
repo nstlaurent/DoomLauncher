@@ -2,10 +2,8 @@
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 
 namespace DoomLauncher
 {
@@ -13,7 +11,7 @@ namespace DoomLauncher
     {
         private void HandleFormClosing()
         {
-            if (DataSourceAdapter != null)
+            if (DataSourceAdapter != null && m_writeConfigOnClose)
             {
                 IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
 

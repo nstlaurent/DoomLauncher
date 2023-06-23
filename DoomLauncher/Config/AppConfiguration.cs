@@ -86,14 +86,14 @@ namespace DoomLauncher
             }
             else if (type == typeof(int))
             {
-                int iValue = -1;
-                int.TryParse(value, out iValue);
+                if (!int.TryParse(value, out int iValue))
+                    return -1;
                 return iValue;
             }
             else if (type == typeof(bool))
             {
-                bool bValue = false;
-                bool.TryParse(value, out bValue);
+                if (!bool.TryParse(value, out bool bValue))
+                    return false;
                 return bValue;
             }
             else
@@ -108,58 +108,58 @@ namespace DoomLauncher
             {
                 IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
 
-                IdGamesUrl = GetValue(config, "IdGamesUrl");
-                ApiPage = GetValue(config, "ApiPage");
-                MirrorUrl = GetValue(config, "MirrorUrl");
-                CleanTemp = Convert.ToBoolean(GetValue(config, "CleanTemp"));
+                IdGamesUrl = GetValue(config, "IdGamesUrl", string.Empty);
+                ApiPage = GetValue(config, "ApiPage", string.Empty);
+                MirrorUrl = GetValue(config, "MirrorUrl", string.Empty);
+                CleanTemp = Convert.ToBoolean(GetValue(config, "CleanTemp", "true"));
 
                 SetChildDirectories(config);
-                SplitTopBottom = Convert.ToInt32(GetValue(config, SplitTopBottomName));
-                SplitLeftRight = Convert.ToInt32(GetValue(config, SplitLeftRightName));
-                SplitTagSelect = Convert.ToInt32(GetValue(config, SplitTagSelectName));
-                AppWidth = Convert.ToInt32(GetValue(config, AppWidthName));
-                AppHeight = Convert.ToInt32(GetValue(config, AppHeightName));
-                AppX = Convert.ToInt32(GetValue(config, AppXName));
-                AppY = Convert.ToInt32(GetValue(config, AppYName));
-                WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), GetValue(config, WindowStateName));
-                ColumnConfig = GetValue(config, ColumnConfigName);
-                ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, ScreenshotPreviewSizeName));
-                FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement"));
-                ItemsPerPage = Convert.ToInt32(GetValue(config, ItemsPerPageName));
-                DeleteScreenshotsAfterImport = Convert.ToBoolean(GetValue(config, "DeleteScreenshotsAfterImport"));
-                LastSelectedTabIndex = Convert.ToInt32(GetValue(config, LastSelectedTabIndexName));
-                TagSelectPinned = Convert.ToBoolean(GetValue(config, TagSelectPinnedName));
-                ShowTabHeaders = Convert.ToBoolean(GetValue(config, ShowTabHeadersName));
-                CopySaveFiles = Convert.ToBoolean(GetValue(config, CopySaveFilesName));
-                AllowMultiplePlaySessions = Convert.ToBoolean(GetValue(config, AllowMultiplePlaySessionsName));
-                AutomaticallyPullTitlpic = Convert.ToBoolean(GetValue(config, AutomaticallyPullTitlpicName));
-                ShowPlayDialog = Convert.ToBoolean(GetValue(config, ShowPlayDialogName));
-                ImportScreenshots = Convert.ToBoolean(GetValue(config, ImportScreenshotsName));
+                SplitTopBottom = Convert.ToInt32(GetValue(config, SplitTopBottomName, "475"));
+                SplitLeftRight = Convert.ToInt32(GetValue(config, SplitLeftRightName, "680"));
+                SplitTagSelect = Convert.ToInt32(GetValue(config, SplitTagSelectName, "300"));
+                AppWidth = Convert.ToInt32(GetValue(config, AppWidthName, "1024"));
+                AppHeight = Convert.ToInt32(GetValue(config, AppHeightName, "768"));
+                AppX = Convert.ToInt32(GetValue(config, AppXName, "0"));
+                AppY = Convert.ToInt32(GetValue(config, AppYName, "0"));
+                WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), GetValue(config, WindowStateName, FormWindowState.Normal.ToString("g")));
+                ColumnConfig = GetValue(config, ColumnConfigName, string.Empty);
+                ScreenshotPreviewSize = Convert.ToInt32(GetValue(config, ScreenshotPreviewSizeName, "0"));
+                FileManagement = (FileManagement)Enum.Parse(typeof(FileManagement), GetValue(config, "FileManagement", FileManagement.Managed.ToString("g")));
+                ItemsPerPage = Convert.ToInt32(GetValue(config, ItemsPerPageName, "30"));
+                DeleteScreenshotsAfterImport = Convert.ToBoolean(GetValue(config, "DeleteScreenshotsAfterImport", "false"));
+                LastSelectedTabIndex = Convert.ToInt32(GetValue(config, LastSelectedTabIndexName, "0"));
+                TagSelectPinned = Convert.ToBoolean(GetValue(config, TagSelectPinnedName, "false"));
+                ShowTabHeaders = Convert.ToBoolean(GetValue(config, ShowTabHeadersName, "true"));
+                CopySaveFiles = Convert.ToBoolean(GetValue(config, CopySaveFilesName, "true"));
+                AllowMultiplePlaySessions = Convert.ToBoolean(GetValue(config, AllowMultiplePlaySessionsName, "false"));
+                AutomaticallyPullTitlpic = Convert.ToBoolean(GetValue(config, AutomaticallyPullTitlpicName, "true"));
+                ShowPlayDialog = Convert.ToBoolean(GetValue(config, ShowPlayDialogName, "true"));
+                ImportScreenshots = Convert.ToBoolean(GetValue(config, ImportScreenshotsName, "false"));
 
                 List<EventHandler> events = new List<EventHandler>();
-                if (Enum.TryParse(GetValue(config, "ColorThemeType"), out ColorThemeType colorThemeType))
+                if (Enum.TryParse(GetValue(config, "ColorThemeType", "Default"), out ColorThemeType colorThemeType))
                 {
                     if (colorThemeType != ColorTheme)
-                        events.Add(ColorThemeChanged);
+                        AddEvent(events, ColorThemeChanged);
                     ColorTheme = colorThemeType;
                 }
 
-                var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType"));
+                var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType", GameFileViewType.TileViewCondensed.ToString("g")));
                 if (newType != GameFileViewType)
                 {
                     GameFileViewType = newType;
-                    events.Add(GameFileViewTypeChanged);
+                    AddEvent(events, GameFileViewTypeChanged);
                 }
 
-                var newVisibleViews = Util.SplitString(GetValue(config, VisibleViewsName));
+                var newVisibleViews = Util.SplitString(GetValue(config, VisibleViewsName, "Recent;Untagged;IWads;Id Games"));
                 if (VisibleViews == null || (newVisibleViews.Length != VisibleViews.Count))
                 {
                     VisibleViews = newVisibleViews.ToHashSet(StringComparer.OrdinalIgnoreCase);
-                    events.Add(VisibleViewsChanged);
+                    AddEvent(events, VisibleViewsChanged);
                 }
 
-                DateParseFormats = Util.SplitString(GetValue(config, "DateParseFormats"));
-                ScreenshotCaptureDirectories = Util.SplitString(GetValue(config, "ScreenshotCaptureDirectories"));
+                DateParseFormats = Util.SplitString(GetValue(config, "DateParseFormats", "dd/M/yy;dd/MM/yyyy;dd MMMM yyyy;"));
+                ScreenshotCaptureDirectories = Util.SplitString(GetValue(config, "ScreenshotCaptureDirectories", string.Empty));
 
                 foreach (var invokeEvent in events)
                     invokeEvent?.Invoke(this, EventArgs.Empty);
@@ -173,14 +173,23 @@ namespace DoomLauncher
             VerifyPaths(throwErrors);
         }
 
-        private static string GetValue(IEnumerable<IConfigurationData> config, string name)
+        private static void AddEvent(List<EventHandler> events, EventHandler eventAdd)
         {
-            return config.First(x => x.Name == name).Value;
+            if (eventAdd != null)
+                events.Add(eventAdd);
+        }
+
+        private static string GetValue(IEnumerable<IConfigurationData> config, string name, string defaultValue)
+        {
+            var item = config.FirstOrDefault(x => x.Name == name);
+            if (item == null)
+                return defaultValue;
+            return item.Value;
         }
 
         private void SetChildDirectories(IEnumerable<IConfigurationData> config)
         {
-            string gameFileDir = GetValue(config, "GameFileDirectory");
+            string gameFileDir = GetValue(config, "GameFileDirectory", "GameFiles");
             GameFileDirectory = GetGameFileDir(gameFileDir);
             gameFileDir = GameFileDirectory.GetFullPath();
 
@@ -219,7 +228,7 @@ namespace DoomLauncher
         public void RefreshColumnConfig()
         {
             IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
-            ColumnConfig = GetValue(config, ColumnConfigName);
+            ColumnConfig = GetValue(config, ColumnConfigName, string.Empty);
         }
 
         public void EnableCopySaveFiles()

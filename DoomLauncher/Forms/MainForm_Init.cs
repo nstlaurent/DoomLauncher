@@ -263,7 +263,6 @@ namespace DoomLauncher
                 CleanTempDirectory();
 
             DirectoryDataSourceAdapter = new DirectoryDataSourceAdapter(AppConfiguration.GameFileDirectory);
-            DataCache.Instance.Init(DataSourceAdapter);
             DataCache.Instance.AppConfiguration.GameFileViewTypeChanged += AppConfiguration_GameFileViewTypeChanged;
             DataCache.Instance.AppConfiguration.VisibleViewsChanged += AppConfiguration_VisibleViewsChanged;
             DataCache.Instance.AppConfiguration.ColorThemeChanged += AppConfiguration_ColorThemeChanged;
@@ -425,10 +424,12 @@ namespace DoomLauncher
             Restart();
         }
 
-        private void Restart()
+        private void Restart(bool writeConfigChanges = true)
         {
             // Write any settings the user may have changed before the application is killed
-            HandleFormClosing();
+            m_writeConfigOnClose = writeConfigChanges;
+            if (writeConfigChanges)
+                HandleFormClosing();
             Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Util.GetExecutableNoPath()));
         }
 
@@ -570,7 +571,21 @@ namespace DoomLauncher
 
         private void ExecuteVersionUpdate()
         {
-            m_versionHandler.HandleVersionUpdate();
+            var results = m_versionHandler.HandleVersionUpdate();
+            if (results.RestartRequired)
+            {
+                Invoke(new Action(() =>
+                {
+                    MessageBox.Show(this, "Update was successful. Doom Launcher requires a restart for this update.", "Restart Required",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }));
+
+                Restart(false);
+                Invoke(new Action(() =>
+                {
+                    Close();
+                }));
+            }
         }
 
         void handler_UpdateProgress(object sender, EventArgs e)
