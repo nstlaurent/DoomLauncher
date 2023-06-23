@@ -64,14 +64,14 @@ namespace DoomLauncher
 
         private void InitProgressBars()
         {
-            var copyProgressBar = CreateProgressBar("Copying...", ProgressBarStyle.Marquee);
+            var copyProgressBar = CreateProgressBar("Copying...", ProgressBarStyle.Continuous);
             copyProgressBar.Cancelled += m_progressBarFormCopy_Cancelled;
 
-            m_progressBars[ProgressBarType.Copy] = CreateProgressBar("Copying...", ProgressBarStyle.Continuous);
-            m_progressBars[ProgressBarType.Sync] = CreateProgressBar("Updating...", ProgressBarStyle.Continuous);
-            m_progressBars[ProgressBarType.Update] = copyProgressBar;
-            m_progressBars[ProgressBarType.Delete] = CreateProgressBar("Deleting...", ProgressBarStyle.Continuous);
-            m_progressBars[ProgressBarType.Search] = CreateProgressBar("Searching...", ProgressBarStyle.Continuous);
+            m_progressBars[ProgressBarType.Copy] = copyProgressBar;
+            m_progressBars[ProgressBarType.Sync] = CreateProgressBar("Syncing...", ProgressBarStyle.Marquee);
+            m_progressBars[ProgressBarType.Update] = CreateProgressBar("Updating...", ProgressBarStyle.Marquee);
+            m_progressBars[ProgressBarType.Delete] = CreateProgressBar("Deleting...", ProgressBarStyle.Marquee);
+            m_progressBars[ProgressBarType.Search] = CreateProgressBar("Searching...", ProgressBarStyle.Marquee);
             m_progressBars[ProgressBarType.CreateZip] = CreateProgressBar("Creating zip...", ProgressBarStyle.Marquee);
         }
 
