@@ -14,6 +14,7 @@ namespace DoomLauncher
         public Color ButtonBackground => SystemColors.Window;
         public Color CheckBoxBackground => SystemColors.Window;
         public Color TextBoxBackground => Color.White;
+        public Color DropDownBackground => SystemColors.Window;
         public Color Border => SystemColors.Control;
         public Color LinkText => Highlight;
         public Color GridRow => SystemColors.Window;

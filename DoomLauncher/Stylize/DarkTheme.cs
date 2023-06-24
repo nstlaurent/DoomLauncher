@@ -14,6 +14,7 @@ namespace DoomLauncher
         public Color ButtonBackground => Color.FromArgb(255, 90, 101, 234);
         public Color CheckBoxBackground => WindowLight;
         public Color TextBoxBackground => WindowDark;
+        public Color DropDownBackground => WindowDark;
         public Color Border => Color.FromArgb(255, 32, 32, 32);
         public Color LinkText => Highlight;
         public Color GridRow => WindowDark;

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -240,6 +241,7 @@ namespace DoomLauncher
             comboBox.BackColor = CurrentTheme.TextBoxBackground;
             comboBox.ForeColor = CurrentTheme.Text;
             comboBox.DrawItem += ComboBox_DrawItem;
+            comboBox.DrawMode = DrawMode.OwnerDrawFixed;
             comboBox.FlatStyle = FlatStyle.Flat;
         }
 
@@ -280,7 +282,29 @@ namespace DoomLauncher
 
         private static void ComboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
-            e.Graphics.FillRectangle(new SolidBrush(CurrentTheme.Window), e.Bounds);
+            if (sender is ComboBox comboBox)
+            {
+                bool selected = e.State.HasFlag(DrawItemState.Selected);
+                if (selected)
+                    e.Graphics.FillRectangle(new SolidBrush(CurrentTheme.Highlight), e.Bounds);
+                else
+                    e.Graphics.FillRectangle(new SolidBrush(CurrentTheme.DropDownBackground), e.Bounds);
+
+                if (e.Index < 0 || e.Index >= comboBox.Items.Count)
+                    return;
+
+                var item = comboBox.Items[e.Index];
+                string text;
+                if (!string.IsNullOrEmpty(comboBox.DisplayMember))
+                    text = item.GetType().GetProperty(comboBox.DisplayMember).GetValue(item).ToString();
+                else if (item is string str)
+                    text = str;
+                else
+                    text = item.ToString();
+
+                Color color = selected ? CurrentTheme.HighlightText : CurrentTheme.Text;
+                e.Graphics.DrawString(text, e.Font, new SolidBrush(color), new PointF(0, e.Bounds.Y));
+            }
         }
 
         private static void ToolStripSeparator_Paint(object sender, PaintEventArgs e)
