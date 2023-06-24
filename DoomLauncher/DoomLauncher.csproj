@@ -292,6 +292,7 @@
     <Compile Include="SourcePort\HelionSourcePort.cs" />
     <Compile Include="SourcePort\NuggetDoomSourcePort.cs" />
     <Compile Include="SourcePort\WoofSourcePort.cs" />
+    <Compile Include="Stylize\CToolStripRenderer.cs" />
     <Compile Include="Stylize\DarkTheme.cs" />
     <Compile Include="Stylize\DefaultTheme.cs" />
     <Compile Include="Stylize\Stylizer.cs" />

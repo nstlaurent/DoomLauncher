@@ -131,6 +131,7 @@ namespace DoomLauncher
                 {
                     menuItem.BackColor = CurrentTheme.Window;
                     menuItem.ForeColor = CurrentTheme.Text;
+                    menuItem.Paint += MenuItem_Paint;
                     StyleMenuDropDownItems(menuItem);
                     continue;
                 }
@@ -140,11 +141,30 @@ namespace DoomLauncher
             }
         }
 
+        private static void MenuItem_Paint(object sender, PaintEventArgs e)
+        {
+            if (sender is ToolStripMenuItem item)
+            {
+                PointF point = new PointF(24, 2);
+                Rectangle rectangle = new Rectangle(2, 0, item.Size.Width - 4, item.Size.Height);
+                if (item.Selected)
+                {
+                    e.Graphics.FillRectangle(new SolidBrush(ColorTheme.Current.Highlight), rectangle);
+                    e.Graphics.DrawString(item.Text, item.Font, new SolidBrush(ColorTheme.Current.HighlightText), point);
+                    return;
+                }
+
+                e.Graphics.FillRectangle(new SolidBrush(ColorTheme.Current.Window), rectangle);
+                e.Graphics.DrawString(item.Text, item.Font, new SolidBrush(ColorTheme.Current.Text), point);
+            }
+        }
+
         private static void StyleContextMenuStrip(ContextMenuStrip cms)
         {
+            cms.Renderer = new CToolStripRenderer();
+
             cms.BackColor = CurrentTheme.Window;
-            cms.ForeColor = CurrentTheme.Text;
-            
+            cms.ForeColor = CurrentTheme.Text;            
 
             cms.ShowCheckMargin = false;
             cms.ShowImageMargin = false;
