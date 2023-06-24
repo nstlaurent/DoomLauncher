@@ -26,9 +26,10 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TextBoxForm));
+            this.tblContainer = new System.Windows.Forms.TableLayoutPanel();
             this.tblMain = new DoomLauncher.TableLayoutPanelDB();
             this.txtText = new System.Windows.Forms.TextBox();
             this.lblHeader = new DoomLauncher.GrowLabel();
@@ -37,12 +38,27 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.lnk = new System.Windows.Forms.LinkLabel();
             this.chk = new DoomLauncher.CCheckBox();
-            this.tblContainer = new System.Windows.Forms.TableLayoutPanel();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
+            this.tblContainer.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.flpButtons.SuspendLayout();
-            this.tblContainer.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // tblContainer
+            // 
+            this.tblContainer.ColumnCount = 1;
+            this.tblContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblContainer.Controls.Add(this.tblMain, 0, 1);
+            this.tblContainer.Controls.Add(this.titleBar, 0, 0);
+            this.tblContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblContainer.Location = new System.Drawing.Point(0, 0);
+            this.tblContainer.Margin = new System.Windows.Forms.Padding(0);
+            this.tblContainer.Name = "tblContainer";
+            this.tblContainer.RowCount = 2;
+            this.tblContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tblContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblContainer.Size = new System.Drawing.Size(800, 450);
+            this.tblContainer.TabIndex = 2;
             // 
             // tblMain
             // 
@@ -63,7 +79,7 @@
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
-            this.tblMain.Size = new System.Drawing.Size(508, 445);
+            this.tblMain.Size = new System.Drawing.Size(792, 400);
             this.tblMain.TabIndex = 0;
             // 
             // txtText
@@ -74,7 +90,7 @@
             this.txtText.Multiline = true;
             this.txtText.Name = "txtText";
             this.txtText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtText.Size = new System.Drawing.Size(500, 239);
+            this.txtText.Size = new System.Drawing.Size(784, 194);
             this.txtText.TabIndex = 0;
             // 
             // lblHeader
@@ -94,28 +110,29 @@
             this.flpButtons.Controls.Add(this.btnOK);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(0, 396);
+            this.flpButtons.Location = new System.Drawing.Point(0, 351);
             this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(508, 49);
+            this.flpButtons.Size = new System.Drawing.Size(792, 49);
             this.flpButtons.TabIndex = 3;
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(392, 5);
+            this.btnCancel.Location = new System.Drawing.Point(676, 5);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(112, 35);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(272, 5);
+            this.btnOK.Location = new System.Drawing.Point(556, 5);
             this.btnOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(112, 35);
@@ -148,64 +165,48 @@
             this.chk.TabIndex = 5;
             this.chk.Text = "CheckBox";
             // 
-            // tblContainer
-            // 
-            this.tblContainer.ColumnCount = 1;
-            this.tblContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblContainer.Controls.Add(this.tblMain, 0, 1);
-            this.tblContainer.Controls.Add(this.titleBar, 0, 0);
-            this.tblContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblContainer.Location = new System.Drawing.Point(0, 0);
-            this.tblContainer.Margin = new System.Windows.Forms.Padding(0);
-            this.tblContainer.Name = "tblContainer";
-            this.tblContainer.RowCount = 2;
-            this.tblContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tblContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblContainer.Size = new System.Drawing.Size(516, 495);
-            this.tblContainer.TabIndex = 1;
-            // 
             // titleBar
             // 
             this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.CanClose = true;
+            this.titleBar.ControlBox = true;
             this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.titleBar.ForeColor = System.Drawing.Color.White;
-            this.titleBar.Location = new System.Drawing.Point(3, 3);
+            this.titleBar.Location = new System.Drawing.Point(0, 0);
+            this.titleBar.Margin = new System.Windows.Forms.Padding(0);
             this.titleBar.Name = "titleBar";
-            this.titleBar.Size = new System.Drawing.Size(510, 34);
+            this.titleBar.Size = new System.Drawing.Size(800, 40);
             this.titleBar.TabIndex = 1;
             this.titleBar.Title = "Title";
             // 
             // TextBoxForm
             // 
-            this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(516, 495);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.tblContainer);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TextBoxForm";
-            this.ShowIcon = false;
-            this.Text = "TextBoxForm";
+            this.Text = "TextBoxForm2";
+            this.tblContainer.ResumeLayout(false);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
             this.flpButtons.ResumeLayout(false);
-            this.tblContainer.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private DoomLauncher.TableLayoutPanelDB tblMain;
+        private System.Windows.Forms.TableLayoutPanel tblContainer;
+        private TableLayoutPanelDB tblMain;
         private System.Windows.Forms.TextBox txtText;
         private GrowLabel lblHeader;
         private System.Windows.Forms.FlowLayoutPanel flpButtons;
-        private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.LinkLabel lnk;
-        private DoomLauncher.CCheckBox chk;
-        private System.Windows.Forms.TableLayoutPanel tblContainer;
+        private CCheckBox chk;
         private Controls.TitleBarControl titleBar;
     }
 }

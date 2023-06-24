@@ -43,6 +43,9 @@ namespace DoomLauncher
             lnk.Visible = false;
             chk.Visible = false;
 
+            AcceptButton = btnOK;
+            CancelButton = btnCancel;
+
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
         }
 
@@ -115,6 +118,13 @@ namespace DoomLauncher
 
         private void btnOK_Click_1(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
             Close();
         }
     }

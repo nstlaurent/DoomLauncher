@@ -243,6 +243,12 @@
     <Compile Include="Forms\ScreenshotEditForm.Designer.cs">
       <DependentUpon>ScreenshotEditForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\TextBoxForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TextBoxForm.Designer.cs">
+      <DependentUpon>TextBoxForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
@@ -716,12 +722,6 @@
       <DependentUpon>TagEditForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Config\TagMapLookup.cs" />
-    <Compile Include="Forms\TextBoxForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TextBoxForm.Designer.cs">
-      <DependentUpon>TextBoxForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="TextFileParsers\IdGamesTextFileParser.cs" />
     <Compile Include="Handlers\ToolTipHandler.cs" />
     <Compile Include="Forms\TxtGenerator.cs">
@@ -807,14 +807,14 @@
     <EmbeddedResource Include="Forms\StatsInfo.resx">
       <DependentUpon>StatsInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TextBoxForm.resx">
-      <DependentUpon>TextBoxForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SyncStatusForm.resx">
       <DependentUpon>SyncStatusForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SimpleFileSelectForm.resx">
       <DependentUpon>SimpleFileSelectForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TextBoxForm.resx">
+      <DependentUpon>TextBoxForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Welcome.resx">
       <DependentUpon>Welcome.cs</DependentUpon>
