@@ -163,10 +163,7 @@ namespace DoomLauncher
             if (!DoomImageUtil.GetEntry(reader, titlepicName, out IArchiveEntry entry))
                 return;
 
-            Palette palette = m_palette;
-            if (DoomImageUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
-                palette = Palette.From(paletteEntry.ReadEntry());
-
+            Palette palette = GetPaletteOrDefault(reader);
             if (!DoomImageUtil.ConvertToImage(entry.ReadEntry(), palette, out Image image))
             {
                 if (!m_failedTitlepics.Contains(file))
@@ -175,6 +172,18 @@ namespace DoomLauncher
             }
 
             m_titlepics[file] = image;
+        }
+
+        private Palette GetPaletteOrDefault(IArchiveReader reader)
+        {
+            if (!DoomImageUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
+                return m_palette;
+
+            Palette palette = Palette.From(paletteEntry.ReadEntry());
+            if (palette != null)
+                return palette;
+
+            return m_palette;
         }
 
         private bool GetTitlepicNameFromMapInfo(string[] mapInfoData, out string newTitlepicName)
