@@ -22,6 +22,8 @@ namespace DoomLauncher
         public Color StatBackgroundGradientFrom => Color.Gray;
         public Color StatBackgroundGradientTo => Color.FromArgb(255, 191, 191, 191);
         public Color StatText => Color.White;
+        public Color CloseBackgroundHighlight => Color.FromArgb(255, 213, 50, 38);
+        public Color CloseForeColorHighlight => Color.White;
         public bool GridRowBorder => true;
         public bool IsDark => true;
     }

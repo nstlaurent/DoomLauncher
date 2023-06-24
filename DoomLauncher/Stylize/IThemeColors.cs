@@ -22,6 +22,8 @@ namespace DoomLauncher
         Color StatBackgroundGradientFrom { get; }
         Color StatBackgroundGradientTo { get; }
         Color StatText { get; }
+        Color CloseBackgroundHighlight { get; }
+        Color CloseForeColorHighlight { get; }
         bool GridRowBorder { get; }
         bool IsDark { get; }
     }

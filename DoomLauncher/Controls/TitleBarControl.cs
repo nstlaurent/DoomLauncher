@@ -39,10 +39,27 @@ namespace DoomLauncher.Controls
         public TitleBarControl()
         {
             InitializeComponent();
+
             flpButtons.MouseDown += FlpButtons_MouseDown;
             flpButtons.DoubleClick += FlpButtons_DoubleClick;
+
+            btnClose.MouseEnter += BtnClose_MouseEnter;
+            btnClose.MouseLeave += BtnClose_MouseLeave;
+
             Stylizer.StylizeControl(this, DesignMode);
             Load += TitleBarControl_Load;
+        }
+
+        private void BtnClose_MouseEnter(object sender, EventArgs e)
+        {
+            btnClose.ForeColor = ColorTheme.Current.CloseForeColorHighlight;
+            btnClose.BackColor = ColorTheme.Current.CloseBackgroundHighlight;
+        }
+
+        private void BtnClose_MouseLeave(object sender, EventArgs e)
+        {
+            btnClose.ForeColor = ColorTheme.Current.Text;
+            btnClose.BackColor = ColorTheme.Current.Window;
         }
 
         public void HandleWindowStateChange(FormWindowState state)
