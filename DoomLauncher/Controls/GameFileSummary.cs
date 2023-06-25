@@ -37,6 +37,9 @@ namespace DoomLauncher
             txtDescription.BorderStyle = BorderStyle.None;
             txtComments.BorderStyle = BorderStyle.None;
 
+            txtDescription.ReadOnly = true;
+            txtComments.ReadOnly = true;
+
             SetStatistics(null, Array.Empty<IStatsData>());
         }
 
