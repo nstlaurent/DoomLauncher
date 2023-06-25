@@ -71,15 +71,6 @@ namespace DoomLauncher
             textBox.ForeColor = CurrentTheme.Text;
         }
 
-        private static void TextBox_Paint(object sender, PaintEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            Pen p = new Pen(Color.Red);
-            Graphics g = e.Graphics;
-            int variance = 3;
-            g.DrawRectangle(p, new Rectangle(textBox.Location.X - variance, textBox.Location.Y - variance, textBox.Width + variance, textBox.Height + variance));
-        }
-
         private static void StyleGroupBox(GroupBox groupBox)
         {
             groupBox.Paint += GroupBox_Paint;
@@ -259,6 +250,7 @@ namespace DoomLauncher
             view.ColumnHeadersDefaultCellStyle.ForeColor = CurrentTheme.Text;
             view.ColumnHeadersDefaultCellStyle.SelectionBackColor = view.ColumnHeadersDefaultCellStyle.BackColor;
             view.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            view.ColumnHeadersDefaultCellStyle.Padding = new Padding(0, 4, 0, 4);
 
             view.ForeColor = CurrentTheme.Text;
             view.BackgroundColor = CurrentTheme.WindowDark;
@@ -268,8 +260,18 @@ namespace DoomLauncher
             view.AlternatingRowsDefaultCellStyle.BackColor = CurrentTheme.GridRowAlt;
             view.DefaultCellStyle.SelectionBackColor = CurrentTheme.Highlight;
 
+            view.BorderStyle = BorderStyle.None;
+            view.Paint += View_Paint;
+
             if (!CurrentTheme.GridRowBorder)
                 view.CellPainting += View_CellPainting;
+        }
+
+        private static void View_Paint(object sender, PaintEventArgs e)
+        {
+            DataGridView view = sender as DataGridView;
+            Rectangle rect = new Rectangle(view.ClientRectangle.Location, new Size(view.ClientRectangle.Width -1, view.ClientRectangle.Height - 1));
+            e.Graphics.DrawRectangle(new Pen(CurrentTheme.GridBorder), rect);
         }
 
         private static void View_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)

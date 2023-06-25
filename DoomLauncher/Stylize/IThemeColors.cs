@@ -17,6 +17,7 @@ namespace DoomLauncher
         Color DropDownBackground { get; }
         Color Border { get; }
         Color LinkText { get; }
+        Color GridBorder { get; }
         Color GridRow { get; }
         Color GridRowAlt { get; }
         Color Separator { get; }
