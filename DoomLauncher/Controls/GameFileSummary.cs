@@ -27,8 +27,33 @@ namespace DoomLauncher
             ShowCommentsSection(false);
 
             txtComments.WarnLinkClick = false;
+            tblMain.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
+            tblMain.CellPaint += TblMain_CellPaint;
+            tblLastMap.Margin = new Padding(1);
+            tblTimePlayed.Margin = new Padding(1);
+            tblTags.Margin = new Padding(1);
+            ctrlStats.Margin = new Padding(1);
+
+            txtDescription.BorderStyle = BorderStyle.None;
+            txtComments.BorderStyle = BorderStyle.None;
 
             SetStatistics(null, Array.Empty<IStatsData>());
+        }
+
+        private void TblMain_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
+        {
+            Point pt = e.CellBounds.Location;
+            Pen pen = new Pen(ColorTheme.Current.GridBorder);
+            if (e.Row == 0)
+            {
+                Rectangle rect = new Rectangle(e.CellBounds.Location, new Size(e.CellBounds.Width - 1, e.CellBounds.Height - 1));
+                e.Graphics.DrawRectangle(pen, rect);
+                return;
+            }
+
+            e.Graphics.DrawLine(pen, pt.X, pt.Y, pt.X, pt.Y + e.CellBounds.Height);
+            e.Graphics.DrawLine(pen, pt.X + e.CellBounds.Width - 1, pt.Y, e.CellBounds.Width - 1, pt.Y + e.CellBounds.Height);
+            e.Graphics.DrawLine(pen, new Point(pt.X, pt.Y + e.CellBounds.Height - 1), new Point(pt.X + e.CellBounds.Width, pt.Y + e.CellBounds.Height - 1));
         }
 
         private void PbImage_Paint(object sender, PaintEventArgs e)
