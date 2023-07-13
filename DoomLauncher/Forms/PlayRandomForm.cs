@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using DoomLauncher.DataSources;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace DoomLauncher.Forms
 {
@@ -25,6 +26,7 @@ namespace DoomLauncher.Forms
         public IGameFile GeneratedGameFile { get; private set; }
         public string GeneratedMap { get; private set; }
         public PlayRandomType SelectedType => (PlayRandomType)cmbType.SelectedIndex;
+        public bool ShowPlayDialog => chkShowPlayDialog.Checked;
 
         private ITabView m_tabView;
 
@@ -43,9 +45,17 @@ namespace DoomLauncher.Forms
             Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
         }
 
-        public void Initialize(ITabView tabView)
+        public void Initialize(ITabView tabView, AppConfiguration config, IGameFile initGameFile = null, string initMap = null)
         {
+            GeneratedGameFile = initGameFile;
+            GeneratedMap = initMap;
             m_tabView = tabView;
+            if (config.ShowPlayDialog)
+                chkShowPlayDialog.Visible = false;
+
+            chkShowPlayDialog.Checked = config.ShowPlayDialog;
+            if (GeneratedGameFile != null)
+                SetData();
         }
 
         private void btnGenerate_Click(object sender, EventArgs e)
@@ -78,15 +88,22 @@ namespace DoomLauncher.Forms
             options.SearchField = new GameFileSearchField(GameFileFieldType.GameFileID, GeneratedGameFile.GameFileID.ToString());
             GeneratedGameFile = DataCache.Instance.DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
 
+            if (chkRandomMap.Checked && GetRandomMap(rand, GeneratedGameFile, out string map))
+                GeneratedMap = map;
+
+            SetData();
+        }
+
+        private void SetData()
+        {
             if (GeneratedGameFile == null)
             {
                 lblText.Text = $"Current tab ({m_tabView.Key}) is not supported in this context.";
                 return;
             }
 
-            if (chkRandomMap.Checked && GetRandomMap(rand, GeneratedGameFile, out string map))
+            if (GeneratedMap != null)
             {
-                GeneratedMap = map;
                 lblText.Text = $"{GeneratedGameFile.FileNameNoPath} - {GeneratedMap}";
                 return;
             }

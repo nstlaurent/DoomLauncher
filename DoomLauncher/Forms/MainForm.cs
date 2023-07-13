@@ -2259,7 +2259,7 @@ namespace DoomLauncher
         private void playRandomToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             PlayRandomForm form = new PlayRandomForm();
-            form.Initialize(GetCurrentTabView());
+            form.Initialize(GetCurrentTabView(), AppConfiguration, m_lastPlayRandomFile, m_lastPlayRandomMap);
             form.StartPosition = FormStartPosition.CenterParent;
             if (form.ShowDialog(this) == DialogResult.OK)
             {
@@ -2279,8 +2279,14 @@ namespace DoomLauncher
                 }
 
                 tabView.GameFileViewControl.SelectedItem = form.GeneratedGameFile;
+                PlayOptions playOptions = form.ShowPlayDialog ? PlayOptions.ForceDialog : PlayOptions.None;
                 if (form.GeneratedGameFile != null)
-                    HandlePlay(new IGameFile[] { form.GeneratedGameFile }, map: form.GeneratedMap);
+                {
+                    m_lastPlayRandomFile = form.GeneratedGameFile;
+                    m_lastPlayRandomMap = form.GeneratedMap;
+                    HandlePlay(new IGameFile[] { form.GeneratedGameFile }, map: form.GeneratedMap,
+                        playOptions: playOptions);
+                }
             }
         }
 
