@@ -45,6 +45,8 @@ namespace DoomLauncher
         private FormWindowState m_windowState;
         private bool m_progressBarCancelled;
         private bool m_writeConfigOnClose = true;
+        private IGameFile m_lastPlayRandomFile;
+        private string m_lastPlayRandomMap;
 
         public MainForm(LaunchArgs launchArgs, SplashScreen splashScreen)
         {
@@ -78,14 +80,15 @@ namespace DoomLauncher
 
         protected override void OnClientSizeChanged(EventArgs e)
         {
-            if (WindowState != m_windowState)
+            var windowState = titleBar.WindowState;
+            if (windowState != m_windowState)
             {
-                if (m_windowState != FormWindowState.Minimized && WindowState == FormWindowState.Minimized)
+                if (m_windowState != FormWindowState.Minimized && windowState == FormWindowState.Minimized)
                     ctrlSummary.PauseSlideshow();
-                else if (m_windowState == FormWindowState.Minimized && WindowState != FormWindowState.Minimized)
+                else if (m_windowState == FormWindowState.Minimized && windowState != FormWindowState.Minimized)
                     ctrlSummary.ResumeSlideshow();
 
-                m_windowState = WindowState;
+                m_windowState = windowState;
             }
 
             base.OnClientSizeChanged(e);
@@ -147,15 +150,12 @@ namespace DoomLauncher
             //Only set location and window state if the location is valid, either way we always set Width, Height, and splitter values
             if (ValidatePosition(AppConfiguration))
             {
-                WindowState = AppConfiguration.WindowState == FormWindowState.Minimized ? FormWindowState.Maximized : AppConfiguration.WindowState;
-
-                if (WindowState != FormWindowState.Maximized)
-                {
-                    StartPosition = FormStartPosition.Manual;
-                    Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
-                }
-
+                WindowState = AppConfiguration.WindowState == FormWindowState.Minimized ? FormWindowState.Normal : AppConfiguration.WindowState;
+                StartPosition = FormStartPosition.Manual;
                 Location = new Point(AppConfiguration.AppX, AppConfiguration.AppY);
+                if (AppConfiguration.AppWidth > 0 && AppConfiguration.AppHeight > 0)
+                    Size = new Size(AppConfiguration.AppWidth, AppConfiguration.AppHeight);
+
                 titleBar.HandleWindowStateChange(AppConfiguration.WindowState);
             }
 
@@ -178,17 +178,13 @@ namespace DoomLauncher
                 Height = saveHeight;
             }
 
-            m_windowState = WindowState;
+            m_windowState = titleBar.WindowState;
         }
 
         public IGameFileView GetCurrentViewControl()
         {
             ITabView view = GetCurrentTabView();
-
-            if (view != null)
-                return view.GameFileViewControl;
-
-            return null;
+            return view?.GameFileViewControl;
         }
 
         private void ctrlAssociationView_FileAdded(object sender, EventArgs e)
@@ -357,43 +353,40 @@ namespace DoomLauncher
         private void HandleRename()
         {
             IGameFile gameFile = SelectedItems(GetCurrentViewControl()).FirstOrDefault();
+            if (gameFile == null)
+                return;
 
-            if (gameFile != null)
+            bool success = false;
+            TextBoxForm form = new TextBoxForm(false, MessageBoxButtons.OKCancel);
+            form.SetMaxLength(72);
+            form.DisplayText = gameFile.FileNameNoPath;
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.Title = $"Rename {gameFile.FileNameNoPath}";
+
+            int idx = form.DisplayText.IndexOf('.');
+            if (idx != -1)
+                form.SelectDisplayText(0, idx);
+
+            while (!success && form.ShowDialog(this) == DialogResult.OK)
             {
-                bool success = false;
-                TextBoxForm form = new TextBoxForm(false, MessageBoxButtons.OKCancel);
-                form.SetMaxLength(48);
-                form.DisplayText = gameFile.FileNameNoPath;
-                form.StartPosition = FormStartPosition.CenterParent;
-                form.Title = string.Format("Rename {0}", gameFile.FileNameNoPath);
+                success = RenameGameFile(gameFile, form.DisplayText);
 
-                int idx = form.DisplayText.IndexOf('.');
+                idx = form.DisplayText.IndexOf('.');
                 if (idx != -1)
                     form.SelectDisplayText(0, idx);
-
-                while (!success && form.ShowDialog(this) == DialogResult.OK)
-                {
-                    success = RenameGameFile(gameFile, form.DisplayText);
-
-                    idx = form.DisplayText.IndexOf('.');
-                    if (idx != -1)
-                        form.SelectDisplayText(0, idx);
-                }
             }
         }
 
         private bool RenameGameFile(IGameFile gameFile, string fileName)
         {
             string error = null;
-
             bool valid = VerifyFileName(fileName);
-
             try
             {
                 if (valid)
                 {
                     if (!string.IsNullOrEmpty(fileName) && fileName != gameFile.FileName)
-                        error = HandleRenameFile(gameFile, fileName, error);
+                        error = HandleRenameFile(gameFile, fileName);
                     else
                         error = "The new file name must be different and not empty.";
                 }
@@ -402,12 +395,16 @@ namespace DoomLauncher
                     error = "The entered file name is invalid.";
                 }
             }
+            catch (IOException ex)
+            {
+                error = ex.Message;
+            }
             catch (Exception ex)
             {
                 Util.DisplayUnexpectedException(this, ex);
             }
 
-            if (error != null)
+            if (!string.IsNullOrEmpty(error))
             {
                 MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -416,7 +413,7 @@ namespace DoomLauncher
             return true;
         }
 
-        private string HandleRenameFile(IGameFile gameFile, string fileName, string error)
+        private string HandleRenameFile(IGameFile gameFile, string fileName)
         {
             FileInfo fi = GetRenameFileInfo(gameFile, fileName, out string oldFilePath, out string newFilePath, out string gameFileUpdateFileName);
             if (!fi.Exists)
@@ -434,8 +431,7 @@ namespace DoomLauncher
             DataSourceAdapter.UpdateGameFile(gameFileUpdate, new GameFileFieldType[] { GameFileFieldType.Filename });
             UpdateAdditinalFileReferences(oldFilePath, fileName);
             HandleSelectionChange(GetCurrentViewControl(), true);
-
-            return error;
+            return null;
         }
 
         private FileInfo GetRenameFileInfo(IGameFile gameFile, string fileName, out string oldFilePath, out string newFilePath,
