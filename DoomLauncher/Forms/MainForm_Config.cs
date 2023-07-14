@@ -1,6 +1,7 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -17,9 +18,9 @@ namespace DoomLauncher
             if (titleBar.WindowState != FormWindowState.Minimized)
             {
                 // Too many problems when the form is minimized, not supported
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTopBottomName, splitTopBottom.SplitterDistance.ToString());
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitLeftRightName, splitLeftRight.SplitterDistance.ToString());
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTagSelectName, splitTagSelect.SplitterDistance.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTopBottomName, GetSplitterPercent(splitTopBottom, Height).ToString(CultureInfo.InvariantCulture));
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitLeftRightName, GetSplitterPercent(splitLeftRight, Width).ToString(CultureInfo.InvariantCulture));
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTagSelectName, GetSplitterPercent(splitTagSelect, Width).ToString(CultureInfo.InvariantCulture));
 
                 DataCache.Instance.UpdateConfig(config, AppConfiguration.AppWidthName, Size.Width.ToString());
                 DataCache.Instance.UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
@@ -33,6 +34,14 @@ namespace DoomLauncher
             DataCache.Instance.UpdateConfig(config, AppConfiguration.ItemsPerPageName, AppConfiguration.ItemsPerPage.ToString());
             DataCache.Instance.UpdateConfig(config, AppConfiguration.LastSelectedTabIndexName, tabControl.SelectedIndex.ToString());
             DataCache.Instance.UpdateConfig(config, AppConfiguration.TagSelectPinnedName, m_tagSelectControl.Pinned.ToString());
+        }
+
+        private static double GetSplitterPercent(SplitContainer splitter, int windowDimension)
+        {
+            if (windowDimension <= 0)
+                return 0.1;
+
+            return splitter.SplitterDistance / (double)windowDimension;
         }
 
         private void UpdateColumnConfig()

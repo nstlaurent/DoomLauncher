@@ -114,9 +114,9 @@ namespace DoomLauncher
                 CleanTemp = Convert.ToBoolean(GetValue(config, "CleanTemp", "true"));
 
                 SetChildDirectories(config);
-                SplitTopBottom = Convert.ToInt32(GetValue(config, SplitTopBottomName, "475"));
-                SplitLeftRight = Convert.ToInt32(GetValue(config, SplitLeftRightName, "680"));
-                SplitTagSelect = Convert.ToInt32(GetValue(config, SplitTagSelectName, "300"));
+                SplitTopBottom = Convert.ToDouble(GetValue(config, SplitTopBottomName, "475"));
+                SplitLeftRight = Convert.ToDouble(GetValue(config, SplitLeftRightName, "680"));
+                SplitTagSelect = Convert.ToDouble(GetValue(config, SplitTagSelectName, "300"));
                 AppWidth = Convert.ToInt32(GetValue(config, AppWidthName, "1024"));
                 AppHeight = Convert.ToInt32(GetValue(config, AppHeightName, "768"));
                 AppX = Convert.ToInt32(GetValue(config, AppXName, "0"));
@@ -274,9 +274,9 @@ namespace DoomLauncher
         public string ApiPage { get; private set; }
         public string MirrorUrl { get; private set; }
         public bool CleanTemp { get; private set; }
-        public int SplitTopBottom { get; private set; }
-        public int SplitLeftRight { get; private set; }
-        public int SplitTagSelect { get; set; }
+        public double SplitTopBottom { get; private set; }
+        public double SplitLeftRight { get; private set; }
+        public double SplitTagSelect { get; set; }
         public int AppWidth { get; private set; }
         public int AppHeight { get; private set; }
         public int AppX { get; private set; }

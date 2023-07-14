@@ -159,26 +159,25 @@ namespace DoomLauncher
                 titleBar.HandleWindowStateChange(AppConfiguration.WindowState);
             }
 
-            // Save the height and set after splitter, otherwise splitter resizing will be incorrect
-            int saveWidth = Width;
-            int saveHeight = Height;
-
-            Width = AppConfiguration.AppWidth;
-            Height = AppConfiguration.AppHeight;
-
-            splitTopBottom.SplitterDistance = AppConfiguration.SplitTopBottom;
-            splitLeftRight.SplitterDistance = AppConfiguration.SplitLeftRight;
-            splitTagSelect.SplitterDistance = AppConfiguration.SplitTagSelect;
-
-            // If the app was closed in the maximized state then the width and height are maxed out
-            // This causes the window to take up the full screen even when set to normal state
-            if (WindowState == FormWindowState.Maximized)
-            {
-                Width = saveWidth;
-                Height = saveHeight;
-            }
-
+            SetSplitters();
             m_windowState = titleBar.WindowState;
+        }
+
+        private void SetSplitters()
+        {
+            splitTopBottom.SplitterDistance = GetSplitterDistancePixels(AppConfiguration.SplitTopBottom, Height);
+            splitLeftRight.SplitterDistance = GetSplitterDistancePixels(AppConfiguration.SplitLeftRight, Width);
+            splitTagSelect.SplitterDistance = GetSplitterDistancePixels(AppConfiguration.SplitTagSelect, Width);
+        }
+
+        private int GetSplitterDistancePixels(double configValue, int windowDimension)
+        {
+            // Previous configurations were set in pixels
+            if (configValue > 1)
+                return (int)configValue;
+
+            //New configuration is percentage 0 - 1
+            return Math.Max((int)(configValue * windowDimension), 32);
         }
 
         public IGameFileView GetCurrentViewControl()
@@ -1240,7 +1239,7 @@ namespace DoomLauncher
             m_tagSelectControl.ClearSelections();
             m_tagPopup = new Popup(m_tagSelectControl)
             {
-                Width = dpiScale.ScaleIntX(AppConfiguration.SplitTagSelect),
+                Width = dpiScale.ScaleIntX((int)(Width * AppConfiguration.SplitTagSelect)),
                 Height = Height - PointToClient(btnTags.PointToScreen(btnTags.Location)).Y - btnTags.Height - dpiScale.ScaleIntY(40)
             };
             m_tagPopup.Show(btnTags);
