@@ -44,19 +44,13 @@ namespace DoomLauncher
         public IEnumerable<IGameFile> GetGameFiles(IGameFileGetOptions options)
         {
             if (options == null)
-            {
-                int limit = options != null && options.Limit.HasValue ? options.Limit.Value : 25;
-                string query = $"action=search&field=filename&query=zip&sort=date&dir=desc";
-                return GetFiles(query, "file").Take(limit);
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(s_queryLookup[(int)options.SearchField.SearchFieldType]))
-                    return Array.Empty<IGameFile>();
+                return GetFiles("action=search&field=filename&query=zip&sort=date&dir=desc", "file");
 
-                return GetFiles(string.Format(s_queryLookup[(int)options.SearchField.SearchFieldType], Uri.EscapeDataString(options.SearchField.SearchText)),
-                    options.SearchField.SearchFieldType == GameFileFieldType.GameFileID ? "content" : "file");
-            }
+            if (string.IsNullOrEmpty(s_queryLookup[(int)options.SearchField.SearchFieldType]))
+                return Array.Empty<IGameFile>();
+
+            return GetFiles(string.Format(s_queryLookup[(int)options.SearchField.SearchFieldType], Uri.EscapeDataString(options.SearchField.SearchText)),
+                options.SearchField.SearchFieldType == GameFileFieldType.GameFileID ? "content" : "file");
         }
 
         public IEnumerable<IGameFile> GetGameFileIWads()
