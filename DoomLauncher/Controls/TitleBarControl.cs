@@ -18,10 +18,17 @@ namespace DoomLauncher.Controls
 
         public FormWindowState WindowState { get; private set; }
         private bool m_maximized;
-        private bool m_dragging;
+        private DragState m_dragState;
         private bool m_settingState;
         private Size? m_size;
         private Point? m_location;
+
+        private enum DragState
+        {
+            None,
+            Start,
+            Dragging
+        }
 
         public string Title
         {
@@ -30,6 +37,7 @@ namespace DoomLauncher.Controls
         }
 
         public bool CanClose { get; set; } = true;
+        public bool RememberNormalSize { get; set; } = true;
         public bool ControlBox
         {
             get { return flpButtons.Visible; }
@@ -43,11 +51,21 @@ namespace DoomLauncher.Controls
             flpButtons.MouseDown += FlpButtons_MouseDown;
             flpButtons.DoubleClick += FlpButtons_DoubleClick;
 
+            lblTitle.MouseDown += LblTitle_MouseDown;
             btnClose.MouseEnter += BtnClose_MouseEnter;
             btnClose.MouseLeave += BtnClose_MouseLeave;
 
+            lblTitle.AutoEllipsis = true;
+            lblTitle.AutoSize = false;
+
             Stylizer.StylizeControl(this, DesignMode);
             Load += TitleBarControl_Load;
+            Resize += TitleBarControl_Resize;
+        }
+        
+        private void TitleBarControl_Resize(object sender, EventArgs e)
+        {
+            lblTitle.Width = lblTitle.Parent.Width;
         }
 
         private void BtnClose_MouseEnter(object sender, EventArgs e)
@@ -87,20 +105,26 @@ namespace DoomLauncher.Controls
 
         private void TitleBarControl_LocationChanged(object sender, EventArgs e)
         {
-            if (!m_settingState && m_dragging && WindowState == FormWindowState.Maximized)
-            {
-                m_dragging = false;
-                SetNormal(false);
-            }
+            if (ParentForm == null)
+                return;
 
             if (WindowState == FormWindowState.Normal)
                 m_location = ParentForm.Location;
-            else if (WindowState == FormWindowState.Minimized && ParentForm.WindowState != FormWindowState.Minimized)
-                WindowState = m_maximized ? FormWindowState.Maximized : FormWindowState.Normal;
+
+            if (!m_settingState && m_dragState == DragState.Start && WindowState == FormWindowState.Maximized)
+            {
+                m_dragState = DragState.Dragging;
+                m_settingState = true;
+                SetNormal(false, false);
+                m_settingState = false;
+            }
         }
 
-        private void SetNormal(bool centerY)
+        private void SetNormal(bool centerY, bool setLocation = true)
         {
+            if (ParentForm == null)
+                return;
+
             m_maximized = false;
             WindowState = FormWindowState.Normal;
             ParentForm.WindowState = FormWindowState.Normal;
@@ -108,23 +132,28 @@ namespace DoomLauncher.Controls
 
             if (m_size == null || ParentForm is MainForm)
             {
-                ParentForm.Location = new Point(bounds.X + (int)(bounds.Width * 0.12),
-                    centerY ? bounds.Y + (int)(bounds.Height * 0.12) : 0);
+                if (setLocation)
+                    ParentForm.Location = new Point(bounds.X + (int)(bounds.Width * 0.12),
+                        centerY ? bounds.Y + (int)(bounds.Height * 0.12) : 0);
                 ParentForm.Size = new Size((int)(bounds.Width * 0.75), (int)(bounds.Height * 0.75));
                 return;
             }
 
-            if (m_location.HasValue)
+            if (setLocation && m_location.HasValue)
                 ParentForm.Location = m_location.Value;
             ParentForm.Size = m_size.Value;
         }
 
         private void SetMaximized()
         {
+            if (ParentForm == null)
+                return;
+
             m_maximized = true;
             WindowState = FormWindowState.Maximized;
             ParentForm.WindowState = FormWindowState.Normal;
             var bounds = Screen.GetWorkingArea(ParentForm);
+            ParentForm.StartPosition = FormStartPosition.Manual;
             ParentForm.Location = bounds.Location;
             ParentForm.Width = bounds.Width;
             ParentForm.Height = bounds.Height;
@@ -152,15 +181,20 @@ namespace DoomLauncher.Controls
 
         private void FlpButtons_MouseDown(object sender, MouseEventArgs e)
         {
-            HandleMouseDown(e);
+            HandleMousePress(e);
         }
 
         private void tblMain_MouseDown(object sender, MouseEventArgs e)
         {
-            HandleMouseDown(e);
+            HandleMousePress(e);
         }
 
-        private void HandleMouseDown(MouseEventArgs e)
+        private void LblTitle_MouseDown(object sender, MouseEventArgs e)
+        {
+            HandleMousePress(e);
+        }
+
+        private void HandleMousePress(MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
                 return;
@@ -168,15 +202,16 @@ namespace DoomLauncher.Controls
             if (e.Clicks != 1)
                 return;
 
-            m_dragging = true;
+            m_dragState = DragState.Start;
 
             ReleaseCapture();
-            SendMessage(ParentForm.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            if (ParentForm != null)
+                SendMessage(ParentForm.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            if (CanClose)
+            if (ParentForm != null && CanClose)
                 ParentForm.Close();
         }
 
@@ -197,6 +232,8 @@ namespace DoomLauncher.Controls
 
         private void btnMinimize_Click(object sender, EventArgs e)
         {
+            if (ParentForm == null)
+                return;
             WindowState = FormWindowState.Minimized;
             ParentForm.WindowState = FormWindowState.Minimized;
         }

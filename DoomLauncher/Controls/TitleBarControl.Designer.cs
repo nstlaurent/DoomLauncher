@@ -41,8 +41,8 @@
             // tblMain
             // 
             this.tblMain.ColumnCount = 2;
-            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
             this.tblMain.Controls.Add(this.lblTitle, 0, 0);
             this.tblMain.Controls.Add(this.flpButtons, 1, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -51,7 +51,6 @@
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 1;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tblMain.Size = new System.Drawing.Size(572, 30);
             this.tblMain.TabIndex = 0;
             this.tblMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tblMain_MouseDoubleClick);
@@ -75,15 +74,15 @@
             this.flpButtons.Controls.Add(this.btnMinimize);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(286, 0);
+            this.flpButtons.Location = new System.Drawing.Point(442, 0);
             this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(286, 30);
+            this.flpButtons.Size = new System.Drawing.Size(130, 30);
             this.flpButtons.TabIndex = 1;
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(242, 0);
+            this.btnClose.Location = new System.Drawing.Point(86, 0);
             this.btnClose.Margin = new System.Windows.Forms.Padding(0);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(44, 30);
@@ -95,7 +94,7 @@
             // btnMaximize
             // 
             this.btnMaximize.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMaximize.Location = new System.Drawing.Point(201, 0);
+            this.btnMaximize.Location = new System.Drawing.Point(45, 0);
             this.btnMaximize.Margin = new System.Windows.Forms.Padding(0);
             this.btnMaximize.Name = "btnMaximize";
             this.btnMaximize.Size = new System.Drawing.Size(41, 30);
@@ -106,7 +105,7 @@
             // 
             // btnMinimize
             // 
-            this.btnMinimize.Location = new System.Drawing.Point(162, 0);
+            this.btnMinimize.Location = new System.Drawing.Point(6, 0);
             this.btnMinimize.Margin = new System.Windows.Forms.Padding(0);
             this.btnMinimize.Name = "btnMinimize";
             this.btnMinimize.Size = new System.Drawing.Size(39, 30);

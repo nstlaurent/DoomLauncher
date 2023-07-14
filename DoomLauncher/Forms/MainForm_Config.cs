@@ -1,5 +1,4 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,29 +10,29 @@ namespace DoomLauncher
     {
         private void HandleFormClosing()
         {
-            if (DataSourceAdapter != null && m_writeConfigOnClose)
+            if (DataSourceAdapter == null || !m_writeConfigOnClose)
+                return;
+            
+            IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
+            if (titleBar.WindowState != FormWindowState.Minimized)
             {
-                IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
+                // Too many problems when the form is minimized, not supported
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTopBottomName, splitTopBottom.SplitterDistance.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitLeftRightName, splitLeftRight.SplitterDistance.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTagSelectName, splitTagSelect.SplitterDistance.ToString());
 
-                if (WindowState != FormWindowState.Minimized) //too many problems when the form is minimized, not supported
-                {
-                    DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTopBottomName, splitTopBottom.SplitterDistance.ToString());
-                    DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitLeftRightName, splitLeftRight.SplitterDistance.ToString());
-                    DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTagSelectName, splitTagSelect.SplitterDistance.ToString());
-
-                    DataCache.Instance.UpdateConfig(config, AppConfiguration.AppWidthName, Size.Width.ToString());
-                    DataCache.Instance.UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
-                    DataCache.Instance.UpdateConfig(config, AppConfiguration.AppXName, Location.X.ToString());
-                    DataCache.Instance.UpdateConfig(config, AppConfiguration.AppYName, Location.Y.ToString());
-                    DataCache.Instance.UpdateConfig(config, AppConfiguration.WindowStateName, titleBar.WindowState.ToString());
-                }
-
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
-                DataCache.Instance.UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.ItemsPerPageName, AppConfiguration.ItemsPerPage.ToString());
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.LastSelectedTabIndexName, tabControl.SelectedIndex.ToString());
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.TagSelectPinnedName, m_tagSelectControl.Pinned.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.AppWidthName, Size.Width.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.AppXName, Location.X.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.AppYName, Location.Y.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.WindowStateName, titleBar.WindowState.ToString());
             }
+
+            DataCache.Instance.UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
+            DataCache.Instance.UpdateConfig(config, ConfigType.AutoSearch.ToString("g"), chkAutoSearch.Checked.ToString());
+            DataCache.Instance.UpdateConfig(config, AppConfiguration.ItemsPerPageName, AppConfiguration.ItemsPerPage.ToString());
+            DataCache.Instance.UpdateConfig(config, AppConfiguration.LastSelectedTabIndexName, tabControl.SelectedIndex.ToString());
+            DataCache.Instance.UpdateConfig(config, AppConfiguration.TagSelectPinnedName, m_tagSelectControl.Pinned.ToString());
         }
 
         private void UpdateColumnConfig()
