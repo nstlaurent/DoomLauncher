@@ -36,5 +36,7 @@ namespace DoomLauncher.SourcePort
         {
             return new BoomStatsReader(gameFile, Path.Combine(m_sourcePortData.Directory.GetFullPath(), "levelstat.txt"));
         }
+
+        public override string WarpParameter(SpData data) => GetMapParameter(data.Value);
     }
 }

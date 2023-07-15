@@ -120,21 +120,41 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void TestSkill()
+        public void TestSkillAndMap()
         {
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
             GameFilePlayAdapter adapter = new GameFilePlayAdapter();
             adapter.ExtractFiles = false;
             adapter.Skill = "3";
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+            var port = GetPrBoomTestPort(".wad,.deh");
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false);
             //only add skill with map
             Assert.IsFalse(launch.Contains("-skill 3"));
 
             adapter.Map = "MAP01";
-            launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false);
+            launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false);
             Assert.IsTrue(launch.Contains("-skill 3"));
             Assert.IsTrue(launch.Contains("-warp 1"));
+        }
+
+        [TestMethod]
+        public void TestSkillAndMapZdoom()
+        {
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            adapter.ExtractFiles = false;
+            adapter.Skill = "3";
+            var port = GetTestPort(".wad,.deh");
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false);
+            //only add skill with map
+            Assert.IsFalse(launch.Contains("-skill 3"));
+
+            adapter.Map = "MAP01";
+            launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false);
+            Assert.IsTrue(launch.Contains("-skill 3"));
+            Assert.IsTrue(launch.Contains("+map MAP01"));
         }
 
         [TestMethod]

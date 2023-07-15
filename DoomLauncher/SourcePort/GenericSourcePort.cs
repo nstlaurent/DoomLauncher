@@ -31,7 +31,7 @@ namespace DoomLauncher.SourcePort
 
         public virtual string IwadParameter(SpData data)
         {
-            return string.Format(" -iwad \"{0}\"", data.Value);
+            return $" -iwad \"{data.Value}\"";
         }
 
         public virtual string FileParameter(SpData data)
@@ -48,17 +48,17 @@ namespace DoomLauncher.SourcePort
 
         public virtual string SkillParameter(SpData data)
         {
-            return string.Format(" -skill {0}", data.Value);
+            return $" -skill {data.Value}";
         }
 
         public virtual string RecordParameter(SpData data)
         {
-            return string.Format(" -record \"{0}\"", data.Value);
+            return $" -record \"{data.Value}\"";
         }
 
         public virtual string PlayDemoParameter(SpData data)
         {
-            return string.Format(" -playdemo \"{0}\"", data.Value);
+            return $" -playdemo \"{data.Value}\"";
         }
 
         public virtual string LoadSaveParameter(SpData data)
@@ -78,8 +78,10 @@ namespace DoomLauncher.SourcePort
             if (Regex.IsMatch(map, @"^E\dM\d$") || Regex.IsMatch(map, @"^MAP\d\d$"))
                 return BuildWarpLegacy(map);
 
-            return string.Format(" +map {0}", map);
+            return GetMapParameter(map);
         }
+
+        public static string GetMapParameter(string map) => $" +map {map}";
 
         public virtual bool Supported() => true;
 
@@ -126,7 +128,6 @@ namespace DoomLauncher.SourcePort
                 numbers.Add(num.ToString());
 
             StringBuilder sb = new StringBuilder();
-
             foreach (string number in numbers)
             {
                 sb.Append(Convert.ToInt32(number));
@@ -136,7 +137,7 @@ namespace DoomLauncher.SourcePort
             if (numbers.Any())
                 sb.Remove(sb.Length - 1, 1);
 
-            return string.Format(" -warp {0}", sb.ToString());
+            return $" -warp {sb.ToString()}";
         }
     }
 }

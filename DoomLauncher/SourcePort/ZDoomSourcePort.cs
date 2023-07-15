@@ -38,5 +38,7 @@ namespace DoomLauncher.SourcePort
 
         public override IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats) =>
             new ZDoomStatsReader(gameFile, m_sourcePortData.Directory.GetFullPath(), existingStats);
+
+        public override string WarpParameter(SpData data) => GetMapParameter(data.Value);
     }
 }
