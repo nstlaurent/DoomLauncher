@@ -18,9 +18,12 @@ namespace DoomLauncher
             if (titleBar.WindowState != FormWindowState.Minimized)
             {
                 // Too many problems when the form is minimized, not supported
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTopBottomName, GetSplitterPercent(splitTopBottom, Height).ToString(CultureInfo.InvariantCulture));
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitLeftRightName, GetSplitterPercent(splitLeftRight, Width).ToString(CultureInfo.InvariantCulture));
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTagSelectName, GetSplitterPercent(splitTagSelect, Width).ToString(CultureInfo.InvariantCulture));
+                if (splitTopBottom.SplitterDistance > 0)
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTopBottomName, GetSplitterPercent(splitTopBottom, Height).ToString(CultureInfo.InvariantCulture));
+                if (splitLeftRight.SplitterDistance > 0)
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitLeftRightName, GetSplitterPercent(splitLeftRight, Width).ToString(CultureInfo.InvariantCulture));
+                if (splitTagSelect.SplitterDistance > 0)
+                    DataCache.Instance.UpdateConfig(config, AppConfiguration.SplitTagSelectName, GetSplitterPercent(splitTagSelect, Width).ToString(CultureInfo.InvariantCulture));
 
                 DataCache.Instance.UpdateConfig(config, AppConfiguration.AppWidthName, Size.Width.ToString());
                 DataCache.Instance.UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());

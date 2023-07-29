@@ -165,16 +165,23 @@ namespace DoomLauncher
 
         private void SetSplitters()
         {
-            splitTopBottom.SplitterDistance = GetSplitterDistancePixels(AppConfiguration.SplitTopBottom, Height);
-            splitLeftRight.SplitterDistance = GetSplitterDistancePixels(AppConfiguration.SplitLeftRight, Width);
-            splitTagSelect.SplitterDistance = GetSplitterDistancePixels(AppConfiguration.SplitTagSelect, Width);
+            splitTopBottom.SplitterDistance = GetSplitterDistancePixels(AppConfiguration.SplitTopBottom, Height, 0.64);
+            splitLeftRight.SplitterDistance = GetSplitterDistancePixels(AppConfiguration.SplitLeftRight, Width, 0.78);
+            splitTagSelect.SplitterDistance = GetSplitterDistancePixels(AppConfiguration.SplitTagSelect, Width, 0.1);
         }
 
-        private int GetSplitterDistancePixels(double configValue, int windowDimension)
+        private static int GetSplitterDistancePixels(double configValue, int windowDimension, double defaultPercentage)
         {
+            configValue = Math.Abs(configValue);
             // Previous configurations were set in pixels
             if (configValue > 1)
+            {
+                int value = (int)configValue;
+                if (configValue >= windowDimension)
+                    return (int)(defaultPercentage * windowDimension);
+
                 return (int)configValue;
+            }
 
             //New configuration is percentage 0 - 1
             return Math.Max((int)(configValue * windowDimension), 32);
