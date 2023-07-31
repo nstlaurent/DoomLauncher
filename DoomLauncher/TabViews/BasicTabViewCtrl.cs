@@ -12,8 +12,8 @@ namespace DoomLauncher
         public event EventHandler<GameFileListEventArgs> DataSourceChanging;
         public event EventHandler<GameFileListEventArgs> DataSourceChanged;
 
-        protected object m_key;
-        protected GameFileFieldType[] m_selectFields;
+        protected readonly object m_key;
+        protected readonly GameFileFieldType[] m_selectFields;
         protected GameFileViewFactory m_factory;
 
         public BasicTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, GameFileViewFactory factory)
@@ -85,6 +85,10 @@ namespace DoomLauncher
 
         public void SetColumnConfig(ColumnField[] columnTextFields, ColumnConfig[] colConfig)
         {
+            var currentColumnConfig = GetColumnConfig();
+            if (CompareColumnConfig(currentColumnConfig, colConfig))
+                return;
+
             string key = Key.ToString();
 
             if (GameFileViewControl is IGameFileColumnView columnView)
@@ -115,6 +119,27 @@ namespace DoomLauncher
                     }
                 }
             }
+        }
+
+        private bool CompareColumnConfig(IList<ColumnConfig> x, IList<ColumnConfig> y)
+        {
+            if (x.Count != y.Count)
+                return false;
+
+            for (int i = 0; i < x.Count; i++)
+            {
+                var configX = x[i];
+                var configY = y[i];
+
+                if (configX.Column != configY.Column)
+                    return false;
+
+                // Ignore the last column. Set to take up entire width and the values will never match.
+                if (i != x.Count - 1 && configX.Width != configY.Width)
+                    return false;
+            }
+
+            return true;
         }
 
         private static ColumnField[] SortColumns(string tab, ColumnField[] items, ColumnConfig[] config)
