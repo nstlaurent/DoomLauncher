@@ -76,6 +76,7 @@ namespace DoomLauncher
 
         public void SetColumnFields(IEnumerable<ColumnField> columnFields)
         {
+            m_setting = true;
             bool resetDataSource = dgvMain.Columns.Count > 0;
             m_orderLookup.Clear();
             ColumnFields = columnFields.ToArray();
@@ -100,6 +101,8 @@ namespace DoomLauncher
                 if (resetDataSource) //need to reset datasource so columns show in correct order
                     SetDataSource(m_datasource);
             }
+
+            m_setting = false;
         }
 
         public void SetColumnFormat(string colName, string format)
