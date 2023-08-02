@@ -2,6 +2,7 @@
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,6 +11,8 @@ namespace DoomLauncher
 {
     public class AppConfiguration
     {
+        public static readonly CultureInfo Culture = new CultureInfo("en-US");
+
         public event EventHandler GameFileViewTypeChanged;
         public event EventHandler VisibleViewsChanged;
         public event EventHandler ColorThemeChanged;
@@ -114,9 +117,9 @@ namespace DoomLauncher
                 CleanTemp = Convert.ToBoolean(GetValue(config, "CleanTemp", "true"));
 
                 SetChildDirectories(config);
-                SplitTopBottom = Convert.ToDouble(GetValue(config, SplitTopBottomName, "475"));
-                SplitLeftRight = Convert.ToDouble(GetValue(config, SplitLeftRightName, "680"));
-                SplitTagSelect = Convert.ToDouble(GetValue(config, SplitTagSelectName, "300"));
+                SplitTopBottom = TryGetDouble(config, SplitTopBottomName, 475);
+                SplitLeftRight = TryGetDouble(config, SplitLeftRightName, 680);
+                SplitTagSelect = TryGetDouble(config, SplitTagSelectName, 300);
                 AppWidth = Convert.ToInt32(GetValue(config, AppWidthName, "1024"));
                 AppHeight = Convert.ToInt32(GetValue(config, AppHeightName, "768"));
                 AppX = Convert.ToInt32(GetValue(config, AppXName, "0"));
@@ -171,6 +174,15 @@ namespace DoomLauncher
             }
 
             VerifyPaths(throwErrors);
+        }
+
+        private static double TryGetDouble(IEnumerable<IConfigurationData> config, string name, double defaultValue)
+        {
+            string value = GetValue(config, name, defaultValue.ToString(Culture));
+            if (double.TryParse(value, NumberStyles.AllowDecimalPoint, Culture, out var doubleValue))
+                return doubleValue;
+
+            return defaultValue;
         }
 
         private static void AddEvent(List<EventHandler> events, EventHandler eventAdd)
@@ -298,7 +310,7 @@ namespace DoomLauncher
         public bool AutomaticallyPullTitlpic { get; set; }
         public bool ShowPlayDialog { get; set; }
         public bool ImportScreenshots { get; set; }
-        public HashSet<string> VisibleViews { get; set; }
+        public HashSet<string> VisibleViews { get; set; } = new HashSet<string>();
         public ColorThemeType ColorTheme { get; set; }
     }
 }
