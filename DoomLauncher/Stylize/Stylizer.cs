@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using DoomLauncher.Controls;
 
 namespace DoomLauncher
 {
@@ -12,10 +13,26 @@ namespace DoomLauncher
 
     internal class Stylizer
     {
+        private readonly struct StylizeControlResults
+        {
+            public StylizeControlResults(bool loadRequired)
+            {
+                LoadRequired = loadRequired;
+            }
+
+            public readonly bool LoadRequired;
+        }
+
         private static readonly IThemeColors CurrentTheme = ColorTheme.Current;
 
         public static void Stylize(Form form, bool designMode, StylizerOptions options = StylizerOptions.None)
         {
+            StylizeInternal(form, designMode, options, null);
+        }
+
+        private static void StylizeInternal(Form form, bool designMode, StylizerOptions options, Func<Control, bool> shouldStylize)
+        {
+            bool registerLoad = false;
             if (designMode)
                 return;
 
@@ -23,7 +40,28 @@ namespace DoomLauncher
                 RemoveTitleBar(form);
 
             foreach (Control control in form.Controls)
-                StylizeControl(control, designMode);
+            {
+                if (control is CRichTextBox)
+                    registerLoad = true;
+
+                var results = StylizeControlInternal(control, designMode, shouldStylize);
+                registerLoad = registerLoad || results.LoadRequired;
+            }
+
+            if (!designMode && registerLoad)
+                form.Load += Form_Load;
+        }
+
+        private static void Form_Load(object sender, EventArgs e)
+        {
+            Form form = (Form)sender;
+            form.Load -= Form_Load;
+            StylizeInternal(form, false, StylizerOptions.None, ShouldStylize);
+        }
+
+        private static bool ShouldStylize(Control control)
+        {
+            return control is CRichTextBox;
         }
 
         public static void RemoveTitleBar(Form form)
@@ -33,39 +71,62 @@ namespace DoomLauncher
             form.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
 
-        public static void StylizeControl(Control control, bool designMode)
+        public static void StylizeControl(Control control, bool designMode, Func<Control, bool> shouldStylize = null)
+        {
+            StylizeControlInternal(control, designMode, shouldStylize);
+        }
+
+        private static StylizeControlResults StylizeControlInternal(Control control, bool designMode,
+            Func<Control, bool> shouldStylize = null)
         {
             if (designMode)
-                return;
+                return new StylizeControlResults(false);
 
-            if (control is DataGridView grid)
-                StyleGrid(grid);
-            else if (control is FormButton formButton)
-                StyleFormButton(formButton);
-            else if (control is Button button)
-                StyleButton(button);
-            else if (control is TextBox textBox)
-                StyleTextBox(textBox);
-            else if (control is LinkLabel linkLabel)
-                StyleLinkLabel(linkLabel);
-            else if (control is ComboBox comboBox)
-                StyleCombo(comboBox);
-            else if (control is CheckBox checkBox)
-                StyleCheckBox(checkBox);
-            else if (control is CheckedListBox checkedListBox)
-                StyleCheckdListBox(checkedListBox);
-            else if (control is ContextMenuStrip cms)
-                StyleContextMenuStrip(cms);
-            else if (control is GroupBox groupBox)
-                StyleGroupBox(groupBox);
-            else
-                StyleDefault(control);
+            bool loadRequired = control is CRichTextBox;
+            if (shouldStylize == null || shouldStylize(control))
+            {
+                if (control is DataGridView grid)
+                    StyleGrid(grid);
+                else if (control is FormButton formButton)
+                    StyleFormButton(formButton);
+                else if (control is Button button)
+                    StyleButton(button);
+                else if (control is TextBox textBox)
+                    StyleTextBox(textBox);
+                else if (control is CRichTextBox richTextBox)
+                    StyleRichTextBox(richTextBox);
+                else if (control is LinkLabel linkLabel)
+                    StyleLinkLabel(linkLabel);
+                else if (control is ComboBox comboBox)
+                    StyleCombo(comboBox);
+                else if (control is CheckBox checkBox)
+                    StyleCheckBox(checkBox);
+                else if (control is CheckedListBox checkedListBox)
+                    StyleCheckdListBox(checkedListBox);
+                else if (control is ContextMenuStrip cms)
+                    StyleContextMenuStrip(cms);
+                else if (control is GroupBox groupBox)
+                    StyleGroupBox(groupBox);
+                else
+                    StyleDefault(control);
+            }
 
             foreach (Control subControl in control.Controls)
-                StylizeControl(subControl, designMode);
+            {
+                var results = StylizeControlInternal(subControl, designMode);
+                loadRequired = loadRequired || results.LoadRequired;
+            }
+
+            return new StylizeControlResults(loadRequired);
         }
 
         private static void StyleTextBox(TextBox textBox)
+        {
+            textBox.BackColor = CurrentTheme.TextBoxBackground;
+            textBox.ForeColor = CurrentTheme.Text;
+        }
+
+        private static void StyleRichTextBox(CRichTextBox textBox)
         {
             textBox.BackColor = CurrentTheme.TextBoxBackground;
             textBox.ForeColor = CurrentTheme.Text;
