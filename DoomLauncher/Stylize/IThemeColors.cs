@@ -4,6 +4,7 @@ namespace DoomLauncher
 {
     public interface IThemeColors
     {
+        Color TitlebarBackground { get; }
         Color Window { get; }
         Color WindowLight { get; }
         Color WindowDark { get; }
@@ -11,6 +12,7 @@ namespace DoomLauncher
         Color DisabledText { get; }
         Color HighlightText { get; }
         Color Highlight { get; }
+        Color ButtonTextColor { get; }
         Color ButtonBackground { get; }
         Color CheckBoxBackground { get; }
         Color TextBoxBackground { get; }

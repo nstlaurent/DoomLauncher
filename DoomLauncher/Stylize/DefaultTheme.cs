@@ -4,6 +4,7 @@ namespace DoomLauncher
 {
     public class DefaultTheme : IThemeColors
     {
+        public Color TitlebarBackground => WindowLight;
         public Color WindowDark => SystemColors.Control;
         public Color Window => SystemColors.Control;
         public Color WindowLight => SystemColors.Window;
@@ -11,11 +12,12 @@ namespace DoomLauncher
         public Color DisabledText => Color.FromArgb(255, 142, 142, 142);
         public Color HighlightText => SystemColors.HighlightText;
         public Color Highlight => SystemColors.Highlight;
+        public Color ButtonTextColor => Text;
         public Color ButtonBackground => SystemColors.Window;
         public Color CheckBoxBackground => SystemColors.Window;
         public Color TextBoxBackground => Color.White;
         public Color DropDownBackground => SystemColors.Window;
-        public Color Border => SystemColors.Control;
+        public Color Border => SystemColors.ControlDark;
         public Color LinkText => Highlight;
         public Color GridBorder => SystemColors.ControlDark;
         public Color GridRow => SystemColors.Window;

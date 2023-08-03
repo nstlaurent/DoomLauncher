@@ -4,6 +4,7 @@ namespace DoomLauncher
 {
     public class DarkTheme : IThemeColors
     {
+        public Color TitlebarBackground => WindowDark;
         public Color WindowDark => Color.FromArgb(255, 32, 32, 32);
         public Color Window => Color.FromArgb(255, 48, 48, 54);
         public Color WindowLight => Color.FromArgb(255, 58, 58, 64);
@@ -11,6 +12,7 @@ namespace DoomLauncher
         public Color DisabledText => Color.FromArgb(255, 142, 142, 142);
         public Color HighlightText => Color.White;
         public Color Highlight => Color.FromArgb(255, 90, 101, 234);
+        public Color ButtonTextColor => Text;
         public Color ButtonBackground => Color.FromArgb(255, 90, 101, 234);
         public Color CheckBoxBackground => WindowLight;
         public Color TextBoxBackground => WindowDark;

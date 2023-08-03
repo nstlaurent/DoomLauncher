@@ -85,7 +85,7 @@
             this.btnClose.Location = new System.Drawing.Point(86, 0);
             this.btnClose.Margin = new System.Windows.Forms.Padding(0);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(44, 30);
+            this.btnClose.Size = new System.Drawing.Size(44, 32);
             this.btnClose.TabIndex = 0;
             this.btnClose.Text = "❌";
             this.btnClose.UseVisualStyleBackColor = true;
@@ -97,7 +97,7 @@
             this.btnMaximize.Location = new System.Drawing.Point(45, 0);
             this.btnMaximize.Margin = new System.Windows.Forms.Padding(0);
             this.btnMaximize.Name = "btnMaximize";
-            this.btnMaximize.Size = new System.Drawing.Size(41, 30);
+            this.btnMaximize.Size = new System.Drawing.Size(41, 32);
             this.btnMaximize.TabIndex = 1;
             this.btnMaximize.Text = "▢";
             this.btnMaximize.UseVisualStyleBackColor = true;
@@ -108,7 +108,7 @@
             this.btnMinimize.Location = new System.Drawing.Point(6, 0);
             this.btnMinimize.Margin = new System.Windows.Forms.Padding(0);
             this.btnMinimize.Name = "btnMinimize";
-            this.btnMinimize.Size = new System.Drawing.Size(39, 30);
+            this.btnMinimize.Size = new System.Drawing.Size(39, 32);
             this.btnMinimize.TabIndex = 2;
             this.btnMinimize.Text = "−";
             this.btnMinimize.UseVisualStyleBackColor = true;

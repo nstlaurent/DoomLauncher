@@ -58,7 +58,8 @@ namespace DoomLauncher.Controls
             lblTitle.AutoEllipsis = true;
             lblTitle.AutoSize = false;
 
-            Stylizer.StylizeControl(this, DesignMode);
+            Stylizer.StylizeControl(this, DesignMode, StylizerOptions.StylizeTitleBar);
+            SetBackgroundColor();
             Load += TitleBarControl_Load;
             Resize += TitleBarControl_Resize;
         }
@@ -77,7 +78,7 @@ namespace DoomLauncher.Controls
         private void BtnClose_MouseLeave(object sender, EventArgs e)
         {
             btnClose.ForeColor = ColorTheme.Current.Text;
-            btnClose.BackColor = ColorTheme.Current.Window;
+            btnClose.BackColor = ThemeBackColor;
         }
 
         public void HandleWindowStateChange(FormWindowState state)
@@ -101,7 +102,10 @@ namespace DoomLauncher.Controls
                 m_size = ParentForm.ClientSize;
                 m_location = ParentForm.Location;
             }
+
         }
+
+        private Color ThemeBackColor => ColorTheme.Current.TitlebarBackground;
 
         private void TitleBarControl_LocationChanged(object sender, EventArgs e)
         {
@@ -118,6 +122,17 @@ namespace DoomLauncher.Controls
                 SetNormal(false, false);
                 m_settingState = false;
             }
+        }
+
+        private void SetBackgroundColor()
+        {
+            var backColor = ThemeBackColor;
+            tblMain.BackColor = backColor;
+            flpButtons.BackColor = backColor;
+            lblTitle.BackColor = backColor;
+            btnClose.BackColor = backColor;
+            btnMinimize.BackColor = backColor;
+            btnMaximize.BackColor = backColor;
         }
 
         private void SetNormal(bool centerY, bool setLocation = true)

@@ -8,7 +8,8 @@ namespace DoomLauncher
     public enum StylizerOptions
     {
         None,
-        RemoveTitleBar
+        RemoveTitleBar,
+        StylizeTitleBar
     }
 
     internal class Stylizer
@@ -44,7 +45,7 @@ namespace DoomLauncher
                 if (control is CRichTextBox)
                     registerLoad = true;
 
-                var results = StylizeControlInternal(control, designMode, shouldStylize);
+                var results = StylizeControlInternal(control, designMode, options, shouldStylize);
                 registerLoad = registerLoad || results.LoadRequired;
             }
 
@@ -71,15 +72,15 @@ namespace DoomLauncher
             form.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
 
-        public static void StylizeControl(Control control, bool designMode, Func<Control, bool> shouldStylize = null)
+        public static void StylizeControl(Control control, bool designMode, StylizerOptions options = StylizerOptions.None, Func<Control, bool> shouldStylize = null)
         {
-            StylizeControlInternal(control, designMode, shouldStylize);
+            StylizeControlInternal(control, designMode, options, shouldStylize);
         }
 
-        private static StylizeControlResults StylizeControlInternal(Control control, bool designMode,
+        private static StylizeControlResults StylizeControlInternal(Control control, bool designMode, StylizerOptions options,
             Func<Control, bool> shouldStylize = null)
         {
-            if (designMode)
+            if (designMode || (!options.HasFlag(StylizerOptions.StylizeTitleBar) &&  control is TitleBarControl))
                 return new StylizeControlResults(false);
 
             bool loadRequired = control is CRichTextBox;
@@ -113,7 +114,7 @@ namespace DoomLauncher
 
             foreach (Control subControl in control.Controls)
             {
-                var results = StylizeControlInternal(subControl, designMode);
+                var results = StylizeControlInternal(subControl, designMode, options);
                 loadRequired = loadRequired || results.LoadRequired;
             }
 
@@ -265,6 +266,7 @@ namespace DoomLauncher
         {
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
+            button.ForeColor = CurrentTheme.ButtonTextColor;
             button.BackColor = CurrentTheme.ButtonBackground;
         }
 
