@@ -479,7 +479,7 @@
             this.groupBox4.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox4.Size = new System.Drawing.Size(341, 145);
+            this.groupBox4.Size = new System.Drawing.Size(341, 142);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             // 
