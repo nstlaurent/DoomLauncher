@@ -12,8 +12,8 @@ namespace DoomLauncher
         private int m_alpha = 0;
         private int m_increment = 25;
 
-        public Color BackGroundGlowColor { get; set; }
-        public Color TextGlowColor { get; set; }
+        public Color BackGroundGlowColor => ColorTheme.Current.Highlight;
+        public Color TextGlowColor => ColorTheme.Current.WindowLight;
 
         public GlowButton()
         {
@@ -22,11 +22,9 @@ namespace DoomLauncher
             m_timer.Tick += timer_Tick;
 
             FlatStyle = FlatStyle.Flat;
-            BackGroundGlowColor = Color.Blue;
-            TextGlowColor = Color.White;
 
-            m_baseColor = BackColor;
-            m_baseTextColor = ForeColor;
+            m_baseColor = ColorTheme.Current.Window;
+            m_baseTextColor = ColorTheme.Current.Text;
         }
 
         public void GlowOnce()
