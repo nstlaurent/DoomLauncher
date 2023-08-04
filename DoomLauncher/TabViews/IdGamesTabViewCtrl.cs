@@ -24,24 +24,17 @@ namespace DoomLauncher
 
         public override void SetGameFiles(IEnumerable<GameFileSearchField> searchFields)
         {
-            if (searchFields != null && searchFields.Any(x => x.SearchText.Length < 3))
-            {
-                MessageBox.Show(this, "The search query must be at least three characters.", "Search Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                if (!m_working)
-                {
-                    m_working = true;
-                    IdGamesDataSource = null;
-                    base.SetDisplayText("Searching...");
+            if (m_working)
+                return;
+            
+            m_working = true;
+            IdGamesDataSource = null;
+            base.SetDisplayText("Searching...");
 
-                    BackgroundWorker worker = new BackgroundWorker();
-                    worker.DoWork += UpdateIdGamesView_Worker;
-                    worker.RunWorkerCompleted += UpdateIdGamesViewCompleted;
-                    worker.RunWorkerAsync(searchFields);
-                }
-            }
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += UpdateIdGamesView_Worker;
+            worker.RunWorkerCompleted += UpdateIdGamesViewCompleted;
+            worker.RunWorkerAsync(searchFields);
         }
 
         private void UpdateIdGamesView_Worker(object sender, DoWorkEventArgs e)

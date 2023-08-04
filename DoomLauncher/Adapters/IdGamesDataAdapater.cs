@@ -11,7 +11,7 @@ namespace DoomLauncher
 {
     class IdGamesDataAdapater : IGameFileDataSourceAdapter
     {
-        static string[] s_queryLookup = new string[] { 
+        static string[] QueryLookup = { 
             "action=search&type=filename&query={0}", //Filename,
             "action=search&type=title&query={0}", //Title,
             "action=search&type=author&query={0}", //Author,
@@ -46,10 +46,22 @@ namespace DoomLauncher
             if (options == null)
                 return GetFiles("action=search&field=filename&query=zip&sort=date&dir=desc", "file");
 
-            if (string.IsNullOrEmpty(s_queryLookup[(int)options.SearchField.SearchFieldType]))
+            if ((int)options.SearchField.SearchFieldType >= QueryLookup.Length)
                 return Array.Empty<IGameFile>();
 
-            return GetFiles(string.Format(s_queryLookup[(int)options.SearchField.SearchFieldType], Uri.EscapeDataString(options.SearchField.SearchText)),
+            var query = QueryLookup[(int)options.SearchField.SearchFieldType];
+            if (string.IsNullOrEmpty(query))
+                return Array.Empty<IGameFile>();
+
+            const int minLength = 3;
+            var searchText = options.SearchField.SearchText;
+            if (options.SearchField.SearchFieldType != GameFileFieldType.Filename && searchText.Length < minLength)
+                return Array.Empty<IGameFile>();
+
+            if (searchText.Length < minLength)
+                searchText += ".zip";
+
+            return GetFiles(string.Format(query, Uri.EscapeDataString(searchText)),
                 options.SearchField.SearchFieldType == GameFileFieldType.GameFileID ? "content" : "file");
         }
 
@@ -117,18 +129,13 @@ namespace DoomLauncher
             xmlReader.Dispose();
 
             if (ds.Tables.Contains("warning") && ds.Tables["warning"].Rows[0]["type"].ToString() == "No Results")
-            {
-                return new List<IGameFile>();
-            }
+                return Array.Empty<IGameFile>();
 
-            IEnumerable<IdGamesGameFile> files = Util.TableToStructure(ds.Tables[itemName], typeof(IdGamesGameFile)).Cast<IdGamesGameFile>();
-
+            IEnumerable<IdGamesGameFile> files = Util.TableToStructure(ds.Tables[itemName], typeof(IdGamesGameFile)).Cast<IdGamesGameFile>().ToList();
             foreach (IdGamesGameFile file in files)
-            {
                 file.Description = file.Description.Replace("<br>", "\n");
-            }
 
-            return files.Cast<IGameFile>();
+            return files;
         }
     }
 }
