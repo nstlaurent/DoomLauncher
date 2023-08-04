@@ -46,7 +46,7 @@
             this.tblMain.Controls.Add(this.flpPaging, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(0);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -62,15 +62,17 @@
             this.flpPaging.Controls.Add(this.pagingControl);
             this.flpPaging.Controls.Add(this.label1);
             this.flpPaging.Controls.Add(this.cmbMaxItemsPerPage);
-            this.flpPaging.Location = new System.Drawing.Point(88, 436);
+            this.flpPaging.Location = new System.Drawing.Point(83, 436);
             this.flpPaging.Margin = new System.Windows.Forms.Padding(0);
             this.flpPaging.Name = "flpPaging";
-            this.flpPaging.Size = new System.Drawing.Size(541, 46);
+            this.flpPaging.Size = new System.Drawing.Size(550, 46);
             this.flpPaging.TabIndex = 1;
             this.flpPaging.WrapContents = false;
             // 
             // pagingControl
             // 
+            this.pagingControl.BackColor = System.Drawing.SystemColors.Control;
+            this.pagingControl.ForeColor = System.Drawing.SystemColors.WindowText;
             this.pagingControl.Location = new System.Drawing.Point(6, 8);
             this.pagingControl.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.pagingControl.Name = "pagingControl";

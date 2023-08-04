@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -20,6 +21,7 @@ namespace DoomLauncher
         public void Init(GameFileViewFactory factory)
         {
             m_factory = factory;
+            TileLayout.Margin = new Padding(0);
             TileLayout.AutoScroll = true;
             TileLayout.CaptureArrowKeys = true;
 
