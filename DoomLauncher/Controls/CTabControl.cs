@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -6,8 +7,10 @@ namespace DoomLauncher
 {
     public class CTabControl : TabControl
     {
-        private int Xwid = 8;
-        private const int tab_margin = 3;
+        private const int TabMargin = 3;
+
+        private readonly List<int> m_tabRows = new List<int>();
+        private readonly List<int> m_renderOrder = new List<int>();
 
         public CTabControl()
         {
@@ -16,27 +19,13 @@ namespace DoomLauncher
 
             DrawMode = TabDrawMode.OwnerDrawFixed;
             SizeMode = TabSizeMode.Fixed;
-
-            DrawItem += tabControl_DrawItem;
-
-            this.SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            DrawItem += CTabControl_DrawItem;
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        private void CTabControl_DrawItem(object sender, DrawItemEventArgs e)
         {
-            Rectangle fillRect = new Rectangle(0, 0, Width, Height);
-            using (Brush controlBrush = new SolidBrush(ColorTheme.Current.Window))
-                e.Graphics.FillRectangle(controlBrush, fillRect);
-
-            int index = 0;
-            foreach (TabPage tabPage in TabPages)
-                DrawTab(tabPage, index++, e);
-
-            base.OnPaint(e);
-        }
-
-        private void DrawTab(TabPage tabPage, int index, PaintEventArgs e)
-        {
+            int index = e.Index;
             Rectangle tabRect = GetTabRect(index);
             if (tabRect.Width == 0)
                 return;
@@ -51,68 +40,135 @@ namespace DoomLauncher
 
             Brush controlBrush = new SolidBrush(ColorTheme.Current.WindowLight);
             Brush textBrush = new SolidBrush(ColorTheme.Current.Text);
-            Pen boxPen = new Pen(ColorTheme.Current.WindowDark, 10);
+            Pen borderPen = new Pen(ColorTheme.Current.Border);
 
             e.Graphics.FillRectangle(controlBrush, tabRect);
-            RectangleF layout_rect = new RectangleF(tabRect.Left, tabRect.Y + tab_margin,
-                tabRect.Width, tabRect.Height - 2 * tab_margin);
+            RectangleF layoutRect = new RectangleF(tabRect.Left, tabRect.Y + TabMargin,
+                tabRect.Width, tabRect.Height - 2 * TabMargin);
 
-            using (StringFormat string_format = new StringFormat())
+            using (StringFormat format = new StringFormat())
             {
                 using (Font tabFont = new Font(Font, selected ? FontStyle.Bold : FontStyle.Regular))
                 {
-                    string_format.Alignment = StringAlignment.Center;
-                    string_format.LineAlignment = StringAlignment.Center;
-                    e.Graphics.DrawString(TabPages[index].Text, tabFont, textBrush, layout_rect, string_format);
+                    format.Alignment = StringAlignment.Center;
+                    format.LineAlignment = StringAlignment.Center;
+                    e.Graphics.DrawString(TabPages[index].Text, tabFont, textBrush, layoutRect, format);
                 }
             }
 
-            //e.Graphics.DrawRectangle(boxPen, tabRect);
-
-            if (SelectedIndex == index)
+            if (selected)
             {
                 Rectangle selectRect = tabRect;
                 selectRect.Height = 4;
                 using (Brush selectBrush = new SolidBrush(ColorTheme.Current.Highlight))
                     e.Graphics.FillRectangle(selectBrush, selectRect);
             }
+
+            e.Graphics.DrawRectangle(borderPen, tabRect);
         }
 
-        private void tabControl_DrawItem(object sender, DrawItemEventArgs e)
-        {            
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Rectangle fillRect = new Rectangle(0, 0, Width, Height);
+            using (Brush controlBrush = new SolidBrush(ColorTheme.Current.Window))
+                e.Graphics.FillRectangle(controlBrush, fillRect);
+
+            var renderOrder = GetTabPageRenderOrder();
+            if (m_tabRows.Count == 0)
+                return;
+
+            int selectedRow = SelectedIndex == -1 ? 0 : m_tabRows[SelectedIndex];
+            foreach (int tabIndex in renderOrder)
+                DrawTab(tabIndex, e, m_tabRows[tabIndex] == selectedRow);
+
+            base.OnPaint(e);
+        }
+
+        // TabPages order is always the same. When rows are stacked Windows changes the ordering of the rows.
+        // The row containing the selected item needs to be rendered last.
+        private IEnumerable<int> GetTabPageRenderOrder()
+        {
+            m_tabRows.Clear();
+            m_renderOrder.Clear();
+            int rowWidth = 0;
+            int row = 0;
+
+            for (int i = 0; i < TabPages.Count; i++)
+            {
+                int tabWidth = GetTabRect(i).Width;
+                if (rowWidth + tabWidth > Width)
+                {
+                    rowWidth = 0;
+                    row++;
+                }
+
+                m_tabRows.Add(row);
+                rowWidth += tabWidth;
+            }
+
+            if (m_tabRows.Count == 0)
+                return Array.Empty<int>();
+
+            int selectedRow = SelectedIndex == - 1 ? 0 : m_tabRows[SelectedIndex];
+            for (int i = 0; i < TabPages.Count; i++)
+            {
+                if (m_tabRows[i] != selectedRow)
+                    m_renderOrder.Add(i);
+            }
+
+            for (int i = 0; i < TabPages.Count; i++)
+            {
+                if (m_tabRows[i] == selectedRow)
+                    m_renderOrder.Add(i);
+            }
+
+            return m_renderOrder;
+        }
+
+        private void DrawTab(int index, PaintEventArgs e, bool selectedRow)
+        {
+            Rectangle tabRect = GetTabRect(index);
+            if (tabRect.Width == 0)
+                return;
+
+            tabRect.X += 2;
+            if (selectedRow)
+                tabRect.Height += 8;
+            tabRect.Width -= 4;
+
+            bool selected = SelectedIndex == index;
+            if (selected)
+                tabRect.Y -= 2;
+
             Brush controlBrush = new SolidBrush(ColorTheme.Current.WindowLight);
             Brush textBrush = new SolidBrush(ColorTheme.Current.Text);
-            Pen boxPen = new Pen(ColorTheme.Current.WindowDark, 10);
-
-            Rectangle tabRect = GetTabRect(e.Index);
-            //tabRect.Inflate(4,4);
+            Pen borderPen = new Pen(ColorTheme.Current.Border);
 
             e.Graphics.FillRectangle(controlBrush, tabRect);
-            RectangleF layout_rect = new RectangleF(tabRect.Left + tab_margin, tabRect.Y + tab_margin,
-                tabRect.Width - 2 * tab_margin, tabRect.Height - 2 * tab_margin);
+            RectangleF layoutRect = new RectangleF(tabRect.Left, tabRect.Y + TabMargin,
+                tabRect.Width, tabRect.Height - 2 * TabMargin);
 
-            using (StringFormat string_format = new StringFormat())
+            using (StringFormat format = new StringFormat())
             {
-                using (Font big_font = new Font(this.Font, FontStyle.Bold))
+                using (Font tabFont = new Font(Font, selected ? FontStyle.Bold : FontStyle.Regular))
                 {
-                    string_format.Alignment = StringAlignment.Center;
-                    string_format.LineAlignment = StringAlignment.Center;
-                    e.Graphics.DrawString(TabPages[e.Index].Text, Font, textBrush, layout_rect, string_format);
+                    format.Alignment = StringAlignment.Center;
+                    format.LineAlignment = StringAlignment.Center;
+                    e.Graphics.DrawString(TabPages[index].Text, tabFont, textBrush, layoutRect, format);
                 }
             }
 
-            //e.Graphics.DrawRectangle(boxPen, tabRect);
-            e.Graphics.DrawRectangle(new Pen(Color.Red), tabRect);
-            
-            if (e.Index == TabPages.Count - 1)
+            if (selected)
             {
-                Rectangle fillRect = new Rectangle(tabRect.Right, tabRect.Top - 5, Width - tabRect.Right, Height);
-                e.Graphics.FillRectangle(controlBrush, fillRect);
+                Rectangle selectRect = tabRect;
+                selectRect.Height = 4;
+                using (Brush selectBrush = new SolidBrush(ColorTheme.Current.Highlight))
+                    e.Graphics.FillRectangle(selectBrush, selectRect);
             }
 
-            Rectangle tabPageRect = TabPages[e.Index].Bounds;
-            e.Graphics.DrawRectangle(new Pen(ColorTheme.Current.Window, 10), tabPageRect);
-            e.DrawFocusRectangle();
+            e.Graphics.DrawLine(borderPen, new Point(tabRect.Left, tabRect.Top), new Point(tabRect.Right, tabRect.Top));
+            e.Graphics.DrawLine(borderPen, new Point(tabRect.Left, tabRect.Top), new Point(tabRect.Left, tabRect.Bottom));
+            e.Graphics.DrawLine(borderPen, new Point(tabRect.Right, tabRect.Top), new Point(tabRect.Right, tabRect.Bottom));
         }
     }
 }
