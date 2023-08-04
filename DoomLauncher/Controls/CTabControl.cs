@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -9,8 +10,8 @@ namespace DoomLauncher
     {
         private const int TabMargin = 3;
 
+        private readonly Dictionary<int, List<int>> m_tabRowLookup = new Dictionary<int, List<int>>();
         private readonly List<int> m_tabRows = new List<int>();
-        private readonly List<int> m_renderOrder = new List<int>();
 
         public CTabControl()
         {
@@ -29,7 +30,7 @@ namespace DoomLauncher
                 e.Graphics.FillRectangle(controlBrush, fillRect);
 
             var renderOrder = GetTabPageRenderOrder();
-            if (m_tabRows.Count == 0)
+            if (renderOrder.Count == 0)
                 return;
 
             int selectedRow = SelectedIndex == -1 ? 0 : m_tabRows[SelectedIndex];
@@ -39,45 +40,29 @@ namespace DoomLauncher
             base.OnPaint(e);
         }
 
-        // TabPages order is always the same. When rows are stacked Windows changes the ordering of the rows.
-        // The row containing the selected item needs to be rendered last.
-        private IEnumerable<int> GetTabPageRenderOrder()
+        private List<int> GetTabPageRenderOrder()
         {
+            m_tabRowLookup.Clear();
             m_tabRows.Clear();
-            m_renderOrder.Clear();
-            int rowWidth = 0;
-            int row = 0;
-
             for (int i = 0; i < TabPages.Count; i++)
             {
-                int tabWidth = GetTabRect(i).Width;
-                if (rowWidth + tabWidth > Width)
+                Rectangle tabRect = GetTabRect(i);
+                if (!m_tabRowLookup.TryGetValue(tabRect.Y, out var list))
                 {
-                    rowWidth = 0;
-                    row++;
+                    list = new List<int>();
+                    m_tabRowLookup[tabRect.Y] = list;
                 }
 
-                m_tabRows.Add(row);
-                rowWidth += tabWidth;
+                list.Add(i);
             }
 
-            if (m_tabRows.Count == 0)
-                return Array.Empty<int>();
+            var keys = m_tabRowLookup.Keys.ToList();
+            keys.Sort();
 
-            int selectedRow = SelectedIndex == - 1 ? 0 : m_tabRows[SelectedIndex];
-            for (int i = 0; i < TabPages.Count; i++)
-            {
-                if (m_tabRows[i] != selectedRow)
-                    m_renderOrder.Add(i);
-            }
-
-            for (int i = 0; i < TabPages.Count; i++)
-            {
-                if (m_tabRows[i] == selectedRow)
-                    m_renderOrder.Add(i);
-            }
-
-            return m_renderOrder;
+            m_tabRows.Clear();
+            foreach (var key in keys)
+                m_tabRows.AddRange(m_tabRowLookup[key]);
+            return m_tabRows;
         }
 
         private void DrawTab(int index, PaintEventArgs e, bool selectedRow)
