@@ -20,51 +20,6 @@ namespace DoomLauncher
             DrawMode = TabDrawMode.OwnerDrawFixed;
             SizeMode = TabSizeMode.Fixed;
             SetStyle(ControlStyles.UserPaint, true);
-            DrawItem += CTabControl_DrawItem;
-        }
-
-        private void CTabControl_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            int index = e.Index;
-            Rectangle tabRect = GetTabRect(index);
-            if (tabRect.Width == 0)
-                return;
-
-            tabRect.X += 2;
-            tabRect.Height += 8;
-            tabRect.Width -= 4;
-
-            bool selected = SelectedIndex == index;
-            if (selected)
-                tabRect.Y -= 2;
-
-            Brush controlBrush = new SolidBrush(ColorTheme.Current.WindowLight);
-            Brush textBrush = new SolidBrush(ColorTheme.Current.Text);
-            Pen borderPen = new Pen(ColorTheme.Current.Border);
-
-            e.Graphics.FillRectangle(controlBrush, tabRect);
-            RectangleF layoutRect = new RectangleF(tabRect.Left, tabRect.Y + TabMargin,
-                tabRect.Width, tabRect.Height - 2 * TabMargin);
-
-            using (StringFormat format = new StringFormat())
-            {
-                using (Font tabFont = new Font(Font, selected ? FontStyle.Bold : FontStyle.Regular))
-                {
-                    format.Alignment = StringAlignment.Center;
-                    format.LineAlignment = StringAlignment.Center;
-                    e.Graphics.DrawString(TabPages[index].Text, tabFont, textBrush, layoutRect, format);
-                }
-            }
-
-            if (selected)
-            {
-                Rectangle selectRect = tabRect;
-                selectRect.Height = 4;
-                using (Brush selectBrush = new SolidBrush(ColorTheme.Current.Highlight))
-                    e.Graphics.FillRectangle(selectBrush, selectRect);
-            }
-
-            e.Graphics.DrawRectangle(borderPen, tabRect);
         }
 
         protected override void OnPaint(PaintEventArgs e)
