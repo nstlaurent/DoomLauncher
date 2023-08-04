@@ -14,6 +14,7 @@ namespace DoomLauncher
         public bool TagsChanged { get; private set; }
 
         private bool m_showCheckBoxes;
+        private bool m_mapsEdited;
         private string m_maps;
 
         public GameFileEdit()
@@ -153,7 +154,7 @@ namespace DoomLauncher
                 else
                     gameFile.Rating = ctrlStarRating.SelectedRating;
             }
-            if (AssertSet(chkMaps, fields, GameFileFieldType.Map))
+            if (m_mapsEdited && AssertSet(chkMaps, fields, GameFileFieldType.Map))
             {
                 fields.Add(GameFileFieldType.MapCount);
                 gameFile.Map = m_maps;
@@ -185,7 +186,10 @@ namespace DoomLauncher
             };
 
             if (textBoxForm.ShowDialog(this) == DialogResult.OK)
+            {
+                m_mapsEdited = true;
                 m_maps = textBoxForm.DisplayText;
+            }
         }
 
         private void lblTags_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

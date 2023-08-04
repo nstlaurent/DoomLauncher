@@ -1000,10 +1000,10 @@ namespace DoomLauncher
 
             foreach (IGameFile updateGameFile in gameFiles)
             {
-                form.EditControl.UpdateDataSource(updateGameFile);
+                var fields = form.EditControl.UpdateDataSource(updateGameFile);
                 if (form.TagsChanged || form.EditControl.TagsChanged)
-                    DataCache.Instance.UpdateGameFileTags(new IGameFile[] { updateGameFile }, form.EditControl.TagData);
-                tabView.Adapter.UpdateGameFile(updateGameFile, Util.DefaultGameFileUpdateFields);
+                    DataCache.Instance.UpdateGameFileTags(new [] { updateGameFile }, form.EditControl.TagData);
+                tabView.Adapter.UpdateGameFile(updateGameFile, fields.ToArray());
                 UpdateDataSourceViews(updateGameFile);
             }
 
