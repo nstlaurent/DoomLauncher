@@ -19,7 +19,7 @@ namespace DoomLauncher
                 Multiline = true;
 
             DrawMode = TabDrawMode.OwnerDrawFixed;
-            SizeMode = TabSizeMode.Fixed;
+            SizeMode = TabSizeMode.Normal;
             SetStyle(ControlStyles.UserPaint, true);
         }
 
@@ -79,6 +79,8 @@ namespace DoomLauncher
             bool selected = SelectedIndex == index;
             if (selected)
                 tabRect.Y -= 2;
+            else
+                tabRect.Height += 2;
 
             Brush controlBrush = new SolidBrush(ColorTheme.Current.WindowLight);
             Brush textBrush = new SolidBrush(ColorTheme.Current.Text);
