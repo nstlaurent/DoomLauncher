@@ -37,7 +37,7 @@ namespace DoomLauncher.Forms
             KeyPreview = true;
             KeyUp += ScreenshotViewerForm_KeyUp;
             MouseWheel += ScreenshotViewerForm_MouseWheel;
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         private void ScreenshotViewerForm_MouseWheel(object sender, MouseEventArgs e)

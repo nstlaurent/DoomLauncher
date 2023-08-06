@@ -55,8 +55,8 @@ namespace DoomLauncher
             m_splash = splashScreen;
 
             InitializeComponent();
-            Stylizer.RemoveTitleBar(this);
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.SetupTitleBar(this);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
 
             InitProgressBars();
             InitIcons();

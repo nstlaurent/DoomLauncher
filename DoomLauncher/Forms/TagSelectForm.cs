@@ -9,7 +9,7 @@ namespace DoomLauncher
         public TagSelectForm()
         {
             InitializeComponent();
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public TagSelectControl TagSelectControl => tagSelectControl;

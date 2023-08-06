@@ -16,7 +16,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
             btnCopyFrom.Visible = false;
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public void SetCopyFromFileAllowed(IDataSourceAdapter adapter, ITabView view)

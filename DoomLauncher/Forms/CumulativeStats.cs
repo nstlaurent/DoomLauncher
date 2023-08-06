@@ -11,7 +11,7 @@ namespace DoomLauncher
         {
             InitializeComponent();
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public string Title

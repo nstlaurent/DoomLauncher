@@ -40,7 +40,7 @@ namespace DoomLauncher
             PopulateConfiguration();
             UpdateScreenshotWidth(m_screenshotTrackBar);
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
             PopulateViews();
         }
 

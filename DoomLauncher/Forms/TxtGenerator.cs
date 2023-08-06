@@ -28,7 +28,7 @@ namespace DoomLauncher
             dtRelease.Format = DateTimePickerFormat.Custom;
             dtRelease.CustomFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public void SetData(IDataSourceAdapter adapter)

@@ -36,7 +36,7 @@ namespace DoomLauncher
             lblLoading.Text = string.Empty;
             txtSearch.PreviewKeyDown += TxtSearch_PreviewKeyDown;
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         private void TxtSearch_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)

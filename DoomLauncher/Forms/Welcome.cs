@@ -9,7 +9,7 @@ namespace DoomLauncher.Forms
         public Welcome()
         {
             InitializeComponent();
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
             lblInfo.BackColor = Color.Transparent;
             lblWelcome.BackColor = Color.Transparent;
             lblInfo.ForeColor = Color.White;
