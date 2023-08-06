@@ -12,7 +12,7 @@ namespace DoomLauncher
             InitializeComponent();
 
             dgvFiles.Columns[dgvFiles.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Stylizer.Stylize(this, DesignMode);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public void SetHeaderText(string text)
