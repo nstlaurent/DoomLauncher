@@ -40,9 +40,9 @@
             this.lnkRepository = new System.Windows.Forms.LinkLabel();
             this.lnkThread = new System.Windows.Forms.LinkLabel();
             this.lnkThread2 = new System.Windows.Forms.LinkLabel();
+            this.lblWindowsVersion = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
-            this.lblWindowsVersion = new System.Windows.Forms.Label();
             this.tblInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
@@ -146,8 +146,9 @@
             this.lblAuthor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblAuthor.Location = new System.Drawing.Point(221, 147);
             this.lblAuthor.Margin = new System.Windows.Forms.Padding(9, 0, 4, 0);
+            this.lblAuthor.MaximumSize = new System.Drawing.Size(0, 26);
             this.lblAuthor.Name = "lblAuthor";
-            this.lblAuthor.Size = new System.Drawing.Size(419, 49);
+            this.lblAuthor.Size = new System.Drawing.Size(419, 26);
             this.lblAuthor.TabIndex = 28;
             this.lblAuthor.Text = "Author: Nick St Laurent";
             this.lblAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -157,11 +158,12 @@
             this.flowLayoutPanel1.Controls.Add(this.lnkRepository);
             this.flowLayoutPanel1.Controls.Add(this.lnkThread);
             this.flowLayoutPanel1.Controls.Add(this.lnkThread2);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(216, 245);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(411, 81);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(424, 81);
             this.flowLayoutPanel1.TabIndex = 29;
             // 
             // lnkRepository
@@ -170,7 +172,7 @@
             this.lnkRepository.Location = new System.Drawing.Point(4, 0);
             this.lnkRepository.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkRepository.Name = "lnkRepository";
-            this.lnkRepository.Size = new System.Drawing.Size(300, 38);
+            this.lnkRepository.Size = new System.Drawing.Size(187, 38);
             this.lnkRepository.TabIndex = 28;
             this.lnkRepository.TabStop = true;
             this.lnkRepository.Text = "GitHub Repository";
@@ -183,7 +185,7 @@
             this.lnkThread.Location = new System.Drawing.Point(4, 38);
             this.lnkThread.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkThread.Name = "lnkThread";
-            this.lnkThread.Size = new System.Drawing.Size(300, 38);
+            this.lnkThread.Size = new System.Drawing.Size(187, 38);
             this.lnkThread.TabIndex = 27;
             this.lnkThread.TabStop = true;
             this.lnkThread.Text = "Doomworld Thread";
@@ -193,15 +195,28 @@
             // lnkThread2
             // 
             this.lnkThread2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lnkThread2.Location = new System.Drawing.Point(312, 0);
+            this.lnkThread2.Location = new System.Drawing.Point(199, 0);
             this.lnkThread2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkThread2.Name = "lnkThread2";
-            this.lnkThread2.Size = new System.Drawing.Size(300, 38);
+            this.lnkThread2.Size = new System.Drawing.Size(191, 38);
             this.lnkThread2.TabIndex = 26;
             this.lnkThread2.TabStop = true;
             this.lnkThread2.Text = "Realm 667 Forum";
             this.lnkThread2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lnkThread2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkThread2_LinkClicked);
+            // 
+            // lblWindowsVersion
+            // 
+            this.lblWindowsVersion.AutoSize = true;
+            this.lblWindowsVersion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblWindowsVersion.Location = new System.Drawing.Point(221, 98);
+            this.lblWindowsVersion.Margin = new System.Windows.Forms.Padding(9, 0, 4, 0);
+            this.lblWindowsVersion.MaximumSize = new System.Drawing.Size(0, 26);
+            this.lblWindowsVersion.Name = "lblWindowsVersion";
+            this.lblWindowsVersion.Size = new System.Drawing.Size(419, 26);
+            this.lblWindowsVersion.TabIndex = 30;
+            this.lblWindowsVersion.Text = "Windows Version";
+            this.lblWindowsVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tblMain
             // 
@@ -234,18 +249,6 @@
             this.titleBar.Size = new System.Drawing.Size(652, 40);
             this.titleBar.TabIndex = 0;
             this.titleBar.Title = "Doom Launcher";
-            // 
-            // lblWindowsVersion
-            // 
-            this.lblWindowsVersion.AutoSize = true;
-            this.lblWindowsVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblWindowsVersion.Location = new System.Drawing.Point(265, 118);
-            this.lblWindowsVersion.Margin = new System.Windows.Forms.Padding(9, 0, 4, 0);
-            this.lblWindowsVersion.Name = "lblWindowsVersion";
-            this.lblWindowsVersion.Size = new System.Drawing.Size(503, 59);
-            this.lblWindowsVersion.TabIndex = 30;
-            this.lblWindowsVersion.Text = "Windows Version";
-            this.lblWindowsVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // AboutBox
             // 
