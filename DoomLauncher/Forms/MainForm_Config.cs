@@ -14,7 +14,7 @@ namespace DoomLauncher
                 return;
             
             IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
-            if (titleBar.WindowState != FormWindowState.Minimized)
+            if (WindowState != FormWindowState.Minimized)
             {
                 // Too many problems when the form is minimized, not supported
                 if (splitTopBottom.SplitterDistance > 0)
@@ -28,7 +28,7 @@ namespace DoomLauncher
                 DataCache.Instance.UpdateConfig(config, AppConfiguration.AppHeightName, Size.Height.ToString());
                 DataCache.Instance.UpdateConfig(config, AppConfiguration.AppXName, Location.X.ToString());
                 DataCache.Instance.UpdateConfig(config, AppConfiguration.AppYName, Location.Y.ToString());
-                DataCache.Instance.UpdateConfig(config, AppConfiguration.WindowStateName, titleBar.WindowState.ToString());
+                DataCache.Instance.UpdateConfig(config, AppConfiguration.WindowStateName, WindowState.ToString());
             }
 
             DataCache.Instance.UpdateConfig(config, AppConfiguration.ColumnConfigName, BuildColumnConfig());
