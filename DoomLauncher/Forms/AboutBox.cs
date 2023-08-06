@@ -16,7 +16,7 @@ namespace DoomLauncher
 
             if (WindowsVersionInfo.GetOsVersionInfo(out var versionInfo))
                 lblWindowsVersion.Text =
-                    $"Windows Version: Major:{versionInfo.dwMajorVersion} Build: {versionInfo.dwBuildNumber}";
+                    $"Windows Version: Major:{versionInfo.Major} Build: {versionInfo.Build}";
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }

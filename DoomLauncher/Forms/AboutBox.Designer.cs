@@ -237,13 +237,15 @@
             // 
             // lblWindowsVersion
             // 
-            this.lblWindowsVersion.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblWindowsVersion.AutoSize = true;
-            this.lblWindowsVersion.Location = new System.Drawing.Point(215, 112);
+            this.lblWindowsVersion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblWindowsVersion.Location = new System.Drawing.Point(265, 118);
+            this.lblWindowsVersion.Margin = new System.Windows.Forms.Padding(9, 0, 4, 0);
             this.lblWindowsVersion.Name = "lblWindowsVersion";
-            this.lblWindowsVersion.Size = new System.Drawing.Size(131, 20);
+            this.lblWindowsVersion.Size = new System.Drawing.Size(503, 59);
             this.lblWindowsVersion.TabIndex = 30;
             this.lblWindowsVersion.Text = "Windows Version";
+            this.lblWindowsVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // AboutBox
             // 
