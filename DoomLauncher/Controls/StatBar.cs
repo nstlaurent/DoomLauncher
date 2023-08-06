@@ -13,6 +13,8 @@ namespace DoomLauncher
         private int m_count, m_total, m_maxHeight;
         private string m_text;
 
+        private static bool UseNewStyling = true;
+
         public StatBar()
         {
             Paint += StatBar_Paint;
@@ -100,7 +102,7 @@ namespace DoomLauncher
 
         private static Brush GetUncompleteBrush(Rectangle rect)
         {
-            if (ColorTheme.Current.IsDark)
+            if (UseNewStyling)
                 return new SolidBrush(ColorTheme.Current.Highlight);
 
             return new LinearGradientBrush(rect, Color.LightBlue, Color.Blue, LinearGradientMode.ForwardDiagonal);
@@ -108,7 +110,7 @@ namespace DoomLauncher
 
         private static Brush GetCompleteBrush(Rectangle rect)
         {
-            if (ColorTheme.Current.IsDark)
+            if (UseNewStyling)
                 return new SolidBrush(ColorTheme.Current.Highlight);
 
             return new LinearGradientBrush(rect, Color.LightGreen, Color.Green, LinearGradientMode.ForwardDiagonal);
@@ -116,7 +118,7 @@ namespace DoomLauncher
 
         private static Pen GetPrecentPen(double percent, int total)
         {
-            if (ColorTheme.Current.IsDark)
+            if (UseNewStyling)
                 return new Pen(Color.Black);
 
             if (percent >= 1.0 || total == 0)
