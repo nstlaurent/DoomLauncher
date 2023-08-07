@@ -3,6 +3,7 @@
     public enum ColorThemeType
     {
         Default,
-        Dark
+        Dark,
+        System
     }
 }

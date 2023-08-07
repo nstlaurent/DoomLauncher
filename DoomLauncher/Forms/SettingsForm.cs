@@ -286,8 +286,8 @@ namespace DoomLauncher
             cmbIwad.DataSource = Util.GetIWadsDataSource(adapter);
             cmbSkill.DataSource = Util.GetSkills();
             cmbFileManagement.DataSource = Enum.GetValues(typeof(FileManagement));
-            cmbViewType.DataSource = new string[] { "Grid", "Tile Large", "Tile Small" };
-            cmbTheme.DataSource = new string[] { "Default", "Dark" };
+            cmbViewType.DataSource = new [] { "Grid", "Tile Large", "Tile Small" };
+            cmbTheme.DataSource = new [] { "Default", "Dark", "System" };
 
             cmbSourcePorts.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultSourcePort, typeof(int));
             cmbIwad.SelectedValue = m_appConfig.GetTypedConfigValue(ConfigType.DefaultIWad, typeof(int));

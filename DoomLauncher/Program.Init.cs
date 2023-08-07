@@ -7,6 +7,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using DoomLauncher.Config;
+using DoomLauncher.WindowsVersion;
 
 namespace DoomLauncher
 {
@@ -32,6 +34,41 @@ namespace DoomLauncher
             }
 
             return success;
+        }
+
+        public static void CheckSystemTheme()
+        {
+            try
+            {
+                var adapter = DataCache.Instance.DataSourceAdapter;
+                if (DataCache.Instance.AppConfiguration.ConfigurationColorTheme != ColorThemeType.System &&
+                    adapter.GetSourcePorts().Any())
+                {
+                    DataCache.Instance.AppConfiguration.ColorTheme = DataCache.Instance.AppConfiguration.ConfigurationColorTheme;
+                    return;
+                }
+
+                ColorThemeType theme;
+                switch (WindowsVersionInfo.GetTheme())
+                {
+                    case WindowsTheme.Light:
+                        theme = ColorThemeType.Default;
+                        ColorTheme.Current = new DefaultTheme();
+                        break;
+                    case WindowsTheme.Dark:
+                    case WindowsTheme.Unknown:
+                    default:
+                        theme = ColorThemeType.Dark;
+                        ColorTheme.Current = new DarkTheme();
+                        break;
+                }
+
+                DataCache.Instance.AppConfiguration.ColorTheme = theme;
+            }
+            catch
+            {
+
+            }
         }
 
         private static bool VerifyGameFilesDirectory()
