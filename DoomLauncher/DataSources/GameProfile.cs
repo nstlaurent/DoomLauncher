@@ -18,6 +18,15 @@ namespace DoomLauncher.DataSources
             Name = name;
         }
 
+        public static GameProfile CreateGlobalProfile(string name)
+        {
+            return new GameProfile()
+            {
+                GameFileID = -1,
+                Name = name
+            };
+        }
+
         public static void ApplyDefaultsToProfile(IGameProfile gameProfile, AppConfiguration appConfig)
         {
             if (!gameProfile.SourcePortID.HasValue)
@@ -44,5 +53,6 @@ namespace DoomLauncher.DataSources
         public bool SettingsLoadLatestSave { get; set; }
         public bool SettingsSaved { get; set; }
         public bool SettingsExtraParamsOnly { get; set; }
+        public bool IsGlobal => GameFileID == -1;
     }
 }

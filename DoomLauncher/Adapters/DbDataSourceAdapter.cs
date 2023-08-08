@@ -683,6 +683,12 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(GameProfile)).Cast<IGameProfile>();
         }
 
+        public IEnumerable<IGameProfile> GetGlobalGameProfiles()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("select * from GameProfiles where GameFileID = -1").Tables[0];
+            return Util.TableToStructure(dt, typeof(GameProfile)).Cast<IGameProfile>();
+        }
+
         public void InsertGameProfile(IGameProfile gameProfile)
         {
             string insert = InsertStatement("GameProfiles", gameProfile, new string[] { "GameProfileID" }, out List <DbParameter> parameters);

@@ -52,6 +52,7 @@ namespace DoomLauncher.DataSources
         public bool SettingsSaved { get; set; }
         public bool SettingsExtraParamsOnly { get; set; }
         public int? SettingsGameProfileID { get; set; }
+        public bool IsGlobal => false;
 
         public int MinutesPlayed { get; set; }
         public virtual int FileSizeBytes { get; set; }
