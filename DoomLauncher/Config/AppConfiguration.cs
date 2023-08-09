@@ -2,6 +2,7 @@
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -142,9 +143,11 @@ namespace DoomLauncher
                 List<EventHandler> events = new List<EventHandler>();
                 if (Enum.TryParse(GetValue(config, "ColorThemeType", "Default"), out ColorThemeType colorThemeType))
                 {
-                    if (colorThemeType != ColorTheme)
+                    if (colorThemeType != ConfigurationColorTheme)
                         AddEvent(events, ColorThemeChanged);
-                    ColorTheme = colorThemeType;
+                    ConfigurationColorTheme = colorThemeType;
+                    if (ConfigurationColorTheme != ColorThemeType.System)
+                        ColorTheme = ConfigurationColorTheme;
                 }
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType", GameFileViewType.TileViewCondensed.ToString("g")));
@@ -311,6 +314,9 @@ namespace DoomLauncher
         public bool ShowPlayDialog { get; set; }
         public bool ImportScreenshots { get; set; }
         public HashSet<string> VisibleViews { get; set; } = new HashSet<string>();
+        // The theme for the application to use. Default or Dark.
         public ColorThemeType ColorTheme { get; set; }
+        // The configuration setting. System will use the OS setting if found.
+        public ColorThemeType ConfigurationColorTheme { get; set; }
     }
 }

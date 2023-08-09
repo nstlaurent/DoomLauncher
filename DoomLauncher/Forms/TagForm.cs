@@ -15,7 +15,7 @@ namespace DoomLauncher
             m_tabCtrl.Dock = DockStyle.Fill;
             tblMain.Controls.Add(m_tabCtrl, 0, 1);
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public void Init(IDataSourceAdapter adapter)

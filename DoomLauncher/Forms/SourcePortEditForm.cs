@@ -38,7 +38,7 @@ namespace DoomLauncher
                 Height -= grpAdditionalFiles.Height;
             }
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         private void ctrlFiles_NewItemNeeded(object sender, AdditionalFilesEventArgs e)

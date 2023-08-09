@@ -35,7 +35,7 @@ namespace DoomLauncher
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
             InitializeComponent();
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
             Stylizer.StylizeControl(toolStripDropDownButton1, DesignMode);
             ctrlFiles.Initialize("GameFileID", "FileNameNoPath");
             ctrlFiles.CellFormatting += ctrlFiles_CellFormatting;

@@ -301,6 +301,7 @@
     <Compile Include="Stylize\CToolStripRenderer.cs" />
     <Compile Include="Stylize\DarkTheme.cs" />
     <Compile Include="Stylize\DefaultTheme.cs" />
+    <Compile Include="Stylize\ImmersiveDarkMode.cs" />
     <Compile Include="Stylize\Stylizer.cs" />
     <Compile Include="Stylize\IThemeColors.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
@@ -738,6 +739,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Update\ApplicationUpdate.cs" />
+    <Compile Include="WindowsVersion\WindowsVersion.cs" />
     <EmbeddedResource Include="Controls\FilesCtrl.resx">
       <DependentUpon>FilesCtrl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1028,6 +1030,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release $(SolutionDir)DoomLauncherRelease\bin\$(ConfigurationName)\DoomLauncherRelease.exe

@@ -42,7 +42,7 @@ namespace DoomLauncher.Forms
 
             cmbType.DataSource = items;
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public void Initialize(ITabView tabView, AppConfiguration config, IGameFile initGameFile = null, string initMap = null)

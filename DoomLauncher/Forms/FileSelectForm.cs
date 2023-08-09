@@ -19,7 +19,7 @@ namespace DoomLauncher
             m_multiSelect = m_bOverrideInit = false;
             ctrlSearch.SearchTextKeyPreviewDown += CtrlSearch_SearchTextKeyPreviewDown;
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         private void CtrlSearch_SearchTextKeyPreviewDown(object sender, PreviewKeyDownEventArgs e)

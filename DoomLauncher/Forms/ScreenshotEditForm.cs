@@ -10,7 +10,7 @@ namespace DoomLauncher.Forms
         public ScreenshotEditForm()
         {
             InitializeComponent();
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public static bool ShowDialogAndUpdate(IWin32Window owner, IDataSourceAdapter adapter, IGameFile gameFile, IFileData fileData)

@@ -40,6 +40,7 @@
             this.lnkRepository = new System.Windows.Forms.LinkLabel();
             this.lnkThread = new System.Windows.Forms.LinkLabel();
             this.lnkThread2 = new System.Windows.Forms.LinkLabel();
+            this.lblWindowsVersion = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.tblInfo.SuspendLayout();
@@ -56,21 +57,24 @@
             this.tblInfo.Controls.Add(this.logoPictureBox, 0, 0);
             this.tblInfo.Controls.Add(this.labelProductName, 1, 0);
             this.tblInfo.Controls.Add(this.labelVersion, 1, 1);
-            this.tblInfo.Controls.Add(this.okButton, 1, 5);
-            this.tblInfo.Controls.Add(this.label1, 1, 3);
-            this.tblInfo.Controls.Add(this.lblAuthor, 1, 2);
-            this.tblInfo.Controls.Add(this.flowLayoutPanel1, 1, 4);
+            this.tblInfo.Controls.Add(this.okButton, 1, 6);
+            this.tblInfo.Controls.Add(this.label1, 1, 4);
+            this.tblInfo.Controls.Add(this.lblAuthor, 1, 3);
+            this.tblInfo.Controls.Add(this.flowLayoutPanel1, 1, 5);
+            this.tblInfo.Controls.Add(this.lblWindowsVersion, 1, 2);
             this.tblInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblInfo.Location = new System.Drawing.Point(4, 45);
             this.tblInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblInfo.Name = "tblInfo";
-            this.tblInfo.RowCount = 6;
+            this.tblInfo.RowCount = 7;
+            this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblInfo.Size = new System.Drawing.Size(644, 386);
             this.tblInfo.TabIndex = 0;
             // 
@@ -81,7 +85,7 @@
             this.logoPictureBox.Location = new System.Drawing.Point(10, 5);
             this.logoPictureBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.logoPictureBox.Name = "logoPictureBox";
-            this.tblInfo.SetRowSpan(this.logoPictureBox, 6);
+            this.tblInfo.SetRowSpan(this.logoPictureBox, 7);
             this.logoPictureBox.Size = new System.Drawing.Size(192, 197);
             this.logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.logoPictureBox.TabIndex = 12;
@@ -127,7 +131,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Location = new System.Drawing.Point(221, 147);
+            this.label1.Location = new System.Drawing.Point(221, 196);
             this.label1.Margin = new System.Windows.Forms.Padding(9, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(419, 49);
@@ -140,10 +144,11 @@
             // 
             this.lblAuthor.AutoSize = true;
             this.lblAuthor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblAuthor.Location = new System.Drawing.Point(221, 98);
+            this.lblAuthor.Location = new System.Drawing.Point(221, 147);
             this.lblAuthor.Margin = new System.Windows.Forms.Padding(9, 0, 4, 0);
+            this.lblAuthor.MaximumSize = new System.Drawing.Size(0, 26);
             this.lblAuthor.Name = "lblAuthor";
-            this.lblAuthor.Size = new System.Drawing.Size(419, 49);
+            this.lblAuthor.Size = new System.Drawing.Size(419, 26);
             this.lblAuthor.TabIndex = 28;
             this.lblAuthor.Text = "Author: Nick St Laurent";
             this.lblAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -153,11 +158,12 @@
             this.flowLayoutPanel1.Controls.Add(this.lnkRepository);
             this.flowLayoutPanel1.Controls.Add(this.lnkThread);
             this.flowLayoutPanel1.Controls.Add(this.lnkThread2);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(216, 196);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(216, 245);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(411, 125);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(424, 81);
             this.flowLayoutPanel1.TabIndex = 29;
             // 
             // lnkRepository
@@ -166,7 +172,7 @@
             this.lnkRepository.Location = new System.Drawing.Point(4, 0);
             this.lnkRepository.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkRepository.Name = "lnkRepository";
-            this.lnkRepository.Size = new System.Drawing.Size(300, 38);
+            this.lnkRepository.Size = new System.Drawing.Size(187, 38);
             this.lnkRepository.TabIndex = 28;
             this.lnkRepository.TabStop = true;
             this.lnkRepository.Text = "GitHub Repository";
@@ -179,7 +185,7 @@
             this.lnkThread.Location = new System.Drawing.Point(4, 38);
             this.lnkThread.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkThread.Name = "lnkThread";
-            this.lnkThread.Size = new System.Drawing.Size(300, 38);
+            this.lnkThread.Size = new System.Drawing.Size(187, 38);
             this.lnkThread.TabIndex = 27;
             this.lnkThread.TabStop = true;
             this.lnkThread.Text = "Doomworld Thread";
@@ -189,15 +195,28 @@
             // lnkThread2
             // 
             this.lnkThread2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lnkThread2.Location = new System.Drawing.Point(4, 76);
+            this.lnkThread2.Location = new System.Drawing.Point(199, 0);
             this.lnkThread2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lnkThread2.Name = "lnkThread2";
-            this.lnkThread2.Size = new System.Drawing.Size(300, 38);
+            this.lnkThread2.Size = new System.Drawing.Size(191, 38);
             this.lnkThread2.TabIndex = 26;
             this.lnkThread2.TabStop = true;
             this.lnkThread2.Text = "Realm 667 Forum";
             this.lnkThread2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lnkThread2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkThread2_LinkClicked);
+            // 
+            // lblWindowsVersion
+            // 
+            this.lblWindowsVersion.AutoSize = true;
+            this.lblWindowsVersion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblWindowsVersion.Location = new System.Drawing.Point(221, 98);
+            this.lblWindowsVersion.Margin = new System.Windows.Forms.Padding(9, 0, 4, 0);
+            this.lblWindowsVersion.MaximumSize = new System.Drawing.Size(0, 26);
+            this.lblWindowsVersion.Name = "lblWindowsVersion";
+            this.lblWindowsVersion.Size = new System.Drawing.Size(419, 26);
+            this.lblWindowsVersion.TabIndex = 30;
+            this.lblWindowsVersion.Text = "Windows Version";
+            this.lblWindowsVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tblMain
             // 
@@ -219,11 +238,14 @@
             // titleBar
             // 
             this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.CanClose = true;
+            this.titleBar.ControlBox = true;
             this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.titleBar.ForeColor = System.Drawing.Color.White;
             this.titleBar.Location = new System.Drawing.Point(0, 0);
             this.titleBar.Margin = new System.Windows.Forms.Padding(0);
             this.titleBar.Name = "titleBar";
+            this.titleBar.RememberNormalSize = true;
             this.titleBar.Size = new System.Drawing.Size(652, 40);
             this.titleBar.TabIndex = 0;
             this.titleBar.Title = "Doom Launcher";
@@ -269,5 +291,6 @@
         private System.Windows.Forms.LinkLabel lnkThread2;
         private System.Windows.Forms.TableLayoutPanel tblMain;
         private Controls.TitleBarControl titleBar;
+        private System.Windows.Forms.Label lblWindowsVersion;
     }
 }

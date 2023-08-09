@@ -8,7 +8,7 @@ namespace DoomLauncher
     public enum StylizerOptions
     {
         None,
-        RemoveTitleBar,
+        SetupTitleBar,
         StylizeTitleBar
     }
 
@@ -37,8 +37,8 @@ namespace DoomLauncher
             if (designMode)
                 return;
 
-            if (options.HasFlag(StylizerOptions.RemoveTitleBar))
-                RemoveTitleBar(form);
+            if (options.HasFlag(StylizerOptions.SetupTitleBar))
+                SetupTitleBar(form);
 
             foreach (Control control in form.Controls)
             {
@@ -65,11 +65,25 @@ namespace DoomLauncher
             return control is CRichTextBox;
         }
 
-        public static void RemoveTitleBar(Form form)
+        public static void SetupTitleBar(Form form)
         {
-            form.ControlBox = false;
-            form.Text = string.Empty;
-            form.FormBorderStyle = FormBorderStyle.FixedSingle;
+            form.ShowIcon = false;
+            form.Load += Form_LoadDarkMode;
+            var titleBars = form.Controls.Find("titleBar", true);
+            if (titleBars.Length > 0 && titleBars[0].Parent is TableLayoutPanel tbl)
+            {
+                tbl.Controls.Remove(titleBars[0]);
+                if (tbl.RowStyles.Count > 0)
+                    tbl.RowStyles[0].Height = 0;
+            }
+        }
+
+        private static void Form_LoadDarkMode(object sender, EventArgs e)
+        {
+            var form = (Form)sender;
+            if (ColorTheme.Current.IsDark)
+                ImmersiveDarkMode.UseImmersiveDarkMode(form, true);
+            form.Load -= Form_LoadDarkMode;
         }
 
         public static void StylizeControl(Control control, bool designMode, StylizerOptions options = StylizerOptions.None, Func<Control, bool> shouldStylize = null)

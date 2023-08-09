@@ -10,7 +10,7 @@ namespace DoomLauncher
             gameFileEdit1.SetShowCheckBoxes(true);
             gameFileEdit1.SetShowMaps(false);
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public GameFileEdit GameFileEdit

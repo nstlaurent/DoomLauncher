@@ -29,6 +29,6 @@ namespace DoomLauncher
         public Color CloseBackgroundHighlight => Color.FromArgb(255, 213, 50, 38);
         public Color CloseForeColorHighlight => Color.White;
         public bool GridRowBorder => true;
-        public bool IsDark => true;
+        public bool IsDark => false;
     }
 }

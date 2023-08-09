@@ -26,6 +26,8 @@ namespace DoomLauncher
                 if (!ProgramInit.Init())
                     return;
 
+                ProgramInit.CheckSystemTheme();
+
                 MainForm form = new MainForm(GetLaunchArgs(args), splash);
                 form.Load += Form_Load;
                 Application.Run(form);

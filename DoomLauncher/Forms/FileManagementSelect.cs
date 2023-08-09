@@ -9,7 +9,7 @@ namespace DoomLauncher.Forms
             InitializeComponent();
             cmbFileManagement.DataSource = new string[] { "Managed", "Unmanaged" };
 
-            Stylizer.Stylize(this, DesignMode, StylizerOptions.RemoveTitleBar);
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public FileManagement GetSelectedFileManagement()
