@@ -1151,7 +1151,7 @@ namespace DoomLauncher
         private void SetSelectedTabText(ITabView tabView)
         {
             if (tabControl.SelectedTab != null)
-                lblSelectedTag.Text = $"{tabControl.SelectedTab.Text} ({tabView.GameFileViewControl.DataSource.Count()} Files)";
+                lblSelectedTag.Text = $"{tabControl.SelectedTab.Text.Trim()} ({tabView.GameFileViewControl.DataSource.Count()} Files)";
         }
 
         private ITabView GetCurrentTabView()

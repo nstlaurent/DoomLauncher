@@ -56,11 +56,12 @@ namespace DoomLauncher
 
         private void SetShowTabHeaders()
         {
+            return;
             if (AppConfiguration.ShowTabHeaders)
             {
                 tabControl.Appearance = TabAppearance.Normal;
-                tabControl.SizeMode = TabSizeMode.Normal;
-                tabControl.ItemSize = new Size(16, 20);
+                tabControl.SizeMode = TabSizeMode.Fixed;
+                tabControl.ItemSize = tabControl.OriginalItemSize;
             }
             else
             {

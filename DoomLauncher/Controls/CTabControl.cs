@@ -12,6 +12,11 @@ namespace DoomLauncher
 
         private readonly Dictionary<int, List<int>> m_tabRowLookup = new Dictionary<int, List<int>>();
         private readonly List<int> m_tabRows = new List<int>();
+        private bool m_setting;
+        private int m_lastTabCount;
+        private float m_spaceWidth = -1;
+
+        public Size OriginalItemSize = new Size(0, 0);   
 
         public CTabControl()
         {
@@ -20,11 +25,52 @@ namespace DoomLauncher
 
             DrawMode = TabDrawMode.OwnerDrawFixed;
             SizeMode = TabSizeMode.Normal;
-            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.UserPaint, true); 
+        }
+
+        protected override void OnCreateControl()
+        {
+            int width = 0;
+            if (SizeMode == TabSizeMode.Fixed)
+                width = ItemSize.Width;
+
+            var dpiScale = new DpiScale(CreateGraphics());
+            ItemSize = new Size(width, dpiScale.ScaleIntY(18));
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (m_setting)
+                return;
+
+            if (m_lastTabCount != TabCount && SizeMode != TabSizeMode.Fixed)
+            {
+                m_setting = true;
+                var dpiScale = new DpiScale(e.Graphics);
+
+                for (int i = 0; i < TabPages.Count; i++)
+                {
+                    string text = TabPages[i].Text;
+                    var stringSize = e.Graphics.MeasureString(text, Font);
+                    int originalWidth = GetTabRect(i).Width;
+                    int width = (int)Math.Ceiling(stringSize.Width) + dpiScale.ScaleIntX(16);
+                    // Can't guarantee the dpi is working. Have to measure by injecting a space in the tab text.
+                    if (m_spaceWidth == -1)
+                    {
+                        TabPages[i].Text += " ";
+                        m_spaceWidth = GetTabRect(i).Width - originalWidth;
+                    }
+
+                    int spaces = (int)Math.Ceiling((width - GetTabRect(i).Width) / m_spaceWidth) + 2;
+                    for (int j = 0; j < spaces; j++)
+                        text += " ";
+                    TabPages[i].Text = text;
+                }
+
+                m_setting = false;
+                m_lastTabCount = TabCount;
+            }
+
             Rectangle fillRect = new Rectangle(0, 0, Width, Height);
             using (Brush controlBrush = new SolidBrush(ColorTheme.Current.Window))
                 e.Graphics.FillRectangle(controlBrush, fillRect);
@@ -33,7 +79,7 @@ namespace DoomLauncher
             if (renderOrder.Count == 0)
                 return;
 
-            int selectedRow = SelectedIndex == -1 ? 0 : m_tabRows[SelectedIndex];
+            int selectedRow = SelectedIndex == -1 || SelectedIndex >= m_tabRows.Count ? 0 : m_tabRows[SelectedIndex];
             foreach (int tabIndex in renderOrder)
                 DrawTab(tabIndex, e, m_tabRows[tabIndex] == selectedRow);
 
