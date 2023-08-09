@@ -1,73 +1,75 @@
-﻿using System;
+﻿using PresentationControls;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace DoomLauncher
 {
     public partial class SearchControl : UserControl
     {
-        private string[] m_items = new string[] { };
-
         public event EventHandler SearchTextChanged;
         public event PreviewKeyDownEventHandler SearchTextKeyPreviewDown;
+
+        private Controls.CheckBoxList m_checkBoxList = new Controls.CheckBoxList();
 
         public SearchControl()
         {
             InitializeComponent();
-
+            Stylizer.StylizeControl(m_checkBoxList, DesignMode);
             txtSearch.TextChanged += txtSearch_TextChanged;
             txtSearch.PreviewKeyDown += TxtSearch_PreviewKeyDown;
         }
 
         private void TxtSearch_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (SearchTextKeyPreviewDown != null)
-                SearchTextKeyPreviewDown(this, e);
+            SearchTextKeyPreviewDown?.Invoke(this, e);
         }
 
         void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            if (SearchTextChanged != null)
-                SearchTextChanged(this, e);
+            SearchTextChanged?.Invoke(this, e);
         }
 
         public void SetSearchFilter(string item, bool check)
         {
-            cmbFilter.CheckBoxItems[item].Checked = check;
+            m_checkBoxList.SetChecked(item, check);
         }
 
         public bool GetSearchFilter(string item)
         {
-            return cmbFilter.CheckBoxItems[item].Checked;
+            return m_checkBoxList.IsChecked(item);
         }
 
         public string[] GetSearchFilters()
         {
-            return m_items.ToArray();
+            return m_checkBoxList.Items.ToArray();
         }
 
         public string[] GetSelectedSearchFilters()
         {
-            return m_items.Where(x => cmbFilter.CheckBoxItems[x].Checked).ToArray();
+            return m_checkBoxList.GetCheckedItems();
         }
 
         public void SetSearchFilters(IEnumerable<string> items)
         {
-            cmbFilter.Items.Clear();
-            m_items = items.ToArray();
-
-            foreach (string item in items)
-            {
-                cmbFilter.Items.Add(item);
-            }
+            m_checkBoxList.SetItems(items);
         }
 
         public string SearchText
         {
             get { return txtSearch.Text; }
             set { txtSearch.Text = value; }
+        }
+
+        private void btnFilters_Click(object sender, EventArgs e)
+        {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            Popup popup = new Popup(m_checkBoxList)
+            {
+                Width = Width,
+                Height = m_checkBoxList.Height
+            };
+            popup.Show(txtSearch);
         }
     }
 }

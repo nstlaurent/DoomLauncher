@@ -29,51 +29,68 @@
         [System.CodeDom.Compiler.GeneratedCode("Winform Designer", "VS2015 SP1")]
         private void InitializeComponent()
         {
-            PresentationControls.CheckBoxProperties checkBoxProperties1 = new PresentationControls.CheckBoxProperties();
-            this.cmbFilter = new PresentationControls.CheckBoxComboBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
+            this.tblMain = new DoomLauncher.TableLayoutPanelDB();
+            this.btnFilters = new DoomLauncher.FormButton();
+            this.tblMain.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // cmbFilter
-            // 
-            this.cmbFilter.BackColor = System.Drawing.SystemColors.InfoText;
-            checkBoxProperties1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.cmbFilter.CheckBoxProperties = checkBoxProperties1;
-            this.cmbFilter.DisplayMemberSingleItem = "";
-            this.cmbFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFilter.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbFilter.FormattingEnabled = true;
-            this.cmbFilter.Location = new System.Drawing.Point(0, 0);
-            this.cmbFilter.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbFilter.Name = "cmbFilter";
-            this.cmbFilter.Size = new System.Drawing.Size(137, 20);
-            this.cmbFilter.TabIndex = 0;
             // 
             // txtSearch
             // 
             this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSearch.Location = new System.Drawing.Point(0, 0);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(0);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(120, 20);
+            this.txtSearch.Size = new System.Drawing.Size(385, 22);
             this.txtSearch.TabIndex = 1;
+            // 
+            // tblMain
+            // 
+            this.tblMain.ColumnCount = 2;
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tblMain.Controls.Add(this.txtSearch, 0, 0);
+            this.tblMain.Controls.Add(this.btnFilters, 1, 0);
+            this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblMain.Location = new System.Drawing.Point(0, 0);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(0);
+            this.tblMain.Name = "tblMain";
+            this.tblMain.RowCount = 1;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.Size = new System.Drawing.Size(415, 23);
+            this.tblMain.TabIndex = 2;
+            // 
+            // btnFilters
+            // 
+            this.btnFilters.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnFilters.Location = new System.Drawing.Point(385, 0);
+            this.btnFilters.Margin = new System.Windows.Forms.Padding(0);
+            this.btnFilters.Name = "btnFilters";
+            this.btnFilters.Size = new System.Drawing.Size(15, 23);
+            this.btnFilters.TabIndex = 2;
+            this.btnFilters.Text = "▼";
+            this.btnFilters.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.btnFilters.UseVisualStyleBackColor = true;
+            this.btnFilters.Click += new System.EventHandler(this.btnFilters_Click);
             // 
             // SearchControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.txtSearch);
-            this.Controls.Add(this.cmbFilter);
+            this.Controls.Add(this.tblMain);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SearchControl";
-            this.Size = new System.Drawing.Size(140, 21);
+            this.Size = new System.Drawing.Size(415, 23);
+            this.tblMain.ResumeLayout(false);
+            this.tblMain.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private PresentationControls.CheckBoxComboBox cmbFilter;
         private System.Windows.Forms.TextBox txtSearch;
+        private TableLayoutPanelDB tblMain;
+        private FormButton btnFilters;
     }
 }

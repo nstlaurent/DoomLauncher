@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Config;
+using DoomLauncher.Controls;
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
@@ -39,6 +40,7 @@ namespace DoomLauncher
             PopulateDefaultSettings(m_adapter);
             PopulateConfiguration();
             UpdateScreenshotWidth(m_screenshotTrackBar);
+            chkListViews.BorderStyle = BorderStyle.FixedSingle;
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
             PopulateViews();
@@ -47,9 +49,9 @@ namespace DoomLauncher
         private void PopulateViews()
         {
             HashSet<string> visibleViews = DataCache.Instance.AppConfiguration.VisibleViews;
-            foreach (string key in TabKeys.KeyNames.Except(new string[] { TabKeys.LocalKey }))
-                chkListViews.Items.Add(key, visibleViews.Contains(key));
-
+            chkListViews.SetItems(TabKeys.KeyNames.Except(new string[] { TabKeys.LocalKey }));
+            foreach (var view in visibleViews)
+                chkListViews.SetChecked(view, true);
             chkListViews.ItemCheck += chkListViews_ItemCheck;
         }
 
@@ -328,7 +330,7 @@ namespace DoomLauncher
                 cmbSkill.SelectedItem?.ToString(),
                 cmbFileManagement.SelectedValue.ToString(),
                 ((GameFileViewType)cmbViewType.SelectedIndex).ToString(),
-                string.Join(";", chkListViews.CheckedItems.Cast<string>()),
+                string.Join(";", chkListViews.GetCheckedItems()),
                 ((ColorThemeType)cmbTheme.SelectedIndex).ToString(),
             };
 
@@ -396,7 +398,7 @@ namespace DoomLauncher
             pnlViewRestart.Visible = true;
         }
 
-        private void chkListViews_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void chkListViews_ItemCheck(object sender, CheckListBoxEventArgs e)
         {
             pnlViewRestart.Visible = true;
         }

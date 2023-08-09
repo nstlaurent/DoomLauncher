@@ -60,7 +60,7 @@
             this.cmbTheme = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.chkListViews = new System.Windows.Forms.CheckedListBox();
+            this.chkListViews = new DoomLauncher.Controls.CheckBoxList();
             this.pnlViewRestart = new System.Windows.Forms.Panel();
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -444,17 +444,16 @@
             // 
             // chkListViews
             // 
-            this.chkListViews.CheckOnClick = true;
-            this.chkListViews.FormattingEnabled = true;
             this.chkListViews.Location = new System.Drawing.Point(13, 119);
             this.chkListViews.Name = "chkListViews";
-            this.chkListViews.Size = new System.Drawing.Size(374, 89);
+            this.chkListViews.Size = new System.Drawing.Size(374, 116);
             this.chkListViews.TabIndex = 14;
             // 
             // pnlViewRestart
             // 
             this.pnlViewRestart.Controls.Add(this.label12);
             this.pnlViewRestart.Location = new System.Drawing.Point(1, 222);
+            this.pnlViewRestart.Location = new System.Drawing.Point(1, 235);
             this.pnlViewRestart.Margin = new System.Windows.Forms.Padding(4);
             this.pnlViewRestart.Name = "pnlViewRestart";
             this.pnlViewRestart.Size = new System.Drawing.Size(519, 75);
@@ -571,7 +570,7 @@
         private System.Windows.Forms.Panel pnlViewRestart;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.CheckedListBox chkListViews;
+        private Controls.CheckBoxList chkListViews;
         private Controls.TitleBarControl titleBar;
         private System.Windows.Forms.ComboBox cmbTheme;
         private System.Windows.Forms.Label label14;
