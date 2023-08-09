@@ -255,7 +255,8 @@ namespace DoomLauncher
         {
             if (GameFile.GameFileID.HasValue)
             {
-                List<IGameProfile> profiles = m_adapter.GetGameProfiles(GameFile.GameFileID.Value).OrderBy(x => x.Name).ToList();
+                List<IGameProfile> profiles = m_adapter.GetGlobalGameProfiles().OrderBy(x => x.Name).ToList();
+                profiles.AddRange(m_adapter.GetGameProfiles(GameFile.GameFileID.Value).OrderBy(x => x.Name));
                 profiles.Insert(0, (GameFile)GameFile);
                 AutoCompleteCombo.SetAutoCompleteCustomSource(cmbProfiles, profiles, typeof(IGameProfile), "Name");
                 return profiles;
@@ -921,7 +922,11 @@ namespace DoomLauncher
 
             if (ShouldSaveAdditionalFiles())
             {
-                gameProfile.SettingsFiles = string.Join(";", GetAdditionalFiles().Select(x => x.FileName).ToArray());
+                var additionalGameFiles = GetAdditionalFiles();
+                if (gameProfile.IsGlobal)
+                    additionalGameFiles = additionalGameFiles
+                        .Where(x => x.GameFileID != GameFile.GameFileID).ToList();
+                gameProfile.SettingsFiles = string.Join(";", additionalGameFiles.Select(x => x.FileName).ToArray());
                 gameProfile.SettingsFilesIWAD = string.Join(";", GetIWadAdditionalFiles().Select(x => x.FileName).ToArray());
                 gameProfile.SettingsFilesSourcePort = string.Join(";", GetSourcePortAdditionalFiles().Select(x => x.FileName).ToArray());
 
@@ -937,9 +942,19 @@ namespace DoomLauncher
             SetGameProfile(SelectedGameProfile);
         }
 
+        private void newGlobalProfileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateNewProfile(true);
+        }
+
         private void newProfileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TextBoxForm form = CreateProfileTextBoxForm("New Profile", true);
+            CreateNewProfile(false);
+        }
+
+        private void CreateNewProfile(bool global)
+        {
+            TextBoxForm form = CreateProfileTextBoxForm(global ? "New Global Profile" :"New Profile", true);
             bool success = false;
 
             while (!success && form.ShowDialog(this) == DialogResult.OK)
@@ -948,7 +963,11 @@ namespace DoomLauncher
 
                 if (success)
                 {
-                    GameProfile gameProfile = new GameProfile(GameFile.GameFileID.Value, form.DisplayText);
+                    GameProfile gameProfile;
+                    if (global)
+                        gameProfile = GameProfile.CreateGlobalProfile(form.DisplayText);
+                    else
+                        gameProfile = new GameProfile(GameFile.GameFileID.Value, form.DisplayText);
 
                     GameProfile.ApplyDefaultsToProfile(gameProfile, m_appConfig);
                     if (GameFile != null && IsIwad(GameFile))
@@ -956,7 +975,7 @@ namespace DoomLauncher
 
                     if (form.CheckBoxChecked)
                         UpdateGameProfile(gameProfile);
-                    
+
                     m_adapter.InsertGameProfile(gameProfile);
 
                     cmbProfiles.SelectedIndexChanged -= CmbProfiles_SelectedIndexChanged;

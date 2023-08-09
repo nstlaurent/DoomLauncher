@@ -18,5 +18,6 @@
         bool SettingsLoadLatestSave { get; set; }
         bool SettingsSaved { get; set; }
         bool SettingsExtraParamsOnly { get; set; }
+        bool IsGlobal { get; }
     }
 }

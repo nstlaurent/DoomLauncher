@@ -19,6 +19,7 @@ namespace DoomLauncher.Interfaces
         void DeleteTagMapping(int tagID);
 
         IEnumerable<IGameProfile> GetGameProfiles(int gameFileID);
+        IEnumerable<IGameProfile> GetGlobalGameProfiles();
         void InsertGameProfile(IGameProfile gameProfile);
         void UpdateGameProfile(IGameProfile gameProfile);
         void DeleteGameProfile(int gameProfileID);
