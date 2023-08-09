@@ -223,6 +223,11 @@ namespace DoomLauncher
                 var profile = DataSourceAdapter.GetGameProfiles(gameFile.GameFileID.Value).FirstOrDefault(x => x.GameProfileID == gameFile.SettingsGameProfileID.Value);
                 if (profile != null)
                     return profile;
+
+                profile = DataSourceAdapter.GetGlobalGameProfiles()
+                    .FirstOrDefault(x => x.GameProfileID == gameFile.SettingsGameProfileID.Value);
+                if (profile != null) 
+                    return profile;
             }
 
             return (GameFile)gameFile;
