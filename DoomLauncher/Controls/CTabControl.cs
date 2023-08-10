@@ -55,7 +55,7 @@ namespace DoomLauncher
                     int originalWidth = GetTabRect(i).Width;
                     int width = (int)Math.Ceiling(stringSize.Width) + dpiScale.ScaleIntX(16);
                     // Can't guarantee the dpi is working. Have to measure by injecting a space in the tab text.
-                    if (m_spaceWidth == -1)
+                    if (m_spaceWidth < 0)
                     {
                         TabPages[i].Text += " ";
                         m_spaceWidth = GetTabRect(i).Width - originalWidth;
