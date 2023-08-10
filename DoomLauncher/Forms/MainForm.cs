@@ -1972,7 +1972,7 @@ namespace DoomLauncher
 
         private void TabView_DataSourceChanged(object sender, GameFileListEventArgs e)
         {
-            if (sender is ITabView tabView)
+            if (sender is ITabView tabView && tabView.Key == GetCurrentTabView().Key)
                 SetSelectedTabText(tabView);
         }
 
