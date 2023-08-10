@@ -52,7 +52,11 @@ namespace DoomLauncher
         public string Title
         {
             get { return titleBar.Title; }
-            set { titleBar.Title = value; }
+            set
+            {
+                titleBar.Title = value;
+                Text = value;
+            }
         }
 
         public void SetCheckBox(string text)
