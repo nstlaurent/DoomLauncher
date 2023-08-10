@@ -42,14 +42,14 @@
             this.txtSearch.Location = new System.Drawing.Point(0, 0);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(0);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(385, 22);
+            this.txtSearch.Size = new System.Drawing.Size(433, 26);
             this.txtSearch.TabIndex = 1;
             // 
             // tblMain
             // 
             this.tblMain.ColumnCount = 2;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tblMain.Controls.Add(this.txtSearch, 0, 0);
             this.tblMain.Controls.Add(this.btnFilters, 1, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -58,16 +58,16 @@
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 1;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Size = new System.Drawing.Size(415, 23);
+            this.tblMain.Size = new System.Drawing.Size(467, 29);
             this.tblMain.TabIndex = 2;
             // 
             // btnFilters
             // 
             this.btnFilters.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnFilters.Location = new System.Drawing.Point(385, 0);
+            this.btnFilters.Location = new System.Drawing.Point(433, 0);
             this.btnFilters.Margin = new System.Windows.Forms.Padding(0);
             this.btnFilters.Name = "btnFilters";
-            this.btnFilters.Size = new System.Drawing.Size(15, 23);
+            this.btnFilters.Size = new System.Drawing.Size(34, 29);
             this.btnFilters.TabIndex = 2;
             this.btnFilters.Text = "▼";
             this.btnFilters.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -76,12 +76,12 @@
             // 
             // SearchControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tblMain);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "SearchControl";
-            this.Size = new System.Drawing.Size(415, 23);
+            this.Size = new System.Drawing.Size(467, 29);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
             this.ResumeLayout(false);

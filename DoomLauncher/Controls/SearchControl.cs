@@ -57,16 +57,16 @@ namespace DoomLauncher
 
         public string SearchText
         {
-            get { return txtSearch.Text; }
-            set { txtSearch.Text = value; }
+            get => txtSearch.Text;
+            set => txtSearch.Text = value;
         }
 
         private void btnFilters_Click(object sender, EventArgs e)
         {
-            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            
             Popup popup = new Popup(m_checkBoxList)
             {
-                Width = Width,
+                Width = btnFilters.Location.X + btnFilters.Width,
                 Height = m_checkBoxList.Height
             };
             popup.Show(txtSearch);
