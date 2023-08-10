@@ -88,6 +88,7 @@ namespace DoomLauncher.Forms
             options.SearchField = new GameFileSearchField(GameFileFieldType.GameFileID, GeneratedGameFile.GameFileID.ToString());
             GeneratedGameFile = DataCache.Instance.DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
 
+            GeneratedMap = null;
             if (chkRandomMap.Checked && GetRandomMap(rand, GeneratedGameFile, out string map))
                 GeneratedMap = map;
 
