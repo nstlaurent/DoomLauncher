@@ -83,7 +83,6 @@ namespace DoomLauncher
             var form = (Form)sender;
             if (ColorTheme.Current.IsDark)
                 ImmersiveDarkMode.UseImmersiveDarkMode(form, true);
-            form.Load -= Form_LoadDarkMode;
         }
 
         public static void StylizeControl(Control control, bool designMode, StylizerOptions options = StylizerOptions.None, Func<Control, bool> shouldStylize = null)
