@@ -30,7 +30,7 @@ namespace DoomLauncher
         {
             m_form = form;
             m_toolTip = new ToolTip();
-            m_toolTip.BackColor = ColorTheme.Current.WindowDark;
+            m_toolTip.BackColor = ColorTheme.Current.TextBoxBackground;
             m_toolTip.ForeColor = ColorTheme.Current.Text;
             m_toolTip.OwnerDraw = true;
             m_toolTip.Draw += ToolTip_Draw;
