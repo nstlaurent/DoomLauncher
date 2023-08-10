@@ -30,6 +30,10 @@ namespace DoomLauncher
         {
             m_form = form;
             m_toolTip = new ToolTip();
+            m_toolTip.BackColor = ColorTheme.Current.WindowDark;
+            m_toolTip.ForeColor = ColorTheme.Current.Text;
+            m_toolTip.OwnerDraw = true;
+            m_toolTip.Draw += ToolTip_Draw;
 
             m_toolTipTimer = new System.Timers.Timer(TimerDelay);
             m_toolTipTimer.Elapsed += ToolTipTimer_Elapsed;
@@ -125,6 +129,13 @@ namespace DoomLauncher
             rect.Offset(-Range / 2, -Range / 2);
 
             return rect.Contains(GetMouseLocation());
+        }
+
+        private void ToolTip_Draw(object sender, DrawToolTipEventArgs e)
+        {
+            e.DrawBackground();
+            e.DrawBorder();
+            e.DrawText(TextFormatFlags.WordBreak);
         }
     }
 }
