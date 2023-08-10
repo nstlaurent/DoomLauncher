@@ -102,6 +102,10 @@ namespace DoomLauncher
             toolStripDropDownButton1.Image = Icons.Bars;
             btnDownloads.Image = Icons.Download;
             btnTags.Image = Icons.Tags;
+            
+            var padding = btnMainMenu.Padding;
+            padding.Top = ctrlSearch.Location.Y - Icons.DpiScale.ScaleIntY(2);
+            btnMainMenu.Margin = padding;
         }
 
         public async Task Init()
