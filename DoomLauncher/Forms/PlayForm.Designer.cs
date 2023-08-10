@@ -232,7 +232,7 @@
             this.profileToolStrip.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.profileToolStrip.Name = "profileToolStrip";
             this.profileToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.profileToolStrip.Size = new System.Drawing.Size(90, 28);
+            this.profileToolStrip.Size = new System.Drawing.Size(44, 26);
             this.profileToolStrip.TabIndex = 12;
             this.profileToolStrip.Text = "Options";
             // 
@@ -246,9 +246,9 @@
             this.deleteProfileToolStripMenuItem});
             this.toolStripDropDownButton1.Image = global::DoomLauncher.Properties.Resources.Bars;
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
+            this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 0, 0, 2);
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(38, 25);
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(38, 24);
             this.toolStripDropDownButton1.Text = "Options";
             // 
             // newProfileToolStripMenuItem
@@ -256,16 +256,16 @@
             this.newProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.File;
             this.newProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(244, 34);
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(272, 34);
             this.newProfileToolStripMenuItem.Text = "New Profile...";
             this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
             // 
-            // newProfileToolStripMenuItem
+            // newGlobalProfileToolStripMenuItem
             // 
             this.newGlobalProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.File;
             this.newGlobalProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.newGlobalProfileToolStripMenuItem.Name = "newGlobalProfileToolStripMenuItem";
-            this.newGlobalProfileToolStripMenuItem.Size = new System.Drawing.Size(244, 34);
+            this.newGlobalProfileToolStripMenuItem.Size = new System.Drawing.Size(272, 34);
             this.newGlobalProfileToolStripMenuItem.Text = "New Global Profile...";
             this.newGlobalProfileToolStripMenuItem.Click += new System.EventHandler(this.newGlobalProfileToolStripMenuItem_Click);
             // 
@@ -274,7 +274,7 @@
             this.editProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Edit;
             this.editProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.editProfileToolStripMenuItem.Name = "editProfileToolStripMenuItem";
-            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(244, 34);
+            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(272, 34);
             this.editProfileToolStripMenuItem.Text = "Rename Profile...";
             this.editProfileToolStripMenuItem.Click += new System.EventHandler(this.editProfileToolStripMenuItem_Click);
             // 
@@ -283,7 +283,7 @@
             this.deleteProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Delete;
             this.deleteProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.deleteProfileToolStripMenuItem.Name = "deleteProfileToolStripMenuItem";
-            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(244, 34);
+            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(272, 34);
             this.deleteProfileToolStripMenuItem.Text = "Delete Profile";
             this.deleteProfileToolStripMenuItem.Click += new System.EventHandler(this.deleteProfileToolStripMenuItem_Click);
             // 
@@ -614,7 +614,7 @@
             this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ctrlFiles.ForeColor = System.Drawing.Color.White;
             this.ctrlFiles.Location = new System.Drawing.Point(6, 67);
-            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(6);
             this.ctrlFiles.Name = "ctrlFiles";
             this.ctrlFiles.Size = new System.Drawing.Size(335, 485);
             this.ctrlFiles.TabIndex = 20;
