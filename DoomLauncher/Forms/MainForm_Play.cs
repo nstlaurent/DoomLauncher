@@ -546,7 +546,10 @@ namespace DoomLauncher
                 m_activeSessions.Remove(session);
 
             if (m_launchArgs.AutoClose)
+            {
+                m_writeConfigOnClose = false;
                 Close();
+            }
 
             IGameFileView view = GetCurrentViewControl();
             view.UpdateGameFile(adapter.GameFile);
