@@ -85,9 +85,15 @@ namespace DoomLauncher
                 try
                 {
                     HandlePlaySettings(m_currentPlayForm, m_currentPlayForm.SelectedGameProfile);
-                    if (m_currentPlayForm.SelectedSourcePort != null)
-                        StartPlay(launchData.GameFile, m_currentPlayForm.SelectedSourcePort, m_currentPlayForm.ScreenFilter);
+                    if (m_currentPlayForm.SelectedSourcePort == null)
+                        return;
+
+                    if (!StartPlay(launchData.GameFile, m_currentPlayForm.SelectedSourcePort,
+                            m_currentPlayForm.ScreenFilter))
+                        return;
+
                     ctrlSummary.PauseSlideshow();
+                    ShouldShowToolTip = false;
                 }
                 catch (IOException)
                 {
@@ -555,6 +561,7 @@ namespace DoomLauncher
             IGameFileView view = GetCurrentViewControl();
             view.UpdateGameFile(adapter.GameFile);
             HandleSelectionChange(view, true);
+            ShouldShowToolTip = true;
         }
 
         private IGameFile GetGameFileForIWad(IGameFile gameFile)
