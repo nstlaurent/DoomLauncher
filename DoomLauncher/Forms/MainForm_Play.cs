@@ -549,6 +549,7 @@ namespace DoomLauncher
             {
                 m_writeConfigOnClose = false;
                 Close();
+                return;
             }
 
             IGameFileView view = GetCurrentViewControl();
