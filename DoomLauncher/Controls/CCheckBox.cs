@@ -303,8 +303,12 @@ namespace DoomLauncher
             {
                 using (var b = new SolidBrush(fillColor))
                 {
-                    Rectangle selectRect = new Rectangle(dpiScale.ScaleIntX(2), dpiScale.ScaleIntX(2),
-                        size.Width - dpiScale.ScaleIntX(3), size.Height - dpiScale.ScaleIntX(3));
+                    var offsetX = dpiScale.ScaleFloatX(1.8f);
+                    var offsetY = dpiScale.ScaleFloatY(1.8f);
+                    var selectWidth = size.Width - offsetX * 2;
+                    var selectHeight = size.Height - offsetY * 2;
+                    var selectRect = new RectangleF(offsetX, offsetY,
+                        selectWidth, selectHeight);
                     g.FillRectangle(b, selectRect);
                 }
             }
