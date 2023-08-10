@@ -30,6 +30,7 @@ namespace DoomLauncher
             dgvAdditionalFiles.MultiSelect = false;
             dgvAdditionalFiles.CellFormatting += dgvAdditionalFiles_CellFormatting;
 
+            Icons.DpiScale = new DpiScale(CreateGraphics());
             btnAdd.Image = Icons.File;
             btnDelete.Image = Icons.Delete;
             btnMoveUp.Image = Icons.ArrowUp;

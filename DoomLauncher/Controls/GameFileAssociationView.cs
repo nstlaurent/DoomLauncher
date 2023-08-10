@@ -28,6 +28,7 @@ namespace DoomLauncher
             ctrlScreenshotView.RequestScreenshots += CtrlScreenshotView_RequestScreenshots;
             SetButtonsAllButtonsEnabled(false);
 
+            Icons.DpiScale = new DpiScale(CreateGraphics());
             btnDelete.Image = Icons.Delete;
             btnAddFile.Image = Icons.File;
             btnCopy.Image = Icons.Export;

@@ -96,6 +96,7 @@ namespace DoomLauncher
 
         private void InitIcons()
         {
+            Icons.DpiScale = new DpiScale(CreateGraphics());
             btnSearch.Image = Icons.Search;
             btnPlay.Image = Icons.Play;
             toolStripDropDownButton1.Image = Icons.Bars;

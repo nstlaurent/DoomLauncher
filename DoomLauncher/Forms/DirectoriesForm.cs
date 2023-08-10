@@ -11,6 +11,7 @@ namespace DoomLauncher.Forms
             InitializeComponent();
             lstDirectories.HeaderStyle = ColumnHeaderStyle.None;
             lstDirectories.Columns[0].Width = lstDirectories.Width;
+            Icons.DpiScale = new DpiScale(CreateGraphics());
             btnAdd.Image = Icons.File;
             btnDelete.Image = Icons.Delete;
 

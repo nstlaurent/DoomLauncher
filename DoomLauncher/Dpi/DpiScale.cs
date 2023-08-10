@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -10,6 +11,12 @@ namespace DoomLauncher
             DpiScaleY = g.DpiY / 96.0f;
         }
 
+        public DpiScale(float scaleX, float scaleY)
+        {
+            DpiScaleX = scaleX;
+            DpiScaleY = scaleY;
+        }
+
         public int ScaleIntY(int height) => (int)(height * DpiScaleY);
         public int ScaleIntX(int width) => (int)(width * DpiScaleY);
 
@@ -18,5 +25,11 @@ namespace DoomLauncher
 
         public readonly float DpiScaleX;
         public readonly float DpiScaleY;
+
+        public void ScaleControl(Control control)
+        {
+            control.Width = ScaleIntX(control.Width);
+            control.Height = ScaleIntY(control.Height);
+        }
     }
 }

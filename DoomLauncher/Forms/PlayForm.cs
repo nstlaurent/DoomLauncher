@@ -52,7 +52,7 @@ namespace DoomLauncher
 
             m_filterSettings = GetFilterSettings();
             chkScreenFilter.Checked = m_filterSettings.Enabled;
-
+            Icons.DpiScale = new DpiScale(CreateGraphics());
             newProfileToolStripMenuItem.Image = Icons.File;
             deleteProfileToolStripMenuItem.Image = Icons.Delete;
             editProfileToolStripMenuItem.Image = Icons.Edit;

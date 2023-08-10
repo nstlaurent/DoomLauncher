@@ -1,9 +1,12 @@
 ﻿using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace DoomLauncher
 {
     public static class Icons
-    {   
+    {
+        public static DpiScale DpiScale { get; set; } = new DpiScale(2, 2);
         public static Image ArrowUp => GetIcon(Properties.Resources.UpArrow);
         public static Image ArrowDown => GetIcon(Properties.Resources.DownArrow);
         public static Image Bars => GetIcon(Properties.Resources.Bars);
@@ -29,11 +32,15 @@ namespace DoomLauncher
 
         private static Bitmap ColorizeIcon(Bitmap bitmap, Color color)
         {
-            Bitmap copy = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), bitmap.PixelFormat);
+            Bitmap copy;
+            if (DpiScale.DpiScaleX > 1 || DpiScale.DpiScaleY > 1)
+                copy = ResizeBitmap(bitmap, (int)DpiScale.ScaleFloatX(bitmap.Width * 0.8f), (int)DpiScale.ScaleFloatY(bitmap.Height * 0.8f));
+            else
+                copy = new Bitmap(bitmap, bitmap.Width, bitmap.Height);
 
-            for (int x = 0; x < bitmap.Width; x++)
+            for (int x = 0; x < copy.Width; x++)
             {
-                for (int y = 0; y < bitmap.Height; y++)
+                for (int y = 0; y < copy.Height; y++)
                 {
                     var pixel = copy.GetPixel(x, y);
                     if (pixel.A != 0)
@@ -42,6 +49,31 @@ namespace DoomLauncher
             }
 
             return copy;
+        }
+
+        public static Bitmap ResizeBitmap(Bitmap bitmap, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(bitmap.HorizontalResolution, bitmap.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(bitmap, destRect, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
     }
 }

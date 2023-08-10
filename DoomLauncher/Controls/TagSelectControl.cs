@@ -25,6 +25,7 @@ namespace DoomLauncher.Controls
         {
             InitializeComponent();
 
+            Icons.DpiScale = new DpiScale(CreateGraphics());
             btnSearch.Image = Icons.Search;
             btnPin.Image = Icons.Pin;
 

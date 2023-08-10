@@ -28,6 +28,7 @@ namespace DoomLauncher.Forms
             statsControl.SetMapsVisible(false);
             statisticsView.SetMapsVisible(false);
 
+            Icons.DpiScale = new DpiScale(CreateGraphics());
             btnSave.Image = Icons.Save;
             btnSlideshow.Image = Icons.Video;
             btnEdit.Image = Icons.Edit;
