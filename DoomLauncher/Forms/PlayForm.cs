@@ -879,8 +879,7 @@ namespace DoomLauncher
                 return false;
             }
 
-            if (m_adapter.GetGameProfiles(GameFile.GameFileID.Value).Where(x => x.GameProfileID != gameProfileID)
-                .Any(x => x.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
+            if (GameProfileNameExists(gameProfileID, name))
             {
                 error = "This profile name already exists.";
                 return false;
@@ -888,6 +887,24 @@ namespace DoomLauncher
 
             return true;
         }
+
+        private bool GameProfileNameExists(int gameProfileID, string name)
+        {
+            if (GameFile.GameFileID.HasValue)
+            {
+                var gameProfiles = m_adapter.GetGameProfiles(GameFile.GameFileID.Value)
+                    .Where(x => x.GameProfileID != gameProfileID);
+                if (FindProfileName(gameProfiles, name))
+                    return true;
+            }
+
+            if (FindProfileName(m_adapter.GetGlobalGameProfiles(), name))
+                return true;
+
+            return false;
+        }
+        private static bool FindProfileName(IEnumerable<IGameProfile> profiles, string name) =>
+            profiles.Any(x => x.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 
         private static TextBoxForm CreateProfileTextBoxForm(string displayText, bool showCheckBox)
         {
