@@ -75,6 +75,7 @@ namespace DoomLauncher
                 tbl.Controls.Remove(titleBars[0]);
                 if (tbl.RowStyles.Count > 0)
                     tbl.RowStyles[0].Height = 0;
+                form.Height -= titleBars[0].Height;
             }
         }
 

@@ -110,7 +110,7 @@
             this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Size = new System.Drawing.Size(454, 282);
+            this.tblMain.Size = new System.Drawing.Size(454, 323);
             this.tblMain.TabIndex = 6;
             // 
             // panel1
@@ -126,7 +126,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 40);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(454, 242);
+            this.panel1.Size = new System.Drawing.Size(454, 283);
             this.panel1.TabIndex = 0;
             // 
             // chkShowPlayDialog
@@ -172,7 +172,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(454, 282);
+            this.ClientSize = new System.Drawing.Size(454, 323);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
