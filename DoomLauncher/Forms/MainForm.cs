@@ -2265,6 +2265,8 @@ namespace DoomLauncher
 
         private void playRandomToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            CheckLastPlayRandom();
+
             PlayRandomForm form = new PlayRandomForm();
             form.Initialize(GetCurrentTabView(), AppConfiguration, m_lastPlayRandomFile, m_lastPlayRandomMap);
             form.StartPosition = FormStartPosition.CenterParent;
@@ -2295,6 +2297,25 @@ namespace DoomLauncher
                         playOptions: playOptions);
                 }
             }
+        }
+
+        private void CheckLastPlayRandom()
+        {
+            if (m_lastPlayRandomFile == null || !m_lastPlayRandomFile.GameFileID.HasValue)
+            {
+                m_lastPlayRandomFile = null;
+                m_lastPlayRandomMap = null;
+                return;
+            }
+
+            var options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
+                m_lastPlayRandomFile.GameFileID.Value.ToString()));
+            var existingFile = DataSourceAdapter.GetGameFiles(options).FirstOrDefault();
+            if (existingFile != null)
+                return;
+
+            m_lastPlayRandomFile = null;
+            m_lastPlayRandomMap = null;
         }
 
         private void UpdateTagTabData(int tagID)
