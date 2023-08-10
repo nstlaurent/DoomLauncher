@@ -37,11 +37,15 @@ namespace DoomLauncher.Controls
         private void TagSelectControl_Resize(object sender, EventArgs e)
         {
             DpiScale dpiScale = new DpiScale(CreateGraphics());
-            int offset = btnPin.Width + dpiScale.ScaleIntX(12);
+            int offset = btnPin.Width + dpiScale.ScaleIntX(16);
 
-            if (flpSearch.Width < dpiScale.ScaleIntX(60))
+            if (flpSearch.Width < dpiScale.ScaleIntX(80))
+            {
+                btnSearch.Visible = false;
                 return;
+            }
 
+            btnSearch.Visible = true;
             if (flpSearch.Width < txtSearch.MaximumSize.Width + offset)
                 txtSearch.Width = flpSearch.Width - offset;
             else
