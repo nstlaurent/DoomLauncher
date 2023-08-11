@@ -1,4 +1,6 @@
-﻿namespace DoomLauncher
+﻿using DoomLauncher.Controls;
+
+namespace DoomLauncher
 {
     partial class PlayForm
     {
@@ -37,7 +39,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
             this.lblProfile = new System.Windows.Forms.Label();
-            this.cmbProfiles = new System.Windows.Forms.ComboBox();
+            this.cmbProfiles = new CComboBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.profileToolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
@@ -872,7 +874,7 @@
         private System.Windows.Forms.LinkLabel lnkCustomParameters;
         private System.Windows.Forms.LinkLabel lnkFilterSettings;
         private System.Windows.Forms.Label lblProfile;
-        private System.Windows.Forms.ComboBox cmbProfiles;
+        private CComboBox cmbProfiles;
         private System.Windows.Forms.TableLayoutPanel tblProfile;
         private System.Windows.Forms.ToolStrip profileToolStrip;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;

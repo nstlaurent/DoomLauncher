@@ -1,110 +1,97 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.Integration;
 
-namespace DoomLauncher
+namespace DoomLauncher.Controls
 {
-    public partial class CComboBox : UserControl
+    public class ComboBoxItemStyle
     {
-        private readonly ElementHost m_ctrlHost;
-        private readonly System.Windows.Controls.ComboBox m_combo;
-        private readonly System.Windows.Forms.ComboBox m_formCombo;
-        private IEnumerable<object> m_datasource = Array.Empty<object>();
+        public string ValueMember { get; set; }
+        public string Text { get; set; }
+        public Font Font { get; set; }
+        public Color ForeColor { get; set; }
+        public DrawItemEventArgs DrawItem { get; set; }
+    }
 
-        public System.Windows.Forms.ComboBox Combo => m_formCombo;
+    public class CComboBox : ComboBox
+    {
+        private static readonly IThemeColors CurrentTheme = ColorTheme.Current;
 
-        public IEnumerable<object> DataSource { get => m_datasource; set => SetDataSource(value); }
+        public event EventHandler<ComboBoxItemStyle> StyleItem;
 
         public CComboBox()
         {
-            InitializeComponent();
-            m_ctrlHost = new ElementHost();
-            m_ctrlHost.Dock = DockStyle.Fill;
-
-            m_formCombo = new ComboBox();
-            m_formCombo.Visible = false;
-            m_formCombo.DataSourceChanged += formCombo_DataSourceChanged;
-
-            m_combo = new System.Windows.Controls.ComboBox();
-            m_combo.IsEditable = true;
-            m_combo.TextInput += combo_TextInput;
-            m_combo.AddHandler(System.Windows.Controls.Primitives.TextBoxBase.TextChangedEvent,
-                               new System.Windows.Controls.TextChangedEventHandler(ComboBox_TextChanged));
-            //m_combo.ItemContainerStyle = new System.Windows.Style(typeof(System.Windows.Controls.ComboBox));
-            ////m_combo.ItemContainerStyle = new System.Windows.Controls.ItemContainer
-            //m_combo.ItemContainerStyle.Setters.Add(new System.Windows.Setter()
-            //{
-            //    Property = System.Windows.Controls.ItemsControl.BackgroundProperty,
-            //    Value = GetBrush(ColorTheme.Current.Window)
-            //});
-
-
-            //= GetBrush(ColorTheme.Current.Window);
-            //m_combo.Foreground = GetBrush(ColorTheme.Current.Text);
-            m_ctrlHost.Child = m_combo;
-
-            this.Controls.Add(m_ctrlHost);
+            BackColor = CurrentTheme.TextBoxBackground;
+            ForeColor = CurrentTheme.Text;
+            DrawItem += ComboBoxDrawItemInternal;
+            DrawMode = DrawMode.OwnerDrawFixed;
+            FlatStyle = FlatStyle.Flat;
         }
 
-        private void SetDataSource(IEnumerable<object> data)
+        public static void ComboBoxDrawItem(object sender, DrawItemEventArgs e)
         {
-            m_datasource = data;
-            SetComboItems(data);
+            ComboBoxDrawItem(sender, e, null);
         }
 
-        private void SetComboItems(IEnumerable<object> data)
+        private void ComboBoxDrawItemInternal(object sender, DrawItemEventArgs e)
         {
-            m_combo.Items.Clear();
-            foreach (object item in data)
-                m_combo.Items.Add(item);
-
-            if (data.Any())
-                m_combo.SelectedIndex = 0;
+            ComboBoxDrawItem(sender, e, StyleItem);
         }
 
-        private void ComboBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private static void ComboBoxDrawItem(object sender, DrawItemEventArgs e, EventHandler<ComboBoxItemStyle> styleItem = null)
         {
+            if (!(sender is ComboBox comboBox))
+                return;
 
-            //m_combo.Items.Clear();
-            //if (m_datasource is IEnumerable<string> strings)
-            //{
-            //    foreach (string str in strings)
-            //        if (str.StartsWith(, StringComparison.OrdinalIgnoreCase))
-            //            m_combo.Items.Add(str);
-            //}
+            bool selected = e.State.HasFlag(DrawItemState.Selected);
+            if (selected)
+                e.Graphics.FillRectangle(new SolidBrush(CurrentTheme.Highlight), e.Bounds);
+            else
+                e.Graphics.FillRectangle(new SolidBrush(CurrentTheme.DropDownBackground), e.Bounds);
+
+            if (e.Index < 0 || e.Index >= comboBox.Items.Count)
+                return;
+
+            var item = comboBox.Items[e.Index];
+            string text;
+            if (!string.IsNullOrEmpty(comboBox.DisplayMember))
+                text = GetPropertyString(item, comboBox.DisplayMember);
+            else if (item is string str)
+                text = str;
+            else
+                text = item.ToString();
+
+            Color color = selected ? CurrentTheme.HighlightText : CurrentTheme.Text;
+
+            if (styleItem != null)
+            {
+                string value = string.Empty;
+                if (!string.IsNullOrEmpty(comboBox.ValueMember))
+                    value = GetPropertyString(item, comboBox.ValueMember);
+
+                var style = new ComboBoxItemStyle()
+                {
+                    ValueMember = value,
+                    Text = text,
+                    Font = e.Font,
+                    ForeColor = color,
+                    DrawItem = e
+                };
+
+                styleItem.Invoke(sender, style);
+                e.Graphics.DrawString(style.Text, style.Font, new SolidBrush(style.ForeColor), new PointF(0, e.Bounds.Y));
+                return;
+            }
+
+            e.Graphics.DrawString(text, e.Font, new SolidBrush(color), new PointF(0, e.Bounds.Y));
         }
 
-        private void combo_TextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private static string GetPropertyString(object item, string propertyName)
         {
-            
-        }
-
-        private static System.Windows.Media.SolidColorBrush GetBrush(System.Drawing.Color color)
-        {
-            return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
-        }
-
-        public void DataSourceChanged()
-        {
-            m_combo.Items.Clear();
-            IEnumerable<object> data = m_formCombo.DataSource as IEnumerable<object>;
-            foreach (object item in data)
-                m_combo.Items.Add(item);
-
-            if (data.Any())
-                m_combo.SelectedIndex = 0;
-        }
-
-        private void formCombo_DataSourceChanged(object sender, EventArgs e)
-        {
-            
+            var pi = item.GetType().GetProperty(propertyName);
+            if (pi != null)
+                return pi.GetValue(item).ToString();
+            return string.Empty;
         }
     }
 }

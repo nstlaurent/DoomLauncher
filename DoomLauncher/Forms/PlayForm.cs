@@ -6,6 +6,7 @@ using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -29,6 +30,7 @@ namespace DoomLauncher
         private readonly IDataSourceAdapter m_adapter;
         private ScreenFilter m_filterSettings;
         private bool m_playSessionInProgress;
+        private IList<IGameProfile> m_globalProfiles;
 
         private readonly Control[] m_tabControls;
 
@@ -87,8 +89,30 @@ namespace DoomLauncher
             InitTabIndicies();
             profileToolStrip.Visible = false;
             toolStripDropDownButton1.Visible = false;
-            btnProfileMenu.Location = new System.Drawing.Point(0, 0);
+            int padTop = Icons.DpiScale.ScaleIntY(1);
+            btnProfileMenu.Location = new Point(0, padTop);
             btnProfileMenu.Image = Icons.Bars;
+
+            m_globalProfiles = Array.Empty<IGameProfile>();
+            cmbProfiles.StyleItem += CmbProfiles_StyleItem;
+        }
+
+        private void CmbProfiles_StyleItem(object sender, Controls.ComboBoxItemStyle e)
+        {
+            if (!int.TryParse(e.ValueMember, out int gameProfileId))
+                return;
+
+            if (!m_globalProfiles.Any(x => x.GameProfileID == gameProfileId))
+                return;
+            
+            e.Text = "● " + e.Text;
+
+            if (m_globalProfiles.Count > 0 && gameProfileId == m_globalProfiles.Last().GameProfileID)
+            {
+                var bottomLeft = new Point(e.DrawItem.Bounds.X, e.DrawItem.Bounds.Bottom - 1);
+                var bottomRight = new Point(e.DrawItem.Bounds.Right, e.DrawItem.Bounds.Bottom - 1);
+                e.DrawItem.Graphics.DrawLine(new Pen(cmbProfiles.ForeColor), bottomLeft, bottomRight);
+            }
         }
 
         private void InitTabIndicies()
@@ -255,9 +279,10 @@ namespace DoomLauncher
         {
             if (GameFile.GameFileID.HasValue)
             {
-                List<IGameProfile> profiles = m_adapter.GetGlobalGameProfiles().OrderBy(x => x.Name).ToList();
+                m_globalProfiles = m_adapter.GetGlobalGameProfiles().OrderBy(x => x.Name).ToList();
+                List<IGameProfile> profiles = m_globalProfiles.ToList();
+                profiles.Add((GameFile)GameFile);
                 profiles.AddRange(m_adapter.GetGameProfiles(GameFile.GameFileID.Value).OrderBy(x => x.Name));
-                profiles.Insert(0, (GameFile)GameFile);
                 AutoCompleteCombo.SetAutoCompleteCustomSource(cmbProfiles, profiles, typeof(IGameProfile), "Name");
                 return profiles;
             }
@@ -898,10 +923,7 @@ namespace DoomLauncher
                     return true;
             }
 
-            if (FindProfileName(m_adapter.GetGlobalGameProfiles(), name))
-                return true;
-
-            return false;
+            return FindProfileName(m_globalProfiles, name);
         }
         private static bool FindProfileName(IEnumerable<IGameProfile> profiles, string name) =>
             profiles.Any(x => x.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
@@ -1027,21 +1049,25 @@ namespace DoomLauncher
 
         private void deleteProfileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (SelectedGameProfile != null)
+            if (SelectedGameProfile == null)
+                return;
+            
+            if (SelectedGameProfile is GameFile)
             {
-                if (SelectedGameProfile is GameFile)
-                {
-                    MessageBox.Show(this, "The default profile cannot be deleted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (MessageBox.Show(this, string.Format("Are you sure you want to delete {0}?", SelectedGameProfile.Name), 
-                    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    m_adapter.DeleteGameProfile(SelectedGameProfile.GameProfileID);
-                    LoadProfiles();
-                }
+                MessageBox.Show(this, "The default profile cannot be deleted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+
+            if (MessageBox.Show(this, $"Are you sure you want to delete {SelectedGameProfile.Name}?",
+                    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            m_adapter.DeleteGameProfile(SelectedGameProfile.GameProfileID);
+            var profiles = LoadProfiles();
+            if (profiles.Count == 0)
+                return;
+
+            cmbProfiles.SelectedItem = profiles.Skip(m_globalProfiles.Count).FirstOrDefault();
         }
 
         private List<IGameFile> GetGameFiles(string[] fileNames, List<string> unavailable, List<IGameFile> iwads)

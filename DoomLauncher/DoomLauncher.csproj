@@ -140,6 +140,7 @@
     <Compile Include="Controls\CCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\CComboBox.cs" />
     <Compile Include="Controls\CheckBoxList.cs" />
     <Compile Include="Controls\CheckBoxList.Designer.cs">
       <DependentUpon>CheckBoxList.cs</DependentUpon>
@@ -189,12 +190,6 @@
       <DependentUpon>UpdateControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Config\DataCache.cs" />
-    <Compile Include="Controls\CComboBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\CComboBox.Designer.cs">
-      <DependentUpon>CComboBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="DataSources\CleanupFile.cs" />
     <Compile Include="DataSources\GameProfile.cs" />
     <Compile Include="Config\FileManagement.cs" />
@@ -929,9 +924,7 @@
       <DependentUpon>TagSelectForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
-    <None Include="DoomLauncher.sqlite">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="DoomLauncher.sqlite" />
     <None Include="Help.docx" />
     <None Include="Help.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
