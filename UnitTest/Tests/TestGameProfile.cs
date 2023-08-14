@@ -17,7 +17,44 @@ namespace UnitTest.Tests
             TestGameProfileUpdate();
             TestGameProfileDelete();
         }
-        
+
+        [TestMethod]
+        public void TestGlobalGameProfileData()
+        {
+            var adapter = TestUtil.CreateAdapter();
+            TestUtil.CleanDatabase(adapter);
+            var globalProfile1 = GameProfile.CreateGlobalProfile("Global Profile 1");
+            var globalProfile2 = GameProfile.CreateGlobalProfile("Global Profile 2");
+            SetFields(globalProfile1);
+            SetFields(globalProfile2);
+
+            adapter.InsertGameProfile(globalProfile1);
+            adapter.InsertGameProfile(globalProfile2);
+
+            TestInsert();
+
+            var globalProfiles = adapter.GetGlobalGameProfiles().ToList();
+            Assert.AreEqual(2, globalProfiles.Count);
+            Assert.AreEqual("Global Profile 1", globalProfiles[0].Name);
+            Assert.AreEqual("Global Profile 2", globalProfiles[1].Name);
+            globalProfile1 = (GameProfile)globalProfiles[0];
+            globalProfile2 = (GameProfile)globalProfiles[1];
+
+            globalProfile1.Name = "Updated Global Profile 1";
+            globalProfile2.Name = "Updated Global Profile 2";
+            adapter.UpdateGameProfile(globalProfile1);
+            adapter.UpdateGameProfile(globalProfile2);
+            globalProfiles = adapter.GetGlobalGameProfiles().ToList();
+            Assert.AreEqual(2, globalProfiles.Count);
+            Assert.AreEqual("Updated Global Profile 1", globalProfiles[0].Name);
+            Assert.AreEqual("Updated Global Profile 2", globalProfiles[1].Name);
+
+            adapter.DeleteGameProfile(globalProfile1.GameProfileID);
+            globalProfiles = adapter.GetGlobalGameProfiles().ToList();
+            Assert.AreEqual(1, globalProfiles.Count);
+            Assert.AreEqual("Updated Global Profile 2", globalProfiles[0].Name);
+        }
+
         public void TestInsert()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -107,6 +144,12 @@ namespace UnitTest.Tests
             }
 
             return profiles;
+        }
+
+        private void SetFields(IGameProfile gameProfile)
+        {
+            gameProfile.SourcePortID = 1;
+            gameProfile.IWadID = 1;
         }
     }
 }

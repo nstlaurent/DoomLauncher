@@ -14,6 +14,14 @@ namespace UnitTest.Tests
             return new DbDataSourceAdapter(new SqliteDatabaseAdapter(), string.Format(@"Data Source={0}", dataSource));
         }
 
+        public static void CleanDatabase(IDataSourceAdapter adapter)
+        {
+            var dbAdapter = (DbDataSourceAdapter)adapter;
+            var access = new DataAccess(dbAdapter.DbAdapter, dbAdapter.ConnectionString);
+            access.ExecuteNonQuery("delete from GameProfiles");
+            access.ExecuteNonQuery("delete from GameFiles");
+        }
+
         public static bool AllFieldsEqualIgnore<T>(T obj1, T obj2, params string[] ignore)
         {
             return AllFieldsEqual(obj1, obj2, ignore);

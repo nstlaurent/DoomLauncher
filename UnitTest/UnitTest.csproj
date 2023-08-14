@@ -91,6 +91,7 @@
     <Compile Include="Tests\TestDirectoryArchive.cs" />
     <Compile Include="Tests\TestFileDetector.cs" />
     <Compile Include="Tests\TestGameFile.cs" />
+    <Compile Include="Tests\TestGameProfileUtil.cs" />
     <Compile Include="Tests\TestIdGamesFileParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\TestPlayAdapter.cs" />

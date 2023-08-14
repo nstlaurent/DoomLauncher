@@ -6,15 +6,16 @@ namespace DoomLauncher.DataSources
 {
     public class GameFile : IGameFile, IGameProfile, ICloneable
     {
-        public static string[] GetMaps(IGameFile gameFile) => gameFile.Map.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+        public const string DefaultProfileName = "Default Profile";
+        public static string[] GetMaps(IGameFile gameFile) => gameFile.Map.Split(new [] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
 
-        private string m_lastDirectory = null;
+        private string m_lastDirectory;
 
         public GameFile()
         {
             FileName = Title = Author = Description = Thumbnail = Comments = Map = SettingsMap = SettingsSkill = SettingsExtraParams = SettingsFiles
                 = SettingsSpecificFiles = string.Empty;
-            Name = "Default Profile";
+            Name = DefaultProfileName;
             SettingsStat = true;
             GameProfileID = -1;
         }

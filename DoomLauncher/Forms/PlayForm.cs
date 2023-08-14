@@ -275,19 +275,11 @@ namespace DoomLauncher
             chkDemo.CheckedChanged -= chkDemo_CheckedChanged;
         }
 
-        private List<IGameProfile> LoadProfiles()
+        private IList<IGameProfile> LoadProfiles()
         {
-            if (GameFile.GameFileID.HasValue)
-            {
-                m_globalProfiles = m_adapter.GetGlobalGameProfiles().OrderBy(x => x.Name).ToList();
-                List<IGameProfile> profiles = m_globalProfiles.ToList();
-                profiles.Add((GameFile)GameFile);
-                profiles.AddRange(m_adapter.GetGameProfiles(GameFile.GameFileID.Value).OrderBy(x => x.Name));
-                AutoCompleteCombo.SetAutoCompleteCustomSource(cmbProfiles, profiles, typeof(IGameProfile), "Name");
-                return profiles;
-            }
-
-            return new List<IGameProfile>();
+            var profiles = GameProfileUtil.GetAllProfiles(m_adapter, (GameFile)GameFile, out m_globalProfiles);
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbProfiles, profiles, typeof(IGameProfile), "Name");
+            return profiles;
         }
 
         private static string[] MapSplit(IGameFile gameFile) => DataSources.GameFile.GetMaps(gameFile);
@@ -305,8 +297,8 @@ namespace DoomLauncher
 
         public ISourcePortData SelectedSourcePort
         {
-            get { return cmbSourcePorts.SelectedItem as ISourcePortData; }
-            set { cmbSourcePorts.SelectedItem = value; }
+            get => cmbSourcePorts.SelectedItem as ISourcePortData; 
+            set => cmbSourcePorts.SelectedItem = value;
         }
 
         public IGameFile SelectedIWad
@@ -314,9 +306,7 @@ namespace DoomLauncher
             get
             {
                 if (cmbIwad.SelectedItem != null)
-                {
                     return m_adapter.GetGameFileIWads().FirstOrDefault(x => x.GameFileID == ((IIWadData)cmbIwad.SelectedItem).GameFileID);
-                }
 
                 return null;
             }
@@ -331,8 +321,8 @@ namespace DoomLauncher
 
         public IFileData SelectedDemo
         {
-            get { return cmbDemo.SelectedItem as IFileData; }
-            set { cmbDemo.SelectedItem = value; }
+            get => cmbDemo.SelectedItem as IFileData; 
+            set => cmbDemo.SelectedItem = value;
         }
 
         public List<IGameFile> GetAdditionalFiles()
@@ -374,57 +364,23 @@ namespace DoomLauncher
 
         public string SelectedSkill
         {
-            get { return cmbSkill.SelectedItem as string; }
-            set { cmbSkill.SelectedItem = value; }
+            get => cmbSkill.SelectedItem as string;
+            set => cmbSkill.SelectedItem = value;
         }
-
-        public bool RememberSettings
-        {
-            get { return chkRemember.Checked; }
-        }
-
-        public bool Record
-        {
-            get { return chkRecord.Checked; }
-        }
-
-        public bool PlayDemo
-        {
-            get { return chkDemo.Checked; }
-        }
-
-        public string RecordDescriptionText
-        {
-            get { return txtDescription.Text; }
-        }
-
+        public bool RememberSettings => chkRemember.Checked;
+        public bool Record => chkRecord.Checked;
+        public bool PlayDemo => chkDemo.Checked;
+        public string RecordDescriptionText => txtDescription.Text;
         public string ExtraParameters
         {
-            get { return txtParameters.Text; }
-            set { txtParameters.Text = value; }
+            get => txtParameters.Text;
+            set => txtParameters.Text = value;
         }
-
         public string[] SpecificFiles { get; set; }
-
-        public bool SaveStatistics
-        {
-            get { return chkSaveStats.Enabled && chkSaveStats.Checked; }
-        }
-
-        public bool LoadLatestSave
-        {
-            get { return chkLoadLatestSave.Enabled && chkLoadLatestSave.Checked; }
-        }
-
-        public bool ExtraParametersOnly
-        {
-            get { return chkExtraParamsOnly.Checked; }
-        }
-
-        public bool ScreenFilter
-        {
-            get { return chkScreenFilter.Checked; }
-        }
+        public bool SaveStatistics => chkSaveStats.Enabled && chkSaveStats.Checked;
+        public bool LoadLatestSave => chkLoadLatestSave.Enabled && chkLoadLatestSave.Checked;
+        public bool ExtraParametersOnly => chkExtraParamsOnly.Checked;
+        public bool ScreenFilter => chkScreenFilter.Checked;
 
         public bool ShouldSaveAdditionalFiles()
         {
@@ -507,7 +463,7 @@ namespace DoomLauncher
 
                 if (fileSelect.ShowDialog(this) == DialogResult.OK)
                 {
-                    IGameFile[] selectedFiles = fileSelect.SelectedFiles.Except(new IGameFile[] { GameFile }).Union(GetAdditionalFiles()).ToArray();
+                    IGameFile[] selectedFiles = fileSelect.SelectedFiles.Except(new [] { GameFile }).Union(GetAdditionalFiles()).ToArray();
 
                     if (selectedFiles.Length > 0)
                     {
@@ -714,7 +670,7 @@ namespace DoomLauncher
             if (SelectedGameProfile == null)
                 MessageBox.Show(this, "A profile must be selected to save.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
-                SaveSettings?.Invoke(this, new EventArgs());
+                SaveSettings?.Invoke(this, EventArgs.Empty);
         }
 
         private void lnkOpenDemo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -878,7 +834,7 @@ namespace DoomLauncher
 
         private bool RenameGameProfile(int gameProfileID, string name)
         {
-            if (!IsValidProfileName(gameProfileID, name, out string error))
+            if (!GameProfileUtil.IsValidProfileName(m_adapter, GameFile, m_globalProfiles, gameProfileID, name, out var error))
             {
                 MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -893,40 +849,6 @@ namespace DoomLauncher
 
             return true;
         }
-
-        private bool IsValidProfileName(int gameProfileID, string name, out string error)
-        {
-            error = null;
-
-            if (string.IsNullOrEmpty(name))
-            {
-                error = "A name must be entered.";
-                return false;
-            }
-
-            if (GameProfileNameExists(gameProfileID, name))
-            {
-                error = "This profile name already exists.";
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool GameProfileNameExists(int gameProfileID, string name)
-        {
-            if (GameFile.GameFileID.HasValue)
-            {
-                var gameProfiles = m_adapter.GetGameProfiles(GameFile.GameFileID.Value)
-                    .Where(x => x.GameProfileID != gameProfileID);
-                if (FindProfileName(gameProfiles, name))
-                    return true;
-            }
-
-            return FindProfileName(m_globalProfiles, name);
-        }
-        private static bool FindProfileName(IEnumerable<IGameProfile> profiles, string name) =>
-            profiles.Any(x => x.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 
         private static TextBoxForm CreateProfileTextBoxForm(string displayText, bool showCheckBox)
         {
@@ -959,21 +881,21 @@ namespace DoomLauncher
             gameProfile.SettingsLoadLatestSave = LoadLatestSave;
             gameProfile.SettingsExtraParamsOnly = ExtraParametersOnly;
 
-            if (ShouldSaveAdditionalFiles())
-            {
-                var additionalGameFiles = GetAdditionalFiles();
-                if (gameProfile.IsGlobal)
-                    additionalGameFiles = additionalGameFiles
-                        .Where(x => x.GameFileID != GameFile.GameFileID).ToList();
-                gameProfile.SettingsFiles = string.Join(";", additionalGameFiles.Select(x => x.FileName).ToArray());
-                gameProfile.SettingsFilesIWAD = string.Join(";", GetIWadAdditionalFiles().Select(x => x.FileName).ToArray());
-                gameProfile.SettingsFilesSourcePort = string.Join(";", GetSourcePortAdditionalFiles().Select(x => x.FileName).ToArray());
+            if (!ShouldSaveAdditionalFiles())
+                return;
+            
+            var additionalGameFiles = GetAdditionalFiles();
+            if (gameProfile.IsGlobal)
+                additionalGameFiles = additionalGameFiles
+                    .Where(x => x.GameFileID != GameFile.GameFileID).ToList();
+            gameProfile.SettingsFiles = string.Join(";", additionalGameFiles.Select(x => x.FileName).ToArray());
+            gameProfile.SettingsFilesIWAD = string.Join(";", GetIWadAdditionalFiles().Select(x => x.FileName).ToArray());
+            gameProfile.SettingsFilesSourcePort = string.Join(";", GetSourcePortAdditionalFiles().Select(x => x.FileName).ToArray());
 
-                if (SpecificFiles != null)
-                    gameProfile.SettingsSpecificFiles = string.Join(";", SpecificFiles);
-                else
-                    gameProfile.SettingsSpecificFiles = string.Empty; //this setting can be turned off
-            }
+            if (SpecificFiles != null)
+                gameProfile.SettingsSpecificFiles = string.Join(";", SpecificFiles);
+            else
+                gameProfile.SettingsSpecificFiles = string.Empty; //this setting can be turned off
         }
 
         private void CmbProfiles_SelectedIndexChanged(object sender, EventArgs e)
@@ -998,7 +920,8 @@ namespace DoomLauncher
 
             while (!success && form.ShowDialog(this) == DialogResult.OK)
             {
-                success = IsValidProfileName(-1, form.DisplayText.Trim(), out string error);
+                success = GameProfileUtil.IsValidProfileName(m_adapter, GameFile, m_globalProfiles, -1, 
+                    form.DisplayText.Trim(), out var error);
 
                 if (success)
                 {
@@ -1067,7 +990,7 @@ namespace DoomLauncher
             if (profiles.Count == 0)
                 return;
 
-            cmbProfiles.SelectedItem = profiles.Skip(m_globalProfiles.Count).FirstOrDefault();
+            cmbProfiles.SelectedItem = GameFile;
         }
 
         private List<IGameFile> GetGameFiles(string[] fileNames, List<string> unavailable, List<IGameFile> iwads)

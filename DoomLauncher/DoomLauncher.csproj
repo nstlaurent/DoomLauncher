@@ -255,6 +255,7 @@
     <Compile Include="Handlers\FileMapComparer.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
     <Compile Include="Config\Icons.cs" />
+    <Compile Include="Handlers\GameProfileUtil.cs" />
     <Compile Include="Handlers\ImageExtensions.cs" />
     <Compile Include="Handlers\MenuConstants.cs" />
     <Compile Include="Handlers\ArchiveUtil.cs" />

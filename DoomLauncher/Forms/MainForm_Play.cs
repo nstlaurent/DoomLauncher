@@ -190,25 +190,23 @@ namespace DoomLauncher
 
         private void HandlePlaySettings(PlayForm form, IGameProfile gameProfile)
         {
-            if (form.RememberSettings && gameProfile != null)
+            if (!form.RememberSettings || gameProfile == null)
+                return;
+            
+            form.UpdateGameProfile(gameProfile);
+            form.GameFile.SettingsGameProfileID = form.SelectedGameProfile.GameProfileID;
+            DataSourceAdapter.UpdateGameFile(form.GameFile, new [] { GameFileFieldType.SettingsGameProfileID });
+
+            if (gameProfile is IGameFile gameFile)
             {
-                form.UpdateGameProfile(gameProfile);
-
-                form.GameFile.SettingsGameProfileID = form.SelectedGameProfile.GameProfileID;
-                DataSourceAdapter.UpdateGameFile(form.GameFile, new GameFileFieldType[] { GameFileFieldType.SettingsGameProfileID });
-
-                if (gameProfile is IGameFile gameFile)
-                {
-                    DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap,
-                    GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
-                    GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave, 
-                        GameFileFieldType.SettingsExtraParamsOnly });
-                }
-                else
-                {
-                    DataSourceAdapter.UpdateGameProfile(gameProfile);
-                }
+                DataSourceAdapter.UpdateGameFile(gameFile, new [] { GameFileFieldType.SourcePortID, GameFileFieldType.IWadID, GameFileFieldType.SettingsMap,
+                GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
+                GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave, 
+                    GameFileFieldType.SettingsExtraParamsOnly });
+                return;
             }
+            
+            DataSourceAdapter.UpdateGameProfile(gameProfile);
         }
 
         private void SetupPlayForm(IGameFile gameFile)
