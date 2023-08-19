@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using DoomLauncher.Handlers;
 
 namespace DoomLauncher
 {
@@ -18,6 +19,7 @@ namespace DoomLauncher
         public event AdditionalFilesEventHanlder ItemPriorityDown;
         public event AdditionalFilesEventHanlder ItemRemoving;
 
+        private readonly ToolTipGroup m_toolTipGroup = new ToolTipGroup();
         private List<object> m_files = new List<object>();
         private string m_keyProperty, m_dataProperty;
 
@@ -35,6 +37,11 @@ namespace DoomLauncher
             btnDelete.Image = Icons.Delete;
             btnMoveUp.Image = Icons.ArrowUp;
             btnMoveDown.Image = Icons.ArrowDown;
+
+            m_toolTipGroup.SetToolTip(btnAdd, "Add File");
+            m_toolTipGroup.SetToolTip(btnDelete, "Remove File");
+            m_toolTipGroup.SetToolTip(btnMoveUp, "Move Up");
+            m_toolTipGroup.SetToolTip(btnMoveDown, "Move Down");
 
             Stylizer.StylizeControl(this, DesignMode);
         }

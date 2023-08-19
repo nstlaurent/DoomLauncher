@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using DoomLauncher.Handlers;
 
 namespace DoomLauncher
 {
@@ -13,6 +14,7 @@ namespace DoomLauncher
         public event EventHandler FileDetailsChanged;
         public event EventHandler<RequestScreenshotsEventArgs> RequestScreenshots;
 
+        private readonly ToolTipGroup m_toolTipGroup = new ToolTipGroup();
         private IGameFile m_gameFile;
 
         public GameFileAssociationView()
@@ -37,8 +39,17 @@ namespace DoomLauncher
             btnMoveUp.Image = Icons.ArrowUp;
             btnMoveDown.Image = Icons.ArrowDown;
             btnSetFirst.Image = Icons.StepBack;
-            btnEdit.Image = Icons.Edit;
             btnOpenFile.Image = Icons.FolderOpen;
+
+            m_toolTipGroup.SetToolTip(btnDelete, "Delete");
+            m_toolTipGroup.SetToolTip(btnAddFile, "Add File");
+            m_toolTipGroup.SetToolTip(btnCopy, "Copy");
+            m_toolTipGroup.SetToolTip(btnCopyAll, "Copy All");
+            m_toolTipGroup.SetToolTip(btnEdit, "Edit");
+            m_toolTipGroup.SetToolTip(btnMoveUp, "Move Up");
+            m_toolTipGroup.SetToolTip(btnMoveDown, "Move Down");
+            m_toolTipGroup.SetToolTip(btnSetFirst, "Set First");
+            m_toolTipGroup.SetToolTip(btnOpenFile, "Open File");
 
             Stylizer.StylizeControl(this, DesignMode);
             Stylizer.StylizeControl(mnuOptions, DesignMode);
