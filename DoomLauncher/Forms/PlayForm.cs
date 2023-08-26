@@ -195,10 +195,14 @@ namespace DoomLauncher
                     SelectedIWad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == gameProfile.IWadID);
                 }
 
-                if (!string.IsNullOrEmpty(gameProfile.SettingsMap)) SelectedMap = gameProfile.SettingsMap;
-                if (!string.IsNullOrEmpty(gameProfile.SettingsSkill)) SelectedSkill = gameProfile.SettingsSkill;
-                if (!string.IsNullOrEmpty(gameProfile.SettingsExtraParams)) ExtraParameters = gameProfile.SettingsExtraParams;
-                if (!string.IsNullOrEmpty(gameProfile.SettingsSpecificFiles)) SpecificFiles = Util.SplitString(gameProfile.SettingsSpecificFiles);
+                if (!string.IsNullOrEmpty(gameProfile.SettingsMap))
+                    SelectedMap = gameProfile.SettingsMap;
+                if (!string.IsNullOrEmpty(gameProfile.SettingsSkill))
+                    SelectedSkill = gameProfile.SettingsSkill;
+                if (!string.IsNullOrEmpty(gameProfile.SettingsExtraParams))
+                    ExtraParameters = gameProfile.SettingsExtraParams;
+                if (!string.IsNullOrEmpty(gameProfile.SettingsSpecificFiles))
+                    SpecificFiles = GetSpecificFilesFromProfile(gameProfile);
             }
 
             bool reset = ShouldRecalculateAdditionalFiles();
@@ -206,7 +210,22 @@ namespace DoomLauncher
             HandleIwadSelectionChanged(reset);
             SetAdditionalFiles(reset);
             HandleDemoChange();
-            RegisterEvents();               
+            RegisterEvents();
+
+            lnkSpecific.Enabled = !gameProfile.IsGlobal;
+            if (gameProfile.IsGlobal)
+                lnkSpecific.Text = "Individual files not supported with global profiles";
+            else
+                lnkSpecific.Text = "Select Individual Files...";
+        }
+
+        private string[] GetSpecificFilesFromProfile(IGameProfile gameProfile)
+        {
+            // Not yet supported
+            if (gameProfile.IsGlobal)
+                return null;
+            
+            return Util.SplitString(gameProfile.SettingsSpecificFiles);
         }
 
         private void SetIwadInfoLabel()
