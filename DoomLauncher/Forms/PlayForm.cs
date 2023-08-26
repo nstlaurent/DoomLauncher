@@ -201,8 +201,8 @@ namespace DoomLauncher
                     SelectedSkill = gameProfile.SettingsSkill;
                 if (!string.IsNullOrEmpty(gameProfile.SettingsExtraParams))
                     ExtraParameters = gameProfile.SettingsExtraParams;
-                if (!string.IsNullOrEmpty(gameProfile.SettingsSpecificFiles))
-                    SpecificFiles = GetSpecificFilesFromProfile(gameProfile);
+
+                SpecificFiles = GetSpecificFilesFromProfile(gameProfile);
             }
 
             bool reset = ShouldRecalculateAdditionalFiles();
@@ -222,7 +222,7 @@ namespace DoomLauncher
         private string[] GetSpecificFilesFromProfile(IGameProfile gameProfile)
         {
             // Not yet supported
-            if (gameProfile.IsGlobal)
+            if (gameProfile.IsGlobal || string.IsNullOrEmpty(gameProfile.SettingsSpecificFiles))
                 return null;
             
             return Util.SplitString(gameProfile.SettingsSpecificFiles);
