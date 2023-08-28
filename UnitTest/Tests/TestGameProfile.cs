@@ -18,13 +18,13 @@ namespace UnitTest.Tests
             TestGameProfileSelect();
             TestGameProfileUpdate();
             TestGameProfileDelete();
-            TestUtil.CleanDatabase(adapter);
         }
 
         [TestMethod]
         public void TestGlobalGameProfileData()
         {
             var adapter = TestUtil.CreateAdapter();
+            TestUtil.CleanDatabase(adapter);
             var globalProfile1 = GameProfile.CreateGlobalProfile("Global Profile 1");
             var globalProfile2 = GameProfile.CreateGlobalProfile("Global Profile 2");
             SetFields(globalProfile1);

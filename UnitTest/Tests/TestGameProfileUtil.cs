@@ -10,7 +10,6 @@ namespace UnitTest.Tests
     [TestClass]
     public class TestGameProfileUtil
     {
-        [Ignore]
         [TestMethod]
         public void GetAllProfiles()
         {
