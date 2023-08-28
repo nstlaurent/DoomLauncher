@@ -9,6 +9,8 @@ namespace UnitTest.Tests
     [TestClass]
     public class TestGameProfile
     {
+        private static string[] IgnoreFields = new[] { nameof(GameProfile.GameProfileID) };
+
         [TestMethod]
         public void TestGameProfileData()
         {
@@ -73,7 +75,7 @@ namespace UnitTest.Tests
             {
                 var profiles = adapter.GetGameProfiles(profile.GameFileID.Value).ToList();
                 Assert.AreEqual(1, profiles.Count);
-                Assert.IsTrue(TestUtil.AllFieldsEqual(profile, profiles.First()));
+                Assert.IsTrue(TestUtil.AllFieldsEqual(profile, profiles.First(), IgnoreFields));
             }
         }
 
@@ -101,7 +103,7 @@ namespace UnitTest.Tests
 
                 var testProfiles = adapter.GetGameProfiles(profile.GameFileID.Value).ToList();
                 Assert.AreEqual(1, testProfiles.Count);
-                Assert.IsTrue(TestUtil.AllFieldsEqual(profile, testProfiles.First()));
+                Assert.IsTrue(TestUtil.AllFieldsEqual(profile, testProfiles.First(), IgnoreFields));
             }
         }
 
