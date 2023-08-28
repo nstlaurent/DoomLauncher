@@ -331,7 +331,7 @@ namespace DoomLauncher
             };
 
             string launchParameters = playAdapter.GetLaunchParameters(AppConfiguration.GameFileDirectory,
-                AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile));
+                AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile), out var error);
 
             if (launchParameters != null)
             {
@@ -345,7 +345,7 @@ namespace DoomLauncher
 
                 string sourcePortParams = string.Empty;
                 if (!string.IsNullOrEmpty(sourcePort.ExtraParameters))
-                    sourcePortParams = string.Concat(Environment.NewLine, Environment.NewLine, "Paramters from source port: ", sourcePort.ExtraParameters);
+                    sourcePortParams = string.Concat(Environment.NewLine, Environment.NewLine, "Parameters from source port: ", sourcePort.ExtraParameters);
 
                 form.DisplayText = string.Concat(launchParameters, Environment.NewLine, Environment.NewLine, 
                     string.Format("Supported Extensions: {0}", sourcePort.SupportedExtensions),
@@ -356,7 +356,7 @@ namespace DoomLauncher
             }
             else
             {
-                form.DisplayText = "Failed to generate launch parameters";
+                form.DisplayText = $"Failed to generate launch parameters: {error}";
             }
 
             form.SelectDisplayText(0, 0);

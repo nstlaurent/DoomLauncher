@@ -43,11 +43,11 @@ namespace DoomLauncher
             GameFile = gameFile;
             SourcePort = sourcePort;
 
-            string launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad);
+            string launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad, out var error);
             if (launchParameters == null)
             {
                 if (string.IsNullOrEmpty(LastError))
-                    LastError = "Failed to create launch parameters";
+                    LastError = $"Failed to create launch parameters: {error}";
                 return false;
             }
        
@@ -70,8 +70,9 @@ namespace DoomLauncher
         }
 
         public string GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
-            IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad)
+            IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad, out string error)
         {
+            error = string.Empty;
             if (m_options.HasFlag(GameFilePlayAdapterOptions.ExtraParamsOnly))
             {
                 if (string.IsNullOrEmpty(ExtraParameters))
@@ -91,16 +92,33 @@ namespace DoomLauncher
 
             if (IWad != null)
             {
-                if (!AssertGameFile(gameFile, gameFileDirectory, tempDirectory, sourcePort, sb)) return null;
-                if (!HandleGameFileIWad(IWad, sourcePort, sourcePortData, sb, gameFileDirectory, tempDirectory, true)) return null;
+                if (!AssertGameFile(gameFile, gameFileDirectory, tempDirectory, sourcePort, sb))
+                {
+                    error = GetFileError(gameFile);
+                    return null;
+                }
+
+                if (!HandleGameFileIWad(IWad, sourcePort, sourcePortData, sb, gameFileDirectory, tempDirectory, true))
+                {
+                    error = GetFileError(IWad);
+                    return null;
+                }
             }
 
             List<string> launchFiles = new List<string>();
-
             foreach (IGameFile loadFile in loadFiles)
             {
-                if (!AssertGameFile(loadFile, gameFileDirectory, tempDirectory, sourcePort, sb)) return null;
-                if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePortData, true)) return null;
+                if (!AssertGameFile(loadFile, gameFileDirectory, tempDirectory, sourcePort, sb))
+                {
+                    error = GetFileError(loadFile);
+                    return null;
+                }
+
+                if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePortData, true))
+                {
+                    error = GetFileError(loadFile);
+                    return null;
+                }
             }
 
             launchFiles = SortParameters(launchFiles).ToList();
@@ -141,6 +159,8 @@ namespace DoomLauncher
 
             return sb.ToString();
         }
+
+        private static string GetFileError(IGameFile gameFile) => $"Failed to add {gameFile.FileNameNoPath}";
 
         private bool AssertGameFile(IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory, ISourcePort sourcePort, StringBuilder sb)
         {
