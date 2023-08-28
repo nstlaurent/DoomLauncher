@@ -1,8 +1,10 @@
-﻿using DoomLauncher;
+﻿using System;
+using DoomLauncher;
 using DoomLauncher.Interfaces;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace UnitTest.Tests
 {
@@ -40,17 +42,28 @@ namespace UnitTest.Tests
                 if (value == null)
                 {
                     if (prop.GetValue(obj2) != null)
+                    {
+                        throw new Exception(
+                            $"AllFieldsEqual failure: Expected {prop.Name} to be null but was {prop.GetValue(obj2)}\n{GetObjectJson(obj1)}\n{GetObjectJson(obj2)}");
                         return false;
+                    }
                 }
                 else
                 {
                     if (!value.Equals(prop.GetValue(obj2)))
+                    {
+                        throw new Exception(
+                            $"AllFieldsEqual failure: Expected {prop.Name} to be {value} but was {prop.GetValue(obj2)}\n{GetObjectJson(obj1)}\n{GetObjectJson(obj2)}");
                         return false;
+                    }
                 }
             }
 
             return true;
         }
+
+        private static string GetObjectJson(object obj) =>
+            JsonConvert.SerializeObject(obj);
 
         public static void CopyResourceFile(string filename)
         {
