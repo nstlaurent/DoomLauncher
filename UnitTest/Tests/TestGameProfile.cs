@@ -112,8 +112,11 @@ namespace UnitTest.Tests
 
         public void TestGameProfileDelete()
         {
+            List<IGameProfile> testProfiles = new List<IGameProfile>();
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var testProfiles = CreateTestProfiles();
+            var allTestProfiles = CreateTestProfiles();
+            foreach (var profile in allTestProfiles)
+                testProfiles.AddRange(adapter.GetGameProfiles(profile.GameFileID.Value));
 
             foreach (var profile in testProfiles)
             {
