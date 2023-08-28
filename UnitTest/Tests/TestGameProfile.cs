@@ -81,8 +81,11 @@ namespace UnitTest.Tests
 
         public void TestGameProfileUpdate()
         {
+            List<IGameProfile> profiles = new List<IGameProfile>();
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var profiles = CreateTestProfiles();
+            var allTestProfiles = CreateTestProfiles();
+            foreach (var profile in allTestProfiles)
+                profiles.AddRange(adapter.GetGameProfiles(profile.GameFileID.Value));
 
             foreach (var profile in profiles)
             {
