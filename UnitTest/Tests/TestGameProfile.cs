@@ -18,6 +18,7 @@ namespace UnitTest.Tests
             TestGameProfileSelect();
             TestGameProfileUpdate();
             TestGameProfileDelete();
+            TestUtil.CleanDatabase(adapter);
         }
 
         [TestMethod]

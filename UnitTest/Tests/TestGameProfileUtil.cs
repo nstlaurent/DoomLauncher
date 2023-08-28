@@ -69,6 +69,8 @@ namespace UnitTest.Tests
                 profiles[0].GameProfileID, "mods"));
             Assert.IsFalse(GameProfileUtil.NameExists(adapter, gameFile, globalProfiles,
                 profiles[0].GameProfileID, "new profile test"));
+
+            TestUtil.CleanDatabase(adapter);
         }
 
         private List<IGameProfile> CreateTestProfiles(int gameFileId, string[] names)
