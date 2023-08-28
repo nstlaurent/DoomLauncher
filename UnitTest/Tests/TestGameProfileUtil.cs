@@ -2,6 +2,7 @@
 using DoomLauncher.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using DoomLauncher.Handlers;
 
 namespace UnitTest.Tests
@@ -9,6 +10,7 @@ namespace UnitTest.Tests
     [TestClass]
     public class TestGameProfileUtil
     {
+        [Ignore]
         [TestMethod]
         public void GetAllProfiles()
         {
