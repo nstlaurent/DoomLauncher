@@ -56,19 +56,7 @@ namespace DoomLauncher
 
         private void SetShowTabHeaders()
         {
-            return;
-            if (AppConfiguration.ShowTabHeaders)
-            {
-                tabControl.Appearance = TabAppearance.Normal;
-                tabControl.SizeMode = TabSizeMode.Fixed;
-                tabControl.ItemSize = tabControl.OriginalItemSize;
-            }
-            else
-            {
-                tabControl.Appearance = TabAppearance.FlatButtons;
-                tabControl.SizeMode = TabSizeMode.Fixed;
-                tabControl.ItemSize = new Size(0, 1);
-            }
+            tabControl.SetShowHeaders(AppConfiguration.ShowTabHeaders);
         }
 
         private IdGamesTabViewCtrl CreateTabViewIdGames(ColumnConfig[] colConfig)

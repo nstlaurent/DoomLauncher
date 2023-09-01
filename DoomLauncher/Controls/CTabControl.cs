@@ -13,10 +13,10 @@ namespace DoomLauncher
         private readonly Dictionary<int, List<int>> m_tabRowLookup = new Dictionary<int, List<int>>();
         private readonly List<int> m_tabRows = new List<int>();
         private bool m_setting;
+        private bool m_showHeaders = true;
         private int m_lastTabCount;
         private float m_spaceWidth = -1;
-
-        public Size OriginalItemSize = new Size(0, 0);   
+        private Size m_originalItemSize = new Size(0, 0);   
 
         public CTabControl()
         {
@@ -25,7 +25,24 @@ namespace DoomLauncher
 
             DrawMode = TabDrawMode.OwnerDrawFixed;
             SizeMode = TabSizeMode.Normal;
-            SetStyle(ControlStyles.UserPaint, true); 
+            SetStyle(ControlStyles.UserPaint, true);
+        }
+
+        public void SetShowHeaders(bool set)
+        {
+            m_showHeaders = set;
+            if (set)
+            {
+                Appearance = TabAppearance.Normal;
+                SizeMode = TabSizeMode.Normal;
+                ItemSize = m_originalItemSize;
+            }
+            else
+            {
+                Appearance = TabAppearance.FlatButtons;
+                SizeMode = TabSizeMode.Fixed;
+                ItemSize = new Size(0, 1);
+            }
         }
 
         protected override void OnCreateControl()
@@ -36,6 +53,7 @@ namespace DoomLauncher
 
             var dpiScale = new DpiScale(CreateGraphics());
             ItemSize = new Size(width, dpiScale.ScaleIntY(18));
+            m_originalItemSize = ItemSize;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -74,6 +92,9 @@ namespace DoomLauncher
             Rectangle fillRect = new Rectangle(0, 0, Width, Height);
             using (Brush controlBrush = new SolidBrush(ColorTheme.Current.Window))
                 e.Graphics.FillRectangle(controlBrush, fillRect);
+
+            if (!m_showHeaders)
+                return;
 
             var renderOrder = GetTabPageRenderOrder();
             if (renderOrder.Count == 0)
