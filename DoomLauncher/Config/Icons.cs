@@ -1,37 +1,108 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
 namespace DoomLauncher
 {
+    public enum IconImage
+    {
+        UpArrow,
+        DownArrow,
+        Bars,
+        Delete,
+        Download,
+        Edit,
+        Export,
+        ExportAll,
+        File,
+        FolderOpen,
+        Play,
+        Save,
+        Search,
+        StepBack,
+        Video,
+        Tags,
+        Pin
+    }
+
     public static class Icons
     {
-        public static DpiScale DpiScale { get; set; } = new DpiScale(2, 2);
-        public static Image ArrowUp => GetIcon(Properties.Resources.UpArrow);
-        public static Image ArrowDown => GetIcon(Properties.Resources.DownArrow);
-        public static Image Bars => GetIcon(Properties.Resources.Bars);
-        public static Image Delete => GetIcon(Properties.Resources.Delete);
-        public static Image Download => GetIcon(Properties.Resources.th);
-        public static Image Edit => GetIcon(Properties.Resources.Edit);
-        public static Image Export => GetIcon(Properties.Resources.Export);
-        public static Image ExportAll => GetIcon(Properties.Resources.ExportAll);
-        public static Image File => GetIcon(Properties.Resources.File);
-        public static Image FolderOpen => GetIcon(Properties.Resources.FolderOpen);
-        public static Image Play => GetIcon(Properties.Resources.Play);
-        public static Image Save => GetIcon(Properties.Resources.Save);
-        public static Image Search => GetIcon(Properties.Resources.Search);
-        public static Image StepBack => GetIcon(Properties.Resources.StepBack);
-        public static Image Video => GetIcon(Properties.Resources.Video);
-        public static Image Tags => GetIcon(Properties.Resources.Tags);
-        public static Image Pin => GetIcon(Properties.Resources.Pin);
+        private static readonly Dictionary<(IconImage, Color), Bitmap> IconLookup = new Dictionary<(IconImage, Color), Bitmap>();
 
-        private static Image GetIcon(Bitmap bitmap)
+        public static DpiScale DpiScale { get; set; } = new DpiScale(2, 2);
+        public static Image ArrowUp => GetIcon(IconImage.UpArrow);
+        public static Image ArrowDown => GetIcon(IconImage.DownArrow);
+        public static Image Bars => GetIcon(IconImage.Bars);
+        public static Image Delete => GetIcon(IconImage.Delete);
+        public static Image Download => GetIcon(IconImage.Download);
+        public static Image Edit => GetIcon(IconImage.Edit);
+        public static Image Export => GetIcon(IconImage.Export);
+        public static Image ExportAll => GetIcon(IconImage.ExportAll);
+        public static Image File => GetIcon(IconImage.File);
+        public static Image FolderOpen => GetIcon(IconImage.FolderOpen);
+        public static Image Play => GetIcon(IconImage.Play);
+        public static Image Save => GetIcon(IconImage.Save);
+        public static Image Search => GetIcon(IconImage.Search);
+        public static Image StepBack => GetIcon(IconImage.StepBack);
+        public static Image Video => GetIcon(IconImage.Video);
+        public static Image Tags => GetIcon(IconImage.Tags);
+        public static Image Pin => GetIcon(IconImage.Pin);
+
+        public static Image GetIcon(IconImage iconImage, Color color) => ColorizeIcon(iconImage, color);
+
+        private static Bitmap GetBitmap(IconImage iconImage)
         {
-            return ColorizeIcon(bitmap, ColorTheme.Current.Text);
+            switch (iconImage)
+            {
+                case IconImage.UpArrow:
+                    return Properties.Resources.UpArrow;
+                case IconImage.DownArrow:
+                    return Properties.Resources.DownArrow;
+                case IconImage.Bars:
+                    return Properties.Resources.Bars;
+                case IconImage.Delete:
+                    return Properties.Resources.Delete;
+                case IconImage.Download:
+                    return Properties.Resources.th;
+                case IconImage.Edit:
+                    return Properties.Resources.Edit;
+                case IconImage.Export:
+                    return Properties.Resources.Export;
+                case IconImage.ExportAll:
+                    return Properties.Resources.ExportAll;
+                case IconImage.File:
+                    return Properties.Resources.File;
+                case IconImage.FolderOpen:
+                    return Properties.Resources.FolderOpen;
+                case IconImage.Play:
+                    return Properties.Resources.Play;
+                case IconImage.Save:
+                    return Properties.Resources.Save;
+                case IconImage.Search:
+                    return Properties.Resources.Search;
+                case IconImage.StepBack:
+                    return Properties.Resources.StepBack;
+                case IconImage.Video:
+                    return Properties.Resources.Video;
+                case IconImage.Tags:
+                    return Properties.Resources.Tags;
+                case IconImage.Pin:
+                    return Properties.Resources.Pin;
+                default:
+                    return new Bitmap(0, 0);
+            }
         }
 
-        private static Bitmap ColorizeIcon(Bitmap bitmap, Color color)
+        private static Image GetIcon(IconImage iconImage) =>
+            ColorizeIcon(iconImage, ColorTheme.Current.Text);
+        
+        private static Bitmap ColorizeIcon(IconImage iconImage, Color color)
         {
+            if (IconLookup.TryGetValue((iconImage, color), out var bitmap))
+                return bitmap;
+
+            bitmap = GetBitmap(iconImage);
             Bitmap copy;
             if (DpiScale.DpiScaleX > 1 || DpiScale.DpiScaleY > 1)
                 copy = ResizeBitmap(bitmap, (int)DpiScale.ScaleFloatX(bitmap.Width * 0.8f), (int)DpiScale.ScaleFloatY(bitmap.Height * 0.8f));
@@ -48,6 +119,7 @@ namespace DoomLauncher
                 }
             }
 
+            IconLookup[(iconImage, color)] = copy;
             return copy;
         }
 
