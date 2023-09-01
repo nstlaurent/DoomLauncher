@@ -1,6 +1,7 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using DoomLauncher.Handlers;
 
@@ -130,34 +131,39 @@ namespace DoomLauncher
 
         private void SetButtonsEnabled(IFileAssociationView view)
         {
-            btnAddFile.Enabled = view.NewAllowed;
-            btnCopy.Enabled = btnCopyAll.Enabled = view.CopyOrExportAllowed;
-            btnDelete.Enabled = view.DeleteAllowed;
-            btnEdit.Enabled = view.EditAllowed;
-            btnMoveDown.Enabled = btnMoveUp.Enabled = btnSetFirst.Enabled = view.ChangeOrderAllowed;
-            btnOpenFile.Enabled = view.ViewAllowed;
-            btnCopyAll.Enabled = true;
+            SetIconButtonEnabled(btnAddFile, IconImage.File, view.NewAllowed);
+            SetIconButtonEnabled(btnCopy, IconImage.Export, view.CopyOrExportAllowed);
+            SetIconButtonEnabled(btnDelete, IconImage.Delete, view.DeleteAllowed);
+            SetIconButtonEnabled(btnEdit, IconImage.Edit, view.EditAllowed);
+            SetIconButtonEnabled(btnMoveDown, IconImage.DownArrow, view.EditAllowed);
+            SetIconButtonEnabled(btnMoveUp, IconImage.UpArrow, view.EditAllowed);
+            SetIconButtonEnabled(btnSetFirst, IconImage.StepBack, view.EditAllowed);
+            SetIconButtonEnabled(btnOpenFile, IconImage.FolderOpen, view.ViewAllowed);
+            SetIconButtonEnabled(btnCopyAll, IconImage.ExportAll, true);
         }
 
         public void SetButtonsAllButtonsEnabled(bool enabled)
         {
-            btnAddFile.Enabled = enabled;
-            btnCopy.Enabled = enabled;
-            btnDelete.Enabled = enabled;
-            btnEdit.Enabled = enabled;
-            btnMoveDown.Enabled = btnMoveUp.Enabled = btnSetFirst.Enabled = enabled;
-            btnOpenFile.Enabled = enabled;
-            btnCopyAll.Enabled = enabled;
+            SetIconButtonEnabled(btnAddFile, IconImage.File, enabled);
+            SetIconButtonEnabled(btnCopy, IconImage.Export, enabled);
+            SetIconButtonEnabled(btnDelete, IconImage.Delete, enabled);
+            SetIconButtonEnabled(btnEdit, IconImage.Edit, enabled);
+            SetIconButtonEnabled(btnMoveDown, IconImage.DownArrow, enabled);
+            SetIconButtonEnabled(btnMoveUp, IconImage.UpArrow, enabled);
+            SetIconButtonEnabled(btnSetFirst, IconImage.StepBack, enabled);
+            SetIconButtonEnabled(btnOpenFile, IconImage.FolderOpen, enabled);
+            SetIconButtonEnabled(btnCopyAll, IconImage.ExportAll, enabled);
         }
 
-        private IFileAssociationView CurrentView
+        private void SetIconButtonEnabled(FormButton button, IconImage iconImage, bool enabled)
         {
-            get
-            {
-                return tabControl.SelectedTab.Controls[0] as IFileAssociationView;
-            }
+            button.Enabled = enabled;
+            button.Image = Icons.GetIcon(iconImage, enabled ?  ColorTheme.Current.Text : ColorTheme.Current.DisabledText);
         }
 
+        private IFileAssociationView CurrentView =>
+            tabControl.SelectedTab.Controls[0] as IFileAssociationView;
+        
         private void copyFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HandleCopy();
