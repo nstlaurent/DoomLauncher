@@ -4,6 +4,7 @@ using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -40,6 +41,8 @@ namespace DoomLauncher
         private int m_pictureWidth;
         private CancellationTokenSource m_ct = new CancellationTokenSource();
         private bool m_imageWorkerComplete = true;
+        private readonly Stopwatch m_clickStopwatch = new Stopwatch();
+        private readonly ToolTipGroup m_toolTipGroup = new ToolTipGroup();
 
         public event EventHandler<RequestScreenshotsEventArgs> RequestScreenshots;
 
@@ -97,19 +100,17 @@ namespace DoomLauncher
             screenshotEditForm.StartPosition = FormStartPosition.CenterParent;
             screenshotEditForm.SetData(adapter.GetGameFile(GameFile.FileName), null);
 
-            if (screenshotEditForm.ShowDialog() == DialogResult.OK)
+            if (screenshotEditForm.ShowDialog() != DialogResult.OK)
+                return false;
+            
+            newFileData = new NewFileData()
             {
-                newFileData = new NewFileData()
-                {
-                    UserTitle = screenshotEditForm.Title,
-                    UserDescription = screenshotEditForm.Description,
-                    Map = screenshotEditForm.Map,
-                    SourcePortID = -1,
-                };
-                return true;
-            }
-
-            return false;
+                UserTitle = screenshotEditForm.Title,
+                UserDescription = screenshotEditForm.Description,
+                Map = screenshotEditForm.Map,
+                SourcePortID = -1,
+            };
+            return true;
         }
 
         public override bool New()
@@ -199,9 +200,8 @@ namespace DoomLauncher
             for (int i = 0; i < count; i++)
                 m_pictureBoxes.Add(new PictureItem(CreatePictureBox()));
 
-            ToolTip tt = new ToolTip();
             foreach (var pb in m_pictureBoxes)
-                tt.SetToolTip(pb.PictureBox, "Double-click to view");
+                m_toolTipGroup.SetToolTip(pb.PictureBox, "Double-click to view");
         }
 
         public void SetScreenshots(List<IFileData> screenshots)
@@ -385,42 +385,48 @@ namespace DoomLauncher
 
         private void HandleClick(object sender, MouseEventArgs e)
         {
-            if (sender is PictureBox pb && m_lookup.ContainsKey(pb))
+            if (!(sender is PictureBox pb) || !m_lookup.TryGetValue(pb, out var fileData))
+                return;
+
+            if (SelectedFile != null && SelectedFile.FileID == fileData.FileID)
             {
-                if (SelectedFile != m_lookup[pb])
-                {
-                    foreach (PictureBox pbSet in m_lookup.Keys)
-                        SetSelectedStyle(pbSet, false);
-
-                    SelectedFile = m_lookup[pb];
-                    SetSelectedStyle(pb, true);
-                }
-
-                if (e != null && e.Button == MouseButtons.Right)
-                    m_menu.Show(pb.PointToScreen(e.Location));
+                if (e != null && e.Button == MouseButtons.Left && m_clickStopwatch.ElapsedMilliseconds < SystemInformation.DoubleClickTime)
+                    HandleDoubleClick(sender);
+                m_clickStopwatch.Restart();
             }
+            else
+            {
+                m_clickStopwatch.Restart();
+                foreach (var pbSet in m_lookup.Keys)
+                    SetSelectedStyle(pbSet, false);
+
+                SelectedFile = fileData;
+                SetSelectedStyle(pb, true);
+            }
+
+            if (e != null && e.Button == MouseButtons.Right)
+                m_menu.Show(pb.PointToScreen(e.Location));
         }
 
         private void SetSelectedStyle(PictureBox pb, bool selected)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<PictureBox, bool>(SetSelectedStyle), new object[] { pb, selected });
+                Invoke(new Action<PictureBox, bool>(SetSelectedStyle), pb, selected);
+                return;
+            }
+
+            if (selected)
+            {
+                pb.BackColor = ColorTheme.Current.Highlight;
+                pb.Padding = new Padding(2);
+                pb.BorderStyle = BorderStyle.Fixed3D;
             }
             else
             {
-                if (selected)
-                {
-                    pb.BackColor = SystemColors.Highlight;
-                    pb.Padding = new Padding(2);
-                    pb.BorderStyle = BorderStyle.Fixed3D;
-                }
-                else
-                {
-                    pb.BackColor = Color.Black;
-                    pb.Padding = new Padding(0);
-                    pb.BorderStyle = BorderStyle.None;
-                }
+                pb.BackColor = Color.Black;
+                pb.Padding = new Padding(0);
+                pb.BorderStyle = BorderStyle.None;
             }
         }
 
@@ -428,8 +434,7 @@ namespace DoomLauncher
 
         protected override List<IFileData> GetSelectedFiles()
         {
-            List<IFileData> files = new List<IFileData>();
-
+            var files = new List<IFileData>();
             if (SelectedFile != null)
                 files.Add(SelectedFile);
 
