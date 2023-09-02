@@ -44,8 +44,8 @@ namespace DoomLauncher
 
             m_toolTipGroup.SetToolTip(btnDelete, "Delete");
             m_toolTipGroup.SetToolTip(btnAddFile, "Add File");
-            m_toolTipGroup.SetToolTip(btnCopy, "Copy");
-            m_toolTipGroup.SetToolTip(btnCopyAll, "Copy All");
+            m_toolTipGroup.SetToolTip(btnCopy, "Export");
+            m_toolTipGroup.SetToolTip(btnCopyAll, "Export All");
             m_toolTipGroup.SetToolTip(btnEdit, "Edit");
             m_toolTipGroup.SetToolTip(btnMoveUp, "Move Up");
             m_toolTipGroup.SetToolTip(btnMoveDown, "Move Down");
@@ -133,26 +133,26 @@ namespace DoomLauncher
         {
             SetIconButtonEnabled(btnAddFile, IconImage.File, view.NewAllowed);
             SetIconButtonEnabled(btnCopy, IconImage.Export, view.CopyOrExportAllowed);
+            SetIconButtonEnabled(btnCopyAll, IconImage.ExportAll, view.CopyOrExportAllowed);
             SetIconButtonEnabled(btnDelete, IconImage.Delete, view.DeleteAllowed);
             SetIconButtonEnabled(btnEdit, IconImage.Edit, view.EditAllowed);
             SetIconButtonEnabled(btnMoveDown, IconImage.DownArrow, view.EditAllowed);
             SetIconButtonEnabled(btnMoveUp, IconImage.UpArrow, view.EditAllowed);
             SetIconButtonEnabled(btnSetFirst, IconImage.StepBack, view.EditAllowed);
             SetIconButtonEnabled(btnOpenFile, IconImage.FolderOpen, view.ViewAllowed);
-            SetIconButtonEnabled(btnCopyAll, IconImage.ExportAll, true);
         }
 
         public void SetButtonsAllButtonsEnabled(bool enabled)
         {
             SetIconButtonEnabled(btnAddFile, IconImage.File, enabled);
             SetIconButtonEnabled(btnCopy, IconImage.Export, enabled);
+            SetIconButtonEnabled(btnCopyAll, IconImage.ExportAll, enabled);
             SetIconButtonEnabled(btnDelete, IconImage.Delete, enabled);
             SetIconButtonEnabled(btnEdit, IconImage.Edit, enabled);
             SetIconButtonEnabled(btnMoveDown, IconImage.DownArrow, enabled);
             SetIconButtonEnabled(btnMoveUp, IconImage.UpArrow, enabled);
             SetIconButtonEnabled(btnSetFirst, IconImage.StepBack, enabled);
             SetIconButtonEnabled(btnOpenFile, IconImage.FolderOpen, enabled);
-            SetIconButtonEnabled(btnCopyAll, IconImage.ExportAll, enabled);
         }
 
         private void SetIconButtonEnabled(FormButton button, IconImage iconImage, bool enabled)
