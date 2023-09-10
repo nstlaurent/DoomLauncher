@@ -380,12 +380,7 @@ namespace DoomLauncher
                 }
             }
 
-            dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
-
-            if (!dt.Select("name = 'SettingsFiles'").Any())
-            {
-                DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'SettingsFiles' TEXT;");
-            }
+            UpdateSourcePortsTable();
 
             //There was a bug in previous versions that would set MapCount to 1 when there were no maps found
             DataAccess.ExecuteNonQuery("update GameFiles set MapCount = null where Map is null or length(Map) = 0");
@@ -410,17 +405,12 @@ namespace DoomLauncher
 
         private void Pre_2_6_0()
         {
-            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
-
-            if (!dt.Select("name = 'LaunchType'").Any())
-                DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'LaunchType' TEXT;");
-            if (!dt.Select("name = 'FileOption'").Any())
-                DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'FileOption' TEXT;");
+            UpdateSourcePortsTable();
 
             DataAccess.ExecuteNonQuery(string.Format("update SourcePorts set LaunchType = {0}", (int)SourcePortLaunchType.SourcePort));
             DataAccess.ExecuteNonQuery("update SourcePorts set FileOption = '-file'");
 
-            dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
+            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
 
             if (!dt.Select("name = 'SettingsStat'").Any())
             {
@@ -431,20 +421,18 @@ namespace DoomLauncher
 
         private void Pre_2_6_3()
         {
-            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
-
-            if (!dt.Select("name = 'ExtraParameters'").Any())
-                DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'ExtraParameters' TEXT;");
+            UpdateSourcePortsTable();
         }
 
         private void Pre_2_6_3_1()
         {
             DataTable dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
-
             if (!dt.Select("name = 'SettingsFilesSourcePort'").Any())
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'SettingsFilesSourcePort' TEXT;");
             if (!dt.Select("name = 'SettingsFilesIWAD'").Any())
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'SettingsFilesIWAD' TEXT;");
+
+            UpdateSourcePortsTable();
 
             var gameFiles = m_adapter.GetGameFiles();
             var ports = m_adapter.GetSourcePorts().ToDictionary(x => x.SourcePortID, x => x);
@@ -642,10 +630,7 @@ namespace DoomLauncher
                 AvailableValues = "Yes;true;No;false"
             });
 
-            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
-
-            if (!dt.Select("name = 'AltSaveDirectory'").Any())
-                DataAccess.ExecuteNonQuery(@"alter table SourcePorts add column 'AltSaveDirectory' TEXT;");
+            UpdateSourcePortsTable();
         }
 
         private void Pre_Version_3_2_0_Update3()
@@ -803,12 +788,7 @@ namespace DoomLauncher
 
         private void Pre_Version_3_5_2_Update2()
         {
-            DataTable dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
-            if (!dt.Select("name = 'Archived'").Any())
-            {
-                DataAccess.ExecuteNonQuery(@"alter table SourcePorts add column 'Archived' INTEGER;");
-                DataAccess.ExecuteNonQuery("update SourcePorts set Archived = 0");
-            }
+            UpdateSourcePortsTable();
         }
 
         private void Pre_Version_3_5_3_Update1()
@@ -881,6 +861,26 @@ namespace DoomLauncher
                 UserCanModify = true,
                 AvailableValues = "Yes;true;No;false"
             });
+        }
+
+        private void UpdateSourcePortsTable()
+        {
+            var dt = DataAccess.ExecuteSelect("pragma table_info(SourcePorts);").Tables[0];
+            if (!dt.Select("name = 'SettingsFiles'").Any())
+                DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'SettingsFiles' TEXT;");
+            if (!dt.Select("name = 'LaunchType'").Any())
+                DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'LaunchType' TEXT;");
+            if (!dt.Select("name = 'FileOption'").Any())
+                DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'FileOption' TEXT;");
+            if (!dt.Select("name = 'ExtraParameters'").Any())
+                DataAccess.ExecuteNonQuery("alter table SourcePorts add column 'ExtraParameters' TEXT;");
+            if (!dt.Select("name = 'AltSaveDirectory'").Any())
+                DataAccess.ExecuteNonQuery(@"alter table SourcePorts add column 'AltSaveDirectory' TEXT;");
+            if (!dt.Select("name = 'Archived'").Any())
+            {
+                DataAccess.ExecuteNonQuery(@"alter table SourcePorts add column 'Archived' INTEGER;");
+                DataAccess.ExecuteNonQuery("update SourcePorts set Archived = 0");
+            }
         }
 
         private void UpdateMirrorUrls(string urls, string defaultUrl)
