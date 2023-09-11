@@ -97,7 +97,8 @@ namespace DoomLauncher
                 m_directory = directory;
 
                 txtExec.Text = m_exec;
-                txtName.Text = Path.GetFileNameWithoutExtension(file);
+                if (string.IsNullOrEmpty(txtName.Text))
+                    txtName.Text = Path.GetFileNameWithoutExtension(file);
             }
         }
 
