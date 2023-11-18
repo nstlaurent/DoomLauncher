@@ -1344,7 +1344,7 @@ namespace DoomLauncher
 
         private async void HandleAddFiles()
         {
-            await HandleAddFiles(AddFileType.GameFile, new string[] { "Zip", "WAD", "pk3", "txt", "zdl" }, "Select Game Files");
+            await HandleAddFiles(AddFileType.GameFile, new string[] { "Zip", "WAD", "pk3", "rar", "7z", "txt", "zdl" }, "Select Game Files");
         }
 
         private async void addIWADsToolStripMenuItem_Click(object sender, EventArgs e)
