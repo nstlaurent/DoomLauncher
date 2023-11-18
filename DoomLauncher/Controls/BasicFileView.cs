@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using DoomLauncher.Stylize;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -46,7 +47,7 @@ namespace DoomLauncher
             List<IFileData> selectedFiles = GetSelectedFiles();
 
             if (selectedFiles.Count > 0 &&
-                MessageBox.Show(this, "Delete selected file(s)?", "Confirm", MessageBoxButtons.OKCancel,
+                StyledMessageBox.Show(this, "Delete selected file(s)?", "Confirm", MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
                 foreach (IFileData file in selectedFiles)
@@ -104,7 +105,7 @@ namespace DoomLauncher
                 return true;
             }
             else if (detailsForm.SourcePort == null)
-                MessageBox.Show(parent, "A source port must be selected.", "Error", MessageBoxButtons.OK);
+                StyledMessageBox.Show(parent, "A source port must be selected.", "Error", MessageBoxButtons.OK);
 
             return false;
         }
@@ -179,7 +180,7 @@ namespace DoomLauncher
                 }
                 else if (form.SourcePort == null)
                 {
-                    MessageBox.Show(this, "A source port must be selected.", "Error", MessageBoxButtons.OK);
+                    StyledMessageBox.Show(this, "A source port must be selected.", "Error", MessageBoxButtons.OK);
                 }
             }
 
@@ -320,7 +321,7 @@ namespace DoomLauncher
             catch (Exception ex)
             {
                 // This happens when windows doesn't recognize the file extension
-                MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StyledMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

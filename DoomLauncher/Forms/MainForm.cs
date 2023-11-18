@@ -2,6 +2,7 @@
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
+using DoomLauncher.Stylize;
 using PresentationControls;
 using System;
 using System.Collections.Generic;
@@ -417,7 +418,7 @@ namespace DoomLauncher
 
             if (!string.IsNullOrEmpty(error))
             {
-                MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StyledMessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -549,7 +550,7 @@ namespace DoomLauncher
                         }
                         else
                         {
-                            MessageBox.Show(this, "No text file found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            StyledMessageBox.Show(this, "No text file found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
@@ -598,7 +599,7 @@ namespace DoomLauncher
             catch
             {
                 string filename = lastFile == null ? "the file" : lastFile.FileNameNoPath; 
-                MessageBox.Show(this, $"Could not open {filename}", "Cannot Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StyledMessageBox.Show(this, $"Could not open {filename}", "Cannot Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -637,7 +638,7 @@ namespace DoomLauncher
                             }
                             catch
                             {
-                                MessageBox.Show(this, string.Format("The file {0} appears to be in use and could not be deleted.", gameFile.FileName),
+                                StyledMessageBox.Show(this, string.Format("The file {0} appears to be in use and could not be deleted.", gameFile.FileName),
                                     "In Use", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
@@ -922,7 +923,7 @@ namespace DoomLauncher
 
         private void ShowBadConnectionError()
         {
-            MessageBox.Show(this, "Unable to reach server. Lost connection?", "Bad Connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            StyledMessageBox.Show(this, "Unable to reach server. Lost connection?", "Bad Connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private bool PromptUserDownload(IGameFile[] dsItems, ref bool showAlreadyDownloading, ref bool doForAll,
@@ -1061,7 +1062,7 @@ namespace DoomLauncher
 
                 if (e.Error != null)
                 {
-                    MessageBox.Show(this, e.Error.Message + "\n\nIf this error keeps occuring try chaning your mirror in the Settings menu.", "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    StyledMessageBox.Show(this, e.Error.Message + "\n\nIf this error keeps occuring try chaning your mirror in the Settings menu.", "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
@@ -1094,7 +1095,7 @@ namespace DoomLauncher
             }
             catch (IOException)
             {
-                MessageBox.Show(this, string.Format("The file {0} is in use and cannot be written.", dlFile.FileName),
+                StyledMessageBox.Show(this, string.Format("The file {0} is in use and cannot be written.", dlFile.FileName),
                     "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
@@ -1286,7 +1287,7 @@ namespace DoomLauncher
                 }
                 catch (DirectoryNotFoundException ex)
                 {
-                    MessageBox.Show(this, string.Format("The directory {0} was not found. DoomLauncher will not operate correctly with invalid paths. " +
+                    StyledMessageBox.Show(this, string.Format("The directory {0} was not found. DoomLauncher will not operate correctly with invalid paths. " +
                         "Make sure the directory you are setting contains all folders required (Demos, SaveGames, Screenshots, Temp)", ex.Message),
                         "Invalid Directory",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1402,7 +1403,7 @@ namespace DoomLauncher
             {
                 StringBuilder sb = new StringBuilder();
                 Array.ForEach(missingFiles, x => sb.Append(x + "\n"));
-                MessageBox.Show(this, "The following files were not found and will not be added:" + Environment.NewLine + Environment.NewLine +
+                StyledMessageBox.Show(this, "The following files were not found and will not be added:" + Environment.NewLine + Environment.NewLine +
                     sb.ToString(), "Files Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 libraryFiles = libraryFiles.Except(missingFiles).ToList();
             }
@@ -1454,10 +1455,8 @@ namespace DoomLauncher
                 warn.AppendLine();
                 warn.Append(string.Join(", ", warnFiles));
                 warn.Append("\n\nContinue?");
-
-                TopMost = true;
-                bool ret = MessageBox.Show(this, warn.ToString(), "File Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
-                TopMost = false;
+                                
+                bool ret = StyledMessageBox.Show(this, warn.ToString(), "File Verification", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
                 return ret;
             }
 
@@ -1566,9 +1565,7 @@ namespace DoomLauncher
                 {
                     StartPosition = FormStartPosition.CenterParent
                 };
-                TopMost = true;
                 select.ShowDialog(this);
-                TopMost = false;
                 fileManagement = select.GetSelectedFileManagement();
             }
 

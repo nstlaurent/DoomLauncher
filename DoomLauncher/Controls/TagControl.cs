@@ -1,6 +1,7 @@
 ﻿using DoomLauncher.Controls;
 using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
+using DoomLauncher.Stylize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace DoomLauncher
 
                 if (!IsTagNameUnique(tag))
                 {
-                    MessageBox.Show(this, "Tag name must be unique and not empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    StyledMessageBox.Show(this, "Tag name must be unique and not empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
@@ -96,7 +97,7 @@ namespace DoomLauncher
 
                     if (!IsTagNameUnique(tag))
                     {
-                        MessageBox.Show(this, "Tag name must be unique and not empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        StyledMessageBox.Show(this, "Tag name must be unique and not empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         SetTagData();
                     }
                     else
@@ -123,7 +124,7 @@ namespace DoomLauncher
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (tagSelectCtrl.SelectedItem != null && MessageBox.Show(this, "Are you sure you want to delete this tag?",
+            if (tagSelectCtrl.SelectedItem != null && StyledMessageBox.Show(this, "Are you sure you want to delete this tag?",
                 "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
                 ITagData tag = tagSelectCtrl.SelectedItem;

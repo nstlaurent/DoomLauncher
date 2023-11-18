@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using DoomLauncher.Stylize;
 using System;
 using System.IO;
 using System.Linq;
@@ -88,7 +89,7 @@ namespace DoomLauncher
 
                 if (string.IsNullOrEmpty(directory))
                 {
-                    MessageBox.Show(this, "The source port can't be in the same directory as Doom Launcher.", "Invalid Path", 
+                    StyledMessageBox.Show(this, "The source port can't be in the same directory as Doom Launcher.", "Invalid Path", 
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }

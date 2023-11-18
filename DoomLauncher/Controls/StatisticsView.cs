@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using DoomLauncher.Stylize;
 using Equin.ApplicationFramework;
 using System;
 using System.Collections.Generic;
@@ -103,7 +104,7 @@ namespace DoomLauncher
         public bool Delete()
         {
             if (dgvMain.SelectedRows.Count > 0 &&
-                MessageBox.Show(this, "Delete selected statistic(s)?", "Confirm", MessageBoxButtons.OKCancel,
+                StyledMessageBox.Show(this, "Delete selected statistic(s)?", "Confirm", MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
                 foreach (DataGridViewRow row in dgvMain.SelectedRows)

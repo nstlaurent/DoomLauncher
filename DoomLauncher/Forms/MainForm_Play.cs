@@ -3,6 +3,7 @@ using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
+using DoomLauncher.Stylize;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -289,7 +290,7 @@ namespace DoomLauncher
             }
             else
             {
-                MessageBox.Show(this, playAdapter.LastError, "Launch Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StyledMessageBox.Show(this, playAdapter.LastError, "Launch Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 

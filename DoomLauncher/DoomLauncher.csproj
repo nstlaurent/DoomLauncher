@@ -303,6 +303,7 @@
     <Compile Include="Stylize\DarkTheme.cs" />
     <Compile Include="Stylize\DefaultTheme.cs" />
     <Compile Include="Stylize\ImmersiveDarkMode.cs" />
+    <Compile Include="Stylize\StyledMessageBox.cs" />
     <Compile Include="Stylize\Stylizer.cs" />
     <Compile Include="Stylize\IThemeColors.cs" />
     <Compile Include="Update\ApplicationUpdater.cs" />
