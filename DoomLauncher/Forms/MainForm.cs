@@ -1661,7 +1661,13 @@ namespace DoomLauncher
 
                 FileInfo fi = new FileInfo(file);
                 if (ArchiveUtil.IsTransformableToZip(fi.Extension))
-                    fi = ArchiveUtil.CreateZipFrom(fi, AppConfiguration.TempDirectory.GetFullPath());
+                {
+                    if (!ArchiveUtil.CreateZipFrom(fi, AppConfiguration.TempDirectory.GetFullPath(), out fi))
+                    {
+                        results.Errors.Add(new FileError { FileName = file, Error = "Failed to create zip from file." });
+                        continue;
+                    }
+                }
 
                 string baseName = fi.Name.Replace(fi.Extension, string.Empty);
                 if (!IsZipFile(fi) && addedNames.Contains(baseName)) //archive with this name exists, add the file (match .txt with .wad etc)

@@ -18,14 +18,24 @@ namespace DoomLauncher
         // If this is an archive that packages files together that Doom Launcher should read the contents of (".zip", ".7z", ".rar")
         public static bool ShouldReadPackagedArchive(string file) => CoreExtensions.Contains(Path.GetExtension(file), StringComparer.OrdinalIgnoreCase);
 
-        public static FileInfo CreateZipFrom(FileInfo fi, string tempDirectory)
+        public static bool CreateZipFrom(FileInfo fi, string tempDirectory, out FileInfo fileInfo)
         {
-            if (fi.Extension.Equals(".7z", StringComparison.OrdinalIgnoreCase))
-                return CreateZipFromSevenZip(fi, tempDirectory);
-            else if (fi.Extension.Equals(".rar", StringComparison.OrdinalIgnoreCase))
-                return CreateZipFromRar(fi, tempDirectory);
+            fileInfo = null;
+            try
+            {
+                if (fi.Extension.Equals(".7z", StringComparison.OrdinalIgnoreCase))
+                    fileInfo = CreateZipFromSevenZip(fi, tempDirectory);
+                else if (fi.Extension.Equals(".rar", StringComparison.OrdinalIgnoreCase))
+                    fileInfo = CreateZipFromRar(fi, tempDirectory);
 
-            throw new NotSupportedException();
+                if (fileInfo != null)
+                    return true;
+            }
+            catch
+            {
+            }
+
+            return false;
         }
 
         private static FileInfo CreateZipFromSevenZip(FileInfo fi, string tempDirectory)
@@ -64,6 +74,8 @@ namespace DoomLauncher
                 }
 
                 string zipFile = Path.Combine(tempDirectory, fi.Name.Replace(fi.Extension, ".zip"));
+                if (File.Exists(zipFile))
+                    File.Delete(zipFile);
                 ZipFile.CreateFromDirectory(dir.FullName, zipFile);
 
                 Directory.Delete(dir.FullName, true);
