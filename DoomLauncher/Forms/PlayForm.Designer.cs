@@ -39,7 +39,7 @@ namespace DoomLauncher
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
             this.lblProfile = new System.Windows.Forms.Label();
-            this.cmbProfiles = new CComboBox();
+            this.cmbProfiles = new DoomLauncher.Controls.CComboBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.profileToolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
@@ -200,13 +200,17 @@ namespace DoomLauncher
             // 
             // cmbProfiles
             // 
+            this.cmbProfiles.BackColor = System.Drawing.Color.White;
             this.cmbProfiles.DisplayMember = "Name";
             this.cmbProfiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmbProfiles.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cmbProfiles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbProfiles.ForeColor = System.Drawing.SystemColors.WindowText;
             this.cmbProfiles.FormattingEnabled = true;
             this.cmbProfiles.Location = new System.Drawing.Point(72, 5);
             this.cmbProfiles.Margin = new System.Windows.Forms.Padding(4, 5, 0, 5);
             this.cmbProfiles.Name = "cmbProfiles";
-            this.cmbProfiles.Size = new System.Drawing.Size(249, 28);
+            this.cmbProfiles.Size = new System.Drawing.Size(249, 27);
             this.cmbProfiles.TabIndex = 9;
             this.cmbProfiles.TabStop = false;
             this.cmbProfiles.ValueMember = "GameProfileID";

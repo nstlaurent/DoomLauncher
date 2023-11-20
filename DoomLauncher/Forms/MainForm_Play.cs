@@ -79,6 +79,7 @@ namespace DoomLauncher
             if (map != null)
                 m_currentPlayForm.SelectedMap = map;
 
+            var gameFile = m_currentPlayForm.GameFile;
             bool autoPlay = (playOptions.HasFlag(PlayOptions.AutoPlay) || !AppConfiguration.ShowPlayDialog) && !playOptions.HasFlag(PlayOptions.ForceDialog);
 
             if (autoPlay || m_currentPlayForm.ShowDialog(this) == DialogResult.OK)
@@ -92,7 +93,7 @@ namespace DoomLauncher
                     if (!StartPlay(launchData.GameFile, m_currentPlayForm.SelectedSourcePort,
                             m_currentPlayForm.ScreenFilter))
                         return;
-
+                    
                     ctrlSummary.PauseSlideshow();
                     ShouldShowToolTip = false;
                 }
@@ -251,6 +252,11 @@ namespace DoomLauncher
         void m_currentPlayForm_SaveSettings(object sender, EventArgs e)
         {
             HandlePlaySettings(m_currentPlayForm, m_currentPlayForm.SelectedGameProfile);
+            if (m_currentPlayForm.GameFile != null)
+            {
+                UpdateDataSourceViews(m_currentPlayForm.GameFile);
+                HandleSelectionChange(GetCurrentViewControl(), true);
+            }
         }
 
         private List<ITabView> GetAdditionalTabViews()
@@ -286,10 +292,13 @@ namespace DoomLauncher
                     gameFile.LastPlayed = DateTime.Now;
                     DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.LastPlayed });
                     UpdateDataSourceViews(gameFile);
+                    HandleSelectionChange(GetCurrentViewControl(), true);
                 }
             }
             else
             {
+                UpdateDataSourceViews(gameFile);
+                HandleSelectionChange(GetCurrentViewControl(), true);
                 StyledMessageBox.Show(this, playAdapter.LastError, "Launch Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }

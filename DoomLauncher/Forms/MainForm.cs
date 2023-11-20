@@ -744,8 +744,7 @@ namespace DoomLauncher
 
             if (item != null)
             {
-                IEnumerable<IStatsData> stats = new IStatsData[] { };
-
+                IEnumerable<IStatsData> stats = Array.Empty<IStatsData>();
                 if (item.GameFileID.HasValue)
                     stats = DataSourceAdapter.GetStats(item.GameFileID.Value);
 
@@ -788,10 +787,13 @@ namespace DoomLauncher
             List<PreviewImage> imagePaths = new List<PreviewImage>();
             if (item.GameFileID.HasValue)
             {
-                foreach (var screenshot in DataSourceAdapter.GetFiles(item, FileType.Screenshot))
+                SetGameFileImages(item, imagePaths);
+
+                if (imagePaths.Count == 0 && item.IWadID.HasValue)
                 {
-                    string path = Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
-                    imagePaths.Add(new PreviewImage(path, FileData.GetTitle(screenshot)));
+                    var iwad = DataCache.Instance.DataSourceAdapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == item.IWadID.Value);
+                    if (iwad != null)
+                        SetGameFileImages(iwad, imagePaths);
                 }
             }
 
@@ -799,6 +801,15 @@ namespace DoomLauncher
                 SetPreviewImages(imagePaths);
             else
                 ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
+        }
+
+        private void SetGameFileImages(IGameFile item, List<PreviewImage> imagePaths)
+        {
+            foreach (var screenshot in DataSourceAdapter.GetFiles(item, FileType.Screenshot))
+            {
+                string path = Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
+                imagePaths.Add(new PreviewImage(path, FileData.GetTitle(screenshot)));
+            }
         }
 
         private void ClearSummary()
@@ -1428,6 +1439,9 @@ namespace DoomLauncher
             {
                 DisplayInvalidFilesError(m_zdlInvalidFiles);
             }
+
+            if (type == AddFileType.IWad)
+                ThumbnailManager.SetIWads(DataSourceAdapter.GetGameFileIWads().ToList());
         }
 
         private bool VerifyAddFiles(AddFileType type, string[] files)

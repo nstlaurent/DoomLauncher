@@ -32,6 +32,7 @@ namespace DoomLauncher
             TagMapLookup = new TagMapLookup(adapter);
             DefaultImage = Image.FromFile(Path.Combine(LauncherPath.GetDataDirectory(), "TileImages", "DoomLauncherTile.png"));
             DefaultPalette = Palette.From(Properties.Resources.DoomPalette);
+            ThumbnailManager.SetIWads(DataSourceAdapter.GetGameFileIWads().ToList());
 
             switch (AppConfiguration.ColorTheme)
             {

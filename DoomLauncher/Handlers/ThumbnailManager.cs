@@ -11,6 +11,13 @@ namespace DoomLauncher
 {
     public static class ThumbnailManager
     {
+        private static List<IGameFile> IWads = new List<IGameFile>();
+
+        public static void SetIWads(List<IGameFile> iwads)
+        {
+            IWads = iwads;
+        }
+
         public static void UpdateThumbnail(IGameFile gameFile)
         {
             bool delete = false;
@@ -46,7 +53,8 @@ namespace DoomLauncher
 
         // Returns or creates a new thumbnail and inserts into database if it doesn't exist
         // Will search screenshots and thumbnails if provided, otherwise will check from database
-        public static IFileData GetOrCreateThumbnail(IGameFile gameFile, IEnumerable<IFileData> screenshots = null, IEnumerable<IFileData> thumbnails = null)
+        public static IFileData GetOrCreateThumbnail(IGameFile gameFile, IEnumerable<IFileData> screenshots = null, IEnumerable<IFileData> thumbnails = null,
+            bool checkIWad = true)
         {
             if (thumbnails == null)
                 thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Thumbnail);
@@ -60,7 +68,6 @@ namespace DoomLauncher
                 screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
 
             var screenshot = screenshots.FirstOrDefault(x => x.GameFileID == gameFile.GameFileID.Value);
-
             if (screenshot != null)
             {
                 string thumbnailFile = CreateThumbnail(screenshot);
@@ -78,6 +85,13 @@ namespace DoomLauncher
 
                 DataCache.Instance.DataSourceAdapter.InsertFile(fileData);
                 return fileData;
+            }
+
+            if (checkIWad && gameFile.IWadID.HasValue)
+            {
+                var iwad = IWads.FirstOrDefault(x => x.IWadID == gameFile.IWadID.Value);
+                if (iwad != null)
+                    return GetOrCreateThumbnail(iwad, checkIWad: false);
             }
 
             return null;
