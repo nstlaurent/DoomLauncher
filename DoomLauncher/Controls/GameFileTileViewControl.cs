@@ -523,11 +523,16 @@ namespace DoomLauncher
             }
 
             IFileData thumbnail = ThumbnailManager.GetOrCreateThumbnail(gameFile, screenshots, thumbnails);
-
             if (thumbnail != null)
-                tile.SetImageLocation(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName));
-            else
-                tile.SetImage(DataCache.Instance.DefaultImage);
+            {
+                if (thumbnail.FileTypeID == FileType.TileImage)
+                    tile.SetImageLocation(thumbnail.FileName);
+                else
+                    tile.SetImageLocation(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName));
+                return;
+            }
+            
+            tile.SetImage(DataCache.Instance.DefaultImage);
         }
 
         private void M_menu_Opened(object sender, EventArgs e)

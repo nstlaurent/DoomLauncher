@@ -7,5 +7,6 @@
         Demo = 2,
         SaveGame = 3,
         Thumbnail = 4,
+        TileImage = 5,
     }
 }

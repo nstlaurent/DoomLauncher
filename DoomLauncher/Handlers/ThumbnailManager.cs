@@ -11,11 +11,28 @@ namespace DoomLauncher
 {
     public static class ThumbnailManager
     {
-        private static List<IGameFile> IWads = new List<IGameFile>();
+        public static List<IGameFile> IWads = new List<IGameFile>();
+        public static readonly Dictionary<int, IFileData> IWadTileImages = new Dictionary<int, IFileData>();
 
         public static void SetIWads(List<IGameFile> iwads)
         {
             IWads = iwads;
+            IWadTileImages.Clear();
+
+            foreach (var iwad in iwads)
+            {
+                if (!IWadInfo.TryGetIWadInfo(iwad.FileName, out var iwadInfo) || 
+                    string.IsNullOrEmpty(iwadInfo.TileImage) || !File.Exists(iwadInfo.TileImage))
+                    continue;
+
+                IWadTileImages[iwad.IWadID.Value] = new FileData()
+                {
+                    GameFileID = iwad.GameFileID.Value,
+                    FileName = iwadInfo.TileImage,
+                    FileTypeID = FileType.TileImage,
+                    SourcePortID = 0
+                };  
+            }
         }
 
         public static void UpdateThumbnail(IGameFile gameFile)
@@ -90,8 +107,18 @@ namespace DoomLauncher
             if (checkIWad && gameFile.IWadID.HasValue)
             {
                 var iwad = IWads.FirstOrDefault(x => x.IWadID == gameFile.IWadID.Value);
-                if (iwad != null)
-                    return GetOrCreateThumbnail(iwad, checkIWad: false);
+                if (iwad == null)
+                    return null;
+
+                if (iwad.GameFileID.HasValue && iwad.GameFileID == gameFile.GameFileID)
+                {                    
+                    var iwadThumbnail = GetOrCreateThumbnail(iwad, checkIWad: false);
+                    if (iwadThumbnail != null)
+                        return iwadThumbnail;
+                }
+
+                if (IWadTileImages.TryGetValue(gameFile.IWadID.Value, out var fileData))
+                    return fileData;          
             }
 
             return null;

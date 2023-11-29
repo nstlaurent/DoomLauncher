@@ -791,9 +791,16 @@ namespace DoomLauncher
 
                 if (imagePaths.Count == 0 && item.IWadID.HasValue)
                 {
-                    var iwad = DataCache.Instance.DataSourceAdapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == item.IWadID.Value);
+                    var iwad = ThumbnailManager.IWads.FirstOrDefault(x => x.IWadID == item.IWadID.Value);
                     if (iwad != null)
-                        SetGameFileImages(iwad, imagePaths);
+                    {
+                        // If this is an IWAD attempt to get user set images, otherwise use pre-defined tile image if exists
+                        if (iwad.GameFileID.HasValue && iwad.GameFileID == item.GameFileID)                        
+                            SetGameFileImages(iwad, imagePaths);
+
+                        if (imagePaths.Count == 0 && ThumbnailManager.IWadTileImages.TryGetValue(item.IWadID.Value, out var fileData))
+                            imagePaths.Add(new PreviewImage(fileData.FileName, string.Empty));
+                    }
                 }
             }
 
@@ -1439,9 +1446,6 @@ namespace DoomLauncher
             {
                 DisplayInvalidFilesError(m_zdlInvalidFiles);
             }
-
-            if (type == AddFileType.IWad)
-                ThumbnailManager.SetIWads(DataSourceAdapter.GetGameFileIWads().ToList());
         }
 
         private bool VerifyAddFiles(AddFileType type, string[] files)
