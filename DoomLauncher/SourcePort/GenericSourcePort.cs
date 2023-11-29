@@ -89,9 +89,9 @@ namespace DoomLauncher.SourcePort
 
         public virtual bool LoadSaveGameSupported() => false;
 
-        public virtual string GetScreenshotDirectory() => null;
+        public virtual string[] GetScreenshotDirectories() => Array.Empty<string>();
 
-        public virtual string GetSaveGameDirectory() => null;
+        public virtual string[] GetSaveGameDirectories() => Array.Empty<string>();
 
         public virtual IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats) => null;
         public virtual ISaveGameReader CreateSaveGameReader(FileInfo file)

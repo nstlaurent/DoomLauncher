@@ -398,9 +398,11 @@ namespace DoomLauncher
             m_saveFileDetectors = CreateDefaultSaveGameDetectors();
             m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePortData.GetSavePath().GetFullPath()));
 
-            string saveDir = sourcePort.GetSaveGameDirectory();
-            if (!string.IsNullOrEmpty(saveDir) && Directory.Exists(saveDir))
-                m_saveFileDetectors.Add(CreateSaveGameDetector(saveDir));
+            foreach (var saveDir in sourcePort.GetSaveGameDirectories())
+            {
+                if (!string.IsNullOrEmpty(saveDir) && Directory.Exists(saveDir))
+                    m_saveFileDetectors.Add(CreateSaveGameDetector(saveDir));
+            }
 
             Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
         }
@@ -416,9 +418,11 @@ namespace DoomLauncher
             m_screenshotDetectors = CreateDefaultScreenshotDetectors();
             m_screenshotDetectors.Add(CreateScreenshotDetector(sourcePortData.Directory.GetFullPath()));
 
-            string screenshotDir = sourcePort.GetScreenshotDirectory();
-            if (!string.IsNullOrEmpty(screenshotDir) && Directory.Exists(screenshotDir))
-                m_screenshotDetectors.Add(CreateScreenshotDetector(screenshotDir));
+            foreach (var screenshotDir in sourcePort.GetScreenshotDirectories())
+            {
+                if (!string.IsNullOrEmpty(screenshotDir) && Directory.Exists(screenshotDir))
+                    m_screenshotDetectors.Add(CreateScreenshotDetector(screenshotDir));
+            }
 
             Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
         }

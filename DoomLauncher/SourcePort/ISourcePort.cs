@@ -18,8 +18,8 @@ namespace DoomLauncher.SourcePort
         bool Supported(); //if the exe is supported by this implementation
         bool StatisticsSupported();
         bool LoadSaveGameSupported();
-        string GetScreenshotDirectory();
-        string GetSaveGameDirectory();
+        string[] GetScreenshotDirectories();
+        string[] GetSaveGameDirectories();
         IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats);
         ISaveGameReader CreateSaveGameReader(FileInfo file);
     }

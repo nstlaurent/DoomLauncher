@@ -18,20 +18,20 @@ namespace DoomLauncher
 
         struct LevelCount
         {
-            public UInt32 levelcount;
+            public uint levelcount;
         }
 
         struct LevelStats //item stats excluded for binary (old save format) compatibility
         {
-            public UInt32 totalkills;
-            public UInt32 killcount;
-            public UInt32 totalsecrets;
-            public UInt32 secretcount;
-            public UInt32 leveltime;
+            public uint totalkills;
+            public uint killcount;
+            public uint totalsecrets;
+            public uint secretcount;
+            public uint leveltime;
         }
 
         private readonly string m_dir;
-        private List<NewFileDetector> m_detectors = new List<NewFileDetector>();
+        private readonly List<NewFileDetector> m_detectors = new List<NewFileDetector>();
         private readonly List<IStatsData> m_statistics;
         private readonly List<string> m_errors = new List<string>();
 
@@ -53,9 +53,11 @@ namespace DoomLauncher
             string[] zdsExtensions = new string[] { ".zds" };
             m_detectors.Add(new NewFileDetector(zdsExtensions, m_dir, true));
 
-            string userDir = ZDoomSourcePort.UserSaveGameDirectory;
-            if (Directory.Exists(userDir))
-                m_detectors.Add(new NewFileDetector(zdsExtensions, userDir, true));
+            foreach (var userDir in ZDoomSourcePort.UserSaveGameDirectories)
+            {
+                if (Directory.Exists(userDir))
+                    m_detectors.Add(new NewFileDetector(zdsExtensions, userDir, true));
+            }
             
             m_detectors.ForEach(x => x.StartDetection());
         }
@@ -294,8 +296,8 @@ namespace DoomLauncher
         }
 
         //separate json and binary to avoid stat overflow with how binary (old save format) is read
-        private static StatsData CreateJsonStatsDataSource(UInt32 totalkills, UInt32 killcount, UInt32 totalitems, UInt32 itemcount, UInt32 totalsecrets, UInt32 secretcount,
-            UInt32 leveltime, string name, int? skill)
+        private static StatsData CreateJsonStatsDataSource(uint totalkills, uint killcount, uint totalitems, uint itemcount, uint totalsecrets, uint secretcount,
+            uint leveltime, string name, int? skill)
         {
             float calctime = Convert.ToSingle(leveltime) / 35.0f;
             StatsData stats = new StatsData
@@ -315,7 +317,7 @@ namespace DoomLauncher
             return stats;
         }
 
-        private static StatsData CreateBinaryStatsDataSource(UInt32 totalkills, UInt32 killcount, UInt32 totalsecrets, UInt32 secretcount, UInt32 leveltime, string name)
+        private static StatsData CreateBinaryStatsDataSource(uint totalkills, uint killcount, uint totalsecrets, uint secretcount, uint leveltime, string name)
         {
             float calctime = Convert.ToSingle(leveltime) / 35.0f;
             StatsData stats = new StatsData
@@ -348,7 +350,7 @@ namespace DoomLauncher
             return count;
         }
 
-        private static UInt32 ReverseBytes(UInt32 value)
+        private static uint ReverseBytes(uint value)
         {
             return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
                    (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
