@@ -11,7 +11,7 @@ namespace DoomLauncher
         public IWadInfo(string title, string tileImage, bool hasMeta = false)
         {
             Title = title;
-            TileImage = Path.Combine("TileImages", tileImage);
+            TileImage = Path.Combine(LauncherPath.GetDataDirectory(), "TileImages", tileImage);
             HasMetadata = hasMeta;
         }
 
