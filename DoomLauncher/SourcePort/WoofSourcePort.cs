@@ -2,7 +2,7 @@
 
 namespace DoomLauncher.SourcePort
 {
-    public class WoofSourcePort : ChocolateDoomSourcePort
+    public class WoofSourcePort : BoomSourcePort
     {
         public WoofSourcePort(ISourcePortData sourcePortData)
             : base(sourcePortData)
