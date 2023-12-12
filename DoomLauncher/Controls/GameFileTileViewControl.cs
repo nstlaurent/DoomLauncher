@@ -276,6 +276,13 @@ namespace DoomLauncher
                 int baseIndex = pagingControl.PageIndex * GameFileTileManager.Instance.MaxItems;
                 int originalIndex = GameFileTileIndex(m_selectedTiles[0]) + baseIndex;
 
+                if (originalIndex < 0 || originalIndex >= GameFileTileManager.Instance.Tiles.Count)
+                {
+                    ClearSelection();
+                    if (m_gameFiles.Count > 0)
+                        SelectGameFile(m_gameFiles[0]);
+                }
+
                 int newIndex = GetNextTileIndex(originalIndex, e.KeyCode);
                 if (newIndex == originalIndex)
                     return;
@@ -588,6 +595,9 @@ namespace DoomLauncher
             int start = GameFileTileIndex(m_selectedTiles.First());
             int end = GameFileTileIndex(m_selectedTiles.Last());
 
+            if (start == -1 || end == -1)
+                return;
+
             if (start > end)
             {
                 int temp = start;
@@ -596,6 +606,8 @@ namespace DoomLauncher
             }
 
             int index = GameFileTileIndex(tile);
+            if (index == -1)
+                return;
 
             if (index < start)
                 start = index;
