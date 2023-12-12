@@ -13,10 +13,11 @@ namespace DoomLauncher
 {
     public partial class SettingsForm : Form
     {
+        private const int TrackBarStep = 20;
         private readonly List<Tuple<IConfigurationData, object>> m_configValues = new List<Tuple<IConfigurationData, object>>();
         private TextBox m_gameFileDirectory, m_screenshotDirectories;
-        private Label m_lblScreenshotWidth;
-        private TrackBar m_screenshotTrackBar;
+
+        private readonly Dictionary<TrackBar, Label> m_trackBarToLabel = new Dictionary<TrackBar, Label>();
 
         private readonly IDataSourceAdapter m_adapter;
         private readonly AppConfiguration m_appConfig;
@@ -39,7 +40,6 @@ namespace DoomLauncher
 
             PopulateDefaultSettings(m_adapter);
             PopulateConfiguration();
-            UpdateScreenshotWidth(m_screenshotTrackBar);
             chkListViews.BorderStyle = BorderStyle.FixedSingle;
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
@@ -110,8 +110,10 @@ namespace DoomLauncher
 
                 if (!string.IsNullOrEmpty(config.AvailableValues))
                     HandleComboBox(tblMain, config);
-                else if (config.Name == AppConfiguration.ScreenshotPreviewSizeName) //special case for TrackBar
-                    HandleScreenshotPreviewSize(tblMain, config, dpiScale);
+                else if (config.Name == AppConfiguration.ScreenshotPreviewSizeName)
+                    AddTrackBar(tblMain, config, dpiScale);
+                else if (config.Name == AppConfiguration.TileImageSizeName)
+                    AddTrackBar(tblMain, config, dpiScale);
                 else
                     HandleTextBox(tblMain, config);
 
@@ -169,43 +171,60 @@ namespace DoomLauncher
             m_configValues.Add(new Tuple<IConfigurationData, object>(config, cmb));
         }
 
-        private void HandleScreenshotPreviewSize(TableLayoutPanel tblMain, IConfigurationData config, DpiScale dpiScale)
+        private void AddTrackBar(TableLayoutPanel tblMain, IConfigurationData config, DpiScale dpiScale)
         {
-            m_lblScreenshotWidth = new Label
+            var label = new Label
             {
                 Width = dpiScale.ScaleIntX(68),
                 Height = dpiScale.ScaleIntY(16),
-                Margin = new Padding(dpiScale.ScaleIntX(4), dpiScale.ScaleIntX(8), 0, 0)
+                Margin = new Padding(dpiScale.ScaleIntX(0), dpiScale.ScaleIntY(8), 0, 0)
             };
 
-            m_screenshotTrackBar = new TrackBar
+            var trackbar = new TrackBar
             {
-                Minimum = -8,
-                Maximum = 8,
-                Value = Convert.ToInt32(config.Value),
+                Minimum = 100,
+                Maximum = 600,
+                LargeChange = TrackBarStep,
+                SmallChange = TrackBarStep,
+                TickFrequency = TrackBarStep,
+                Value = Math.Max(100, Convert.ToInt32(config.Value)),
                 Width = dpiScale.ScaleIntX(200)
             };
-            m_screenshotTrackBar.ValueChanged += Trk_ValueChanged;
+            trackbar.ValueChanged += Trk_ValueChanged;
 
             FlowLayoutPanel flp = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill
             };
-            flp.Controls.Add(m_screenshotTrackBar);
-            flp.Controls.Add(m_lblScreenshotWidth);
+
+            flp.Controls.Add(trackbar);
+            flp.Controls.Add(label);
+
+            m_trackBarToLabel[trackbar] = label;
 
             tblMain.Controls.Add(flp, 1, tblMain.RowStyles.Count - 1);
-            m_configValues.Add(new Tuple<IConfigurationData, object>(config, m_screenshotTrackBar));
+            m_configValues.Add(new Tuple<IConfigurationData, object>(config, trackbar));
+
+            UpdateTrackBar(trackbar);
         }
 
         private void Trk_ValueChanged(object sender, EventArgs e)
         {
-            UpdateScreenshotWidth(((TrackBar)sender));
+            UpdateTrackBar((TrackBar)sender);
         }
 
-        private void UpdateScreenshotWidth(TrackBar trackBar)
+        private void UpdateTrackBar(TrackBar trackBar)
         {
-            m_lblScreenshotWidth.Text = string.Concat("Width: ", Util.GetPreviewScreenshotWidth(trackBar.Value));
+            trackBar.ValueChanged -= Trk_ValueChanged;
+            int remainder = trackBar.Value % TrackBarStep;
+            int amount = trackBar.Value / TrackBarStep;
+            trackBar.Value = (amount * TrackBarStep) + (remainder > TrackBarStep / 2 ? TrackBarStep : 0);
+            trackBar.ValueChanged += Trk_ValueChanged;
+
+            if (trackBar == null || !m_trackBarToLabel.TryGetValue(trackBar, out var label))
+                return;
+
+            label.Text = string.Concat("Width: ", trackBar.Value);
         }
 
         private void HandleScreenshotCaptureDirectories(TableLayoutPanel tblMain, TextBox txt)

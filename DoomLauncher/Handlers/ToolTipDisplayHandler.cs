@@ -79,6 +79,9 @@ namespace DoomLauncher
             if (m_gameFile == null)
                 return;
 
+            if (!DataCache.Instance.AppConfiguration.ShowTooltip)
+                return;
+
             ToolTipHandler toolTipHandler = new ToolTipHandler();
             m_showPoint = GetMouseLocation();
             m_toolTip.Show(toolTipHandler.GetToolTipText(m_form.Font, m_gameFile), m_form, m_showPoint.X, m_showPoint.Y, 32767);

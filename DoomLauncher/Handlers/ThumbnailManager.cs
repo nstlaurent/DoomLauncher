@@ -126,16 +126,17 @@ namespace DoomLauncher
 
         private static string CreateThumbnail(IFileData screenshot)
         {
-            string file = Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
+            var config = DataCache.Instance.AppConfiguration;
+            string file = Path.Combine(config.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
             if (!File.Exists(file))
                 return null;
 
             using (Image image = Image.FromFile(file))
             {
-                using (Image thumb = image.FixedSize(GameFileTile.ImageWidth, GameFileTile.ImageHeight, Color.Black))
+                using (Image thumb = image.FixedSize(config.TileImageSize, GameFileTile.GetImageHeight(config.TileImageSize), Color.Black))
                 {
                     string filename = Guid.NewGuid().ToString() + ".png";
-                    thumb.Save(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);
+                    thumb.Save(Path.Combine(config.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);
                     return filename;
                 }
             }

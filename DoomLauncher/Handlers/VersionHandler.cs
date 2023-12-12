@@ -93,6 +93,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_5_3_Update3, AppVersion.Version_3_5_3_Update3);
                 ExecuteUpdate(Pre_Version_3_7_0, AppVersion.Version_3_7_0);
                 ExecuteUpdate(Pre_Version_3_7_0_Update1, AppVersion.Version_3_7_0_Update1);
+                ExecuteUpdate(Pre_Version_3_7_4, AppVersion.Version_3_7_4);
             }
 
             return new VersionUpdateResults(m_restartRequired);
@@ -861,6 +862,30 @@ namespace DoomLauncher
                 UserCanModify = true,
                 AvailableValues = "Yes;true;No;false"
             });
+        }
+
+        private void Pre_Version_3_7_4()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = AppConfiguration.ShowTooltipName,
+                Value = "true",
+                UserCanModify = true,
+                AvailableValues = "Yes;true;No;false"
+            });
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = AppConfiguration.TileImageSizeName,
+                Value = "300",
+                UserCanModify = true,
+            });
+
+            var screenshotWidth = m_adapter.GetConfiguration().FirstOrDefault(x => x.Name == AppConfiguration.ScreenshotPreviewSizeName);
+            if (screenshotWidth != null)
+            {
+                screenshotWidth.Value = Util.GetPreviewScreenshotWidth(Convert.ToInt32(screenshotWidth.Value)).ToString();
+                m_adapter.UpdateConfiguration(screenshotWidth);
+            }
         }
 
         private void UpdateSourcePortsTable()

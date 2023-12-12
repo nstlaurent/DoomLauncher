@@ -2,7 +2,6 @@
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -38,6 +37,8 @@ namespace DoomLauncher
         public static string VisibleViewsName => "VisibleViews";
         public static string ShowPlayDialogName => "ShowPlayDialog";
         public static string ImportScreenshotsName => "ImportScreenshots";
+        public static string ShowTooltipName => "ShowToolTip";
+        public static string TileImageSizeName => "TileImageSize";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -112,6 +113,8 @@ namespace DoomLauncher
             {
                 IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
 
+                int oldTileImageSize = TileImageSize;
+
                 IdGamesUrl = GetValue(config, "IdGamesUrl", string.Empty);
                 ApiPage = GetValue(config, "ApiPage", string.Empty);
                 MirrorUrl = GetValue(config, "MirrorUrl", string.Empty);
@@ -139,6 +142,8 @@ namespace DoomLauncher
                 AutomaticallyPullTitlpic = Convert.ToBoolean(GetValue(config, AutomaticallyPullTitlpicName, "true"));
                 ShowPlayDialog = Convert.ToBoolean(GetValue(config, ShowPlayDialogName, "true"));
                 ImportScreenshots = Convert.ToBoolean(GetValue(config, ImportScreenshotsName, "false"));
+                ShowTooltip = Convert.ToBoolean(GetValue(config, ShowTooltipName, "true"));
+                TileImageSize = Convert.ToInt32(GetValue(config, TileImageSizeName, "300"));
 
                 List<EventHandler> events = new List<EventHandler>();
                 if (Enum.TryParse(GetValue(config, "ColorThemeType", "Default"), out ColorThemeType colorThemeType))
@@ -151,7 +156,7 @@ namespace DoomLauncher
                 }
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType", GameFileViewType.TileViewCondensed.ToString("g")));
-                if (newType != GameFileViewType)
+                if (newType != GameFileViewType || oldTileImageSize != TileImageSize)
                 {
                     GameFileViewType = newType;
                     AddEvent(events, GameFileViewTypeChanged);
@@ -313,6 +318,8 @@ namespace DoomLauncher
         public bool AutomaticallyPullTitlpic { get; set; }
         public bool ShowPlayDialog { get; set; }
         public bool ImportScreenshots { get; set; }
+        public bool ShowTooltip { get; set; }
+        public int TileImageSize { get; set; }
         public HashSet<string> VisibleViews { get; set; } = new HashSet<string>();
         // The theme for the application to use. Default or Dark.
         public ColorThemeType ColorTheme { get; set; }

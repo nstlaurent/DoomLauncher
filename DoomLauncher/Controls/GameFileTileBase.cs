@@ -11,6 +11,7 @@ namespace DoomLauncher
         public abstract event MouseEventHandler TileClick;
         public abstract event EventHandler TileDoubleClick;
 
+        public abstract int ImageWidth { get; protected set; }
         public abstract IGameFile GameFile { get; protected set; }
         public abstract bool Selected { get; protected set; }
 

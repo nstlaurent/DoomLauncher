@@ -38,7 +38,7 @@ namespace DoomLauncher
             {
                 GameFileTileBase testTile = m_factory.CreateTile();
 
-                if (Tiles.Count == 0 || Tiles[0].GetType() != testTile.GetType())
+                if (Tiles.Count == 0 || Tiles[0].GetType() != testTile.GetType() || Tiles[0].ImageWidth != testTile.ImageWidth)
                     RecreateLayout();
                 else
                     UpdateLayout();

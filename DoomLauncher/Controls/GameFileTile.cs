@@ -9,8 +9,6 @@ namespace DoomLauncher
 {
     public partial class GameFileTile : GameFileTileBase
     {
-        public static readonly int ImageWidth = 300;
-        public static readonly int ImageHeight = (int)(ImageWidth / (16.0 / 9.0));
         private static readonly int LabelHeight = 32;
         private static readonly string NewString = "New!";
         private static readonly int NewPadX = 6;
@@ -21,9 +19,12 @@ namespace DoomLauncher
         public override event MouseEventHandler TileClick;
         public override event EventHandler TileDoubleClick;
 
+        public override int ImageWidth { get; protected set; }
+        public readonly int ImageHeight;
         public bool DrawBorder { get; set; } = true;
         public override IGameFile GameFile { get; protected set; }
         public override bool Selected { get; protected set; }
+
 
         private Color m_titleColor = ColorTheme.Current.Text;
         private bool m_new;
@@ -36,11 +37,11 @@ namespace DoomLauncher
 
             DpiScale dpiScale = new DpiScale(CreateGraphics());
 
-            int imageWidth = dpiScale.ScaleIntX(ImageWidth);
-            int imageHeight = dpiScale.ScaleIntY(ImageHeight);
+            ImageWidth = Math.Max(DataCache.Instance.AppConfiguration.TileImageSize, 100);
+            ImageHeight = dpiScale.ScaleIntY(GetImageHeight(ImageWidth));
             int labelHeight = dpiScale.ScaleIntY(LabelHeight);
 
-            Width = imageWidth;
+            Width = dpiScale.ScaleIntX(ImageWidth);
             Height = GetStandardHeight(dpiScale);
 
             pb.Width = Width;
@@ -59,6 +60,8 @@ namespace DoomLauncher
             pb.Paint += Screenshot_Paint;
             Paint += GameFileTile_Paint;
         }
+
+        public static int GetImageHeight(int imageWidth) => (int)(imageWidth / (16.0 / 9.0));
 
         public int GetStandardHeight(DpiScale dpiScale)
         {

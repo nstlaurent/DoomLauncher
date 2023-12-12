@@ -15,6 +15,7 @@ namespace DoomLauncher
 
         public override IGameFile GameFile { get { return gameTile.GameFile; } protected set { } }
         public override bool Selected { get { return gameTile.Selected; } protected set { } }
+        public override int ImageWidth { get { return gameTile.ImageWidth; } protected set { } }
 
         private static readonly Font DisplayFont = new Font("Microsof Sans Serif", 10);
         private static readonly Font DisplayBoldFont = new Font("Microsof Sans Serif", 10, FontStyle.Bold);
@@ -34,7 +35,7 @@ namespace DoomLauncher
             BackColor = ColorTheme.Current.WindowDark;
 
             DpiScale dpiScale = new DpiScale(CreateGraphics());
-            gameTile.Width = dpiScale.ScaleIntX(GameFileTile.ImageWidth);
+            gameTile.Width = dpiScale.ScaleIntX(DataCache.Instance.AppConfiguration.TileImageSize);
 
             // Something in the designer is messing up the height, forcing it here
             gameTile.Height = gameTile.GetStandardHeight(dpiScale);
@@ -80,49 +81,61 @@ namespace DoomLauncher
                 e.Graphics.DrawRectangle(SeparatorPen, 0, 0, Width - 1, Height - 1);
         }
 
+        private int m_selectPad = 1;
+
         private void PnlData_Paint(object sender, PaintEventArgs e)
         {
             if (GameFile == null)
                 return;
 
             DpiScale dpiScale = new DpiScale(e.Graphics);
+            m_selectPad = (int)Math.Ceiling(dpiScale.ScaleFloatY(1));
 
             float xPos = gameTile.Location.X + dpiScale.ScaleIntX(4);
             int yPos = dpiScale.ScaleIntY(8);
             int offset = dpiScale.ScaleIntY(22);
 
-            e.Graphics.DrawString("Filename", DisplayBoldFont, TextBrush, xPos, yPos);
+            var graphics = e.Graphics;
+
+            SafeDrawString(graphics, "Filename", DisplayBoldFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString("Title", DisplayBoldFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, "Title", DisplayBoldFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString("Author", DisplayBoldFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, "Author", DisplayBoldFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString("Release", DisplayBoldFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, "Release", DisplayBoldFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString("Played", DisplayBoldFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, "Played", DisplayBoldFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString("Maps", DisplayBoldFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, "Maps", DisplayBoldFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString("Tags", DisplayBoldFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, "Tags", DisplayBoldFont, TextBrush, xPos, yPos, offset);
 
             xPos = gameTile.Location.X + dpiScale.ScaleFloatX(82);
             yPos = dpiScale.ScaleIntY(8);
 
             SizeF maxLabelSize = new SizeF(pnlData.ClientRectangle.Width - xPos + dpiScale.ScaleIntX(8), 16);
 
-            e.Graphics.DrawString(GameFile.FileNameNoPath, DisplayFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, GameFile.FileNameNoPath, DisplayFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString(Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Title, maxLabelSize), DisplayFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Title, maxLabelSize), DisplayFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString(Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Author, maxLabelSize), DisplayFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, Util.GetClippedEllipsesText(e.Graphics, DisplayFont, GameFile.Author, maxLabelSize), DisplayFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString(m_release, DisplayFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, m_release, DisplayFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString(m_played, DisplayFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, m_played, DisplayFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString(m_maps, DisplayFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, m_maps, DisplayFont, TextBrush, xPos, yPos, offset);
             yPos += offset;
-            e.Graphics.DrawString(m_tags, DisplayFont, TextBrush, xPos, yPos);
+            SafeDrawString(graphics, m_tags, DisplayFont, TextBrush, xPos, yPos, offset);
+        }
+
+        private void SafeDrawString(Graphics g, string s, Font font, Brush brush, float x, float y, int sizeY)
+        {
+            if (y + sizeY >= Height - m_selectPad)
+                return;
+            g.DrawString(s, font, brush, x, y);
         }
 
         private void GameTile_TileDoubleClick(object sender, EventArgs e)
