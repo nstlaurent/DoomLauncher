@@ -299,52 +299,62 @@ namespace DoomLauncher
 
         private int GetNextTileIndex(int index, Keys keycode)
         {
-            GameFileTileBase tile = GameFileTileManager.Instance.Tiles[index];
-            int baseIndex = pagingControl.PageIndex * GameFileTileManager.Instance.MaxItems;
+            if (index < 0 || index >= GameFileTileManager.Instance.Tiles.Count)
+                return index;
 
-            int startIndex;
-            int endIndex;
+            try
+            {
+                GameFileTileBase tile = GameFileTileManager.Instance.Tiles[index];
+                int baseIndex = pagingControl.PageIndex * GameFileTileManager.Instance.MaxItems;
 
-            if (keycode == Keys.Down || keycode == Keys.Right)
-            {
-                startIndex = index;
-                endIndex = baseIndex + GameFileTileManager.Instance.MaxItems;
+                int startIndex;
+                int endIndex;
+
+                if (keycode == Keys.Down || keycode == Keys.Right)
+                {
+                    startIndex = index;
+                    endIndex = baseIndex + GameFileTileManager.Instance.MaxItems;
+                }
+                else if (keycode == Keys.Up || keycode == Keys.Left)
+                {
+                    startIndex = index;
+                    endIndex = baseIndex - 1;
+                }
+                else
+                {
+                    return index;
+                }
+
+                while (startIndex != endIndex)
+                {
+                    GameFileTileBase nextTile = GameFileTileManager.Instance.Tiles[startIndex];
+
+                    if (keycode == Keys.Down && nextTile.Location.Y > tile.Location.Y && nextTile.Location.X == tile.Location.X)
+                        return startIndex;
+                    else if (keycode == Keys.Up && nextTile.Location.Y < tile.Location.Y && nextTile.Location.X == tile.Location.X)
+                        return startIndex;
+                    else if (keycode == Keys.Right && nextTile.Location.X > tile.Location.X)
+                        return startIndex;
+                    else if (keycode == Keys.Left && nextTile.Location.X < tile.Location.X)
+                        return startIndex;
+
+                    if (keycode == Keys.Down || keycode == Keys.Right)
+                        startIndex++;
+                    else
+                        startIndex--;
+                }
+
+                if (keycode == Keys.Left && index - 1 > startIndex)
+                    return index - 1;
+                else if (keycode == Keys.Right && index + 1 < endIndex)
+                    return index + 1;
+
+                return index;
             }
-            else if (keycode == Keys.Up || keycode == Keys.Left)
-            {
-                startIndex = index;
-                endIndex = baseIndex - 1;
-            }
-            else
+            catch
             {
                 return index;
             }
-
-            while (startIndex != endIndex)
-            {
-                GameFileTileBase nextTile = GameFileTileManager.Instance.Tiles[startIndex];
-
-                if (keycode == Keys.Down && nextTile.Location.Y > tile.Location.Y && nextTile.Location.X == tile.Location.X)
-                    return startIndex;
-                else if (keycode == Keys.Up && nextTile.Location.Y < tile.Location.Y && nextTile.Location.X == tile.Location.X)
-                    return startIndex;
-                else if (keycode == Keys.Right && nextTile.Location.X > tile.Location.X)
-                    return startIndex;
-                else if (keycode == Keys.Left && nextTile.Location.X < tile.Location.X)
-                    return startIndex;
-
-                if (keycode == Keys.Down || keycode == Keys.Right)
-                    startIndex++;
-                else
-                    startIndex--;
-            }
-
-            if (keycode == Keys.Left && index - 1 > startIndex)
-                return index - 1;
-            else if (keycode == Keys.Right && index + 1 < endIndex)
-                return index + 1;
-
-            return index;
         }
 
         private void GameFileTileViewControl_KeyPress(object sender, KeyPressEventArgs e)
