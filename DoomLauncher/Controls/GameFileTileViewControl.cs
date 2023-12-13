@@ -502,7 +502,7 @@ namespace DoomLauncher
 
             foreach (var gameFile in gameFiles)
             {
-                SetTileData(GameFileTileManager.Instance.Tiles[tileIndex], gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(gameFile), false);
+                SetTileData(GameFileTileManager.Instance.Tiles[tileIndex], gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetEnumerableTags(gameFile), false);
                 GameFileTileManager.Instance.Tiles[tileIndex].Visible = true;
                 tileIndex++;
             }

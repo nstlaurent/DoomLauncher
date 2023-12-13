@@ -18,7 +18,7 @@ namespace DoomLauncher
         {
             m_adapter = adapter;
 
-            Refresh(new ITagData[] { });
+            Refresh(Array.Empty<ITagData>());
         }
 
         private Dictionary<int, ITagMapping[]> BuildTagMappingDictionary(IEnumerable<ITagMapping> tagMapping)
@@ -49,15 +49,24 @@ namespace DoomLauncher
 
         public ITagData[] GetTags(IGameFile gameFile)
         {
-            if (gameFile != null && gameFile.GameFileID.HasValue && m_fileTagMapping.ContainsKey(gameFile.GameFileID.Value))
+            if (gameFile != null && gameFile.GameFileID.HasValue && m_fileTagMapping.TryGetValue(gameFile.GameFileID.Value, out var tagMapping))
             {
-                ITagMapping[] tagMapping = m_fileTagMapping[gameFile.GameFileID.Value];
-
                 return tagMapping.Where(k => m_tags.ContainsKey(k.TagID))
                      .Select(k => m_tags[k.TagID]).OrderBy(x => x.Name).ToArray();
             }
 
-            return new ITagData[] { };
+            return Array.Empty<ITagData>();
+        }
+
+        public IEnumerable<ITagData> GetEnumerableTags(IGameFile gameFile)
+        {
+            if (gameFile != null && gameFile.GameFileID.HasValue && m_fileTagMapping.TryGetValue(gameFile.GameFileID.Value, out var tagMapping))
+            {
+                return tagMapping.Where(k => m_tags.ContainsKey(k.TagID))
+                     .Select(k => m_tags[k.TagID]).OrderBy(x => x.Name);
+            }
+
+            return Array.Empty<ITagData>();
         }
     }
 }
