@@ -131,9 +131,10 @@ namespace DoomLauncher
             if (!File.Exists(file))
                 return null;
 
+            const int ThumbnailSize = 300;
             using (Image image = Image.FromFile(file))
             {
-                using (Image thumb = image.FixedSize(config.TileImageSize, GameFileTile.GetImageHeight(config.TileImageSize), Color.Black))
+                using (Image thumb = image.FixedSize(ThumbnailSize, GameFileTile.GetImageHeight(ThumbnailSize), Color.Black))
                 {
                     string filename = Guid.NewGuid().ToString() + ".png";
                     thumb.Save(Path.Combine(config.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);
