@@ -25,7 +25,6 @@ namespace DoomLauncher
         public override IGameFile GameFile { get; protected set; }
         public override bool Selected { get; protected set; }
 
-
         private Color m_titleColor = ColorTheme.Current.Text;
         private bool m_new;
         private bool m_loadingImage;
@@ -37,11 +36,11 @@ namespace DoomLauncher
 
             DpiScale dpiScale = new DpiScale(CreateGraphics());
 
-            ImageWidth = Math.Max(DataCache.Instance.AppConfiguration.TileImageSize, 100);
-            ImageHeight = dpiScale.ScaleIntY(GetImageHeight(ImageWidth));
+            ImageWidth = dpiScale.ScaleIntX(Math.Max(DataCache.Instance.AppConfiguration.TileImageSize, 100));
+            ImageHeight = GetImageHeight(ImageWidth);
             int labelHeight = dpiScale.ScaleIntY(LabelHeight);
 
-            Width = dpiScale.ScaleIntX(ImageWidth);
+            Width = ImageWidth;
             Height = GetStandardHeight(dpiScale);
 
             pb.Width = Width;
@@ -65,7 +64,7 @@ namespace DoomLauncher
 
         public int GetStandardHeight(DpiScale dpiScale)
         {
-            return dpiScale.ScaleIntY(ImageHeight) + dpiScale.ScaleIntY(LabelHeight);
+            return ImageHeight + dpiScale.ScaleIntY(LabelHeight);
         }
 
         private void Pb_LoadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
@@ -132,13 +131,11 @@ namespace DoomLauncher
             {
                 BorderStyle = BorderStyle.FixedSingle;
                 BackColor = ColorTheme.Current.Highlight;
-                pb.BackColor = ColorTheme.Current.Highlight;
             }
             else
             {
                 BorderStyle = BorderStyle.None;
                 BackColor = ColorTheme.Current.WindowDark;
-                pb.BackColor = Color.Black;
             }
         }
 
