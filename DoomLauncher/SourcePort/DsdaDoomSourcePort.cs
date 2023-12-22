@@ -10,9 +10,6 @@ namespace DoomLauncher.SourcePort
 
         }
 
-        public override bool Supported()
-        {
-            return CheckFileNameWithoutExtension("dsda-doom");
-        }
+        public override bool Supported() => CheckFileNameWithoutExtension("dsda-doom");
     }
 }

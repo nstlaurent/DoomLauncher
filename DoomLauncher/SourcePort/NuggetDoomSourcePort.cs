@@ -10,9 +10,7 @@ namespace DoomLauncher.SourcePort
 
         }
 
-        public override bool Supported()
-        {
-            return CheckFileNameWithoutExtension("nugget-doom");
-        }
+        public override bool Supported() => CheckFileNameWithoutExtension("nugget-doom");        
+        public override bool LoadSaveGameSupported() => true;
     }
 }

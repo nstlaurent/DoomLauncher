@@ -10,9 +10,7 @@ namespace DoomLauncher.SourcePort
 
         }
 
-        public override bool Supported()
-        {
-            return CheckFileNameWithoutExtension("fdwl");
-        }
+        public override bool Supported() => CheckFileNameWithoutExtension("fdwl");
+        public override bool LoadSaveGameSupported() => true;
     }
 }

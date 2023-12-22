@@ -12,24 +12,16 @@ namespace DoomLauncher.SourcePort
 
         }
 
-        public override bool Supported()
-        {
-            return CheckFileNameContains("prboom") || CheckFileNameContains("glboom");
-        }
+        public override bool Supported() =>
+            CheckFileNameContains("prboom") || CheckFileNameContains("glboom");
 
-        public override bool StatisticsSupported()
-        {
-            return true;
-        }
 
-        public override bool LoadSaveGameSupported()
-        {
-            return true;
-        }
+        public override bool StatisticsSupported() => true;
 
-        public override IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats)
-        {
-            return new BoomStatsReader(gameFile, Path.Combine(m_sourcePortData.Directory.GetFullPath(), "levelstat.txt"));
-        }
+        public override bool LoadSaveGameSupported() => false;
+
+        public override IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats) =>
+            new BoomStatsReader(gameFile, Path.Combine(m_sourcePortData.Directory.GetFullPath(), "levelstat.txt"));
+ 
     }
 }
