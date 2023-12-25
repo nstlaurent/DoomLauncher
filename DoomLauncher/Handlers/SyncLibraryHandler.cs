@@ -14,6 +14,7 @@ namespace DoomLauncher
     public class SyncLibraryHandler
     {
         private static readonly string[] MapInfoNames = new string[] { "mapinfo", "zmapinfo" };
+        private static readonly string[] MapInfoSubNames = new string[] { "mapinfo.", "zmapinfo." };
         private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");
         private static readonly Regex IncludeRegex = new Regex(@"\s*include\s+(\S+)");
         private static readonly Regex MapRegex = new Regex(@"\s*map\s+\w+");
@@ -281,7 +282,8 @@ namespace DoomLauncher
             {
                 mapInfoData = GetArchiveEntryData(mapInfoEntries);
                 m_readMapInfo = true;
-                AppendMapSet(sb, MapStringFromMapInfo(reader, mapInfoData[0]));
+                foreach (var mapInfo in mapInfoData)
+                    AppendMapSet(sb, MapStringFromMapInfo(reader, mapInfo));
             }
 
             AddTitlepic(gameFile, reader, mapInfoData);
@@ -325,9 +327,16 @@ namespace DoomLauncher
 
         private static bool IsEntryMapInfo(IArchiveEntry entry)
         {
+            string entryName = Path.GetFileNameWithoutExtension(entry.Name);
             foreach (string name in MapInfoNames)
             {
-                if (Path.GetFileNameWithoutExtension(entry.Name).Equals(name, StringComparison.OrdinalIgnoreCase))
+                if (entryName.Equals(name, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            foreach (string name in MapInfoSubNames)
+            {
+                if (entryName.StartsWith(name, StringComparison.OrdinalIgnoreCase))
                     return true;
             }
 
