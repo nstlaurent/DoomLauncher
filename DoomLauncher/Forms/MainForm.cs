@@ -1399,6 +1399,7 @@ namespace DoomLauncher
         private async Task HandleAddGameFiles(AddFileType type, string[] files, 
             ITagData tag = null, FileManagement? overrideManagement = null, bool? overridePullTitlepic = null)
         {
+            Activate();
             if (!VerifyAddFiles(type, files))
                 return;
 
@@ -1576,17 +1577,14 @@ namespace DoomLauncher
         private FileManagement GetUserSelectedFileManagement()
         {
             FileManagement fileManagement = AppConfiguration.FileManagement;
-
             if (fileManagement == FileManagement.Prompt)
             {
-                FileManagementSelect select = new FileManagementSelect
-                {
-                    StartPosition = FormStartPosition.CenterParent
-                };
+                Activate();
+                FileManagementSelect select = new FileManagementSelect();
+                select.StartPosition = FormStartPosition.CenterParent;
                 select.ShowDialog(this);
                 fileManagement = select.GetSelectedFileManagement();
             }
-
             return fileManagement;
         }
 
@@ -1858,8 +1856,7 @@ namespace DoomLauncher
             {
                 ITagData tag = null;
                 if (m_tabHandler.TabViewForControl(ctrl) is TagTabView tagTabView)
-                    tag = tagTabView.TagDataSource;
-
+                    tag = tagTabView.TagDataSource;                
                 if (ctrl.DoomLauncherParent != null && ctrl.DoomLauncherParent is IWadTabViewCtrl)
                     await HandleAddGameFiles(AddFileType.IWad, files);
                 else
