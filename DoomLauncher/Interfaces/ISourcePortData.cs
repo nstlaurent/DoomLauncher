@@ -14,6 +14,7 @@
         LauncherPath AltSaveDirectory { get; set; }
         bool Archived { get; set; }
         string GetFullExecutablePath();
-        LauncherPath GetSavePath();
+        LauncherPath GetReadSavePath();
+        LauncherPath GetLoadSavePath();
     }
 }

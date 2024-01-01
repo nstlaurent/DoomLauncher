@@ -396,7 +396,7 @@ namespace DoomLauncher
         private void CreateSaveGameDetectors(ISourcePortData sourcePortData, ISourcePort sourcePort)
         {
             m_saveFileDetectors = CreateDefaultSaveGameDetectors();
-            m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePortData.GetSavePath().GetFullPath()));
+            m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePortData.GetReadSavePath().GetFullPath()));
 
             foreach (var saveDir in sourcePort.GetSaveGameDirectories())
             {
@@ -443,19 +443,7 @@ namespace DoomLauncher
             playAdapter.IgnoreExtractError = AppConfiguration.AllowMultiplePlaySessions && m_activeSessions.Any();
 
             if (form.LoadLatestSave)
-            {
-                if (!AppConfiguration.CopySaveFiles)
-                {
-                    MessageCheckBox message = new MessageCheckBox("Copy Save Files Disabled",
-                        "Copy save files is disabled and the load latest save feature may not function.\n\nSelect the check box below to enable this setting.",
-                        "Enable Setting", SystemIcons.Warning);
-                    message.StartPosition = FormStartPosition.CenterParent;
-                    message.ShowDialog(this);
-                    if (message.Checked)
-                        AppConfiguration.EnableCopySaveFiles();
-                }
                 playAdapter.LoadSaveFile = GetLoadLatestSave(form.GameFile, form.SelectedSourcePort);
-            }
 
             playAdapter.ProcessExited += processExited;
             if (form.SelectedDemo != null)
@@ -468,7 +456,7 @@ namespace DoomLauncher
             var saveFile = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePortData.SourcePortID)
                 .OrderByDescending(x => x.DateCreated).FirstOrDefault();
             if (saveFile != null)
-                return Path.Combine(sourcePortData.GetSavePath().GetFullPath(), saveFile.OriginalFileName);
+                return Path.Combine(sourcePortData.GetLoadSavePath().GetFullPath(), saveFile.OriginalFileName);
 
             return string.Empty;
         }

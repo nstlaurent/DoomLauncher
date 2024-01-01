@@ -5,6 +5,8 @@ namespace DoomLauncher
 {
     public class LauncherPath
     {
+        public static readonly LauncherPath NoPath = new LauncherPath(string.Empty);
+
         private readonly string m_path, m_fullPath;
 
         public LauncherPath(string path)

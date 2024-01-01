@@ -16,13 +16,14 @@ namespace DoomLauncher.DataSources
         public string ExtraParameters { get; set; }
         public LauncherPath AltSaveDirectory { get; set; }
         public bool Archived { get; set; }
+        public LauncherPath Directory { get; set; }
 
         public string GetFullExecutablePath()
         {
             return Path.Combine(Directory.GetFullPath(), Executable);
         }
 
-        public LauncherPath GetSavePath()
+        public LauncherPath GetReadSavePath()
         {
             if (!string.IsNullOrEmpty(AltSaveDirectory.GetFullPath()))
                 return AltSaveDirectory;
@@ -30,10 +31,12 @@ namespace DoomLauncher.DataSources
             return Directory;
         }
 
-        public LauncherPath Directory
+        public LauncherPath GetLoadSavePath()
         {
-            get;
-            set;
+            if (!string.IsNullOrEmpty(AltSaveDirectory.GetFullPath()))
+                return AltSaveDirectory;
+
+            return LauncherPath.NoPath;
         }
 
         public override bool Equals(object obj)
