@@ -55,7 +55,7 @@ MAP02 - 0:03.83 (0:07)  K: 23/234  I: 7/28  S: 1/2 ";
 MAP02 - 0:03.83 (0:07)  K: 23/234  I: 7/28  S: 1/2 
 MAP03 - 0:04.83 (0:07)  K: 123/1234  I: 22/50  S: 2/2";
 
-            System.IO.File.WriteAllText("statfile.txt", stats);
+            File.WriteAllText("statfile.txt", stats);
             statsReader.ReadNow();
 
             Assert.AreEqual(3, m_args.Count);
@@ -126,6 +126,33 @@ MAP03 - 0:35.51 (1:12)  K: 14/56  I: 8/9   S: 0/1
             Assert.AreEqual(1, m_args[2].Statistics.TotalSecrets);
 
             Assert.AreEqual(35.51f, m_args[2].Statistics.LevelTime);
+        }
+
+        [TestMethod]
+        public void TestStatFileHours()
+        {
+            string stats = @"MAP04 - 1:05:50.80 (1:28:46)  K: 207/206  I: 66/66  S: 1/1";
+
+            File.WriteAllText("statfile.txt", stats);
+
+            BoomStatsReader statsReader = new BoomStatsReader(new GameFile() { GameFileID = 1 }, "statfile.txt");
+            statsReader.NewStastics += StatsReader_NewStastics;
+            statsReader.ReadNow();
+
+            Assert.AreEqual(1, m_args.Count);
+            Assert.AreEqual(0, statsReader.Errors.Length);
+
+            Assert.AreEqual("MAP04", m_args[0].Statistics.MapName);
+            Assert.AreEqual(206, m_args[0].Statistics.KillCount);
+            Assert.AreEqual(206, m_args[0].Statistics.TotalKills);
+
+            Assert.AreEqual(66, m_args[0].Statistics.ItemCount);
+            Assert.AreEqual(66, m_args[0].Statistics.TotalItems);
+
+            Assert.AreEqual(1, m_args[0].Statistics.SecretCount);
+            Assert.AreEqual(1, m_args[0].Statistics.TotalSecrets);
+
+            Assert.AreEqual(3950.80004882813f, m_args[0].Statistics.LevelTime);
         }
 
         private void StatsReader_NewStastics(object sender, NewStatisticsEventArgs e)

@@ -37,10 +37,16 @@ namespace DoomLauncher
 
             PropertyInfo pi = stats.GetType().GetProperty(item.DataSourceProperty);
 
-            if (item.DataSourceProperty == "LevelTime") //speical case, need to split out ':' and calculate time
+            if (item.DataSourceProperty == "LevelTime")
             {
                 string[] time = value.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                pi.SetValue(stats, (Convert.ToSingle(time[0], CultureInfo.InvariantCulture) * 60) + Convert.ToSingle(time[1], CultureInfo.InvariantCulture));
+                if (time.Length == 2)
+                    pi.SetValue(stats, (Convert.ToSingle(time[0], CultureInfo.InvariantCulture) * 60) + Convert.ToSingle(time[1], CultureInfo.InvariantCulture));
+                // This is to support hours being written by ports like woof
+                else if (TimeSpan.TryParse(value, AppConfiguration.Culture, out var ts))
+                    pi.SetValue(stats, (float)ts.TotalSeconds);
+                else
+                    m_errors.Add($"Failed to parse [{value}] for [LevelTime]");
             }
             else
             {
