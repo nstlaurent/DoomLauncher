@@ -894,46 +894,55 @@ namespace DoomLauncher
             ITabView tabView = m_tabHandler.TabViews.FirstOrDefault(x => x is IdGamesTabViewCtrl);
             bool displayDownloads = false;
 
-            if (tabView != null)
+            if (tabView == null)
+                return;
+
+            IGameFile[] dsItems = SelectedItems(tabView.GameFileViewControl);
+            bool showAlreadyDownloading = true;
+            bool doForAll = false;
+            bool download = true;
+            List<IGameFileDownloadable> errorFiles = new List<IGameFileDownloadable>();
+
+            try
             {
-                IGameFile[] dsItems = SelectedItems(tabView.GameFileViewControl);
-                bool showAlreadyDownloading = true;
-                bool doForAll = false;
-                bool download = true;
-
-                try
+                foreach (IGameFile dsItem in dsItems)
                 {
-                    foreach (IGameFile dsItem in dsItems)
+                    if (dsItem != null && dsItem is IGameFileDownloadable dlItem)
                     {
-                        IGameFileDownloadable dlItem = dsItem as IGameFileDownloadable;
+                        GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
+                            ((IdGamesGameFile)dsItem).id.ToString()));
 
-                        if (dsItem != null && dlItem != null)
+                        IGameFile dsItemFull = tabView.Adapter.GetGameFiles(options).FirstOrDefault();
+                        if (dsItemFull == null)
                         {
-                            GameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID,
-                                ((IdGamesGameFile)dsItem).id.ToString()));
+                            errorFiles.Add(dlItem);
+                            continue;
+                        }
 
-                            IGameFile dsItemFull = tabView.Adapter.GetGameFiles(options).FirstOrDefault();
-                            dlItem = dsItemFull as IGameFileDownloadable;
+                        dlItem = dsItemFull as IGameFileDownloadable;
 
-                            if (!doForAll)
-                                download = PromptUserDownload(dsItems, ref showAlreadyDownloading, ref doForAll, dlItem, dsItemFull, dsItems.Length > 1);
+                        if (!doForAll)
+                            download = PromptUserDownload(dsItems, ref showAlreadyDownloading, ref doForAll, dlItem, dsItemFull, dsItems.Length > 1);
 
-                            if (dlItem != null && download)
-                            {
-                                CurrentDownloadFile = dsItemFull;
-                                dlItem.DownloadCompleted += dlItem_DownloadCompleted;
-                                m_downloadHandler.DownloadDirectory = directory;
-                                m_downloadHandler.Download(tabView.Adapter, dlItem);
-                                displayDownloads = true;
-                            }
+                        if (dlItem != null && download)
+                        {
+                            CurrentDownloadFile = dsItemFull;
+                            dlItem.DownloadCompleted += dlItem_DownloadCompleted;
+                            m_downloadHandler.DownloadDirectory = directory;
+                            m_downloadHandler.Download(tabView.Adapter, dlItem);
+                            displayDownloads = true;
                         }
                     }
                 }
-                catch (WebException)
-                {
-                    ShowBadConnectionError();
-                }
             }
+            catch (WebException)
+            {
+                ShowBadConnectionError();
+            }
+            
+            if (errorFiles.Count > 0)
+                StyledMessageBox.Show(this, $"An error occured when trying to download {string.Join(",", errorFiles.Select(x => x.FileName))}", 
+                    "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             if (displayDownloads)
                 DisplayDownloads();
