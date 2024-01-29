@@ -55,10 +55,11 @@ namespace DoomLauncher
 
             const int minLength = 3;
             var searchText = options.SearchField.SearchText;
-            if (options.SearchField.SearchFieldType != GameFileFieldType.Filename && searchText.Length < minLength)
+            var fieldType = options.SearchField.SearchFieldType;
+            if (fieldType != GameFileFieldType.Filename && fieldType != GameFileFieldType.GameFileID && searchText.Length < minLength)
                 return Array.Empty<IGameFile>();
 
-            if (searchText.Length < minLength)
+            if (fieldType == GameFileFieldType.Filename && searchText.Length < minLength)
                 searchText += ".zip";
 
             return GetFiles(string.Format(query, Uri.EscapeDataString(searchText)),
