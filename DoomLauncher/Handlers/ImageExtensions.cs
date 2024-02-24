@@ -2,11 +2,38 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace DoomLauncher
 {
     internal static class ImageExtensions
     {
+        public static bool TryFromFile(string path, out Image image)
+        {
+            image = null;
+            try
+            {
+                if (!File.Exists(path))
+                    return false;
+
+                image = Image.FromFile(path);
+                return true;
+            }
+            catch
+            {
+            }
+
+            return false;
+        }
+
+        public static Image FromFileOrDefault(string path)
+        {
+            if (TryFromFile(path, out var image))
+                return image;
+
+            return new Bitmap(1, 1, PixelFormat.Format32bppRgb);
+        }
+
         public static Image FixedSize(this Image imgPhoto, int width, int height, Color backColor)
         {
             int sourceWidth = imgPhoto.Width;

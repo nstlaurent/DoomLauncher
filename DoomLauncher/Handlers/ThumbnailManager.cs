@@ -87,8 +87,7 @@ namespace DoomLauncher
             var screenshot = screenshots.FirstOrDefault(x => x.GameFileID == gameFile.GameFileID.Value);
             if (screenshot != null)
             {
-                string thumbnailFile = CreateThumbnail(screenshot);
-                if (thumbnailFile == null)
+                if (!TryCreateThumbnail(screenshot, out var thumbnailFile))
                     return null;
 
                 // Store the FileID of the screenshot in SourcePortID so we can use it to keep track of screenshot re-ordering / deletes
@@ -124,22 +123,30 @@ namespace DoomLauncher
             return null;
         }
 
-        private static string CreateThumbnail(IFileData screenshot)
+        private static bool TryCreateThumbnail(IFileData screenshot, out string filename)
         {
-            var config = DataCache.Instance.AppConfiguration;
-            string file = Path.Combine(config.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
-            if (!File.Exists(file))
-                return null;
-
-            const int ThumbnailSize = 300;
-            using (Image image = Image.FromFile(file))
+            filename = string.Empty;
+            try
             {
-                using (Image thumb = image.FixedSize(ThumbnailSize, GameFileTile.GetImageHeight(ThumbnailSize), Color.Black))
+                var config = DataCache.Instance.AppConfiguration;
+                string file = Path.Combine(config.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
+                if (!File.Exists(file))
+                    return false;
+
+                const int ThumbnailSize = 300;
+                using (Image image = Image.FromFile(file))
                 {
-                    string filename = Guid.NewGuid().ToString() + ".png";
-                    thumb.Save(Path.Combine(config.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);
-                    return filename;
+                    using (Image thumb = image.FixedSize(ThumbnailSize, GameFileTile.GetImageHeight(ThumbnailSize), Color.Black))
+                    {
+                        filename = Guid.NewGuid().ToString() + ".png";
+                        thumb.Save(Path.Combine(config.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);
+                        return true;
+                    }
                 }
+            }
+            catch
+            {
+                return false;
             }
         }
     }

@@ -239,8 +239,8 @@ namespace DoomLauncher
             m_currentImage?.Dispose();
             m_currentGraphics?.Dispose();
             m_drawImage?.Dispose();
-
-            using (var image = Image.FromFile(m_images[m_index]))
+   
+            using (var image = ImageExtensions.FromFileOrDefault(m_images[m_index]))
                 m_currentImage = image.FixedSize(pbImage.Width, pbImage.Height, Color.Black);
             m_drawImage = new Bitmap(m_currentImage.Width, m_currentImage.Height);
             m_currentGraphics = Graphics.FromImage(m_drawImage);
@@ -248,6 +248,9 @@ namespace DoomLauncher
 
         private void SetTransparency()
         {
+            if (m_currentImage == null)
+                return;
+
             try
             {
                 if (m_alpha >= 1.0F)
