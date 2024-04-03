@@ -20,12 +20,9 @@ namespace DoomLauncher.Controls
         public event EventHandler<ComboBoxItemStyle> StyleItem;
 
         public CComboBox()
-        {
-            BackColor = CurrentTheme.TextBoxBackground;
-            ForeColor = CurrentTheme.Text;
+        {   
             DrawItem += ComboBoxDrawItemInternal;
             DrawMode = DrawMode.OwnerDrawFixed;
-            FlatStyle = FlatStyle.Flat;
         }
 
         public static void ComboBoxDrawItem(object sender, DrawItemEventArgs e)

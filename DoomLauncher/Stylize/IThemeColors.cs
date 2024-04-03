@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -13,6 +14,8 @@ namespace DoomLauncher
         Color HighlightText { get; }
         Color Highlight { get; }
         Color ButtonTextColor { get; }
+        FlatStyle ComboFlatStyle { get; }
+        FlatStyle ButtonFlatStyle { get; }
         Color ButtonBackground { get; }
         Color CheckBoxBackground { get; }
         Color TextBoxBackground { get; }
@@ -28,6 +31,8 @@ namespace DoomLauncher
         Color StatText { get; }
         Color CloseBackgroundHighlight { get; }
         Color CloseForeColorHighlight { get; }
+        Color ImageBackground { get; }
+        Color GridBackground { get; }
         bool GridRowBorder { get; }
         bool IsDark { get; }
     }

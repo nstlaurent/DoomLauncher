@@ -86,7 +86,7 @@ namespace DoomLauncher
             TableLayoutPanel tblMain = new TableLayoutPanel
             {
                 Dock = DockStyle.Top,
-                CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset,
+                CellBorderStyle = TableLayoutPanelCellBorderStyle.Single,
             };
 
             int height = dpiScale.ScaleIntY(8);

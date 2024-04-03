@@ -122,6 +122,8 @@ namespace DoomLauncher
                     StyleContextMenuStrip(cms);
                 else if (control is GroupBox groupBox)
                     StyleGroupBox(groupBox);
+                else if (control is SlideShowPictureBox pb)
+                    StylePictureBox(pb);
                 else
                     StyleDefault(control);
             }
@@ -133,6 +135,11 @@ namespace DoomLauncher
             }
 
             return new StylizeControlResults(loadRequired);
+        }
+
+        private static void StylePictureBox(SlideShowPictureBox pb)
+        {
+            pb.BackColor = CurrentTheme.ImageBackground;
         }
 
         private static void StyleTextBox(TextBox textBox)
@@ -278,8 +285,9 @@ namespace DoomLauncher
 
         private static void StyleButton(Button button)
         {
-            button.FlatStyle = FlatStyle.Flat;
-            button.FlatAppearance.BorderSize = 0;
+            button.FlatStyle = CurrentTheme.ButtonFlatStyle;
+            if (button.FlatStyle == FlatStyle.Flat)
+                button.FlatAppearance.BorderSize = 0;
             button.ForeColor = CurrentTheme.ButtonTextColor;
             button.BackColor = CurrentTheme.ButtonBackground;
         }
@@ -306,20 +314,20 @@ namespace DoomLauncher
 
         private static void StyleCombo(ComboBox comboBox)
         {
+            comboBox.BackColor = CurrentTheme.TextBoxBackground;
+            comboBox.ForeColor = CurrentTheme.Text;
+            comboBox.DrawMode = DrawMode.OwnerDrawFixed;
+            comboBox.FlatStyle = CurrentTheme.ComboFlatStyle;
+
+            // CComboBox implements it's own DrawItem
             if (comboBox is CComboBox)
                 return;
 
-            comboBox.BackColor = CurrentTheme.TextBoxBackground;
-            comboBox.ForeColor = CurrentTheme.Text;
             comboBox.DrawItem += CComboBox.ComboBoxDrawItem;
-            comboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            comboBox.FlatStyle = FlatStyle.Flat;
         }
 
         private static void StyleGrid(DataGridView view)
         {
-            view.BackgroundColor = CurrentTheme.WindowDark;
-            
             view.DefaultCellStyle.NullValue = "N/A";
             view.RowHeadersVisible = false;
             view.AutoGenerateColumns = false;
@@ -333,7 +341,7 @@ namespace DoomLauncher
             view.ColumnHeadersDefaultCellStyle.Padding = new Padding(0, 4, 0, 4);
 
             view.ForeColor = CurrentTheme.Text;
-            view.BackgroundColor = CurrentTheme.WindowDark;
+            view.BackgroundColor = CurrentTheme.GridBackground;
             view.RowsDefaultCellStyle.ForeColor = CurrentTheme.Text;
             view.RowsDefaultCellStyle.BackColor = CurrentTheme.GridRow;
             view.AlternatingRowsDefaultCellStyle.ForeColor = CurrentTheme.Text;

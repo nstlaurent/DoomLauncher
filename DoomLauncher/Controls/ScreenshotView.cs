@@ -67,6 +67,7 @@ namespace DoomLauncher
 
         public override void SetData(IGameFile gameFile)
         {
+            flpScreenshots.BackColor = ColorTheme.Current.GridBackground;
             SelectedFile = null;
 
             foreach (PictureBox pbSet in m_lookup.Keys)

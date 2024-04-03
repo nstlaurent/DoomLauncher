@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -13,6 +14,8 @@ namespace DoomLauncher
         public Color HighlightText => SystemColors.HighlightText;
         public Color Highlight => SystemColors.Highlight;
         public Color ButtonTextColor => Text;
+        public FlatStyle ComboFlatStyle => FlatStyle.Standard;
+        public FlatStyle ButtonFlatStyle => FlatStyle.Standard;
         public Color ButtonBackground => SystemColors.Window;
         public Color CheckBoxBackground => SystemColors.Window;
         public Color TextBoxBackground => Color.White;
@@ -28,6 +31,8 @@ namespace DoomLauncher
         public Color StatText => Color.White;
         public Color CloseBackgroundHighlight => Color.FromArgb(255, 213, 50, 38);
         public Color CloseForeColorHighlight => Color.White;
+        public Color ImageBackground => Color.Black;
+        public Color GridBackground => Color.White;
         public bool GridRowBorder => true;
         public bool IsDark => false;
     }
