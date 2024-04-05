@@ -9,6 +9,7 @@ namespace DoomLauncher
         public SimpleFileSelectForm()
         {
             InitializeComponent();
+            Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
         public void Initialize(IEnumerable<string> files)
