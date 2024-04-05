@@ -54,6 +54,12 @@ namespace DoomLauncher
                 return;
             }
 
+            if (e.Row == 1)
+            {
+                Rectangle rect = new Rectangle(e.CellBounds.Location, new Size(e.CellBounds.Width - 1, e.CellBounds.Height - 1));
+                e.Graphics.FillRectangle(new SolidBrush(ColorTheme.Current.ImageBackground), rect);
+            }
+
             e.Graphics.DrawLine(pen, pt.X, pt.Y, pt.X, pt.Y + e.CellBounds.Height);
             e.Graphics.DrawLine(pen, pt.X + e.CellBounds.Width - 1, pt.Y, e.CellBounds.Width - 1, pt.Y + e.CellBounds.Height);
             e.Graphics.DrawLine(pen, new Point(pt.X, pt.Y + e.CellBounds.Height - 1), new Point(pt.X + e.CellBounds.Width, pt.Y + e.CellBounds.Height - 1));

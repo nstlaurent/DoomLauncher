@@ -48,7 +48,6 @@ namespace DoomLauncher
         public SlideShowPictureBox()
         {
             InitializeComponent();
-            pbImage.BackColor = Color.Black;
             pbImage.Paint += PbImage_Paint;
 
             m_timer.Interval = FadeMilliseconds / FadeTimes;
@@ -59,6 +58,7 @@ namespace DoomLauncher
 
         private void PbImage_Paint(object sender, PaintEventArgs e)
         {
+            pbImage.BackColor = ColorTheme.Current.ImageBackground;
             ImagePaint?.Invoke(this, e);
         }
 
