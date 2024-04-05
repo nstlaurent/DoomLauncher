@@ -593,15 +593,13 @@ namespace DoomLauncher
 
         private void SetupSearchFilters()
         {
-            chkAutoSearch.Checked = (bool)AppConfiguration.GetTypedConfigValue(ConfigType.AutoSearch, typeof(bool));
-
             ctrlSearch.SearchTextChanged += ctrlSearch_SearchTextChanged;
             Util.SetDefaultSearchFields(ctrlSearch);
         }
 
         void ctrlSearch_SearchTextChanged(object sender, EventArgs e)
         {
-            if (chkAutoSearch.Checked && GetCurrentTabView() != null &&
+            if (GetCurrentTabView() != null &&
                 GetCurrentTabView().GetType() != typeof(IdGamesTabViewCtrl))
             {
                 HandleSearch();

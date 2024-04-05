@@ -37,7 +37,6 @@
             this.flpSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.ctrlSearch = new DoomLauncher.SearchControl();
             this.lblText = new System.Windows.Forms.Label();
-            this.btnSearch = new System.Windows.Forms.Button();
             this.tabControl = new DoomLauncher.CTabControl();
             this.titleBar = new DoomLauncher.Controls.TitleBarControl();
             this.tblMain.SuspendLayout();
@@ -103,7 +102,6 @@
             // 
             this.flpSearch.Controls.Add(this.ctrlSearch);
             this.flpSearch.Controls.Add(this.lblText);
-            this.flpSearch.Controls.Add(this.btnSearch);
             this.flpSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpSearch.Location = new System.Drawing.Point(0, 32);
             this.flpSearch.Margin = new System.Windows.Forms.Padding(0);
@@ -117,45 +115,30 @@
             this.ctrlSearch.Margin = new System.Windows.Forms.Padding(8, 5, 4, 4);
             this.ctrlSearch.Name = "ctrlSearch";
             this.ctrlSearch.SearchText = "";
-            this.ctrlSearch.Size = new System.Drawing.Size(189, 28);
+            this.ctrlSearch.Size = new System.Drawing.Size(260, 28);
             this.ctrlSearch.TabIndex = 2;
             // 
             // lblText
             // 
             this.lblText.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblText.AutoSize = true;
-            this.lblText.Location = new System.Drawing.Point(205, 10);
+            this.lblText.Location = new System.Drawing.Point(276, 10);
             this.lblText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblText.Name = "lblText";
             this.lblText.Size = new System.Drawing.Size(0, 16);
             this.lblText.TabIndex = 4;
             // 
-            // btnSearch
-            // 
-            this.btnSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.btnSearch.Image = global::DoomLauncher.Properties.Resources.Search;
-            this.btnSearch.Location = new System.Drawing.Point(209, 2);
-            this.btnSearch.Margin = new System.Windows.Forms.Padding(0, 2, 4, 4);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(107, 30);
-            this.btnSearch.TabIndex = 5;
-            this.btnSearch.Text = "Search";
-            this.btnSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
-            // 
             // tabControl
             // 
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.tabControl.ItemSize = new System.Drawing.Size(0, 36);
+            this.tabControl.ItemSize = new System.Drawing.Size(0, 22);
             this.tabControl.Location = new System.Drawing.Point(4, 75);
             this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Multiline = true;
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1527, 891);
+            this.tabControl.Size = new System.Drawing.Size(1336, 780);
             this.tabControl.TabIndex = 3;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
             // 
@@ -203,7 +186,6 @@
         private SearchControl ctrlSearch;
         private DoomLauncher.CTabControl tabControl;
         private System.Windows.Forms.Label lblText;
-        private System.Windows.Forms.Button btnSearch;
         private Controls.TitleBarControl titleBar;
     }
 }

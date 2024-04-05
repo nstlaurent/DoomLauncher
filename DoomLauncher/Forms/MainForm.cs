@@ -98,7 +98,6 @@ namespace DoomLauncher
         private void InitIcons()
         {
             Icons.DpiScale = new DpiScale(CreateGraphics());
-            btnSearch.Image = Icons.Search;
             btnPlay.Image = Icons.Play;
             toolStripDropDownButton1.Image = Icons.Bars;
             btnDownloads.Image = Icons.Download;
@@ -1160,9 +1159,7 @@ namespace DoomLauncher
                 if (tabView != null)
                 {
                     m_lastSelectedTabView = tabView;
-                    btnSearch.Enabled = tabView.IsSearchAllowed;
                     btnPlay.Enabled = tabView.IsPlayAllowed;
-                    chkAutoSearch.Enabled = tabView.IsAutoSearchAllowed;
                     chkIncludeAll.Enabled = tabView.IsAutoSearchAllowed;
 
                     if (tabView is IdGamesTabViewCtrl && !m_idGamesLoaded)

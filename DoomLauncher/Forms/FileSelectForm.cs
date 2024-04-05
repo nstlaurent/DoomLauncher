@@ -16,21 +16,17 @@ namespace DoomLauncher
             InitializeComponent();
             SetupSearchFilters();
             Icons.DpiScale = new DpiScale(CreateGraphics());
-            btnSearch.Image = Icons.Search;
             m_multiSelect = m_bOverrideInit = false;
-            ctrlSearch.SearchTextKeyPreviewDown += CtrlSearch_SearchTextKeyPreviewDown;
+            ctrlSearch.SearchTextChanged += CtrlSearch_SearchTextChanged;
 
             Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
-        private void CtrlSearch_SearchTextKeyPreviewDown(object sender, PreviewKeyDownEventArgs e)
+        private void CtrlSearch_SearchTextChanged(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                IGameFileView ctrl = CurrentGameFileControl;
-                if (ctrl != null)
-                    HandleSearch(ctrl);
-            }
+            IGameFileView ctrl = CurrentGameFileControl;
+            if (ctrl != null)
+                HandleSearch(ctrl);
         }
 
         public void Initialize(IDataSourceAdapter adapter, ITabView tabView, IEnumerable<IGameFile> gameFilesBind)
@@ -94,7 +90,6 @@ namespace DoomLauncher
         public void ShowSearchControl(bool set)
         {
             ctrlSearch.Visible = set;
-            btnSearch.Visible = set;
         }
 
         protected override void OnShown(EventArgs e)

@@ -26,7 +26,7 @@ namespace DoomLauncher.Controls
             InitializeComponent();
 
             Icons.DpiScale = new DpiScale(CreateGraphics());
-            btnSearch.Image = Icons.Search;
+            pbSearch.Image = Icons.Search;
             btnPin.Image = Icons.Pin;
 
             SetPinned(false);
@@ -42,11 +42,11 @@ namespace DoomLauncher.Controls
 
             if (flpSearch.Width < dpiScale.ScaleIntX(80))
             {
-                btnSearch.Visible = false;
+                pbSearch.Visible = false;
                 return;
             }
 
-            btnSearch.Visible = true;
+            pbSearch.Visible = true;
             if (flpSearch.Width < txtSearch.MaximumSize.Width + offset)
                 txtSearch.Width = flpSearch.Width - offset;
             else

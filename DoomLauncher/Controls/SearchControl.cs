@@ -10,14 +10,38 @@ namespace DoomLauncher
         public event EventHandler SearchTextChanged;
         public event PreviewKeyDownEventHandler SearchTextKeyPreviewDown;
 
-        private Controls.CheckBoxList m_checkBoxList = new Controls.CheckBoxList();
+        private readonly Controls.CheckBoxList m_checkBoxList = new Controls.CheckBoxList();
+        private readonly System.Timers.Timer m_textTimer = new System.Timers.Timer();
 
         public SearchControl()
         {
             InitializeComponent();
             Stylizer.StylizeControl(m_checkBoxList, DesignMode);
+            pbSearch.Image = Icons.Search;
             txtSearch.TextChanged += txtSearch_TextChanged;
             txtSearch.PreviewKeyDown += TxtSearch_PreviewKeyDown;
+            m_textTimer.AutoReset = false;
+            m_textTimer.Interval = 400;
+            m_textTimer.Elapsed += TextTimer_Elapsed;
+        }
+
+        public void SetShowDropDown(bool set)
+        {
+            DpiScale dpiScale = new DpiScale(CreateGraphics());
+            tblMain.ColumnStyles[2].Width = set ? dpiScale.ScaleIntX(30) : 0;
+        }
+
+        private void TextTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (InvokeRequired)
+                Invoke(new Action(InvokeSearchTextChanged));
+            else
+                InvokeSearchTextChanged();
+        }
+
+        private void InvokeSearchTextChanged()
+        {
+            SearchTextChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void TxtSearch_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -27,7 +51,8 @@ namespace DoomLauncher
 
         void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            SearchTextChanged?.Invoke(this, e);
+            m_textTimer.Stop();
+            m_textTimer.Start();
         }
 
         public void SetSearchFilter(string item, bool check)
@@ -62,8 +87,7 @@ namespace DoomLauncher
         }
 
         private void btnFilters_Click(object sender, EventArgs e)
-        {
-            
+        {            
             Popup popup = new Popup(m_checkBoxList)
             {
                 Width = btnFilters.Location.X + btnFilters.Width,
