@@ -17,7 +17,7 @@ namespace DoomLauncher
         public WadArchiveReader(string file)
         {
             Filename = file;
-            m_fs = File.OpenRead(file);
+            m_fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             WadFileReader wadReader = new WadFileReader(m_fs);
             IsValid = wadReader.IsValid;
             var lumps = wadReader.ReadLumps();

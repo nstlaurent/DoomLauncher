@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
 
 namespace DoomLauncher
@@ -12,7 +13,7 @@ namespace DoomLauncher
 
         public ZipArchiveReader(string file)
         {
-            m_archive = ZipFile.OpenRead(file);
+            m_archive = new ZipArchive(File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
         }
 
         public IEnumerable<IArchiveEntry> Entries
