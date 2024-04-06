@@ -13,7 +13,16 @@ namespace DoomLauncher
 
         public ZipArchiveReader(string file)
         {
-            m_archive = new ZipArchive(File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+            var stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            try
+            {                
+                m_archive = new ZipArchive(stream);
+            }
+            catch (Exception ex)
+            {
+                stream.Dispose();
+                throw ex;
+            }
         }
 
         public IEnumerable<IArchiveEntry> Entries
