@@ -19,6 +19,8 @@ namespace DoomLauncher
         private readonly SourcePortLaunchType m_launchType;
         private readonly IDataSourceAdapter m_adapter;
         private readonly AppConfiguration m_appConfig;
+        private IEnumerable<ISourcePortData> m_sourcePorts = Array.Empty<ISourcePortData>();
+        private string m_searchText = string.Empty;
 
         public SourcePortViewForm(IDataSourceAdapter adapter, AppConfiguration appConfig, ITabView[] tabViews, SourcePortLaunchType type)
         {
@@ -31,10 +33,19 @@ namespace DoomLauncher
             m_tabViews = tabViews;
             m_launchType = type;
 
+            ctrlSearch.SearchTextChanged += CtrlSearch_SearchTextChanged;
+            ctrlSearch.SetShowDropDown(false);
+
             Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
 
             ResetData();
             dgvSourcePorts.Columns[dgvSourcePorts.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+        }
+
+        private void CtrlSearch_SearchTextChanged(object sender, EventArgs e)
+        {
+            m_searchText = ctrlSearch.SearchText;
+            SetSourcePortsData();
         }
 
         public void DisplayInitSetupButton()
@@ -71,6 +82,16 @@ namespace DoomLauncher
 
         private void SetDataSource(IEnumerable<ISourcePortData> sourcePorts)
         {
+            m_sourcePorts = sourcePorts;
+            SetSourcePortsData();
+        }
+
+        private void SetSourcePortsData()
+        {
+            var sourcePorts = m_sourcePorts;
+            if (!string.IsNullOrEmpty(m_searchText))
+                sourcePorts = m_sourcePorts.Where(x => x.Name.IndexOf(m_searchText, StringComparison.CurrentCultureIgnoreCase) >= 0);
+
             dgvSourcePorts.DataSource =
                 (from item in sourcePorts
                  select new { item.SourcePortID, item.Name, item.Executable, Directory = item.Directory.GetPossiblyRelativePath(), SourcePort = item }).ToList();
