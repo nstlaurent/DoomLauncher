@@ -74,8 +74,8 @@ namespace DoomLauncher
             }
 
             ShowTextBoxForm("Processing Errors",
-                "The information on these files may be incomplete.\n\nFor ZDL files adding the missing Source Port/IWAD name and re-adding will update the information.\n\nFor zip archive/pk3 errors: Doom Launcher uses a zip library that has very strict zip rules that not all applications respect.\n\nVerify the zip by opening it with your favorite zip application. Create a new zip file and extract the files from the original zip into the newly created one. Then add the newly created zip to Doom Launcher.", 
-                sb.ToString(), true);
+                "The information on these files may be incomplete.\n\nFor ZDL files adding the missing Source Port/IWAD name and re-adding will update the information.\n\nFor zip archive/pk3 errors: Doom Launcher uses a zip library that has very strict zip rules that not all applications respect.\n\nVerify the zip by opening it with your favorite zip application. Create a new zip file and extract the files from the original zip into the newly created one. Then add the newly created zip to Doom Launcher.",
+                sb.ToString(), false);
         }
 
         private SyncLibraryHandler ExecuteSyncHandler(string[] files, FileManagement fileManagement, ITagData tag = null)
