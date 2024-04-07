@@ -435,6 +435,9 @@ namespace DoomLauncher
 
         static public SizeF MeasureDisplayString(this Graphics graphics, string text, Font font)
         {
+            if (text.Length == 0)
+                return new SizeF(0, 0);
+
             StringFormat format = new StringFormat();
             RectangleF rect = new RectangleF(0, 0, 1000, 1000);
             CharacterRange[] ranges = { new CharacterRange(0, text.Length) };
