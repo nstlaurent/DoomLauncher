@@ -146,6 +146,7 @@ namespace DoomLauncher
         {
             textBox.BackColor = CurrentTheme.TextBoxBackground;
             textBox.ForeColor = CurrentTheme.Text;
+            textBox.BorderStyle = BorderStyle.FixedSingle;
         }
 
         private static void StyleRichTextBox(CRichTextBox textBox)
