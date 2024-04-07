@@ -12,12 +12,13 @@ namespace DoomLauncher
 {
     public partial class MainForm
     {
-        private async Task SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
+        private async Task<SyncLibraryHandler> SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
         {
             ProgressBarStart(ProgressBarType.Sync);
             SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
             ProgressBarEnd(ProgressBarType.Sync);
             SyncLocalDatabaseComplete(handler, updateViews);
+            return handler;
         }
 
         void SyncLocalDatabaseComplete(SyncLibraryHandler handler, bool updateViews)
@@ -214,27 +215,23 @@ namespace DoomLauncher
             BringToFront();
         }
 
-        private void SyncIWads(FileAddResults fileAddResults)
+        private void SyncIWads(IEnumerable<IGameFile> gameFiles)
         {
-            foreach (string file in fileAddResults.GetAllFiles())
+            foreach (var gameFile in gameFiles)
             {
-                IGameFile gameFile = DataSourceAdapter.GetGameFile(file);
+                DataSourceAdapter.InsertIWad(new IWadData() { GameFileID = gameFile.GameFileID.Value, FileName = gameFile.FileName, Name = gameFile.FileName });
+                var iwad = DataSourceAdapter.GetIWads().OrderBy(x => x.IWadID).LastOrDefault();
 
-                if (gameFile != null && !gameFile.IWadID.HasValue)
+                IWadInfo wadInfo = IWadInfo.GetIWadInfo(gameFile.FileName);
+                gameFile.Title = wadInfo == null ? Path.GetFileNameWithoutExtension(gameFile.FileName).ToUpper() : wadInfo.Title;
+                DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
+
+                if (iwad != null)
                 {
-                    DataSourceAdapter.InsertIWad(new IWadData() { GameFileID = gameFile.GameFileID.Value, FileName = file, Name = file });
-                    var iwad = DataSourceAdapter.GetIWads().OrderBy(x => x.IWadID).LastOrDefault();
-
-                    IWadInfo wadInfo = IWadInfo.GetIWadInfo(gameFile.FileName);
-                    gameFile.Title = wadInfo == null ? Path.GetFileNameWithoutExtension(gameFile.FileName).ToUpper() : wadInfo.Title;
-                    DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
-
-                    if (iwad != null)
-                    {
-                        gameFile.IWadID = iwad.IWadID;
-                        DataSourceAdapter.UpdateGameFile(gameFile, new[] { GameFileFieldType.IWadID });
-                    }
+                    gameFile.IWadID = iwad.IWadID;
+                    DataSourceAdapter.UpdateGameFile(gameFile, new[] { GameFileFieldType.IWadID });
                 }
+                
             }
 
             ThumbnailManager.SetIWads(DataSourceAdapter.GetGameFileIWads().ToList());

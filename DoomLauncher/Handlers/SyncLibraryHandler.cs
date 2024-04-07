@@ -54,19 +54,19 @@ namespace DoomLauncher
             SyncFileCurrent = SyncFileCount = 0;
         }
 
-        public void Execute(string[] zipFiles)
+        public void Execute(string[] files)
         {
             ClearData();
 
-            SyncFileCount = zipFiles.Length;
+            SyncFileCount = files.Length;
             SyncFileCurrent = 0;
 
-            foreach (string fileName in zipFiles)
+            foreach (string fileName in files)
             {
                 if (SyncFileChange != null)
                 {
                     CurrentSyncFileName = fileName;
-                    SyncFileChange(this, new EventArgs());
+                    SyncFileChange(this, EventArgs.Empty);
                 }
 
                 IGameFile file = SyncDataSource.GetGameFile(fileName);
@@ -75,53 +75,9 @@ namespace DoomLauncher
                 if (existing != null)
                     file = existing;
 
-                if (m_fileManagement == FileManagement.Unmanaged)
-                    file.FileName = fileName;
-
-                if (file != null)
+                if (file == null)
                 {
-                    CurrentGameFile = file;
-                    GameFileDataNeeded?.Invoke(this, EventArgs.Empty);
-                    file.Downloaded = existing == null ? DateTime.Now : existing.Downloaded;
-
-                    try
-                    {
-                        using (IArchiveReader reader = ArchiveReader.Create(Path.Combine(GameFileDirectory.GetFullPath(), file.FileName)))
-                        {
-                            FillTextFileInfo(file, reader);
-                            PopulateGameFileData(file, reader);
-                        }
-                    }
-                    catch (IOException)
-                    {
-                        file.Map = string.Empty;
-                        m_invalidFiles.Add(new InvalidFile(fileName, "File is in use/Not found"));
-                    }
-                    catch (InvalidDataException)
-                    {
-                        file.Map = string.Empty;
-                        m_invalidFiles.Add(new InvalidFile(fileName, "Zip archive invalid or contained an improper pk3"));
-                    }
-                    catch (Exception ex)
-                    {
-                        file.Map = string.Empty;
-                        m_invalidFiles.Add(new InvalidFile(fileName, CreateExceptionMsg(ex)));
-                    }
-
-                    if (existing == null)
-                    {
-                        DbDataSource.InsertGameFile(file);
-                        AddLatestGameFile(file.FileName, m_addedFiles);
-                    }
-                    else
-                    {
-                        DbDataSource.UpdateGameFile(file, Util.DefaultGameFileUpdateFields);
-                        m_updatedFiles.Add(file);
-                    }
-                }
-                else
-                {
-                    m_invalidFiles.Add(new InvalidFile(fileName, "Not a valid zip archive"));
+                    m_invalidFiles.Add(new InvalidFile(fileName, "Not found"));
 
                     try
                     {
@@ -133,10 +89,62 @@ namespace DoomLauncher
                     {
                         //delete failed, just keep going
                     }
+
+                    continue;
                 }
+
+                if (m_fileManagement == FileManagement.Unmanaged)
+                    file.FileName = LauncherPath.GetRelativePath(fileName);
+
+                CurrentGameFile = file;
+                GameFileDataNeeded?.Invoke(this, EventArgs.Empty);
+                file.Downloaded = existing == null ? DateTime.Now : existing.Downloaded;
+
+                try
+                {
+                    using (IArchiveReader reader = CreateArchiveReader(file))
+                    {
+                        FillTextFileInfo(file, reader);
+                        PopulateGameFileData(file, reader);
+                    }
+                }
+                catch (IOException)
+                {
+                    file.Map = string.Empty;
+                    m_invalidFiles.Add(new InvalidFile(fileName, "File is in use/Not found"));
+                }
+                catch (InvalidDataException)
+                {
+                    file.Map = string.Empty;
+                    m_invalidFiles.Add(new InvalidFile(fileName, "Zip archive invalid or contained an improper pk3"));
+                }
+                catch (Exception ex)
+                {
+                    file.Map = string.Empty;
+                    m_invalidFiles.Add(new InvalidFile(fileName, CreateExceptionMsg(ex)));
+                }
+
+                if (existing == null)
+                {
+                    DbDataSource.InsertGameFile(file);
+                    AddLatestGameFile(file.FileName, m_addedFiles);
+                }
+                else
+                {
+                    DbDataSource.UpdateGameFile(file, Util.DefaultGameFileUpdateFields);
+                    m_updatedFiles.Add(file);
+                }                
 
                 SyncFileCurrent++;
             }
+        }
+
+        private IArchiveReader CreateArchiveReader(IGameFile file)
+        {
+            if (m_fileManagement == FileManagement.Unmanaged)
+                return ArchiveReader.Create(new LauncherPath(file.FileName).GetFullPath());
+
+            return ArchiveReader.Create(Path.Combine(GameFileDirectory.GetFullPath(), file.FileName));
         }
 
         private void ClearData()

@@ -82,7 +82,7 @@ namespace DoomLauncher
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                string file = GetRelativeDirectory(dialog.FileName);
+                string file = LauncherPath.GetRelativePath(dialog.FileName);
                 
                 string exec = Path.GetFileName(file);
                 string directory = file.Replace(exec, string.Empty);
@@ -107,35 +107,7 @@ namespace DoomLauncher
         {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             if (dialog.ShowDialog(this) == DialogResult.OK)
-                txtAltSave.Text = GetRelativeDirectory(dialog.SelectedPath);
-        }
-
-        private string GetRelativeDirectory(string file)
-        {
-            string current = LauncherPath.GetDataDirectory();
-
-            if (file.Contains(current))
-            {
-                string[] filePath = file.Split(Path.DirectorySeparatorChar);
-                string[] currentPath = current.Split(Path.DirectorySeparatorChar);
-
-                string[] relativePath = filePath.Except(currentPath).ToArray();
-
-                StringBuilder sb = new StringBuilder();
-
-                foreach(string str in relativePath)
-                {
-                    sb.Append(str);
-                    sb.Append(Path.DirectorySeparatorChar);
-                }
-
-                if (sb.Length > 1)
-                    sb.Remove(sb.Length - 1, 1);
-
-                return sb.ToString();
-            }
-
-            return file;
+                txtAltSave.Text = LauncherPath.GetRelativePath(dialog.SelectedPath);
         }
     }
 }

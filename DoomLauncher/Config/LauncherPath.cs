@@ -1,11 +1,15 @@
-﻿using System;
+﻿using DoomLauncher.Handlers;
+using System;
 using System.IO;
+using System.Text;
 
 namespace DoomLauncher
 {
     public class LauncherPath
     {
         public static readonly LauncherPath NoPath = new LauncherPath(string.Empty);
+
+        private static readonly char[] PathSplit = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
         private readonly string m_path, m_fullPath;
 
@@ -18,22 +22,35 @@ namespace DoomLauncher
                 return;
             }
 
-            if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                path += Path.DirectorySeparatorChar;
-
             m_path = path;
             m_fullPath = m_path;
 
-            if (!Path.IsPathRooted(m_fullPath))
-            {
+            if (PathExtensions.IsPartiallyQualified(m_fullPath))
                 m_fullPath = Path.Combine(Directory.GetCurrentDirectory(), m_fullPath);
-            }
             else
+                m_path = GetRelativePath(m_fullPath);
+        }
+
+        public static string GetRelativePath(string path)
+        {
+            string current = GetDataDirectory();
+            if (!path.Contains(current))
+                return path;
+            
+            string[] filePath = path.Split(PathSplit, StringSplitOptions.RemoveEmptyEntries);
+            string[] currentPath = current.Split(PathSplit, StringSplitOptions.RemoveEmptyEntries);
+
+            StringBuilder sb = new StringBuilder(255);
+            for (int i = currentPath.Length; i < filePath.Length; i++)
             {
-                string current = Directory.GetCurrentDirectory();
-                if (m_path.StartsWith(current))
-                    m_path = m_path.Replace(current, string.Empty);
+                sb.Append(filePath[i]);
+                sb.Append(Path.DirectorySeparatorChar);
             }
+
+            if (sb.Length > 1)
+                sb.Remove(sb.Length - 1, 1);
+
+            return sb.ToString();
         }
 
         public static string GetDataDirectory()

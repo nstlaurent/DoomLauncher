@@ -65,8 +65,7 @@ namespace DoomLauncher
                 return false;
             }
 
-            return true;
-            
+            return true;            
         }
 
         public string GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
@@ -166,6 +165,14 @@ namespace DoomLauncher
         {
             if (gameFile.IsDirectory())
                 return AssertDirectory(gameFile.FileName);
+
+            if (gameFile.IsUnmanaged())
+            {
+                var launcherPath = new LauncherPath(gameFile.FileName);
+                if (!AssertFile(string.Empty, launcherPath.GetFullPath(), "game file"))
+                    return false;
+                return true;
+            }
 
             if (!AssertFile(gameFileDirectory.GetFullPath(), gameFile.FileName, "game file"))
                 return false;
@@ -395,7 +402,11 @@ namespace DoomLauncher
 
         private static IArchiveReader CreateArchiveReader(IGameFile gameFile, LauncherPath gameFileDirectory)
         {
-            string file = Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName);
+            string file;
+            if (gameFile.IsUnmanaged())
+                file = new LauncherPath(gameFile.FileName).GetFullPath();
+            else
+                file = Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName);
 
             // If the unmanaged file is a pk3 then ArchiveReader.Create will read it as a zip and try to unpack
             // Return FileArchiveReader instead so the pk3 will be added as a file

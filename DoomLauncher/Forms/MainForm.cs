@@ -1521,8 +1521,8 @@ namespace DoomLauncher
                     await SyncLocalDatabase(files, fileManagement, true, tag);
                     break;
                 case AddFileType.IWad:
-                    await SyncLocalDatabase(files, fileManagement, fileAddResults.ReplacedFiles.Count > 0);
-                    SyncIWads(fileAddResults);
+                    var handler = await SyncLocalDatabase(files, fileManagement, fileAddResults.ReplacedFiles.Count > 0);
+                    SyncIWads(handler.AddedGameFiles);
                     break;
                 default:
                     break;
@@ -1707,7 +1707,7 @@ namespace DoomLauncher
                 {
                     string existingFile = existingFileNames.FirstOrDefault(x => Path.GetFileName(x).Equals(fi.Name));
 
-                    if (existingFile != null && Path.IsPathRooted(existingFile))
+                    if (existingFile != null && GameFile.IsUnmanaged(existingFile))
                     {
                         results.Errors.Add(new FileError { FileName = baseName, Error = "File already exists as an unmanaged file." });
                     }

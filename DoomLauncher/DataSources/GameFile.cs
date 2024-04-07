@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Handlers;
+using DoomLauncher.Interfaces;
 using System;
 using System.IO;
 
@@ -58,7 +59,21 @@ namespace DoomLauncher.DataSources
         public int MinutesPlayed { get; set; }
         public virtual int FileSizeBytes { get; set; }
 
-        public bool IsUnmanaged() => Path.IsPathRooted(FileName);
+        public bool IsUnmanaged() => IsUnmanaged(FileName);
+
+        public static bool IsUnmanaged(string filename) => 
+            Path.IsPathRooted(filename) || (PathExtensions.IsPartiallyQualified(filename) && HasPathSeparator(filename));
+
+        private static bool HasPathSeparator(string filename)
+        {
+            for (int i = 0; i < filename.Length; i++)
+            {
+                if (filename[i] == Path.DirectorySeparatorChar || filename[i] == Path.AltDirectorySeparatorChar)
+                    return true;
+            }
+
+            return false;
+        }
 
         public bool IsDirectory()
         {
