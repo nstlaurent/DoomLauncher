@@ -599,11 +599,8 @@ namespace DoomLauncher
 
         void ctrlSearch_SearchTextChanged(object sender, EventArgs e)
         {
-            if (GetCurrentTabView() != null &&
-                GetCurrentTabView().GetType() != typeof(IdGamesTabViewCtrl))
-            {
+            if (GetCurrentTabView() != null)
                 HandleSearch();
-            }
         }
 
         private GameFileFieldType[] DefaultGameFileSelectFields
