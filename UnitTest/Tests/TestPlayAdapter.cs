@@ -3,16 +3,21 @@ using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace UnitTest.Tests
 {
     [TestClass]
     public class TestPlayAdapter
     {
+        private static readonly string LocalFile1 = @"Local\file1.wad";
+        private static readonly string LocalIwad1 = @"Local\iwad1.wad";
+
         [TestInitialize]
         public void Init()
         {
@@ -346,6 +351,23 @@ namespace UnitTest.Tests
             Assert.IsTrue(launch.Contains(" -levelstat"));
         }
 
+        [TestMethod]
+        public void RelativeUnmanagedFiles()
+        {
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            adapter.IWad = new GameFile() { FileName = LocalIwad1 };
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+            var port = GetPrBoomTestPort(".wad,.deh");
+
+            var gameFile = new GameFile() { FileName = LocalFile1 };
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _);
+            string check = string.Format(" -iwad \"{0}\" -file \"{1}\" ",
+                Path.Combine(Directory.GetCurrentDirectory(), LocalIwad1),
+                Path.Combine(Directory.GetCurrentDirectory(), LocalFile1));
+            Assert.AreEqual(check, launch);
+        }
+
         private void CreateDirectoriesAndFiles()
         {
             if (Directory.Exists("GameFiles"))
@@ -354,10 +376,15 @@ namespace UnitTest.Tests
                 Directory.Delete("Temp", true);
             if (Directory.Exists("SourcePorts"))
                 Directory.Delete("SourcePorts", true);
+            if (Directory.Exists("Local"))
+                Directory.Delete("Local", true);
 
             Directory.CreateDirectory("GameFiles");
             CreateTestFiles();
             CreateTestPathedFile();
+
+            Directory.CreateDirectory("Local");
+            CreateRelativeFiles();
 
             Directory.CreateDirectory("Temp");
 
@@ -401,6 +428,12 @@ namespace UnitTest.Tests
                     }
                 }
             }
+        }
+
+        private void CreateRelativeFiles()
+        {
+            File.WriteAllText(LocalFile1, "");
+            File.WriteAllText(LocalIwad1, "");
         }
 
         private static List<IGameFile> GetTestFiles()

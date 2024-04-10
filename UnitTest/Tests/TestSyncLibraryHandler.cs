@@ -306,10 +306,54 @@ namespace UnitTest.Tests
             Assert.AreEqual(200, joymapsTitlepic.Height);
         }
 
-        private static SyncLibraryHandler CreateSyncLibraryHandler(bool pullTitlepic = false)
+        [TestMethod]
+        public void UnmanagedFiles()
+        {
+            string file = "simple.wad";
+            string file1 = "file1.wad";
+            string file2 = "file2.wad";
+            string fullPathFile1 = Path.Combine(Directory.GetCurrentDirectory(), s_filedir, file1);
+            string fullPathFile2 = Path.Combine(Directory.GetCurrentDirectory(), s_filedir, file2);
+
+            SyncLibraryHandler handler = CreateSyncLibraryHandler(false, FileManagement.Unmanaged);
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file1));
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file2));
+
+            // Change directory to force ignore relative paths
+            string dir = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(s_filedir);
+            handler.Execute(new string[] { fullPathFile1, fullPathFile2 });
+            Assert.AreEqual(2, handler.AddedGameFiles.Count);
+            Directory.SetCurrentDirectory(dir);
+
+            Assert.AreEqual(fullPathFile1, handler.AddedGameFiles[0].FileName);
+            Assert.AreEqual(fullPathFile2, handler.AddedGameFiles[1].FileName);
+        }
+
+        [TestMethod]
+        public void UnmanagedRelativeFiles()
+        {
+            string file = "simple.wad";
+            string file1 = "file1.wad";
+            string file2 = "file2.wad";
+            string fullPathFile1 = Path.Combine(Directory.GetCurrentDirectory(), s_filedir, file1);
+            string fullPathFile2 = Path.Combine(Directory.GetCurrentDirectory(), s_filedir, file2);
+
+            SyncLibraryHandler handler = CreateSyncLibraryHandler(false, FileManagement.Unmanaged);
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file1));
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file2));
+
+            handler.Execute(new string[] { fullPathFile1, fullPathFile2 });
+            Assert.AreEqual(2, handler.AddedGameFiles.Count);
+
+            Assert.AreEqual(Path.Combine(s_filedir, file1), handler.AddedGameFiles[0].FileName);
+            Assert.AreEqual(Path.Combine(s_filedir, file2), handler.AddedGameFiles[1].FileName);
+        }
+
+        private static SyncLibraryHandler CreateSyncLibraryHandler(bool pullTitlepic = false, FileManagement fileManagement = FileManagement.Managed)
         {
             return new SyncLibraryHandler(TestUtil.CreateAdapter(), CreateDirectoryAdapater(), new LauncherPath(s_filedir), 
-                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" }, FileManagement.Managed, null, pullTitlepic);
+                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" }, fileManagement, null, pullTitlepic);
         }
 
         private static DirectoryDataSourceAdapter CreateDirectoryAdapater()

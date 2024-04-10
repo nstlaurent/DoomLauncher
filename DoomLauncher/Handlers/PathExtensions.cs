@@ -4,8 +4,6 @@ namespace DoomLauncher.Handlers
 {
     public static class PathExtensions
     {
-        private static readonly char[] PathSplit = new char[] { Path.DirectorySeparatorChar };
-
         // Path.IsRootedPath incorrectly allows path starting with directory separated chars to be counted as rooted.
         // .NET Framework does not have this function so it is copied from .NET core source
         public static bool IsPartiallyQualified(string path)
