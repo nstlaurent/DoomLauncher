@@ -8,10 +8,12 @@ namespace DoomLauncher
     public partial class SearchControl : UserControl
     {
         public event EventHandler SearchTextChanged;
+        public event EventHandler SearchTextChangedNoDebounce;
         public event PreviewKeyDownEventHandler SearchTextKeyPreviewDown;
 
         private readonly Controls.CheckBoxList m_checkBoxList = new Controls.CheckBoxList();
         private readonly System.Timers.Timer m_textTimer = new System.Timers.Timer();
+        private bool m_fireEvent = true;
 
         public SearchControl()
         {
@@ -23,6 +25,13 @@ namespace DoomLauncher
             m_textTimer.AutoReset = false;
             m_textTimer.Interval = 400;
             m_textTimer.Elapsed += TextTimer_Elapsed;
+        }
+
+        public void SetSearchText(string text, bool fireEvent = false)
+        {
+            m_fireEvent = fireEvent;
+            txtSearch.Text = text;
+            m_fireEvent = true;
         }
 
         public void SetShowDropDown(bool set)
@@ -51,6 +60,11 @@ namespace DoomLauncher
 
         void txtSearch_TextChanged(object sender, EventArgs e)
         {
+            if (!m_fireEvent)
+                return;
+
+            SearchTextChangedNoDebounce?.Invoke(this, EventArgs.Empty);
+
             m_textTimer.Stop();
             m_textTimer.Start();
         }

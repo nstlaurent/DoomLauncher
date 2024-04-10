@@ -593,11 +593,25 @@ namespace DoomLauncher
 
         private void SetupSearchFilters()
         {
-            ctrlSearch.SearchTextChanged += ctrlSearch_SearchTextChanged;
+            ctrlSearch.SearchTextChanged += CtrlSearch_SearchTextChanged;
+            ctrlSearch.SearchTextChangedNoDebounce += CtrlSearch_SearchTextChangedNoDebounce;
             Util.SetDefaultSearchFields(ctrlSearch);
         }
 
-        void ctrlSearch_SearchTextChanged(object sender, EventArgs e)
+        private void CtrlSearch_SearchTextChangedNoDebounce(object sender, EventArgs e)
+        {
+            var ctrl = GetCurrentViewControl();
+            if (ctrl == null)
+                return;
+
+            ITabView tabView = m_tabHandler.TabViewForControl(ctrl);
+            if (tabView == null)
+                return;
+
+            m_searchByTab[tabView.Key.ToString()] = ctrlSearch.SearchText;
+        }
+
+        void CtrlSearch_SearchTextChanged(object sender, EventArgs e)
         {
             if (GetCurrentTabView() != null)
                 HandleSearch();

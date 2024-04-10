@@ -37,6 +37,7 @@ namespace DoomLauncher
         private readonly SplashScreen m_splash;
         private readonly UpdateControl m_updateControl = new UpdateControl();
         private readonly TagSelectControl m_tagSelectControl = new TagSelectControl();
+        private readonly Dictionary<string, string> m_searchByTab = new Dictionary<string, string>();
         private Popup m_tagPopup;
 
         private string m_launchFile;
@@ -48,6 +49,7 @@ namespace DoomLauncher
         private bool m_writeConfigOnClose = true;
         private IGameFile m_lastPlayRandomFile;
         private string m_lastPlayRandomMap;
+        private ITabView m_lastSelectedTabView;
 
         public MainForm(LaunchArgs launchArgs, SplashScreen splashScreen)
         {
@@ -270,27 +272,30 @@ namespace DoomLauncher
 
         private void HandleSearch()
         {
-            if (GetCurrentViewControl() != null)
-            {
-                ITabView tabView = m_tabHandler.TabViewForControl(GetCurrentViewControl());
+            var ctrl = GetCurrentViewControl();
+            if (ctrl == null)
+                return;
 
-                if (tabView != null && tabView.IsSearchAllowed)
+            ITabView tabView = m_tabHandler.TabViewForControl(ctrl);
+            if (tabView == null)
+                return;
+
+            if (tabView != null && tabView.IsSearchAllowed)
+            {
+                if (string.IsNullOrEmpty(ctrlSearch.SearchText.Trim()))
                 {
-                    if (string.IsNullOrEmpty(ctrlSearch.SearchText.Trim()))
-                    {
-                        tabView.SetGameFiles();
-                        UpdateSavedTabSearch(tabView, null);
-                    }
-                    else
-                    {
-                        var searchFields = Util.SearchFieldsFromSearchCtrl(ctrlSearch);
-                        UpdateSavedTabSearch(tabView, searchFields);
-                        tabView.SetGameFiles(searchFields);
-                    }
-                    
-                    HandleSelectionChange(GetCurrentViewControl(), false);
+                    tabView.SetGameFiles();
+                    UpdateSavedTabSearch(tabView, null);
                 }
-            }
+                else
+                {
+                    var searchFields = Util.SearchFieldsFromSearchCtrl(ctrlSearch);
+                    UpdateSavedTabSearch(tabView, searchFields);
+                    tabView.SetGameFiles(searchFields);
+                }
+                    
+                HandleSelectionChange(GetCurrentViewControl(), false);
+            }            
         }
 
         private void UpdateSavedTabSearch(ITabView tabView, GameFileSearchField[] searchFields)
@@ -1145,37 +1150,39 @@ namespace DoomLauncher
             HandleTabSelectionChange();
         }
 
-        private ITabView m_lastSelectedTabView;
-
         private void HandleTabSelectionChange()
         {
-            if (tabControl.SelectedTab != null)
+            if (tabControl.SelectedTab == null)
+                return;
+            
+            m_lastSelectedTabView?.GameFileViewControl.SetVisible(false);
+
+            ITabView tabView = GetCurrentTabView();
+            if (tabView == null)
+                return;
+
+            bool isIdGamesTab = tabView is IdGamesTabViewCtrl;
+            if (m_searchByTab.TryGetValue(tabView.Key.ToString(), out var text))
+                ctrlSearch.SetSearchText(text, !isIdGamesTab);
+            else
+                ctrlSearch.SetSearchText(string.Empty, !isIdGamesTab);
+
+            m_lastSelectedTabView = tabView;
+            btnPlay.Enabled = tabView.IsPlayAllowed;
+            chkIncludeAll.Enabled = tabView.IsAutoSearchAllowed;
+
+            if (isIdGamesTab && !m_idGamesLoaded)
             {
-                if (m_lastSelectedTabView != null)
-                    m_lastSelectedTabView.GameFileViewControl.SetVisible(false);
-
-                ITabView tabView = GetCurrentTabView();
-
-                if (tabView != null)
-                {
-                    m_lastSelectedTabView = tabView;
-                    btnPlay.Enabled = tabView.IsPlayAllowed;
-                    chkIncludeAll.Enabled = tabView.IsAutoSearchAllowed;
-
-                    if (tabView is IdGamesTabViewCtrl && !m_idGamesLoaded)
-                    {
-                        tabView.SetGameFiles();
-                        m_idGamesLoaded = true;
-                    }
-
-                    tabView.GameFileViewControl.Focus();
-                    tabView.GameFileViewControl.SetVisible(true);
-                    AppConfiguration.LastSelectedTabIndex = tabControl.SelectedIndex;
-
-                    SetSelectedTabText(tabView);
-                    HandleSelectionChange(tabView.GameFileViewControl, false);
-                }
+                tabView.SetGameFiles();
+                m_idGamesLoaded = true;
             }
+
+            tabView.GameFileViewControl.Focus();
+            tabView.GameFileViewControl.SetVisible(true);
+            AppConfiguration.LastSelectedTabIndex = tabControl.SelectedIndex;
+
+            SetSelectedTabText(tabView);
+            HandleSelectionChange(tabView.GameFileViewControl, false);            
         }
 
         private void SetSelectedTabText(ITabView tabView)
