@@ -1,6 +1,7 @@
 ﻿using DoomLauncher.Controls;
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
+using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using DoomLauncher.Stylize;
 using PresentationControls;
@@ -333,7 +334,7 @@ namespace DoomLauncher
 
         private void openZipFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HandleOpenZipFile();
+            HandleOpenArchiveFile();
         }
 
         private void playToolStripMenuItem_Click(object sender, EventArgs e)
@@ -580,31 +581,45 @@ namespace DoomLauncher
             return find;
         }
 
-        private void HandleOpenZipFile()
+        private void HandleOpenArchiveFile()
         {
             if (GetCurrentViewControl() == null)
                 return;
 
             IGameFile[] items = SelectedItems(GetCurrentViewControl());
-            IGameFile lastFile = null;
+            if (items.Length == 0)
+                return;
 
-            try
+            IGameFile failedOpen = null;
+            foreach (IGameFile item in items)
             {
-                foreach (IGameFile item in items)
+                if (item == null)
+                    continue;
+
+                bool isDirectory = item.IsUnmanaged() && Util.IsDirectory(item.FileName);
+                if (!isDirectory && !Util.GetReadablePkExtensions().Contains(Path.GetExtension(item.FileName)) && 
+                    !ArchiveUtil.ShouldReadPackagedArchive(item.FileName))
+                    continue;
+
+                string path = item.IsUnmanaged() ? item.FileName : Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName);
+                if (!AssertFile(path))
+                    continue;
+
+                try
                 {
-                    if (item != null && AssertFile(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName)) &&
-                        Util.GetReadablePkExtensions().Contains(Path.GetExtension(item.FileName)))
-                    {
-                        lastFile = item;
-                        Process.Start(Path.Combine(AppConfiguration.GameFileDirectory.GetFullPath(), item.FileName));
-                    }
+                    Process.Start(path);
+                    return;
+                }
+                catch
+                {
+                    failedOpen = item;
+                    break;
                 }
             }
-            catch
-            {
-                string filename = lastFile == null ? "the file" : lastFile.FileNameNoPath; 
-                StyledMessageBox.Show(this, $"Could not open {filename}", "Cannot Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+ 
+            if (failedOpen == null)
+                failedOpen = items[0];
+            StyledMessageBox.Show(this, $"Could not open {failedOpen.FileNameNoPath}", "Cannot Open", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void HandleDelete()
@@ -1942,7 +1957,7 @@ namespace DoomLauncher
             return new ToolStripMenuItem[]
             {
                 GetToolStripItem(mnuLocal, MenuConstants.Rename),
-                GetToolStripItem(mnuLocal, MenuConstants.OpenZip),
+                //GetToolStripItem(mnuLocal, MenuConstants.OpenArchive),
                 GetToolStripItem(mnuLocal, MenuConstants.Utility)
             };
         }

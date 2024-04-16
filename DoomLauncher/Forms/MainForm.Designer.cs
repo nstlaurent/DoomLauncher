@@ -175,7 +175,7 @@
             // 
             this.openZipFileToolStripMenuItem.Name = "openZipFileToolStripMenuItem";
             this.openZipFileToolStripMenuItem.Size = new System.Drawing.Size(247, 24);
-            this.openZipFileToolStripMenuItem.Text = "Open Zip File...";
+            this.openZipFileToolStripMenuItem.Text = "Open Archive...";
             this.openZipFileToolStripMenuItem.Click += new System.EventHandler(this.openZipFileToolStripMenuItem_Click);
             // 
             // playToolStripMenuItem
