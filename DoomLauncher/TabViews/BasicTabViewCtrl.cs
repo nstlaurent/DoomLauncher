@@ -203,12 +203,9 @@ namespace DoomLauncher
 
         public virtual void SetGameFiles(IEnumerable<GameFileSearchField> searchFields)
         {
-            IEnumerable<IGameFile> items = new IGameFile[0];
-
+            IEnumerable<IGameFile> items = Enumerable.Empty<IGameFile>();
             foreach (GameFileSearchField sf in searchFields)
-            {
                 items = items.Union(Adapter.GetGameFiles(new GameFileGetOptions(m_selectFields, sf)));
-            }
 
             SetDataSource(items);
         }
