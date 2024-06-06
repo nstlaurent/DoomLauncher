@@ -153,7 +153,7 @@ namespace DoomLauncher
 
             if (gameFile != null)
             {
-                titleBar.Title = "Launch - " + (string.IsNullOrEmpty(gameFile.Title) ? gameFile.FileName : gameFile.Title);
+                Text = "Launch - " + (string.IsNullOrEmpty(gameFile.Title) ? gameFile.FileName : gameFile.Title);
                 if (!string.IsNullOrEmpty(gameFile.Map))
                     AutoCompleteCombo.SetAutoCompleteCustomSource(cmbMap, MapSplit(gameFile), null, null);
             }
