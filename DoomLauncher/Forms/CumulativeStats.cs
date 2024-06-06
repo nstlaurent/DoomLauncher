@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -10,7 +11,7 @@ namespace DoomLauncher
         public CumulativeStats()
         {
             InitializeComponent();
-
+            tblMain.CellPaint += TblMain_CellPaint;
             Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
         }
 
@@ -35,6 +36,15 @@ namespace DoomLauncher
             lblTimeLaunched.Text = Util.GetTimePlayedString(launchMinutes);
             lblTimePlayed.Text = Util.GetTimePlayedString(statsMinutes);
             ctrlStats.SetStatistics(gameFiles, stats);
+        }
+
+        private void TblMain_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
+        {
+            Point pt = e.CellBounds.Location;
+            Pen pen = new Pen(ColorTheme.Current.GridBorder);
+            e.Graphics.DrawLine(pen, pt.X, pt.Y, pt.X, pt.Y + e.CellBounds.Height);
+            e.Graphics.DrawLine(pen, pt.X + e.CellBounds.Width - 1, pt.Y, e.CellBounds.Width - 1, pt.Y + e.CellBounds.Height);
+            e.Graphics.DrawLine(pen, pt.X, pt.Y + e.CellBounds.Height - 1, pt.X + e.CellBounds.Width, pt.Y + e.CellBounds.Height - 1);
         }
     }
 }
