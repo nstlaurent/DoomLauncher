@@ -131,7 +131,7 @@ namespace DoomLauncher.Forms
                 Image image = pbMain.GetImage();
                 pbMain.SetImage(ImageExtensions.FromFileOrDefault(GetImageFilename()));
                 image?.Dispose();
-                titleBar.Title = string.Format("Screenshot Viewer - {0}/{1}", m_index + 1, m_images.Length);
+                Text = string.Format("Screenshot Viewer - {0}/{1}", m_index + 1, m_images.Length);
 
                 SetUserDescription(GetFileData());
             }
@@ -250,7 +250,7 @@ namespace DoomLauncher.Forms
 
             if (m_slideshow)
             {
-                titleBar.Title = "Slideshow";
+                Text = "Slideshow";
                 pbMain.SetImages(m_images.ToList(), m_index);
             }
             else
