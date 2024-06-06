@@ -1177,10 +1177,7 @@ namespace DoomLauncher
                 return;
 
             bool isIdGamesTab = tabView is IdGamesTabViewCtrl;
-            if (m_searchByTab.TryGetValue(tabView.Key.ToString(), out var text))
-                ctrlSearch.SetSearchText(text, !isIdGamesTab);
-            else
-                ctrlSearch.SetSearchText(string.Empty, !isIdGamesTab);
+            ctrlSearch.SetSearchText(GetTabSearchText(tabView.Key.ToString()), !isIdGamesTab);
 
             m_lastSelectedTabView = tabView;
             btnPlay.Enabled = tabView.IsPlayAllowed;
@@ -2487,20 +2484,50 @@ namespace DoomLauncher
             HandleCumulativeStatistics();
         }
 
-        private void HandleCumulativeStatistics()
+        private void globalCumulativeStatisticsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            IGameFileView view = GetCurrentViewControl();
-            if (view == null)
-                return;
+            HandleCumulativeStatistics(true);
+        }
 
-            ITabView tabView = m_tabHandler.TabViewForControl(view);
-            string tabText = tabView == null ? string.Empty : tabView.Title;
+        private void HandleCumulativeStatistics(bool global = false)
+        { 
+
+            var gameFiles = Enumerable.Empty<IGameFile>();
+            string tabText;
+
+            if (global)
+            {
+                tabText = "Global";
+                var localTabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(TabKeys.LocalKey));
+                if (localTabView != null)
+                    gameFiles = localTabView.GameFileViewControl.DataSource;
+                var iwadTabView = m_tabHandler.TabViews.FirstOrDefault(x => x.Key.Equals(TabKeys.IWadsKey));
+                if (iwadTabView != null)
+                    gameFiles = gameFiles.Union(iwadTabView.GameFileViewControl.DataSource);
+            }
+            else
+            {
+                IGameFileView view = GetCurrentViewControl();
+                if (view == null)
+                    return;
+
+                ITabView tabView = m_tabHandler.TabViewForControl(view);
+                tabText = tabView == null ? string.Empty : tabView.Title;
+                gameFiles = view.DataSource;
+            }
 
             CumulativeStats form = new CumulativeStats();
             form.Title = $"Cumulative Stats - {tabText.Replace("● ", string.Empty)}";
-            form.SetStatistics(view.DataSource, DataSourceAdapter.GetStats(view.DataSource));
+            form.SetStatistics(gameFiles, DataSourceAdapter.GetStats(gameFiles));
             form.StartPosition = FormStartPosition.CenterParent;
             form.ShowDialog(this);
+        }
+
+        private string GetTabSearchText(string tabKey)
+        {
+            if (m_searchByTab.TryGetValue(tabKey, out var text))
+                return text;
+            return string.Empty;
         }
 
         private ProgressBarForm CreateProgressBar(string text, ProgressBarStyle style, bool cancelAllowed)

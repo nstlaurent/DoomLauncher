@@ -17,8 +17,8 @@ namespace DoomLauncher
 
         public string Title
         {
-            get { return titleBar.Title; }
-            set { titleBar.Title = value; }
+            get { return Text; }
+            set { Text = value; }
         }
 
         public void SetStatistics(IEnumerable<IGameFile> gameFiles, IEnumerable<IStatsData> stats)
