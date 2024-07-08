@@ -20,8 +20,13 @@ namespace UnitTest.Tests
         {
             var dbAdapter = (DbDataSourceAdapter)adapter;
             var access = new DataAccess(dbAdapter.DbAdapter, dbAdapter.ConnectionString);
+            access.ExecuteNonQuery("delete from Files");
             access.ExecuteNonQuery("delete from GameProfiles");
             access.ExecuteNonQuery("delete from GameFiles");
+            access.ExecuteNonQuery("delete from IWads");
+            access.ExecuteNonQuery("delete from SourcePorts");
+            access.ExecuteNonQuery("delete from TagMapping");
+            access.ExecuteNonQuery("delete from Tags");
         }
 
         public static bool AllFieldsEqualIgnore<T>(T obj1, T obj2, params string[] ignore)
