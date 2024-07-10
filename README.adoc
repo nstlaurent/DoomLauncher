@@ -53,6 +53,11 @@ changes work before submitting them.
 Doom Launcher currently supports Windows 7 and later. Mac and Linux are
 unsupported.
 
+In order to build the Setup module for Visual Studio 2022, you may need to separately install 
+support for Installer projects: 
+https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2022InstallerProjects 
+
+
 == Development Tools
 
 SQLite Browser. Great tool for viewing and editing the DoomLauncher.sqlite database: 
