@@ -27,10 +27,7 @@ namespace DoomLauncher
 
         public DbDataSourceAdapter(IDatabaseAdapter dbAdapter, string connectionString, bool outOfDateDatabase)
         {
-            DbAdapter = dbAdapter;
-            ConnectionString = connectionString;
             m_outOfDateDatabase = outOfDateDatabase;
-
             DataAccess = new DataAccess(dbAdapter, connectionString);
         }
 
@@ -839,9 +836,7 @@ namespace DoomLauncher
             return DataAccess.ExecuteSelect($"pragma table_info({tableName});").Tables[0];
         }
 
-        private DataAccess DataAccess { get; set; }
-        public IDatabaseAdapter DbAdapter { get; private set; }
-        public string ConnectionString { get; private set; }
+        public DataAccess DataAccess { get; private set; }
 
         private readonly bool m_outOfDateDatabase;
     }

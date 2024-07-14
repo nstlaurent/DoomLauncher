@@ -22,7 +22,8 @@ namespace UnitTest.Tests
         [TestCleanup]
         public void CleanDatabase()
         {
-            TestUtil.CleanDatabase(database);
+            var dataAccess = ((DbDataSourceAdapter)database).DataAccess;
+            dataAccess.ExecuteNonQuery("delete from Files");
         }
 
         [TestMethod]

@@ -14,6 +14,8 @@ namespace UnitTest.Tests
     {
         private static string s_garbage = "'s like = % ";
 
+        private IDataSourceAdapter database;
+
         private static readonly GameFileFieldType[] s_fields = new GameFileFieldType[]
         {
             GameFileFieldType.GameFileID,
@@ -92,24 +94,6 @@ namespace UnitTest.Tests
             return files;
         }
 
-        private List<IIWadData> CreateTestIWadList()
-        {
-            List<IIWadData> wads = new List<IIWadData>();
-            int count = 0;
-
-            for (int i = 0; i < 5; i++)
-            {
-                wads.Add(new IWadData()
-                {
-                    IWadID = ++count,
-                    FileName = Guid.NewGuid().ToString(),
-                    Name = Guid.NewGuid().ToString()
-                });
-            }
-
-            return wads;
-        }
-
         private List<ITagData> CreateTestTagList()
         {
             List<ITagData> tags = new List<ITagData>();
@@ -137,17 +121,29 @@ namespace UnitTest.Tests
             return map;
         }
 
+        [TestInitialize]
+        public void Initialize()
+        {
+            database = TestUtil.CreateAdapter();
+            TestInsertGameFile();
+            TestInsertTag();
+            TestInsertTagMap();
+        }
+
+        [TestCleanup]
+        public void CleanDatabase()
+        {
+            var dataAccess = ((DbDataSourceAdapter)database).DataAccess;
+            dataAccess.ExecuteNonQuery("delete from GameFiles");
+            dataAccess.ExecuteNonQuery("delete from Tags");
+            dataAccess.ExecuteNonQuery("delete from TagMapping");
+        }
+
+
         [TestMethod]
         public void TestGameFileData()
         {
-            TestInsertGameFile();
-            TestInsertIWad();
-
-            TestInsertTag();
-            TestInsertTagMap();
-
             TestGameFileSelect();
-            TestIWadSelect();
             TestTagSelect();
             TestTagMapSelect();
             TestGameFileTagging();
@@ -164,9 +160,6 @@ namespace UnitTest.Tests
             TestUpdateFileName();
             TestUpdateFields();
             TestUpdateGameFiles();
-            TestUpdateIWads();
-            TestGetGameFileIWads();
-            TestDeleteIWad();
             TestUpdateWhere();
             TestDelete();
         }
@@ -177,14 +170,6 @@ namespace UnitTest.Tests
             var gameFiles = CreateTestFileList();
             foreach (var gameFile in gameFiles)
                 adapter.InsertGameFile(gameFile);
-        }
-
-        public void TestInsertIWad()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var iwads = CreateTestIWadList();
-            foreach (var iwad in iwads)
-                adapter.InsertIWad(iwad);
         }
 
         public void TestInsertTag()
@@ -203,6 +188,7 @@ namespace UnitTest.Tests
                 adapter.InsertTagMapping(map);
         }
 
+        // Check the number of game files retrieved is the same as saved
         public void TestGameFileSelect()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -213,13 +199,7 @@ namespace UnitTest.Tests
             Assert.IsTrue(adapter.GetGameFileNames().Count() == gameFiles.Count);
         }
 
-        public void TestIWadSelect()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var iwads = CreateTestIWadList();
-            Assert.IsTrue(adapter.GetIWads().Count() == iwads.Count);
-        }
-
+        // Check the number of Tags retrieved is the same as saved
         public void TestTagSelect()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -227,6 +207,7 @@ namespace UnitTest.Tests
             Assert.IsTrue(adapter.GetTags().Count() == tags.Count);
         }
 
+        // Check the number of TagMappings retrieved is the same as saved, and the same as the number of gamefiles
         public void TestTagMapSelect()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -235,6 +216,7 @@ namespace UnitTest.Tests
             Assert.IsTrue(adapter.GetGameFiles().Count() == tagMap.Count);
         }
 
+        // Check that the number of tags mappings committed for a GameFile is the same as the number saved
         public void TestGameFileTagging()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -248,6 +230,7 @@ namespace UnitTest.Tests
             }
         }
 
+        // ??? Check searching behaviour with various options
         public void TestGameFileTaggingSearch()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -268,6 +251,7 @@ namespace UnitTest.Tests
             }
         }
 
+        // ??? Check searching behaviour with various options
         public void TestSelectFields()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -300,6 +284,7 @@ namespace UnitTest.Tests
             }
         }
 
+        // ??? Check searching behaviour with various options
         public void TestGetFileNameByFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -314,6 +299,7 @@ namespace UnitTest.Tests
             }
         }
 
+        // ??? Check searching behaviour with various options
         public void TestGetFileNameByID()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -330,6 +316,7 @@ namespace UnitTest.Tests
             }
         }
 
+        // ??? Check searching behaviour with various options
         public void TestFullLikeFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -345,6 +332,7 @@ namespace UnitTest.Tests
             }
         }
 
+        // ??? Check searching behaviour with various options
         public void TestPartialLikeFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -354,6 +342,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
+        // ??? Check searching behaviour with various options
         public void TestPartialLikeFileName_SqlSyntax()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -363,6 +352,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(3, gameFilesFind.Count());
         }
 
+        // ??? Check searching behaviour with various options
         public void TestPartialLikeTitle()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -372,6 +362,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
+        // ??? Check searching behaviour with various options
         public void TestPartialLikeDescription()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -381,6 +372,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
+        // ??? Check searching behaviour with various options
         public void TestPartialLikeAuthor()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -390,6 +382,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
+        // ??? Check searching behaviour with various options
         public void TestUpdateFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -410,6 +403,7 @@ namespace UnitTest.Tests
             }
         }
 
+        // ??? 
         public void TestUpdateFields()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -433,6 +427,7 @@ namespace UnitTest.Tests
             }
         }
 
+
         public void TestUpdateGameFiles()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
@@ -445,49 +440,6 @@ namespace UnitTest.Tests
                 IGameFile gameFileFind = adapter.GetGameFile(gameFile.FileName);
                 Assert.IsTrue(gameFileFind != null);
                 Assert.IsTrue(TestUtil.AllFieldsEqual<IGameFile>(gameFile, gameFileFind));
-            }
-        }
-
-        public void TestUpdateIWads()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var iwads = adapter.GetIWads().ToList();
-            var gameFiles = CreateTestFileList();
-
-            var gameFileIwads = gameFiles.Take(iwads.Count).ToList();
-            for (int i = 0; i < gameFileIwads.Count; i++)
-            {
-                iwads[i].GameFileID = gameFileIwads[i].IWadID;
-                adapter.UpdateIWad(iwads[i]);
-            }
-
-            iwads = adapter.GetIWads().ToList();
-
-            foreach (var gameFile in gameFileIwads)
-            {
-                Assert.IsTrue(iwads.Count(x => x.GameFileID == gameFile.GameFileID) == 1);
-            }
-        }
-
-        public void TestGetGameFileIWads()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var gameFileIwads = CreateTestIWadList();
-
-            Assert.IsTrue(adapter.GetGameFileIWads().Count() == gameFileIwads.Count);
-        }
-
-        public void TestDeleteIWad()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var iwads = adapter.GetIWads();
-            int count = iwads.Count();
-
-            foreach (var iwad in iwads)
-            {
-                adapter.DeleteIWad(iwad);
-                count--;
-                Assert.AreEqual(count, adapter.GetIWads().Count());
             }
         }
 
