@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace UnitTest.Tests
 {
+    // TODO isolate
     [TestClass]
     public class TestLoadFiles
     {
@@ -16,11 +17,15 @@ namespace UnitTest.Tests
         private static string[] s_files = new string[] { "GAMEFILE1.WAD", "GAMEFILE2.WAD", "GAMEFILE3.WAD" };
         private static string[] s_mods = new string[] { "SUPERCOOLMOD.WAD", "MOD2.WAD", "MOD3.WAD", "MOD4.WAD", "PORTMOD1.WAD", "PORTMOD2.WAD", "IWADMOD1.WAD", "IWADMODZ.WAD" };
 
+        [TestInitialize]
+        public void Initialize()
+        {
+            CreateDatabase();
+        }
+
         [TestMethod]
         public void TestFiles()
         {
-            CreateDatabase();
-
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = Util.GetAdditionalFiles(adapter, (GameFile)adapter.GetGameFile("COOLGAMEFILE.WAD"));
 
