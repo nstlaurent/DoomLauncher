@@ -121,6 +121,28 @@ namespace UnitTest.Tests
             return map;
         }
 
+        public void TestInsertGameFile()
+        {
+            var gameFiles = CreateTestFileList();
+            foreach (var gameFile in gameFiles)
+                database.InsertGameFile(gameFile);
+        }
+
+        public void TestInsertTag()
+        {
+            var tags = CreateTestTagList();
+            foreach (var tag in tags)
+                database.InsertTag(tag);
+        }
+
+        public void TestInsertTagMap()
+        {
+            var mapTags = CreateTestTagMapping();
+            foreach (var map in mapTags)
+                database.InsertTagMapping(map);
+        }
+
+
         [TestInitialize]
         public void Initialize()
         {
@@ -139,125 +161,70 @@ namespace UnitTest.Tests
             dataAccess.ExecuteNonQuery("delete from TagMapping");
         }
 
+        [TestMethod]
+        public void GetGameFiles_ReturnsTheExpectedGameFilesCount()
+        {
+            var gameFiles = CreateTestFileList();
+
+            Assert.IsTrue(database.GetGameFiles().Count() == gameFiles.Count);
+            Assert.IsTrue(database.GetGameFilesCount() == gameFiles.Count);
+            Assert.IsTrue(database.GetGameFileNames().Count() == gameFiles.Count);
+        }
 
         [TestMethod]
-        public void TestGameFileData()
+        public void GetTags_ReturnsTheExpectedTagCount()
         {
-            TestGameFileSelect();
-            TestTagSelect();
-            TestTagMapSelect();
-            TestGameFileTagging();
-            TestGameFileTaggingSearch();
-            TestSelectFields();
-            TestGetFileNameByFileName();
-            TestGetFileNameByID();
-            TestFullLikeFileName();
-            TestPartialLikeFileName();
-            TestPartialLikeFileName_SqlSyntax();
-            TestPartialLikeTitle();
-            TestPartialLikeDescription();
-            TestPartialLikeAuthor();
-            TestUpdateFileName();
-            TestUpdateFields();
-            TestUpdateGameFiles();
-            TestUpdateWhere();
-            TestDelete();
-        }
-
-        public void TestInsertGameFile()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var gameFiles = CreateTestFileList();
-            foreach (var gameFile in gameFiles)
-                adapter.InsertGameFile(gameFile);
-        }
-
-        public void TestInsertTag()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var tags = CreateTestTagList();
-            foreach (var tag in tags)
-                adapter.InsertTag(tag);
+            Assert.IsTrue(database.GetTags().Count() == tags.Count);
         }
 
-        public void TestInsertTagMap()
+        [TestMethod]
+        public void GetTagMappings_MatchesTheGameFileCount()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var mapTags = CreateTestTagMapping();
-            foreach (var map in mapTags)
-                adapter.InsertTagMapping(map);
-        }
-
-        // Check the number of game files retrieved is the same as saved
-        public void TestGameFileSelect()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var gameFiles = CreateTestFileList();
-
-            Assert.IsTrue(adapter.GetGameFiles().Count() == gameFiles.Count);
-            Assert.IsTrue(adapter.GetGameFilesCount() == gameFiles.Count);
-            Assert.IsTrue(adapter.GetGameFileNames().Count() == gameFiles.Count);
-        }
-
-        // Check the number of Tags retrieved is the same as saved
-        public void TestTagSelect()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var tags = CreateTestTagList();
-            Assert.IsTrue(adapter.GetTags().Count() == tags.Count);
-        }
-
-        // Check the number of TagMappings retrieved is the same as saved, and the same as the number of gamefiles
-        public void TestTagMapSelect()
-        {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var tagMap = CreateTestTagMapping();
-            Assert.IsTrue(adapter.GetTagMappings().Count() == tagMap.Count);
-            Assert.IsTrue(adapter.GetGameFiles().Count() == tagMap.Count);
+            Assert.IsTrue(database.GetTagMappings().Count() == tagMap.Count);
+            Assert.IsTrue(database.GetGameFiles().Count() == tagMap.Count);
         }
 
-        // Check that the number of tags mappings committed for a GameFile is the same as the number saved
-        public void TestGameFileTagging()
+        [TestMethod]
+        public void GetGameFiles_Tag_ReturnsTheExpectedGameFilesCount()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var tags = adapter.GetTags();
-            var tagMap = adapter.GetTagMappings();
+            var tags = database.GetTags();
+            var tagMap = database.GetTagMappings();
 
             foreach (var tag in tags)
             {
-                var gameFileGet = adapter.GetGameFiles(tag);
+                var gameFileGet = database.GetGameFiles(tag);
                 Assert.IsTrue(gameFileGet.Count() == tagMap.Count(x => x.TagID == tag.TagID));
             }
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestGameFileTaggingSearch()
+        [TestMethod]
+        public void GetGameFiles_Options_Tag_ReturnsTheExpectedGameFileCount()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
-            var tags = adapter.GetTags();
-            var tagMap = adapter.GetTagMappings();
+            var tags = database.GetTags();
+            var tagMap = database.GetTagMappings();
 
             foreach (var tag in tags)
             {
-                var gameFileGet = adapter.GetGameFiles(new GameFileGetOptions(s_fields), tag);
+                var gameFileGet = database.GetGameFiles(new GameFileGetOptions(s_fields), tag);
                 Assert.IsTrue(gameFileGet.Count() == tagMap.Count(x => x.TagID == tag.TagID));
             }
 
             foreach (var tag in tags)
             {
                 var options = new GameFileGetOptions(s_fields, new GameFileSearchField(GameFileFieldType.GameFileID, "1"));
-                var gameFileGet = adapter.GetGameFiles(options, tag);
+                var gameFileGet = database.GetGameFiles(options, tag);
                 Assert.IsTrue(gameFileGet.Count() == tagMap.Count(x => x.TagID == tag.TagID && x.FileID == 1));
             }
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestSelectFields()
+        [TestMethod]
+        public void GetGameFiles_Options_ReturnsExpectedGameFiles()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
 
-            var selectGameFiles = adapter.GetGameFiles(new GameFileGetOptions(s_fields));
+            var selectGameFiles = database.GetGameFiles(new GameFileGetOptions(s_fields));
 
             foreach(var gameFile in gameFiles)
             {
@@ -284,8 +251,8 @@ namespace UnitTest.Tests
             }
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestGetFileNameByFileName()
+        [TestMethod]
+        public void GetFileName_String_ReturnsGameFileOfThatName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
@@ -299,16 +266,15 @@ namespace UnitTest.Tests
             }
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestGetFileNameByID()
+        [TestMethod]
+        public void GetGameFiles_Options_ReturnsGameFileById()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
 
             foreach (var gameFile in gameFiles)
             {
                 IGameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.GameFileID, gameFile.GameFileID.ToString()));
-                var gameFilesFind = adapter.GetGameFiles(options);
+                var gameFilesFind = database.GetGameFiles(options);
 
                 Assert.AreEqual(1, gameFilesFind.Count());
                 Assert.AreEqual(gameFile, gameFilesFind.First()); //Default operator, only checks against FileName
@@ -316,8 +282,8 @@ namespace UnitTest.Tests
             }
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestFullLikeFileName()
+        [TestMethod]
+        public void GetGameFiles_Options_ReturnsGameFileLikeFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
@@ -325,88 +291,82 @@ namespace UnitTest.Tests
             foreach (var gameFile in gameFiles)
             {
                 IGameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.Filename, GameFileSearchOp.Like, gameFile.FileName));
-                var gameFilesFind = adapter.GetGameFiles(options);
+                var gameFilesFind = database.GetGameFiles(options);
 
                 Assert.AreEqual(1, gameFilesFind.Count());
                 Assert.IsTrue(TestUtil.AllFieldsEqual<IGameFile>(gameFile, gameFilesFind.First()));
             }
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestPartialLikeFileName()
+        [TestMethod]
+        public void GetGameFiles_Options_ReturnsGameFilePartialLikeFileName()
         {
             IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             IGameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.Filename, GameFileSearchOp.Like, "test"));
-            var gameFilesFind = adapter.GetGameFiles(options);
+            var gameFilesFind = database.GetGameFiles(options);
 
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestPartialLikeFileName_SqlSyntax()
+        [TestMethod]
+        public void GetGameFiles_Options_ReturnsGameFilePartialLikeFileName_SqlSyntax()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             IGameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.Filename, GameFileSearchOp.Like, "test" + s_garbage));
-            var gameFilesFind = adapter.GetGameFiles(options);
+            var gameFilesFind = database.GetGameFiles(options);
 
             Assert.AreEqual(3, gameFilesFind.Count());
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestPartialLikeTitle()
+        [TestMethod]
+        public void GetGameFiles_Options_ReturnsGameFilePartialLikeTitle()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             IGameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.Title, GameFileSearchOp.Like, "test"));
-            var gameFilesFind = adapter.GetGameFiles(options);
+            var gameFilesFind = database.GetGameFiles(options);
 
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestPartialLikeDescription()
+        [TestMethod]
+        public void GetGameFiles_Options_ReturnsGameFilePartialLikeDescription()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             IGameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.Description, GameFileSearchOp.Like, "test"));
-            var gameFilesFind = adapter.GetGameFiles(options);
+            var gameFilesFind = database.GetGameFiles(options);
 
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestPartialLikeAuthor()
+        [TestMethod]
+        public void GetGameFiles_Options_ReturnsGameFilePartialLikeAuthor()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             IGameFileGetOptions options = new GameFileGetOptions(new GameFileSearchField(GameFileFieldType.Author, GameFileSearchOp.Like, "test"));
-            var gameFilesFind = adapter.GetGameFiles(options);
+            var gameFilesFind = database.GetGameFiles(options);
 
             Assert.AreEqual(gameFilesFind.Count(), CreateTestFileList().Count);
         }
 
-        // ??? Check searching behaviour with various options
-        public void TestUpdateFileName()
+        [TestMethod]
+        public void UpdateGameFile_UpdatesFileName()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
 
             foreach(var gameFile in gameFiles)
             {
                 string oldFileName = gameFile.FileName;
                 gameFile.FileName = gameFile.FileName.Replace(gameFile.GameFileID.ToString(), string.Format("Update_{0}", gameFile.GameFileID));
-                adapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Filename });
+                database.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Filename });
 
-                IGameFile gameFileFind = adapter.GetGameFile(oldFileName);
+                IGameFile gameFileFind = database.GetGameFile(oldFileName);
                 Assert.IsTrue(gameFileFind == null);
 
-                gameFileFind = adapter.GetGameFile(gameFile.FileName);
+                gameFileFind = database.GetGameFile(gameFile.FileName);
                 Assert.AreEqual(gameFile, gameFileFind);
                 Assert.IsTrue(TestUtil.AllFieldsEqual<IGameFile>(gameFile, gameFileFind));
             }
         }
 
-        // ??? 
-        public void TestUpdateFields()
+        [TestMethod]
+        public void UpdateGameFile_UpdatesSpecifiedFields()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
 
             List<GameFileFieldType> fields = new List<GameFileFieldType>();
@@ -420,53 +380,52 @@ namespace UnitTest.Tests
 
             foreach (var gameFile in gameFiles)
             {
-                adapter.UpdateGameFile(gameFile, fields.ToArray());
-                IGameFile gameFileFind = adapter.GetGameFile(gameFile.FileName);
+                database.UpdateGameFile(gameFile, fields.ToArray());
+                IGameFile gameFileFind = database.GetGameFile(gameFile.FileName);
                 Assert.IsTrue(gameFileFind != null);
                 Assert.IsTrue(TestUtil.AllFieldsEqual<IGameFile>(gameFile, gameFileFind));
             }
         }
 
-
-        public void TestUpdateGameFiles()
+        [TestMethod]
+        public void UpdateGameFile_UpdatesAllFields()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
             SetRandomFileValues(gameFiles, typeof(GameFile).GetProperties());
 
             foreach(var gameFile in gameFiles)
             {
-                adapter.UpdateGameFile(gameFile);
-                IGameFile gameFileFind = adapter.GetGameFile(gameFile.FileName);
+                database.UpdateGameFile(gameFile);
+                IGameFile gameFileFind = database.GetGameFile(gameFile.FileName);
                 Assert.IsTrue(gameFileFind != null);
                 Assert.IsTrue(TestUtil.AllFieldsEqual<IGameFile>(gameFile, gameFileFind));
             }
         }
 
-        public void TestUpdateWhere()
+        [TestMethod]
+        public void UpdateGameFile_UpdatesConditionally()
         {
             //Note: This function is only used in SourcePortViewForm.cs
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
             int test = 1000;
 
             foreach(var gameFile in gameFiles)
             {
-                adapter.UpdateGameFile(gameFile); //Make sure we're in sync with our test list first...
+                database.UpdateGameFile(gameFile); //Make sure we're in sync with our test list first...
 
                 //Test setting a real value
-                adapter.UpdateGameFiles(GameFileFieldType.SourcePortID, GameFileFieldType.SourcePortID, gameFile.SourcePortID, test);
+                database.UpdateGameFiles(GameFileFieldType.SourcePortID, GameFileFieldType.SourcePortID, gameFile.SourcePortID, test);
                 gameFile.SourcePortID = test;
 
-                IGameFile gameFileFind = adapter.GetGameFile(gameFile.FileName);
+                IGameFile gameFileFind = database.GetGameFile(gameFile.FileName);
                 Assert.IsTrue(gameFileFind != null);
                 Assert.IsTrue(TestUtil.AllFieldsEqual<IGameFile>(gameFile, gameFileFind));
 
                 //Test setting value to null
-                adapter.UpdateGameFiles(GameFileFieldType.SourcePortID, GameFileFieldType.SourcePortID, gameFile.SourcePortID, null);
+                database.UpdateGameFiles(GameFileFieldType.SourcePortID, GameFileFieldType.SourcePortID, gameFile.SourcePortID, null);
                 gameFile.SourcePortID = null;
 
-                gameFileFind = adapter.GetGameFile(gameFile.FileName);
+                gameFileFind = database.GetGameFile(gameFile.FileName);
                 Assert.IsTrue(gameFileFind != null);
                 Assert.IsTrue(TestUtil.AllFieldsEqual<IGameFile>(gameFile, gameFileFind));
 
@@ -504,19 +463,19 @@ namespace UnitTest.Tests
             }
         }
 
-        public void TestDelete()
+        [TestMethod]
+        public void DeleteGameFile_DeletesFile()
         {
-            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
             var gameFiles = CreateTestFileList();
             int count = gameFiles.Count;
 
             foreach (var gameFile in gameFiles)
             {
-                adapter.DeleteGameFile(gameFile);
+                database.DeleteGameFile(gameFile);
 
-                IGameFile gameFileFind = adapter.GetGameFile(gameFile.FileName);
+                IGameFile gameFileFind = database.GetGameFile(gameFile.FileName);
                 Assert.IsTrue(gameFileFind == null);
-                Assert.AreEqual(adapter.GetGameFiles().Count(), --count);
+                Assert.AreEqual(database.GetGameFiles().Count(), --count);
             }
         }
     }
