@@ -421,7 +421,7 @@ namespace UnitTest.Tests
                     FileTypeID = FileType.Thumbnail,
                     FileOrder = 8,
                     Description = "oink",
-                    DateCreated = DateTime.Parse("17/06/2008"),
+                    DateCreated = DateTime.Parse("04/06/2008"),
                     GameFileID = 777,
                     SourcePortID = 9,
                     OriginalFileName = "pinky.txt",
@@ -476,27 +476,5 @@ namespace UnitTest.Tests
             Assert.AreEqual(1, files.Count());
             Assert.AreEqual(wrongFile.FileName, files.First().FileName);
         }
-
-        //[TestMethod]
-        /*
-        public void TestDeleteFile()
-        {
-            var gameFileIDs = insertedFiles.Select(x => x.GameFileID).Distinct();
-
-            int id = gameFileIDs.First();
-
-            var dbFiles = database.GetFiles(new GameFile() { GameFileID = id });
-            int count = dbFiles.Count();
-            foreach (var dbFile in dbFiles)
-            {
-                database.DeleteFile(dbFile);
-                count--;
-                Assert.AreEqual(count, database.GetFiles(new GameFile() { GameFileID = id }).Count());
-            }
-
-            id = gameFileIDs.Skip(1).First();
-            database.DeleteFile(new GameFile() { GameFileID = id });
-            Assert.AreEqual(0, database.GetFiles(new GameFile() { GameFileID = id }).Count());
-        }*/
     }
 }
