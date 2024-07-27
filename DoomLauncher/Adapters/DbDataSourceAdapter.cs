@@ -286,7 +286,7 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("where1", fWhere ?? DBNull.Value )
             };
 
-            DataAccess.ExecuteNonQuery(string.Format(@"update GameFiles set {0} = @set1 where {1} = @where1", ftWhere.ToString("g"), ftSet.ToString("g")), parameters);
+            DataAccess.ExecuteNonQuery(string.Format(@"update GameFiles set {0} = @set1 where {1} = @where1", ftSet.ToString("g"), ftWhere.ToString("g")), parameters);
         }
 
         public void DeleteGameFile(IGameFile gameFile)
