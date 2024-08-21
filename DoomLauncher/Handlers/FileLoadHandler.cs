@@ -37,8 +37,18 @@ namespace DoomLauncher.Handlers
             m_adapter = adapter;
             m_gameFile = gameFile;
             m_gameProfile = gameProfile;
+
+            // Load gameProfile's "SettingsFiles" GameFiles from the database,
+            // add gameFile, and set them to m_currentFiles and m_saveCurrentFiles.
             SetAdditionalFiles(Util.GetAdditionalFiles(m_adapter, gameProfile));
+
+            // If gameProfile has an associated IWAD, load the IWAD GameFile, load its "SettingsFiles" GameFiles,
+            // removing those that are in its "SettingsFilesSourcePort" GameFiles.
+            //
+            // Otherwise load the gameProfile's "SettingsFilesIWAD" GameFiles.
             m_iwadAdditionalFiles = GetIWadFilesFromGameFile(gameProfile);
+
+            // Load the "SettingsFilesSourcePort" GameFiles of gameProfile.
             m_sourcePortAdditionalFiles = Util.GetSourcePortAdditionalFiles(m_adapter, gameProfile);
         }
 
@@ -46,7 +56,7 @@ namespace DoomLauncher.Handlers
         {
             if (gameFile.IWadID.HasValue)
             {
-                var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == m_gameProfile.IWadID.Value);
+                var gameFileIwad = m_adapter.GetGameFileIWads().FirstOrDefault(x => x.IWadID == gameFile.IWadID.Value);
                 if (gameFileIwad != null)
                     return GetAdditionalFiles(AddFilesType.IWAD, gameFileIwad, null);
             }
@@ -84,6 +94,7 @@ namespace DoomLauncher.Handlers
             return m_sourcePortAdditionalFiles.ToList();
         }
 
+        // Reset m_currentFiles and m_saveAdditionalFiles back to the state they were in after construction.
         public void Reset()
         {
             SetAdditionalFiles(m_saveAdditionalFiles);
@@ -104,8 +115,20 @@ namespace DoomLauncher.Handlers
             m_saveAdditionalFiles = gameFiles.ToList();
         }
 
+        // Recalculate m_currentFiles, m_iwadPortAdditionalFiles and m_sourcePortAdditionalFiles
+        // based on the given IWAD and SourcePort, also using the IWAD, SourcePort and results
+        // from the previous CalculateAdditionalFiles() call.
+        //
+        // Also records the difference from the existing m_currentFiles, and records the two 
+        // parameters for next time.
         public void CalculateAdditionalFiles(IGameFile iwad, ISourcePortData sourcePort)
         {
+            // if iwad is provided, load the "SettingsFile" GameFiles from sourcePort into
+            // m_sourcePortAdditionalFiles, and unless the iwad is m_gameFile,
+            // load the iwad's "SettingsFile" GameFiles into m_iwadPortAdditionalFiles, subtracting the iwad's "SettingsFileSourcePort" GameFiles.
+            // Exclude m_gameFile from both. 
+            //
+            // Otherwise clear m_iwadPortAdditionalFiles and m_sourcePortAdditionalFiles.
             SetExtraAdditionalFilesFromSettings(iwad, sourcePort);
 
             IGameFile lastIwad = m_selectedIWad;
@@ -117,17 +140,27 @@ namespace DoomLauncher.Handlers
 
             List<IGameFile> gameFiles = m_currentFiles;
             List<IGameFile> originalList = gameFiles.ToList();
+
+            // Get the "SettingsFile" GameFiles from iwad, subtracting its
+            // "SettingsFileSourcePort" GameFiles, adding the "SettingsFile" GameFiles
+            // from sourcePort and removing m_gameFile
             List<IGameFile> newTypeFiles = GetAdditionalFiles(iwad, sourcePort);
             List<IGameFile> oldTypeFiles = GetAdditionalFiles(lastIwad, lastSourcePort);
             gameFiles.RemoveAll(x => oldTypeFiles.Contains(x));
-
             gameFiles.AddRange(newTypeFiles);
 
+            // Any files that are still around from before should come first
             gameFiles = SortByOriginal(gameFiles, originalList);
+
+            // If iwad has "SettingsFile" GameFiles that are not in "SettingsFileSourcePort", then  
+            // make sure these come first
             gameFiles = CheckIwadFileOrder(gameFiles, iwad, sourcePort);
+
+            // Remember the calculated game files, and which ones are new 
             m_currentFiles = gameFiles.Distinct().ToList();
             m_currentNewFiles = gameFiles.Except(originalList).ToList();
 
+            // Remember the inputs for next time
             m_selectedIWad = iwad;
             m_selectedSourcePort = sourcePort;
         }

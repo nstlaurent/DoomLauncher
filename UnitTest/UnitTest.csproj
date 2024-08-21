@@ -93,6 +93,8 @@
     <Compile Include="Tests\TestArchives.cs" />
     <Compile Include="Tests\TestDirectoryArchive.cs" />
     <Compile Include="Tests\TestFileDetector.cs" />
+    <Compile Include="Tests\TestGameFileTags.cs" />
+    <Compile Include="Tests\TestIWad.cs" />
     <Compile Include="Tests\TestGameFile.cs" />
     <Compile Include="Tests\TestGameProfileUtil.cs" />
     <Compile Include="Tests\TestIdGamesFileParser.cs" />
