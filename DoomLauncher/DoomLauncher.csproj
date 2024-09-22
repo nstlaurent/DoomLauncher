@@ -294,12 +294,9 @@
     <Compile Include="Program.Init.cs" />
     <Compile Include="ProgressBarType.cs" />
     <Compile Include="SaveGame\HelionSaveGameReader.cs" />
-    <Compile Include="SourcePort\DsdaDoomSourcePort.cs" />
-    <Compile Include="SourcePort\EternitySourcePort.cs" />
-    <Compile Include="SourcePort\FdwlSourcePort.cs" />
     <Compile Include="SourcePort\HelionSourcePort.cs" />
-    <Compile Include="SourcePort\NuggetDoomSourcePort.cs" />
-    <Compile Include="SourcePort\WoofSourcePort.cs" />
+    <Compile Include="SourcePort\LevelstatSourcePort.cs" />
+    <Compile Include="SourcePort\StatdumpSourcePort.cs" />
     <Compile Include="Stylize\CToolStripRenderer.cs" />
     <Compile Include="Stylize\DarkTheme.cs" />
     <Compile Include="Stylize\DefaultTheme.cs" />
@@ -398,17 +395,13 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Config\ScreenFilter.cs" />
-    <Compile Include="SourcePort\BoomSourcePort.cs" />
-    <Compile Include="SourcePort\ChocolateDoomSourcePort.cs" />
-    <Compile Include="SourcePort\CNDoomSourcePort.cs" />
-    <Compile Include="SourcePort\CrispyDoomSourcePort.cs" />
     <Compile Include="SourcePort\DoomsdaySourcePort.cs" />
     <Compile Include="SourcePort\GenericSourcePort.cs" />
     <Compile Include="SourcePort\ISourcePort.cs" />
     <Compile Include="SourcePort\SourcePortUtil.cs" />
     <Compile Include="SourcePort\SpData.cs" />
     <Compile Include="SourcePort\ZDoomSourcePort.cs" />
-    <Compile Include="Statistics\BoomStatsReader.cs" />
+    <Compile Include="Statistics\LevelstatReader.cs" />
     <Compile Include="Config\AppVersion.cs" />
     <Compile Include="Config\ColumnConfig.cs" />
     <Compile Include="DataSources\StatsData.cs" />
@@ -483,7 +476,7 @@
     <Compile Include="Forms\MainForm_Meta.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Statistics\ChocolateDoomStatsReader.cs" />
+    <Compile Include="Statistics\StatdumpReader.cs" />
     <Compile Include="Statistics\IStatisticsReader.cs" />
     <Compile Include="Statistics\MultiLineStatReader.cs" />
     <Compile Include="Statistics\NewStatisticsEventArgs.cs" />

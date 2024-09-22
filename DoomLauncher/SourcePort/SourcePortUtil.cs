@@ -10,16 +10,9 @@ namespace DoomLauncher.SourcePort
             ISourcePort[] sourcePorts = new ISourcePort[]
             {
                 new ZDoomSourcePort(sourcePortData),
-                new BoomSourcePort(sourcePortData),
+                new StatdumpSourcePort(sourcePortData),
+                new LevelstatSourcePort(sourcePortData),
                 new DoomsdaySourcePort(sourcePortData),
-                new CNDoomSourcePort(sourcePortData),
-                new ChocolateDoomSourcePort(sourcePortData),
-                new CrispyDoomSourcePort(sourcePortData),
-                new WoofSourcePort(sourcePortData),
-                new NuggetDoomSourcePort(sourcePortData),
-                new EternitySourcePort(sourcePortData),
-                new DsdaDoomSourcePort(sourcePortData),
-                new FdwlSourcePort(sourcePortData),
                 new HelionSourcePort(sourcePortData),
                 new GenericSourcePort(sourcePortData)
             };

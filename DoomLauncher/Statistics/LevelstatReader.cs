@@ -3,7 +3,7 @@ using DoomLauncher.Statistics;
 
 namespace DoomLauncher
 {
-    public class BoomStatsReader : MultiLineStatReader
+    public class LevelstatReader : MultiLineStatReader
     {
         private static string s_statRegex = @"\S+-(\d+:)?\d+:\d+.\d+\((\d+:)?\d+:\d+\)K:\d+/\d+I:\d+/\d+S:\d+/\d+";
         private static ParseItem[] s_regexItems = new ParseItem[]
@@ -18,7 +18,7 @@ namespace DoomLauncher
             new ParseItem(@"S:\d+", "S:", "TotalSecrets")
         };
 
-        public BoomStatsReader(IGameFile gameFile, string statFile) : base(gameFile, statFile, s_statRegex, s_regexItems)
+        public LevelstatReader(IGameFile gameFile, string statFile) : base(gameFile, statFile, s_statRegex, s_regexItems)
         {
             RemoveNewLines = false;
         }

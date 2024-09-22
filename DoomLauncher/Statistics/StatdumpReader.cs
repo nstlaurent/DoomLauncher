@@ -2,7 +2,7 @@
 
 namespace DoomLauncher.Statistics
 {
-    public class ChocolateDoomStatsReader : MultiLineStatReader
+    public class StatdumpReader : MultiLineStatReader
     {
         private static string s_statRegex = @"=+\w+(/\w+)?=+Time:\d+:\d+\(par:\d+:\d+\)\w+\(\w+\):Kills:\d+(/\d+\(-?\d+%\))?Items:\d+(/\d+\(-?\d+%\))?Secrets:\d+(/\d+)?";
         private static ParseItem[] s_regexItems = new ParseItem[]
@@ -19,7 +19,7 @@ namespace DoomLauncher.Statistics
             new ParseItem(@"Secrets/\d+", "Secrets/", "TotalSecrets")
         };
 
-        public ChocolateDoomStatsReader(IGameFile gameFile, string statFile) : base(gameFile, statFile, s_statRegex, s_regexItems)
+        public StatdumpReader(IGameFile gameFile, string statFile) : base(gameFile, statFile, s_statRegex, s_regexItems)
         {
             ErrorOnParseItem = false;
         }

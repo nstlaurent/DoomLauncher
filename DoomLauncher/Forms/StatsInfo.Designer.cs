@@ -61,22 +61,21 @@
             this.tblMain.Controls.Add(this.titleBar, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 0, 4, 5);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 3;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
-            this.tblMain.Size = new System.Drawing.Size(600, 678);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tblMain.Size = new System.Drawing.Size(400, 441);
             this.tblMain.TabIndex = 0;
             // 
             // btnOK
             // 
             this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnOK.Location = new System.Drawing.Point(484, 636);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnOK.Location = new System.Drawing.Point(322, 413);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(112, 35);
+            this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 0;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -89,20 +88,20 @@
             this.tblInfoOuter.Controls.Add(this.tblInner, 0, 1);
             this.tblInfoOuter.Controls.Add(this.tblInfo, 0, 0);
             this.tblInfoOuter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblInfoOuter.Location = new System.Drawing.Point(0, 40);
+            this.tblInfoOuter.Location = new System.Drawing.Point(0, 26);
             this.tblInfoOuter.Margin = new System.Windows.Forms.Padding(0);
             this.tblInfoOuter.Name = "tblInfoOuter";
             this.tblInfoOuter.RowCount = 2;
-            this.tblInfoOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 123F));
+            this.tblInfoOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.tblInfoOuter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblInfoOuter.Size = new System.Drawing.Size(600, 589);
+            this.tblInfoOuter.Size = new System.Drawing.Size(400, 383);
             this.tblInfoOuter.TabIndex = 1;
             // 
             // tblInner
             // 
             this.tblInner.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tblInner.ColumnCount = 2;
-            this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblInner.Controls.Add(this.label6, 0, 2);
             this.tblInner.Controls.Add(this.lblBoom, 1, 1);
@@ -111,77 +110,70 @@
             this.tblInner.Controls.Add(this.lblZdoom, 1, 0);
             this.tblInner.Controls.Add(this.lblChocolate, 1, 2);
             this.tblInner.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblInner.Location = new System.Drawing.Point(4, 128);
-            this.tblInner.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tblInner.Location = new System.Drawing.Point(3, 83);
             this.tblInner.Name = "tblInner";
             this.tblInner.RowCount = 3;
             this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tblInner.Size = new System.Drawing.Size(592, 456);
+            this.tblInner.Size = new System.Drawing.Size(394, 297);
             this.tblInner.TabIndex = 2;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(5, 318);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Location = new System.Drawing.Point(4, 207);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(140, 60);
+            this.label6.Size = new System.Drawing.Size(92, 39);
             this.label6.TabIndex = 6;
-            this.label6.Text = "Chocolate Doom / Crispy Doom / Woof! / CNDoom";
+            this.label6.Text = "Chocolate Doom, CNDoom, CRL, Inter-Doom";
             // 
             // lblBoom
             // 
             this.lblBoom.AutoSize = true;
-            this.lblBoom.Location = new System.Drawing.Point(156, 182);
-            this.lblBoom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblBoom.Location = new System.Drawing.Point(105, 119);
             this.lblBoom.Name = "lblBoom";
-            this.lblBoom.Size = new System.Drawing.Size(0, 20);
+            this.lblBoom.Size = new System.Drawing.Size(0, 13);
             this.lblBoom.TabIndex = 3;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(5, 182);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(4, 119);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(115, 60);
+            this.label2.Size = new System.Drawing.Size(74, 52);
             this.label2.TabIndex = 2;
-            this.label2.Text = "PrBoom-Plus / DSDA-Doom / Helion";
+            this.label2.Text = "Crispy Doom, PrBoom+, DSDA-Doom, Helion, Woof!";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(5, 1);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(4, 1);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 20);
+            this.label1.Size = new System.Drawing.Size(42, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "ZDoom";
             // 
             // lblZdoom
             // 
             this.lblZdoom.AutoSize = true;
-            this.lblZdoom.Location = new System.Drawing.Point(156, 1);
-            this.lblZdoom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblZdoom.Location = new System.Drawing.Point(105, 1);
             this.lblZdoom.Name = "lblZdoom";
-            this.lblZdoom.Size = new System.Drawing.Size(0, 20);
+            this.lblZdoom.Size = new System.Drawing.Size(0, 13);
             this.lblZdoom.TabIndex = 1;
             // 
             // lblChocolate
             // 
             this.lblChocolate.AutoSize = true;
-            this.lblChocolate.Location = new System.Drawing.Point(156, 318);
-            this.lblChocolate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblChocolate.Location = new System.Drawing.Point(105, 207);
             this.lblChocolate.Name = "lblChocolate";
-            this.lblChocolate.Size = new System.Drawing.Size(0, 20);
+            this.lblChocolate.Size = new System.Drawing.Size(0, 13);
             this.lblChocolate.TabIndex = 7;
             // 
             // tblInfo
             // 
             this.tblInfo.ColumnCount = 2;
-            this.tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
+            this.tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblInfo.Controls.Add(this.label4, 1, 1);
             this.tblInfo.Controls.Add(this.pbInfo1, 0, 0);
@@ -193,17 +185,16 @@
             this.tblInfo.RowCount = 2;
             this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tblInfo.Size = new System.Drawing.Size(600, 123);
+            this.tblInfo.Size = new System.Drawing.Size(400, 80);
             this.tblInfo.TabIndex = 3;
             // 
             // label4
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(52, 82);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(35, 53);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(394, 20);
+            this.label4.Size = new System.Drawing.Size(262, 13);
             this.label4.TabIndex = 3;
             this.label4.Text = "Statistics recording is supported for the following ports:";
             // 
@@ -214,7 +205,7 @@
             this.pbInfo1.Location = new System.Drawing.Point(0, 0);
             this.pbInfo1.Margin = new System.Windows.Forms.Padding(0);
             this.pbInfo1.Name = "pbInfo1";
-            this.pbInfo1.Size = new System.Drawing.Size(48, 61);
+            this.pbInfo1.Size = new System.Drawing.Size(32, 40);
             this.pbInfo1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbInfo1.TabIndex = 0;
             this.pbInfo1.TabStop = false;
@@ -223,10 +214,9 @@
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(52, 10);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(35, 7);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(536, 40);
+            this.label3.Size = new System.Drawing.Size(361, 26);
             this.label3.TabIndex = 2;
             this.label3.Text = "The \'Save Statistics\' option will become available when a supported source port i" +
     "s selected";
@@ -234,24 +224,26 @@
             // titleBar
             // 
             this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.CanClose = true;
+            this.titleBar.ControlBox = true;
             this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.titleBar.ForeColor = System.Drawing.Color.White;
             this.titleBar.Location = new System.Drawing.Point(0, 0);
             this.titleBar.Margin = new System.Windows.Forms.Padding(0);
             this.titleBar.Name = "titleBar";
-            this.titleBar.Size = new System.Drawing.Size(600, 40);
+            this.titleBar.RememberNormalSize = true;
+            this.titleBar.Size = new System.Drawing.Size(400, 26);
             this.titleBar.TabIndex = 2;
             this.titleBar.Title = "Save Statistics";
             // 
             // StatsInfo
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 678);
+            this.ClientSize = new System.Drawing.Size(400, 441);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "StatsInfo";
             this.Text = "Save Statistics";
             this.tblMain.ResumeLayout(false);

@@ -13,10 +13,8 @@ namespace DoomLauncher.SourcePort
 
         }
 
-        public override string IwadParameter(SpData data)
-        {
-            return string.Format(" -iwad \"{0}\" -game {1}", Path.GetDirectoryName(data.Value), GetGame(data));
-        }
+        public override string IwadParameter(SpData data) =>
+            string.Format(" -iwad \"{0}\" -game {1}", Path.GetDirectoryName(data.Value), GetGame(data));
 
         /**
             doom1-share	Shareware Doom v1.9
@@ -81,9 +79,8 @@ namespace DoomLauncher.SourcePort
             return "doom2";
         }
 
-        public override bool Supported()
-        {
-            return CheckFileNameWithoutExtension("doomsday");
-        }
+        public override bool Supported() => CheckFileNameWithoutExtension("doomsday");
+
+        public override bool LoadSaveGameSupported() => false;
     }
 }

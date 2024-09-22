@@ -106,7 +106,7 @@
     <Compile Include="Tests\TestUtil.cs" />
     <Compile Include="Tests\TestFile.cs" />
     <Compile Include="Tests\TestLoadFiles.cs" />
-    <Compile Include="Tests\TestBoomStats.cs" />
+    <Compile Include="Tests\TestLevelstat.cs" />
     <Compile Include="Tests\TestZdoomStats.cs" />
     <Compile Include="Tests\TestZdlParser.cs" />
     <Compile Include="Tests\TestCldDemoParser.cs" />
@@ -117,7 +117,7 @@
     <Compile Include="Tests\TestZdoomSave.cs" />
     <Compile Include="Tests\TestDsgSave.cs" />
     <Compile Include="Tests\TestStats.cs" />
-    <Compile Include="Tests\TestChocolateDoomStats.cs" />
+    <Compile Include="Tests\TestStatdump.cs" />
     <Compile Include="Tests\TestUpdateInfo.cs" />
     <Compile Include="Tests\TestGameProfile.cs" />
   </ItemGroup>
