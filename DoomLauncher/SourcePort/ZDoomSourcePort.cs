@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace DoomLauncher.SourcePort
 {
-    class ZDoomSourcePort : GenericSourcePort
+    public class ZDoomSourcePort : GenericSourcePort
     {
         private static readonly string[] DirectoryNames = new string[] { "GZDoom", "VKDoom" };
 
@@ -24,20 +24,15 @@ namespace DoomLauncher.SourcePort
 
         }
 
-        public override bool Supported()
-        {
-            if (CheckFileNameContains("zdoom.exe"))
-                return true;
-
-            return CheckFileNameWithoutExtension("zandronum") || CheckFileNameWithoutExtension("vkdoom");
-        }
+        public override bool Supported() =>
+            CheckFileNameContains("zdoom.exe") ||
+            CheckFileNameWithoutExtension("zandronum") ||
+            CheckFileNameWithoutExtension("vkdoom");
 
         public override string LoadSaveParameter(SpData data) =>
             $"-loadgame \"{data.Value}\"";
 
         public override bool StatisticsSupported() => true;
-
-        public override bool LoadSaveGameSupported() => true;
 
         public override string[] GetScreenshotDirectories() => UserScreenshotDirectories;
 

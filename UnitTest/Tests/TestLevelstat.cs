@@ -7,19 +7,19 @@ using System.IO;
 namespace UnitTest.Tests
 {
     [TestClass]
-    public class TestBoomStats
+    public class TestLevelstat
     {
         private readonly List<NewStatisticsEventArgs> m_args = new List<NewStatisticsEventArgs>();
 
         [TestMethod]
-        public void TestBoomStatFile()
+        public void TestLevelstatFile()
         {
             string stats = @"MAP01 - 0:04.23 (0:04)  K: 12/123  I: 5/33  S: 0/1 
 MAP02 - 0:03.83 (0:07)  K: 23/234  I: 7/28  S: 1/2 ";
 
             File.WriteAllText("statfile.txt", stats);
 
-            BoomStatsReader statsReader = new BoomStatsReader(new GameFile() { GameFileID = 1 }, "statfile.txt");
+            LevelstatReader statsReader = new LevelstatReader(new GameFile() { GameFileID = 1 }, "statfile.txt");
             statsReader.NewStastics += StatsReader_NewStastics;
             statsReader.ReadNow();
 
@@ -75,7 +75,7 @@ MAP03 - 0:04.83 (0:07)  K: 123/1234  I: 22/50  S: 2/2";
         }
 
         [TestMethod]
-        public void TestBoomStatFileMultiRead()
+        public void TestLevelstatFileMultiRead()
         {
             string stats = @"MAP01 - 0:13.66 (0:13)  K:  8/19  I: 3/9   S:3/5 
 MAP02 - 0:24.20 (0:37)  K: 12/70  I: 10/20  S: 0/1 
@@ -84,7 +84,7 @@ MAP03 - 0:35.51 (1:12)  K: 14/56  I: 8/9   S: 0/1
 
             File.WriteAllText("statfile.txt", stats);
 
-            BoomStatsReader statsReader = new BoomStatsReader(new GameFile() { GameFileID = 1 }, "statfile.txt");
+            LevelstatReader statsReader = new LevelstatReader(new GameFile() { GameFileID = 1 }, "statfile.txt");
             statsReader.NewStastics += StatsReader_NewStastics;
             statsReader.ReadNow();
 
@@ -129,13 +129,13 @@ MAP03 - 0:35.51 (1:12)  K: 14/56  I: 8/9   S: 0/1
         }
 
         [TestMethod]
-        public void TestStatFileHours()
+        public void TestLevelstatHours()
         {
             string stats = @"MAP04 - 1:05:50.80 (1:28:46)  K: 207/206  I: 66/66  S: 1/1";
 
             File.WriteAllText("statfile.txt", stats);
 
-            BoomStatsReader statsReader = new BoomStatsReader(new GameFile() { GameFileID = 1 }, "statfile.txt");
+            LevelstatReader statsReader = new LevelstatReader(new GameFile() { GameFileID = 1 }, "statfile.txt");
             statsReader.NewStastics += StatsReader_NewStastics;
             statsReader.ReadNow();
 

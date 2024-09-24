@@ -19,20 +19,13 @@ namespace DoomLauncher.SourcePort
             m_sourcePortData = sourcePortData;
         }
 
-        public bool CheckFileNameWithoutExtension(string name)
-        {
-            return Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals(name, StringComparison.InvariantCultureIgnoreCase);
-        }
+        public bool CheckFileNameWithoutExtension(string name) =>
+            Path.GetFileNameWithoutExtension(m_sourcePortData.Executable).Equals(name, StringComparison.InvariantCultureIgnoreCase);
 
-        public bool CheckFileNameContains(string name)
-        {
-            return CultureInfo.CurrentCulture.CompareInfo.IndexOf(m_sourcePortData.Executable, name) >= 0;
-        }
+        public bool CheckFileNameContains(string name) =>
+            CultureInfo.CurrentCulture.CompareInfo.IndexOf(m_sourcePortData.Executable, name) >= 0;
 
-        public virtual string IwadParameter(SpData data)
-        {
-            return $" -iwad \"{data.Value}\"";
-        }
+        public virtual string IwadParameter(SpData data) => $" -iwad \"{data.Value}\"";
 
         public virtual string FileParameter(SpData data)
         {
@@ -41,25 +34,16 @@ namespace DoomLauncher.SourcePort
             return string.Empty;
         }
 
-        public virtual string WarpParameter(SpData data)
-        {
-            return BuildWarpParameter(data.Value);
-        }
+        public virtual string WarpParameter(SpData data) => BuildWarpParameter(data.Value);
 
-        public virtual string SkillParameter(SpData data)
-        {
-            return $" -skill {data.Value}";
-        }
+        public virtual string SkillParameter(SpData data) =>
+            $" -skill {data.Value}";
 
-        public virtual string RecordParameter(SpData data)
-        {
-            return $" -record \"{data.Value}\"";
-        }
+        public virtual string RecordParameter(SpData data) =>
+            $" -record \"{data.Value}\"";
 
-        public virtual string PlayDemoParameter(SpData data)
-        {
-            return $" -playdemo \"{data.Value}\"";
-        }
+        public virtual string PlayDemoParameter(SpData data) =>
+            $" -playdemo \"{data.Value}\"";
 
         public virtual string LoadSaveParameter(SpData data)
         {
@@ -87,13 +71,14 @@ namespace DoomLauncher.SourcePort
 
         public virtual bool StatisticsSupported() => false;
 
-        public virtual bool LoadSaveGameSupported() => false;
+        public virtual bool LoadSaveGameSupported() => true;
 
         public virtual string[] GetScreenshotDirectories() => Array.Empty<string>();
 
         public virtual string[] GetSaveGameDirectories() => Array.Empty<string>();
 
         public virtual IStatisticsReader CreateStatisticsReader(IGameFile gameFile, IEnumerable<IStatsData> existingStats) => null;
+
         public virtual ISaveGameReader CreateSaveGameReader(FileInfo file)
         {
             if (file.Extension.Equals(".zds", StringComparison.InvariantCultureIgnoreCase))

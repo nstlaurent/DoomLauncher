@@ -44,30 +44,29 @@ namespace DoomLauncher.Forms
             // tblInfo
             // 
             this.tblInfo.ColumnCount = 2;
-            this.tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
+            this.tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblInfo.Controls.Add(this.lblSave, 1, 1);
             this.tblInfo.Controls.Add(this.pbInfo1, 0, 0);
             this.tblInfo.Controls.Add(this.label3, 1, 0);
             this.tblInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblInfo.Location = new System.Drawing.Point(0, 40);
+            this.tblInfo.Location = new System.Drawing.Point(0, 26);
             this.tblInfo.Margin = new System.Windows.Forms.Padding(0);
             this.tblInfo.Name = "tblInfo";
             this.tblInfo.RowCount = 2;
-            this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
+            this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblInfo.Size = new System.Drawing.Size(576, 322);
+            this.tblInfo.Size = new System.Drawing.Size(384, 85);
             this.tblInfo.TabIndex = 4;
             // 
             // lblSave
             // 
             this.lblSave.AutoSize = true;
-            this.lblSave.Location = new System.Drawing.Point(52, 62);
-            this.lblSave.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblSave.Location = new System.Drawing.Point(35, 40);
             this.lblSave.Name = "lblSave";
-            this.lblSave.Size = new System.Drawing.Size(390, 20);
+            this.lblSave.Size = new System.Drawing.Size(322, 26);
             this.lblSave.TabIndex = 3;
-            this.lblSave.Text = "Loading a save file is supported for the following ports:";
+            this.lblSave.Text = "Loading a save file is supported for all ports, except the Doomsday Engine.";
             // 
             // pbInfo1
             // 
@@ -76,7 +75,7 @@ namespace DoomLauncher.Forms
             this.pbInfo1.Location = new System.Drawing.Point(0, 0);
             this.pbInfo1.Margin = new System.Windows.Forms.Padding(0);
             this.pbInfo1.Name = "pbInfo1";
-            this.pbInfo1.Size = new System.Drawing.Size(48, 62);
+            this.pbInfo1.Size = new System.Drawing.Size(32, 40);
             this.pbInfo1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbInfo1.TabIndex = 0;
             this.pbInfo1.TabStop = false;
@@ -85,10 +84,9 @@ namespace DoomLauncher.Forms
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(52, 11);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(35, 7);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(504, 40);
+            this.label3.Size = new System.Drawing.Size(343, 26);
             this.label3.TabIndex = 2;
             this.label3.Text = "The \'Load Latest Save\' option will become available when a supported source port " +
     "is selected.";
@@ -104,31 +102,33 @@ namespace DoomLauncher.Forms
             this.tblContainer.Margin = new System.Windows.Forms.Padding(0);
             this.tblContainer.Name = "tblContainer";
             this.tblContainer.RowCount = 2;
-            this.tblContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tblContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tblContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblContainer.Size = new System.Drawing.Size(576, 362);
+            this.tblContainer.Size = new System.Drawing.Size(384, 111);
             this.tblContainer.TabIndex = 5;
             // 
             // titleBar
             // 
             this.titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
+            this.titleBar.CanClose = true;
+            this.titleBar.ControlBox = true;
             this.titleBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.titleBar.ForeColor = System.Drawing.Color.White;
             this.titleBar.Location = new System.Drawing.Point(0, 0);
             this.titleBar.Margin = new System.Windows.Forms.Padding(0);
             this.titleBar.Name = "titleBar";
-            this.titleBar.Size = new System.Drawing.Size(576, 40);
+            this.titleBar.RememberNormalSize = true;
+            this.titleBar.Size = new System.Drawing.Size(384, 26);
             this.titleBar.TabIndex = 0;
             this.titleBar.Title = "Load Latest Save";
             // 
             // SaveInfo
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(576, 362);
+            this.ClientSize = new System.Drawing.Size(384, 111);
             this.Controls.Add(this.tblContainer);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "SaveInfo";
             this.Text = "Load Latest Save";
             this.tblInfo.ResumeLayout(false);

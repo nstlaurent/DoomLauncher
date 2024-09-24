@@ -456,7 +456,7 @@ namespace UnitTest.Tests
 
         private static ISourcePortData GetPrBoomTestPort(string extensions)
         {
-            return new SourcePortData { Executable = "prboom.exe", Directory = new LauncherPath("SourcePorts"), SupportedExtensions = extensions, FileOption = "-file" };
+            return new SourcePortData { Executable = "prboom-plus.exe", Directory = new LauncherPath("SourcePorts"), SupportedExtensions = extensions, FileOption = "-file" };
         }
     }
 }

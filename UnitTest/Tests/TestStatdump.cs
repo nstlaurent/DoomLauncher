@@ -8,12 +8,12 @@ using System.IO;
 namespace UnitTest.Tests
 {
     [TestClass]
-    public class TestChocolateDoomStats
+    public class TestStatdump
     {
         private readonly List<NewStatisticsEventArgs> m_args = new List<NewStatisticsEventArgs>();
 
         [TestMethod]
-        public void TestChocolateDoomStatFileSingle()
+        public void TestStatdumpFileSingle()
         {
             string file = @"===========================================
 E1M1 / MAP01
@@ -27,7 +27,7 @@ Player 1 (Green):
 	Secrets: 0 / 3 (0%)
 ";
 
-            ChocolateDoomStatsReader statsReader = new ChocolateDoomStatsReader(new GameFile() { GameFileID = 1 }, "stats.txt");
+            StatdumpReader statsReader = new StatdumpReader(new GameFile() { GameFileID = 1 }, "stats.txt");
             statsReader.NewStastics += statsReader_NewStastics;
 
             File.WriteAllText("stats.txt", file);
@@ -47,7 +47,7 @@ Player 1 (Green):
         }
 
         [TestMethod]
-        public void TestChocolateDoomStatFileMultiple()
+        public void TestStatdumpFileMultiple()
         {
             string file = @"===========================================
 E1M1
@@ -72,7 +72,7 @@ Player 1 (Green):
 	Secrets: 3/ 6 (0%)
 ";
 
-            ChocolateDoomStatsReader statsReader = new ChocolateDoomStatsReader(new GameFile() { GameFileID = 1 }, "stats.txt");
+            StatdumpReader statsReader = new StatdumpReader(new GameFile() { GameFileID = 1 }, "stats.txt");
             statsReader.NewStastics += statsReader_NewStastics;
 
             File.WriteAllText("stats.txt", file);
@@ -101,7 +101,7 @@ Player 1 (Green):
         }
 
         [TestMethod]
-        public void TestChocolateDoomStatFileZero()
+        public void TestStatdumpFileZero()
         {
             string file = @"===========================================
 MAP30
@@ -115,7 +115,7 @@ Player 1 (Green):
 	Secrets: 0
 ";
 
-            ChocolateDoomStatsReader statsReader = new ChocolateDoomStatsReader(new GameFile() { GameFileID = 1 }, "stats.txt");
+            StatdumpReader statsReader = new StatdumpReader(new GameFile() { GameFileID = 1 }, "stats.txt");
             statsReader.NewStastics += statsReader_NewStastics;
 
             File.WriteAllText("stats.txt", file);
@@ -135,7 +135,7 @@ Player 1 (Green):
         }
 
         [TestMethod]
-        public void TestChocolateDoomStatFileKills()
+        public void TestStatdumpFileKills()
         {
             string file = @"===========================================
 MAP11
@@ -149,7 +149,7 @@ Player 1 (Green):
 	Secrets: 3 / 3 (100%)
 ";
 
-            ChocolateDoomStatsReader statsReader = new ChocolateDoomStatsReader(new GameFile() { GameFileID = 1 }, "stats.txt");
+            StatdumpReader statsReader = new StatdumpReader(new GameFile() { GameFileID = 1 }, "stats.txt");
             statsReader.NewStastics += statsReader_NewStastics;
 
             File.WriteAllText("stats.txt", file);
@@ -170,7 +170,7 @@ Player 1 (Green):
         }
 
         [TestMethod]
-        public void TestChocolateDoomStatNegative()
+        public void TestStatdumpNegative()
         {
             string file = @"===========================================
 MAP11
@@ -184,7 +184,7 @@ Player 1 (Green):
 	Secrets: 10 / 11 (90%)
 ";
 
-            ChocolateDoomStatsReader statsReader = new ChocolateDoomStatsReader(new GameFile() { GameFileID = 1 }, "stats.txt");
+            StatdumpReader statsReader = new StatdumpReader(new GameFile() { GameFileID = 1 }, "stats.txt");
             statsReader.NewStastics += statsReader_NewStastics;
 
             File.WriteAllText("stats.txt", file);
