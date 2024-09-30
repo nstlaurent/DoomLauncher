@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace UnitTest.Tests
 {
@@ -366,6 +365,21 @@ namespace UnitTest.Tests
                 Path.Combine(Directory.GetCurrentDirectory(), LocalIwad1),
                 Path.Combine(Directory.GetCurrentDirectory(), LocalFile1));
             Assert.AreEqual(check, launch);
+        }
+
+        [TestMethod]
+        public void VariableReplacements()
+        {
+            var adapter = new GameFilePlayAdapter();
+            adapter.IWad = new GameFile() { FileName = LocalIwad1 };
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+
+            var port = GetPrBoomTestPort(".wad,.deh");
+            port.ExtraParameters = "-savedir $iwad/$filename";
+            var gameFile = new GameFile() { FileName = LocalFile1 };
+            var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _);
+            Assert.IsTrue(launch.Contains("-savedir iwad1/file1"));
         }
 
         private void CreateDirectoriesAndFiles()

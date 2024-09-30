@@ -20,6 +20,8 @@ namespace DoomLauncher
             pbInfo.Image = Properties.Resources.bon2b;
             lblInfo.Text = string.Format("These files will automatically be added when this executable{0} is selected.", Environment.NewLine);
 
+            pbInfo2.Image = Properties.Resources.bon2b;            
+
             ctrlFiles.Initialize("GameFileID", "FileName");
             ctrlFiles.NewItemNeeded += ctrlFiles_NewItemNeeded;
 

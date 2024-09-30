@@ -156,7 +156,15 @@ namespace DoomLauncher
             if (!string.IsNullOrEmpty(LoadSaveFile) && sourcePort.LoadSaveGameSupported())
                 sb.Append(" " + sourcePort.LoadSaveParameter(new SpData(LoadSaveFile)));
 
+            SetVariableReplacements(gameFile, sb);
             return sb.ToString();
+        }
+
+        private void SetVariableReplacements(IGameFile gameFile, StringBuilder sb)
+        {
+            if (IWad != null)
+                sb.Replace("$iwad", Path.GetFileNameWithoutExtension(IWad.FileNameNoPath));
+            sb.Replace("$filename", Path.GetFileNameWithoutExtension(gameFile.FileNameNoPath));
         }
 
         private static string GetFileError(IGameFile gameFile) => $"Failed to add {gameFile.FileNameNoPath}";
