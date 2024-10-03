@@ -9,6 +9,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DoomLauncher.Config;
 using DoomLauncher.WindowsVersion;
+using Microsoft.Win32;
+using DoomLauncher.DataSources;
 
 namespace DoomLauncher
 {

@@ -103,6 +103,8 @@
     <Compile Include="Tests\TestMapLumps.cs" />
     <Compile Include="Tests\TestSourcePort.cs" />
     <Compile Include="Tests\TestSpecificFiles.cs" />
+    <Compile Include="Tests\TestSteamLoader.cs" />
+    <Compile Include="Tests\TestSteamInstallation.cs" />
     <Compile Include="Tests\TestUtil.cs" />
     <Compile Include="Tests\TestFile.cs" />
     <Compile Include="Tests\TestLoadFiles.cs" />
@@ -174,6 +176,54 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\testpk3.pk3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamInstall\config\libraryfolders.vdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\appmanifest_2280.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\appmanifest_2390.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\rerelease\doom.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\rerelease\doom2.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\rerelease\id1.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\rerelease\masterlevels.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\rerelease\nerve.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\rerelease\plutonia.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\rerelease\sigil.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\rerelease\tnt.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestHeretic\base\heretic.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary2\steamapps\appmanifest_2360.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary2\steamapps\appmanifest_2390.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary2\steamapps\common\TestHeretic\base\heretic.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary2\steamapps\common\TestHexen\base\hexen.wad">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\zdoomsave_v4.zds">

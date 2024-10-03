@@ -68,6 +68,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Gameloop.Vdf, Version=0.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gameloop.Vdf.0.6.2\lib\net45\Gameloop.Vdf.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -297,6 +300,11 @@
     <Compile Include="SourcePort\HelionSourcePort.cs" />
     <Compile Include="SourcePort\LevelstatSourcePort.cs" />
     <Compile Include="SourcePort\StatdumpSourcePort.cs" />
+    <Compile Include="Steam\SteamGame.cs" />
+    <Compile Include="Steam\SteamInstallation.cs" />
+    <Compile Include="Steam\SteamInstalledGame.cs" />
+    <Compile Include="Steam\SteamLibrary.cs" />
+    <Compile Include="Steam\SteamLoader.cs" />
     <Compile Include="Stylize\CToolStripRenderer.cs" />
     <Compile Include="Stylize\DarkTheme.cs" />
     <Compile Include="Stylize\DefaultTheme.cs" />
