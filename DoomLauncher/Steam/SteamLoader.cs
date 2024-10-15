@@ -4,7 +4,6 @@ using System.IO;
 using Gameloop.Vdf;
 using System.Collections.Generic;
 using System.Linq;
-using System.Deployment.Application;
 using Gameloop.Vdf.Linq;
 
 namespace DoomLauncher.Steam
@@ -13,7 +12,7 @@ namespace DoomLauncher.Steam
     {
         private const string STEAM_REGISTRY_KEY_32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Valve\Steam";
         private const string STEAM_REGISTRY_KEY_64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Valve\Steam";
-        
+
         public static SteamInstallation LoadFromEnvironment()
         {
             return LoadFromPath(CalculateSteamInstallPath());
@@ -37,9 +36,6 @@ namespace DoomLauncher.Steam
             {
                 throw new SteamLoaderException($"Couldn't parse Valve KeyValues format in file {configFile}");
             }
-                
-
-            
         }
 
         // Retrieve a list encoded as a map with integer keys.
