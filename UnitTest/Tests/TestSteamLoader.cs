@@ -43,5 +43,12 @@ namespace UnitTest.Tests
             Assert.IsTrue(pwads.Exists(x => x.Contains("masterlevels.wad")));
             Assert.IsTrue(pwads.Exists(x => x.Contains("sigil.wad")));
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(SteamLoaderException))]
+        public void LoadFromPath_FailsIfSteamPathIsWrong()
+        {
+            SteamLoader.LoadFromPath(@"Resources\DoesNotExist");
+        }
     }
 }

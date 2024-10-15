@@ -103,6 +103,7 @@
     <Compile Include="Tests\TestMapLumps.cs" />
     <Compile Include="Tests\TestSourcePort.cs" />
     <Compile Include="Tests\TestSpecificFiles.cs" />
+    <Compile Include="Tests\TestAutomaticSteamCheck.cs" />
     <Compile Include="Tests\TestSteamLoader.cs" />
     <Compile Include="Tests\TestSteamInstallation.cs" />
     <Compile Include="Tests\TestUtil.cs" />

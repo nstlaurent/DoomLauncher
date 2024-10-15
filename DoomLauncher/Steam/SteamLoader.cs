@@ -11,31 +11,35 @@ namespace DoomLauncher.Steam
 {
     public class SteamLoader
     {
-        private const string STEAM_REGISTRY_KEY_32 = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Valve\\Steam";
-        private const string STEAM_REGISTRY_KEY_64 = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam";
+        private const string STEAM_REGISTRY_KEY_32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Valve\Steam";
+        private const string STEAM_REGISTRY_KEY_64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Valve\Steam";
         
         public static SteamInstallation LoadFromEnvironment()
         {
             return LoadFromPath(CalculateSteamInstallPath());
         }
 
-        private static void assertFileExists(string filename)
-        {
-            if (!File.Exists(filename))
-                throw new FileNotFoundException($"Expected file {filename} not found");
-            Console.WriteLine($"Confirmed: {filename} exists");
-        }
-
+        // Loads a SteamInstallation from the installation path, throwing SteamLoaderException if anything goes wrong.
         public static SteamInstallation LoadFromPath(string steamInstallPath)
         {
             var configFile = Path.Combine(steamInstallPath, @"config\libraryfolders.vdf");
-            assertFileExists(configFile);
+            if (!File.Exists(configFile))
+                throw new SteamLoaderException($"Couldn't find Steam's {configFile} file, which would have told us where to find the Steam libraries");
 
-            VToken libraryFolderConfig = VdfConvert.Deserialize(File.ReadAllText(configFile)).Value;
-            List<string> libraryPaths = GetValveList(libraryFolderConfig).Select(x => x.Value<string>("path")).ToList();
-            List<SteamLibrary> libraries = libraryPaths.Select(LoadLibrary).ToList();
+            try
+            {
+                VToken libraryFolderConfig = VdfConvert.Deserialize(File.ReadAllText(configFile)).Value;
+                List<string> libraryPaths = GetValveList(libraryFolderConfig).Select(x => x.Value<string>("path")).ToList();
+                List<SteamLibrary> libraries = libraryPaths.Select(LoadLibrary).ToList();
+                return new SteamInstallation(steamInstallPath, libraries);
+            }
+            catch (VdfException)
+            {
+                throw new SteamLoaderException($"Couldn't parse Valve KeyValues format in file {configFile}");
+            }
+                
 
-            return new SteamInstallation(steamInstallPath, libraries);
+            
         }
 
         // Retrieve a list encoded as a map with integer keys.
@@ -69,6 +73,7 @@ namespace DoomLauncher.Steam
             {
                 var gameConfigFile = Path.Combine(libraryPath, "steamapps", $"appmanifest_{game.GameId}.acf");
 
+                // Game files are allowed to not exist - if they're not installed, then it is what it is
                 if (File.Exists(gameConfigFile))
                 {
                     dynamic gameConfig = VdfConvert.Deserialize(File.ReadAllText(gameConfigFile));
@@ -86,6 +91,9 @@ namespace DoomLauncher.Steam
 
         private static SteamInstalledGame LoadSteamGame(SteamGame game, string gamePath)
         {
+            // Expected IWad/PWad files are allowed to not exist; Id Software has changed the directory structure 
+            // a few times, and it's fine if we can't find something. We'll take what we can get.
+
             List<string> installedIwads =
                 (from iwad in game.ExpectedIWadFiles
                  let absolutePath = Path.Combine(gamePath, iwad)
@@ -105,7 +113,23 @@ namespace DoomLauncher.Steam
         {
             var is64Bit = Environment.Is64BitProcess;
             string steamKey = is64Bit ? STEAM_REGISTRY_KEY_64 : STEAM_REGISTRY_KEY_32;
-            return Registry.GetValue(steamKey, "InstallPath", null).ToString();
+            var value = Registry.GetValue(steamKey, "InstallPath", null);
+            if (value != null)
+            {
+                return value.ToString();
+            }
+            else
+            {
+                throw new SteamLoaderException("Steam is not installed");
+            }
         }
+    }
+
+    public class SteamLoaderException : Exception
+    {
+        public SteamLoaderException(string message) : base(message)
+        {
+
+        }  
     }
 }

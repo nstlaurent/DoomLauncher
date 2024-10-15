@@ -1,6 +1,7 @@
 ﻿using DoomLauncher.Controls;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
+using DoomLauncher.Steam;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -273,6 +274,16 @@ namespace DoomLauncher
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
             ctrlAssociationView.FileDetailsChanged += CtrlAssociationView_FileDetailsChanged;
+
+            AutoLoadSteamWads();
+        }
+
+        private void AutoLoadSteamWads()
+        {
+            var steamCheck = new AutomaticSteamCheck(SteamLoader.LoadFromEnvironment, DbDataSourceAdapter.CreateAdapter());
+            steamCheck.LoadGamesFromSteam(
+                async iwads => await HandleAddGameFiles(AddFileType.IWad, iwads.ToArray(), null, FileManagement.Managed),
+                async pwads => await HandleAddGameFiles(AddFileType.GameFile, pwads.ToArray(), null, FileManagement.Managed));
         }
 
         private void CleanUpFiles()

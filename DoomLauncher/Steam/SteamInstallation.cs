@@ -7,12 +7,12 @@ namespace DoomLauncher.Steam
 {
     public class SteamInstallation
     {
-        private readonly string m_installPath;
+        public string InstallPath { get; }
         private readonly List<SteamLibrary> m_libraries;
 
         public SteamInstallation(string installPath, List<SteamLibrary> libraries)
         {
-            m_installPath = installPath;
+            InstallPath = installPath;
             m_libraries = libraries;
         }
 
@@ -26,13 +26,15 @@ namespace DoomLauncher.Steam
             return getInstalledWads(game => game.InstalledPWads);
         }
 
-        private List<string> getInstalledWads(System.Func<SteamInstalledGame, List<string>> selector)
+        private delegate List<string> WadSelector(SteamInstalledGame game);
+
+        private List<string> getInstalledWads(WadSelector selector)
         {
             // The same wad could appear in multiple Steam games, but
             // we just want the first one.
             //
             // So this maps the bare filename to the full path.
-            var files = new Dictionary<string, string>();
+            var filenamesToFullPaths = new Dictionary<string, string>();
 
             foreach (SteamLibrary library in m_libraries)
             {
@@ -41,15 +43,15 @@ namespace DoomLauncher.Steam
                     foreach (string wadFile in selector(game))
                     {
                         var justTheFile = Path.GetFileName(wadFile);
-                        if (!files.ContainsKey(justTheFile))
+                        if (!filenamesToFullPaths.ContainsKey(justTheFile))
                         {
-                            files[justTheFile] = wadFile;
+                            filenamesToFullPaths[justTheFile] = wadFile;
                         }
                     }
                 }
             }
 
-            return files.Values.ToList();
+            return filenamesToFullPaths.Values.ToList();
         }
     }
 }
