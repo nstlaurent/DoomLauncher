@@ -274,14 +274,12 @@ namespace DoomLauncher
             ctrlAssociationView.FileOrderChanged += ctrlAssociationView_FileOrderChanged;
             ctrlAssociationView.RequestScreenshots += CtrlAssociationView_RequestScreenshots;
             ctrlAssociationView.FileDetailsChanged += CtrlAssociationView_FileDetailsChanged;
-
-            AutoLoadSteamWads();
         }
 
-        private void AutoLoadSteamWads()
+        private async Task AutoLoadSteamWads()
         {
             var steamCheck = new AutomaticSteamCheck(SteamLoader.LoadFromEnvironment, DbDataSourceAdapter.CreateAdapter());
-            steamCheck.LoadGamesFromSteam(
+            await steamCheck.LoadGamesFromSteam(
                 async iwads => await HandleAddGameFiles(AddFileType.IWad, iwads.ToArray(), null, FileManagement.Managed),
                 async pwads => await HandleAddGameFiles(AddFileType.GameFile, pwads.ToArray(), null, FileManagement.Managed));
         }
@@ -487,8 +485,12 @@ namespace DoomLauncher
                 DisplayWelcome();
                 HandleEditSourcePorts(true);
             }
+            if (!DataSourceAdapter.GetIWads().Any()) //If no iwads then get them from Steam
+            {
+                await AutoLoadSteamWads();
+            }
 
-            if (!DataSourceAdapter.GetIWads().Any()) //If no iwads then prompt to add iwads
+            if (!DataSourceAdapter.GetIWads().Any()) //If still no iwads then prompt to add iwads
             {
                 InvokeHideSplashScreen();
                 await HandleAddIWads();
