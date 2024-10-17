@@ -161,6 +161,9 @@
     <None Include="Resources\mapinfo.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\pathtest.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\prboomsave1.dsg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

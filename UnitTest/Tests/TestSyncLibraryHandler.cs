@@ -350,6 +350,22 @@ namespace UnitTest.Tests
             Assert.AreEqual(Path.Combine(s_filedir, file2), handler.AddedGameFiles[1].FileName);
         }
 
+        [TestMethod]
+        public void WadLumpWithBadChars()
+        {
+            string file1 = "pathtest.zip";
+
+            SyncLibraryHandler handler = CreateSyncLibraryHandler(false, FileManagement.Managed);
+            File.Copy(Path.Combine("Resources", file1), Path.Combine(s_filedir, file1));
+
+            handler.Execute(new string[] { file1 });
+            Assert.AreEqual(1, handler.AddedGameFiles.Count);
+            Assert.AreEqual(0, handler.InvalidFiles.Length);
+
+            var addedFile = handler.AddedGameFiles[0];
+            Assert.AreEqual(addedFile.Map, "MAP01");
+        }
+
         private static SyncLibraryHandler CreateSyncLibraryHandler(bool pullTitlepic = false, FileManagement fileManagement = FileManagement.Managed)
         {
             return new SyncLibraryHandler(TestUtil.CreateAdapter(), CreateDirectoryAdapater(), new LauncherPath(s_filedir), 
