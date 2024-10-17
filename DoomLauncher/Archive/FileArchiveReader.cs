@@ -64,5 +64,7 @@ namespace DoomLauncher
         {
             return FullName.GetHashCode();
         }
+
+        public string GetNameWithoutExtension() => Path.GetFileNameWithoutExtension(Name);
     }
 }

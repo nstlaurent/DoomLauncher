@@ -31,5 +31,7 @@ namespace DoomLauncher
             using (var fs = m_file.OpenRead())
                 fs.Read(buffer, offset, length);
         }
+
+        public string GetNameWithoutExtension() => Name;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace DoomLauncher
+﻿using System.IO;
+
+namespace DoomLauncher
 {
     public interface IArchiveEntry
     {
@@ -9,5 +11,6 @@
         void ExtractToFile(string file, bool overwrite = false);
         bool ExtractRequired { get; }
         bool IsDirectory { get; }
+        string GetNameWithoutExtension();
     }
 }

@@ -335,20 +335,27 @@ namespace DoomLauncher
 
         private static bool IsEntryMapInfo(IArchiveEntry entry)
         {
-            string entryName = Path.GetFileNameWithoutExtension(entry.Name);
-            foreach (string name in MapInfoNames)
+            try
             {
-                if (entryName.Equals(name, StringComparison.OrdinalIgnoreCase))
-                    return true;
-            }
+                string entryName = entry.GetNameWithoutExtension();
+                foreach (string name in MapInfoNames)
+                {
+                    if (entryName.Equals(name, StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
 
-            foreach (string name in MapInfoSubNames)
+                foreach (string name in MapInfoSubNames)
+                {
+                    if (entryName.StartsWith(name, StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
+
+                return false;
+            }
+            catch (ArgumentException)
             {
-                if (entryName.StartsWith(name, StringComparison.OrdinalIgnoreCase))
-                    return true;
+                return false;
             }
-
-            return false;
         }
 
         private string MapStringFromMapInfo(IArchiveReader reader, string mapInfoData)

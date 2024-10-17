@@ -34,5 +34,7 @@ namespace DoomLauncher
         {
             m_lump.ReadData(m_fs, buffer, offset, length);
         }
+
+        public string GetNameWithoutExtension() => Name;
     }
 }

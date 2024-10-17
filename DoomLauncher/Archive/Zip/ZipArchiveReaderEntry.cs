@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using System.IO;
+using System.IO.Compression;
 
 namespace DoomLauncher
 {
@@ -42,5 +43,7 @@ namespace DoomLauncher
         {
             return FullName.GetHashCode();
         }
+
+        public string GetNameWithoutExtension() => Path.GetFileNameWithoutExtension(Name);
     }
 }
