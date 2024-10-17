@@ -5,8 +5,9 @@ namespace DoomLauncher.Steam
     public class SteamGame
     {
         public readonly static SteamGame ULTIMATE_DOOM = new SteamGame(2280, "DOOM + DOOM II", 
-            new List<string> {"rerelease\\doom.wad", "rerelease\\doom2.wad", "rerelease\\plutonia.wad", "rerelease\\tnt.wad" }, 
-            new List<string> { "rerelease\\id1.wad", "rerelease\\nerve.wad", "rerelease\\masterlevels.wad", "rerelease\\sigil.wad" });
+            new List<string> { @"rerelease\doom.wad", @"rerelease\doom2.wad", @"rerelease\plutonia.wad", @"rerelease\tnt.wad", 
+                               @"base\doom.wad", @"base\doom2\doom2.wad", @"base\plutonia\plutonia.wad", @"base\tnt\tnt.wad" }, 
+            new List<string> { @"rerelease\id1.wad", @"rerelease\nerve.wad", @"rerelease\masterlevels.wad", @"rerelease\sigil.wad" });
 
         public readonly static SteamGame DOOM2 = new SteamGame(2300, "DOOM II", 
             new List<string> { "base\\doom2.wad" }, 
