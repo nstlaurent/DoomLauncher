@@ -1,0 +1,23 @@
+"libraryfolders"
+{
+	"0"
+	{
+		"irrelevantStuff"		"blah"
+		"path"		"Resources\\TestSteamLibrary1"
+		"apps"
+		{
+			"48700"		"4947778366"
+			"228980"		"383082318"
+		}
+		"whatevs"		"010101010"
+	}
+	"1"
+	{
+		"path"		"Resources\\TestSteamLibrary2"
+		"apps"
+		{
+			"70"		"589449723"
+			"220"		"3831084326"
+		}
+	}
+}
