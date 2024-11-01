@@ -70,6 +70,7 @@
             this.addFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addIWADsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addDoom64ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFIlesRecursivelyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.sourcePortsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -441,6 +442,7 @@
             this.addFilesToolStripMenuItem,
             this.addDirectoryToolStripMenuItem,
             this.addIWADsToolStripMenuItem,
+            this.addDoom64ToolStripMenuItem,
             this.addFIlesRecursivelyToolStripMenuItem1,
             this.toolStripSeparator15,
             this.sourcePortsToolStripMenuItem,
@@ -490,6 +492,13 @@
             this.addIWADsToolStripMenuItem.Size = new System.Drawing.Size(285, 26);
             this.addIWADsToolStripMenuItem.Text = "Add IWADs...";
             this.addIWADsToolStripMenuItem.Click += new System.EventHandler(this.addIWADsToolStripMenuItem_Click);
+            // 
+            // addDoom64ToolStripMenuItem
+            // 
+            this.addDoom64ToolStripMenuItem.Name = "addDoom64ToolStripMenuItem";
+            this.addDoom64ToolStripMenuItem.Size = new System.Drawing.Size(285, 26);
+            this.addDoom64ToolStripMenuItem.Text = "Add Doom64...";
+            this.addDoom64ToolStripMenuItem.Click += new System.EventHandler(this.addDoom64ToolStripMenuItem_Click);
             // 
             // addFIlesRecursivelyToolStripMenuItem1
             // 
@@ -965,6 +974,7 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addFilesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addIWADsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addDoom64ToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.Button btnPlay;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;

@@ -1400,6 +1400,31 @@ namespace DoomLauncher
             await HandleAddFiles(AddFileType.IWad, new string[] { "WAD", "iwad", "ipk3" }, "Select IWADs");
         }
 
+        private void addDoom64ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HandleAddDoom64();
+        }
+
+        private void HandleAddDoom64()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Title = "Select Doom64_x64.exe";
+            dialog.Multiselect = false;
+            dialog.Filter = "Doom64 executable|Doom64_x64.exe";
+
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                var doom64Config = new ConfigurationData()
+                {
+                    Name = "Doom64Exe",
+                    Value = dialog.FileName,
+                    UserCanModify = false
+                };
+
+                DataSourceAdapter.InsertConfiguration(doom64Config);
+            }
+        }
+
         private void UpdateLocal()
         {
             foreach (ITabView tab in m_tabHandler.TabViews)
