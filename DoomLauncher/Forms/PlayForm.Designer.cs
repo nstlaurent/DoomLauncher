@@ -37,6 +37,8 @@ namespace DoomLauncher
             this.btnCancel = new System.Windows.Forms.Button();
             this.cmbIwad = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtGame = new System.Windows.Forms.TextBox();
+            this.lblGame = new System.Windows.Forms.Label();
             this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
             this.lblProfile = new System.Windows.Forms.Label();
             this.cmbProfiles = new DoomLauncher.Controls.CComboBox();
@@ -110,20 +112,18 @@ namespace DoomLauncher
             // 
             this.cmbSourcePorts.DisplayMember = "Name";
             this.cmbSourcePorts.FormattingEnabled = true;
-            this.cmbSourcePorts.Location = new System.Drawing.Point(76, 71);
-            this.cmbSourcePorts.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmbSourcePorts.Location = new System.Drawing.Point(51, 46);
             this.cmbSourcePorts.Name = "cmbSourcePorts";
-            this.cmbSourcePorts.Size = new System.Drawing.Size(288, 28);
+            this.cmbSourcePorts.Size = new System.Drawing.Size(193, 21);
             this.cmbSourcePorts.TabIndex = 0;
             this.cmbSourcePorts.TabStop = false;
             // 
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(64, 7);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnOK.Location = new System.Drawing.Point(41, 4);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(112, 35);
+            this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 1;
             this.btnOK.TabStop = false;
             this.btnOK.Text = "OK";
@@ -133,10 +133,9 @@ namespace DoomLauncher
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(184, 7);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnCancel.Location = new System.Drawing.Point(122, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(112, 35);
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
             this.btnCancel.TabStop = false;
             this.btnCancel.Text = "Cancel";
@@ -146,55 +145,72 @@ namespace DoomLauncher
             // 
             this.cmbIwad.DisplayMember = "FileName";
             this.cmbIwad.FormattingEnabled = true;
-            this.cmbIwad.Location = new System.Drawing.Point(76, 114);
-            this.cmbIwad.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmbIwad.Location = new System.Drawing.Point(51, 74);
             this.cmbIwad.Name = "cmbIwad";
-            this.cmbIwad.Size = new System.Drawing.Size(288, 28);
+            this.cmbIwad.Size = new System.Drawing.Size(193, 21);
             this.cmbIwad.TabIndex = 3;
             this.cmbIwad.TabStop = false;
             this.cmbIwad.ValueMember = "GameFileID";
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.txtGame);
+            this.groupBox1.Controls.Add(this.lblGame);
             this.groupBox1.Controls.Add(this.tblProfile);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cmbSourcePorts);
             this.groupBox1.Controls.Add(this.cmbIwad);
-            this.groupBox1.Location = new System.Drawing.Point(4, 5);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox1.Size = new System.Drawing.Size(384, 164);
+            this.groupBox1.Size = new System.Drawing.Size(256, 107);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
+            // 
+            // txtGame
+            // 
+            this.txtGame.Enabled = false;
+            this.txtGame.Location = new System.Drawing.Point(51, 46);
+            this.txtGame.Name = "txtGame";
+            this.txtGame.Size = new System.Drawing.Size(193, 20);
+            this.txtGame.TabIndex = 20;
+            this.txtGame.TabStop = false;
+            this.txtGame.Text = "DOOM 64";
+            // 
+            // lblGame
+            // 
+            this.lblGame.AutoSize = true;
+            this.lblGame.Location = new System.Drawing.Point(6, 49);
+            this.lblGame.Name = "lblGame";
+            this.lblGame.Size = new System.Drawing.Size(35, 13);
+            this.lblGame.TabIndex = 11;
+            this.lblGame.Text = "Game";
             // 
             // tblProfile
             // 
             this.tblProfile.ColumnCount = 3;
-            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 68F));
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 45F));
             this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tblProfile.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15F));
             this.tblProfile.Controls.Add(this.lblProfile, 0, 0);
             this.tblProfile.Controls.Add(this.cmbProfiles, 1, 0);
             this.tblProfile.Controls.Add(this.panel2, 2, 0);
-            this.tblProfile.Location = new System.Drawing.Point(4, 24);
+            this.tblProfile.Location = new System.Drawing.Point(3, 16);
             this.tblProfile.Margin = new System.Windows.Forms.Padding(0);
             this.tblProfile.Name = "tblProfile";
             this.tblProfile.RowCount = 1;
             this.tblProfile.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblProfile.Size = new System.Drawing.Size(361, 39);
+            this.tblProfile.Size = new System.Drawing.Size(241, 25);
             this.tblProfile.TabIndex = 9;
             // 
             // lblProfile
             // 
             this.lblProfile.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblProfile.AutoSize = true;
-            this.lblProfile.Location = new System.Drawing.Point(4, 9);
-            this.lblProfile.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblProfile.Location = new System.Drawing.Point(3, 6);
             this.lblProfile.Name = "lblProfile";
-            this.lblProfile.Size = new System.Drawing.Size(53, 20);
+            this.lblProfile.Size = new System.Drawing.Size(36, 13);
             this.lblProfile.TabIndex = 10;
             this.lblProfile.Text = "Profile";
             // 
@@ -207,10 +223,10 @@ namespace DoomLauncher
             this.cmbProfiles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmbProfiles.ForeColor = System.Drawing.SystemColors.WindowText;
             this.cmbProfiles.FormattingEnabled = true;
-            this.cmbProfiles.Location = new System.Drawing.Point(72, 5);
-            this.cmbProfiles.Margin = new System.Windows.Forms.Padding(4, 5, 0, 5);
+            this.cmbProfiles.Location = new System.Drawing.Point(48, 3);
+            this.cmbProfiles.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.cmbProfiles.Name = "cmbProfiles";
-            this.cmbProfiles.Size = new System.Drawing.Size(249, 27);
+            this.cmbProfiles.Size = new System.Drawing.Size(166, 21);
             this.cmbProfiles.TabIndex = 9;
             this.cmbProfiles.TabStop = false;
             this.cmbProfiles.ValueMember = "GameProfileID";
@@ -220,10 +236,10 @@ namespace DoomLauncher
             this.panel2.Controls.Add(this.profileToolStrip);
             this.panel2.Controls.Add(this.btnProfileMenu);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(321, 0);
+            this.panel2.Location = new System.Drawing.Point(214, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(40, 39);
+            this.panel2.Size = new System.Drawing.Size(27, 25);
             this.panel2.TabIndex = 14;
             // 
             // profileToolStrip
@@ -234,11 +250,11 @@ namespace DoomLauncher
             this.profileToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.profileToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1});
-            this.profileToolStrip.Location = new System.Drawing.Point(0, 5);
-            this.profileToolStrip.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.profileToolStrip.Location = new System.Drawing.Point(0, 3);
+            this.profileToolStrip.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
             this.profileToolStrip.Name = "profileToolStrip";
             this.profileToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.profileToolStrip.Size = new System.Drawing.Size(44, 26);
+            this.profileToolStrip.Size = new System.Drawing.Size(38, 26);
             this.profileToolStrip.TabIndex = 12;
             this.profileToolStrip.Text = "Options";
             // 
@@ -254,7 +270,7 @@ namespace DoomLauncher
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(2, 0, 0, 2);
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(38, 24);
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(33, 24);
             this.toolStripDropDownButton1.Text = "Options";
             // 
             // newProfileToolStripMenuItem
@@ -262,7 +278,7 @@ namespace DoomLauncher
             this.newProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.File;
             this.newProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(272, 34);
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(183, 24);
             this.newProfileToolStripMenuItem.Text = "New Profile...";
             this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
             // 
@@ -271,7 +287,7 @@ namespace DoomLauncher
             this.newGlobalProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.File;
             this.newGlobalProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.newGlobalProfileToolStripMenuItem.Name = "newGlobalProfileToolStripMenuItem";
-            this.newGlobalProfileToolStripMenuItem.Size = new System.Drawing.Size(272, 34);
+            this.newGlobalProfileToolStripMenuItem.Size = new System.Drawing.Size(183, 24);
             this.newGlobalProfileToolStripMenuItem.Text = "New Global Profile...";
             this.newGlobalProfileToolStripMenuItem.Click += new System.EventHandler(this.newGlobalProfileToolStripMenuItem_Click);
             // 
@@ -280,7 +296,7 @@ namespace DoomLauncher
             this.editProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Edit;
             this.editProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.editProfileToolStripMenuItem.Name = "editProfileToolStripMenuItem";
-            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(272, 34);
+            this.editProfileToolStripMenuItem.Size = new System.Drawing.Size(183, 24);
             this.editProfileToolStripMenuItem.Text = "Rename Profile...";
             this.editProfileToolStripMenuItem.Click += new System.EventHandler(this.editProfileToolStripMenuItem_Click);
             // 
@@ -289,17 +305,17 @@ namespace DoomLauncher
             this.deleteProfileToolStripMenuItem.Image = global::DoomLauncher.Properties.Resources.Delete;
             this.deleteProfileToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.deleteProfileToolStripMenuItem.Name = "deleteProfileToolStripMenuItem";
-            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(272, 34);
+            this.deleteProfileToolStripMenuItem.Size = new System.Drawing.Size(183, 24);
             this.deleteProfileToolStripMenuItem.Text = "Delete Profile";
             this.deleteProfileToolStripMenuItem.Click += new System.EventHandler(this.deleteProfileToolStripMenuItem_Click);
             // 
             // btnProfileMenu
             // 
             this.btnProfileMenu.Image = global::DoomLauncher.Properties.Resources.Bars;
-            this.btnProfileMenu.Location = new System.Drawing.Point(0, 8);
+            this.btnProfileMenu.Location = new System.Drawing.Point(0, 5);
             this.btnProfileMenu.Margin = new System.Windows.Forms.Padding(0);
             this.btnProfileMenu.Name = "btnProfileMenu";
-            this.btnProfileMenu.Size = new System.Drawing.Size(34, 32);
+            this.btnProfileMenu.Size = new System.Drawing.Size(23, 21);
             this.btnProfileMenu.TabIndex = 13;
             this.btnProfileMenu.UseVisualStyleBackColor = true;
             this.btnProfileMenu.Click += new System.EventHandler(this.btnProfileMenu_Click);
@@ -307,20 +323,18 @@ namespace DoomLauncher
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 119);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(6, 77);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(52, 20);
+            this.label2.Size = new System.Drawing.Size(36, 13);
             this.label2.TabIndex = 8;
             this.label2.Text = "IWAD";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 76);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(6, 49);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 20);
+            this.label1.Size = new System.Drawing.Size(26, 13);
             this.label1.TabIndex = 7;
             this.label1.Text = "Port";
             // 
@@ -329,20 +343,18 @@ namespace DoomLauncher
             this.cmbMap.DisplayMember = "Name";
             this.cmbMap.Enabled = false;
             this.cmbMap.FormattingEnabled = true;
-            this.cmbMap.Location = new System.Drawing.Point(129, 29);
-            this.cmbMap.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmbMap.Location = new System.Drawing.Point(86, 19);
             this.cmbMap.Name = "cmbMap";
-            this.cmbMap.Size = new System.Drawing.Size(238, 28);
+            this.cmbMap.Size = new System.Drawing.Size(160, 21);
             this.cmbMap.TabIndex = 6;
             this.cmbMap.TabStop = false;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(35, 75);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(23, 49);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(37, 20);
+            this.label4.Size = new System.Drawing.Size(26, 13);
             this.label4.TabIndex = 11;
             this.label4.Text = "Skill";
             // 
@@ -351,20 +363,18 @@ namespace DoomLauncher
             this.cmbSkill.DisplayMember = "Name";
             this.cmbSkill.Enabled = false;
             this.cmbSkill.FormattingEnabled = true;
-            this.cmbSkill.Location = new System.Drawing.Point(129, 71);
-            this.cmbSkill.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmbSkill.Location = new System.Drawing.Point(86, 46);
             this.cmbSkill.Name = "cmbSkill";
-            this.cmbSkill.Size = new System.Drawing.Size(238, 28);
+            this.cmbSkill.Size = new System.Drawing.Size(160, 21);
             this.cmbSkill.TabIndex = 10;
             this.cmbSkill.TabStop = false;
             // 
             // txtDescription
             // 
             this.txtDescription.Enabled = false;
-            this.txtDescription.Location = new System.Drawing.Point(129, 172);
-            this.txtDescription.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtDescription.Location = new System.Drawing.Point(86, 112);
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(238, 26);
+            this.txtDescription.Size = new System.Drawing.Size(160, 20);
             this.txtDescription.TabIndex = 13;
             this.txtDescription.TabStop = false;
             // 
@@ -373,10 +383,9 @@ namespace DoomLauncher
             this.cmbDemo.DisplayMember = "Description";
             this.cmbDemo.Enabled = false;
             this.cmbDemo.FormattingEnabled = true;
-            this.cmbDemo.Location = new System.Drawing.Point(129, 112);
-            this.cmbDemo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmbDemo.Location = new System.Drawing.Point(86, 73);
             this.cmbDemo.Name = "cmbDemo";
-            this.cmbDemo.Size = new System.Drawing.Size(238, 28);
+            this.cmbDemo.Size = new System.Drawing.Size(160, 21);
             this.cmbDemo.TabIndex = 14;
             this.cmbDemo.TabStop = false;
             this.cmbDemo.ValueMember = "FileID";
@@ -394,21 +403,18 @@ namespace DoomLauncher
             this.groupBox2.Controls.Add(this.cmbDemo);
             this.groupBox2.Controls.Add(this.chkRecord);
             this.groupBox2.Controls.Add(this.txtDescription);
-            this.groupBox2.Location = new System.Drawing.Point(4, 178);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox2.Location = new System.Drawing.Point(3, 116);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox2.Size = new System.Drawing.Size(384, 266);
+            this.groupBox2.Size = new System.Drawing.Size(256, 173);
             this.groupBox2.TabIndex = 17;
             this.groupBox2.TabStop = false;
             // 
             // lnkOpenDemo
             // 
             this.lnkOpenDemo.AutoSize = true;
-            this.lnkOpenDemo.Location = new System.Drawing.Point(125, 149);
-            this.lnkOpenDemo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lnkOpenDemo.Location = new System.Drawing.Point(83, 97);
             this.lnkOpenDemo.Name = "lnkOpenDemo";
-            this.lnkOpenDemo.Size = new System.Drawing.Size(136, 20);
+            this.lnkOpenDemo.Size = new System.Drawing.Size(92, 13);
             this.lnkOpenDemo.TabIndex = 19;
             this.lnkOpenDemo.TabStop = true;
             this.lnkOpenDemo.Text = "Open Demo File...";
@@ -417,19 +423,17 @@ namespace DoomLauncher
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 219);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(5, 142);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(104, 20);
+            this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 18;
             this.label3.Text = "Extra Params";
             // 
             // txtParameters
             // 
-            this.txtParameters.Location = new System.Drawing.Point(129, 214);
-            this.txtParameters.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtParameters.Location = new System.Drawing.Point(86, 139);
             this.txtParameters.Name = "txtParameters";
-            this.txtParameters.Size = new System.Drawing.Size(238, 26);
+            this.txtParameters.Size = new System.Drawing.Size(160, 20);
             this.txtParameters.TabIndex = 17;
             this.txtParameters.TabStop = false;
             this.txtParameters.Click += new System.EventHandler(this.TxtParameters_Click);
@@ -437,10 +441,9 @@ namespace DoomLauncher
             // chkMap
             // 
             this.chkMap.AutoSize = true;
-            this.chkMap.Location = new System.Drawing.Point(10, 32);
-            this.chkMap.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkMap.Location = new System.Drawing.Point(7, 21);
             this.chkMap.Name = "chkMap";
-            this.chkMap.Size = new System.Drawing.Size(66, 24);
+            this.chkMap.Size = new System.Drawing.Size(47, 17);
             this.chkMap.TabIndex = 16;
             this.chkMap.TabStop = false;
             this.chkMap.Text = "Map";
@@ -449,10 +452,9 @@ namespace DoomLauncher
             // chkDemo
             // 
             this.chkDemo.AutoSize = true;
-            this.chkDemo.Location = new System.Drawing.Point(10, 115);
-            this.chkDemo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkDemo.Location = new System.Drawing.Point(7, 75);
             this.chkDemo.Name = "chkDemo";
-            this.chkDemo.Size = new System.Drawing.Size(111, 24);
+            this.chkDemo.Size = new System.Drawing.Size(77, 17);
             this.chkDemo.TabIndex = 15;
             this.chkDemo.TabStop = false;
             this.chkDemo.Text = "Play Demo";
@@ -461,10 +463,9 @@ namespace DoomLauncher
             // chkRecord
             // 
             this.chkRecord.AutoSize = true;
-            this.chkRecord.Location = new System.Drawing.Point(9, 178);
-            this.chkRecord.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkRecord.Location = new System.Drawing.Point(6, 116);
             this.chkRecord.Name = "chkRecord";
-            this.chkRecord.Size = new System.Drawing.Size(87, 24);
+            this.chkRecord.Size = new System.Drawing.Size(61, 17);
             this.chkRecord.TabIndex = 12;
             this.chkRecord.TabStop = false;
             this.chkRecord.Text = "Record";
@@ -473,10 +474,9 @@ namespace DoomLauncher
             // lnkMore
             // 
             this.lnkMore.AutoSize = true;
-            this.lnkMore.Location = new System.Drawing.Point(245, 32);
-            this.lnkMore.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lnkMore.Location = new System.Drawing.Point(163, 21);
             this.lnkMore.Name = "lnkMore";
-            this.lnkMore.Size = new System.Drawing.Size(89, 20);
+            this.lnkMore.Size = new System.Drawing.Size(61, 13);
             this.lnkMore.TabIndex = 20;
             this.lnkMore.TabStop = true;
             this.lnkMore.Text = "More Info...";
@@ -492,21 +492,18 @@ namespace DoomLauncher
             this.groupBox4.Controls.Add(this.chkExtraParamsOnly);
             this.groupBox4.Controls.Add(this.chkSaveStats);
             this.groupBox4.Controls.Add(this.lnkMore);
-            this.groupBox4.Location = new System.Drawing.Point(4, 452);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox4.Location = new System.Drawing.Point(3, 294);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox4.Size = new System.Drawing.Size(384, 178);
+            this.groupBox4.Size = new System.Drawing.Size(256, 116);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             // 
             // lnkLoadSaveMore
             // 
             this.lnkLoadSaveMore.AutoSize = true;
-            this.lnkLoadSaveMore.Location = new System.Drawing.Point(245, 68);
-            this.lnkLoadSaveMore.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lnkLoadSaveMore.Location = new System.Drawing.Point(163, 44);
             this.lnkLoadSaveMore.Name = "lnkLoadSaveMore";
-            this.lnkLoadSaveMore.Size = new System.Drawing.Size(89, 20);
+            this.lnkLoadSaveMore.Size = new System.Drawing.Size(61, 13);
             this.lnkLoadSaveMore.TabIndex = 26;
             this.lnkLoadSaveMore.TabStop = true;
             this.lnkLoadSaveMore.Text = "More Info...";
@@ -515,10 +512,9 @@ namespace DoomLauncher
             // chkLoadLatestSave
             // 
             this.chkLoadLatestSave.AutoSize = true;
-            this.chkLoadLatestSave.Location = new System.Drawing.Point(9, 66);
-            this.chkLoadLatestSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkLoadLatestSave.Location = new System.Drawing.Point(6, 43);
             this.chkLoadLatestSave.Name = "chkLoadLatestSave";
-            this.chkLoadLatestSave.Size = new System.Drawing.Size(160, 24);
+            this.chkLoadLatestSave.Size = new System.Drawing.Size(110, 17);
             this.chkLoadLatestSave.TabIndex = 25;
             this.chkLoadLatestSave.TabStop = false;
             this.chkLoadLatestSave.Text = "Load Latest Save";
@@ -526,10 +522,9 @@ namespace DoomLauncher
             // lnkFilterSettings
             // 
             this.lnkFilterSettings.AutoSize = true;
-            this.lnkFilterSettings.Location = new System.Drawing.Point(245, 101);
-            this.lnkFilterSettings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lnkFilterSettings.Location = new System.Drawing.Point(163, 66);
             this.lnkFilterSettings.Name = "lnkFilterSettings";
-            this.lnkFilterSettings.Size = new System.Drawing.Size(68, 20);
+            this.lnkFilterSettings.Size = new System.Drawing.Size(45, 13);
             this.lnkFilterSettings.TabIndex = 24;
             this.lnkFilterSettings.TabStop = true;
             this.lnkFilterSettings.Text = "Settings";
@@ -538,10 +533,9 @@ namespace DoomLauncher
             // chkScreenFilter
             // 
             this.chkScreenFilter.AutoSize = true;
-            this.chkScreenFilter.Location = new System.Drawing.Point(9, 101);
-            this.chkScreenFilter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkScreenFilter.Location = new System.Drawing.Point(6, 66);
             this.chkScreenFilter.Name = "chkScreenFilter";
-            this.chkScreenFilter.Size = new System.Drawing.Size(125, 24);
+            this.chkScreenFilter.Size = new System.Drawing.Size(85, 17);
             this.chkScreenFilter.TabIndex = 23;
             this.chkScreenFilter.TabStop = false;
             this.chkScreenFilter.Text = "Screen Filter";
@@ -550,10 +544,9 @@ namespace DoomLauncher
             // lnkPreviewLaunchParameters
             // 
             this.lnkPreviewLaunchParameters.AutoSize = true;
-            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(245, 136);
-            this.lnkPreviewLaunchParameters.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lnkPreviewLaunchParameters.Location = new System.Drawing.Point(163, 88);
             this.lnkPreviewLaunchParameters.Name = "lnkPreviewLaunchParameters";
-            this.lnkPreviewLaunchParameters.Size = new System.Drawing.Size(135, 20);
+            this.lnkPreviewLaunchParameters.Size = new System.Drawing.Size(90, 13);
             this.lnkPreviewLaunchParameters.TabIndex = 22;
             this.lnkPreviewLaunchParameters.TabStop = true;
             this.lnkPreviewLaunchParameters.Text = "Show Parameters";
@@ -562,10 +555,9 @@ namespace DoomLauncher
             // chkExtraParamsOnly
             // 
             this.chkExtraParamsOnly.AutoSize = true;
-            this.chkExtraParamsOnly.Location = new System.Drawing.Point(9, 136);
-            this.chkExtraParamsOnly.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkExtraParamsOnly.Location = new System.Drawing.Point(6, 88);
             this.chkExtraParamsOnly.Name = "chkExtraParamsOnly";
-            this.chkExtraParamsOnly.Size = new System.Drawing.Size(165, 24);
+            this.chkExtraParamsOnly.Size = new System.Drawing.Size(112, 17);
             this.chkExtraParamsOnly.TabIndex = 21;
             this.chkExtraParamsOnly.TabStop = false;
             this.chkExtraParamsOnly.Text = "Extra Params Only";
@@ -575,10 +567,9 @@ namespace DoomLauncher
             this.chkSaveStats.AutoSize = true;
             this.chkSaveStats.Checked = true;
             this.chkSaveStats.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkSaveStats.Location = new System.Drawing.Point(9, 31);
-            this.chkSaveStats.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkSaveStats.Location = new System.Drawing.Point(6, 20);
             this.chkSaveStats.Name = "chkSaveStats";
-            this.chkSaveStats.Size = new System.Drawing.Size(140, 24);
+            this.chkSaveStats.Size = new System.Drawing.Size(96, 17);
             this.chkSaveStats.TabIndex = 19;
             this.chkSaveStats.TabStop = false;
             this.chkSaveStats.Text = "Save Statistics";
@@ -587,11 +578,9 @@ namespace DoomLauncher
             // 
             this.groupBox3.Controls.Add(this.tblFiles);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox3.Location = new System.Drawing.Point(397, 5);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox3.Location = new System.Drawing.Point(265, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox3.Size = new System.Drawing.Size(355, 625);
+            this.groupBox3.Size = new System.Drawing.Size(236, 407);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Additional Files / Load Order";
@@ -604,14 +593,14 @@ namespace DoomLauncher
             this.tblFiles.Controls.Add(this.panel1, 0, 0);
             this.tblFiles.Controls.Add(this.flp1, 0, 2);
             this.tblFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblFiles.Location = new System.Drawing.Point(4, 24);
+            this.tblFiles.Location = new System.Drawing.Point(3, 16);
             this.tblFiles.Margin = new System.Windows.Forms.Padding(0);
             this.tblFiles.Name = "tblFiles";
             this.tblFiles.RowCount = 3;
-            this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 61F));
+            this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
-            this.tblFiles.Size = new System.Drawing.Size(347, 596);
+            this.tblFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblFiles.Size = new System.Drawing.Size(230, 388);
             this.tblFiles.TabIndex = 0;
             // 
             // ctrlFiles
@@ -619,10 +608,10 @@ namespace DoomLauncher
             this.ctrlFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(54)))));
             this.ctrlFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ctrlFiles.ForeColor = System.Drawing.Color.White;
-            this.ctrlFiles.Location = new System.Drawing.Point(6, 67);
-            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(6);
+            this.ctrlFiles.Location = new System.Drawing.Point(4, 44);
+            this.ctrlFiles.Margin = new System.Windows.Forms.Padding(4);
             this.ctrlFiles.Name = "ctrlFiles";
-            this.ctrlFiles.Size = new System.Drawing.Size(335, 485);
+            this.ctrlFiles.Size = new System.Drawing.Size(222, 315);
             this.ctrlFiles.TabIndex = 20;
             // 
             // panel1
@@ -633,25 +622,23 @@ namespace DoomLauncher
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(347, 61);
+            this.panel1.Size = new System.Drawing.Size(230, 40);
             this.panel1.TabIndex = 21;
             // 
             // lblInfo
             // 
             this.lblInfo.AutoSize = true;
-            this.lblInfo.Location = new System.Drawing.Point(37, 11);
-            this.lblInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblInfo.Location = new System.Drawing.Point(25, 7);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(42, 20);
+            this.lblInfo.Size = new System.Drawing.Size(29, 13);
             this.lblInfo.TabIndex = 25;
             this.lblInfo.Text = "label";
             // 
             // pbInfo
             // 
-            this.pbInfo.Location = new System.Drawing.Point(4, 11);
-            this.pbInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pbInfo.Location = new System.Drawing.Point(3, 7);
             this.pbInfo.Name = "pbInfo";
-            this.pbInfo.Size = new System.Drawing.Size(24, 25);
+            this.pbInfo.Size = new System.Drawing.Size(16, 16);
             this.pbInfo.TabIndex = 24;
             this.pbInfo.TabStop = false;
             // 
@@ -660,20 +647,20 @@ namespace DoomLauncher
             this.flp1.Controls.Add(this.lnkSpecific);
             this.flp1.Controls.Add(this.lnkCustomParameters);
             this.flp1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp1.Location = new System.Drawing.Point(0, 558);
+            this.flp1.Location = new System.Drawing.Point(0, 363);
             this.flp1.Margin = new System.Windows.Forms.Padding(0);
             this.flp1.Name = "flp1";
-            this.flp1.Size = new System.Drawing.Size(347, 38);
+            this.flp1.Size = new System.Drawing.Size(230, 25);
             this.flp1.TabIndex = 22;
             // 
             // lnkSpecific
             // 
             this.lnkSpecific.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lnkSpecific.AutoSize = true;
-            this.lnkSpecific.Location = new System.Drawing.Point(4, 5);
-            this.lnkSpecific.Margin = new System.Windows.Forms.Padding(4, 5, 4, 0);
+            this.lnkSpecific.Location = new System.Drawing.Point(3, 3);
+            this.lnkSpecific.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.lnkSpecific.Name = "lnkSpecific";
-            this.lnkSpecific.Size = new System.Drawing.Size(173, 20);
+            this.lnkSpecific.Size = new System.Drawing.Size(118, 13);
             this.lnkSpecific.TabIndex = 20;
             this.lnkSpecific.TabStop = true;
             this.lnkSpecific.Text = "Select Individual Files...";
@@ -682,10 +669,10 @@ namespace DoomLauncher
             // lnkCustomParameters
             // 
             this.lnkCustomParameters.AutoSize = true;
-            this.lnkCustomParameters.Location = new System.Drawing.Point(185, 5);
-            this.lnkCustomParameters.Margin = new System.Windows.Forms.Padding(4, 5, 4, 0);
+            this.lnkCustomParameters.Location = new System.Drawing.Point(127, 3);
+            this.lnkCustomParameters.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.lnkCustomParameters.Name = "lnkCustomParameters";
-            this.lnkCustomParameters.Size = new System.Drawing.Size(134, 20);
+            this.lnkCustomParameters.Size = new System.Drawing.Size(89, 13);
             this.lnkCustomParameters.TabIndex = 21;
             this.lnkCustomParameters.TabStop = true;
             this.lnkCustomParameters.Text = "Custom Params...";
@@ -700,29 +687,28 @@ namespace DoomLauncher
             this.tblMain.Controls.Add(this.titleBar, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 3;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
-            this.tblMain.Size = new System.Drawing.Size(756, 724);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tblMain.Size = new System.Drawing.Size(504, 471);
             this.tblMain.TabIndex = 21;
             // 
             // tblInner
             // 
             this.tblInner.ColumnCount = 2;
-            this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 393F));
+            this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 262F));
             this.tblInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblInner.Controls.Add(this.pnlLeft, 0, 0);
             this.tblInner.Controls.Add(this.groupBox3, 1, 0);
             this.tblInner.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblInner.Location = new System.Drawing.Point(0, 40);
+            this.tblInner.Location = new System.Drawing.Point(0, 26);
             this.tblInner.Margin = new System.Windows.Forms.Padding(0);
             this.tblInner.Name = "tblInner";
             this.tblInner.RowCount = 1;
             this.tblInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblInner.Size = new System.Drawing.Size(756, 635);
+            this.tblInner.Size = new System.Drawing.Size(504, 413);
             this.tblInner.TabIndex = 0;
             // 
             // pnlLeft
@@ -734,7 +720,7 @@ namespace DoomLauncher
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
             this.pnlLeft.Margin = new System.Windows.Forms.Padding(0);
             this.pnlLeft.Name = "pnlLeft";
-            this.pnlLeft.Size = new System.Drawing.Size(393, 635);
+            this.pnlLeft.Size = new System.Drawing.Size(262, 413);
             this.pnlLeft.TabIndex = 0;
             // 
             // pnlBottom
@@ -743,18 +729,17 @@ namespace DoomLauncher
             this.pnlBottom.Controls.Add(this.flpButtons);
             this.pnlBottom.Controls.Add(this.chkRemember);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 675);
+            this.pnlBottom.Location = new System.Drawing.Point(0, 439);
             this.pnlBottom.Margin = new System.Windows.Forms.Padding(0);
             this.pnlBottom.Name = "pnlBottom";
-            this.pnlBottom.Size = new System.Drawing.Size(756, 49);
+            this.pnlBottom.Size = new System.Drawing.Size(504, 32);
             this.pnlBottom.TabIndex = 1;
             // 
             // btnSaveSettings
             // 
-            this.btnSaveSettings.Location = new System.Drawing.Point(199, 8);
-            this.btnSaveSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnSaveSettings.Location = new System.Drawing.Point(133, 5);
             this.btnSaveSettings.Name = "btnSaveSettings";
-            this.btnSaveSettings.Size = new System.Drawing.Size(123, 35);
+            this.btnSaveSettings.Size = new System.Drawing.Size(82, 23);
             this.btnSaveSettings.TabIndex = 6;
             this.btnSaveSettings.TabStop = false;
             this.btnSaveSettings.Text = "Save Settings";
@@ -768,11 +753,10 @@ namespace DoomLauncher
             this.flpButtons.Controls.Add(this.btnOK);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(456, 0);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.flpButtons.Location = new System.Drawing.Point(304, 0);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
-            this.flpButtons.Size = new System.Drawing.Size(300, 49);
+            this.flpButtons.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            this.flpButtons.Size = new System.Drawing.Size(200, 32);
             this.flpButtons.TabIndex = 5;
             // 
             // chkRemember
@@ -780,10 +764,9 @@ namespace DoomLauncher
             this.chkRemember.AutoSize = true;
             this.chkRemember.Checked = true;
             this.chkRemember.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkRemember.Location = new System.Drawing.Point(14, 14);
-            this.chkRemember.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkRemember.Location = new System.Drawing.Point(9, 9);
             this.chkRemember.Name = "chkRemember";
-            this.chkRemember.Size = new System.Drawing.Size(177, 24);
+            this.chkRemember.Size = new System.Drawing.Size(118, 17);
             this.chkRemember.TabIndex = 4;
             this.chkRemember.TabStop = false;
             this.chkRemember.Text = "Remember Settings";
@@ -799,20 +782,19 @@ namespace DoomLauncher
             this.titleBar.Margin = new System.Windows.Forms.Padding(0);
             this.titleBar.Name = "titleBar";
             this.titleBar.RememberNormalSize = true;
-            this.titleBar.Size = new System.Drawing.Size(756, 40);
+            this.titleBar.Size = new System.Drawing.Size(504, 26);
             this.titleBar.TabIndex = 2;
             this.titleBar.Title = "Launch";
             // 
             // PlayForm
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(756, 724);
+            this.ClientSize = new System.Drawing.Size(504, 471);
             this.Controls.Add(this.tblMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "PlayForm";
             this.Text = "Launch";
             this.groupBox1.ResumeLayout(false);
@@ -902,5 +884,7 @@ namespace DoomLauncher
         private TableLayoutPanelDB tblInner;
         private FlowLayoutPanelDB flpButtons;
         private TableLayoutPanelDB tblFiles;
+        private System.Windows.Forms.Label lblGame;
+        private System.Windows.Forms.TextBox txtGame;
     }
 }

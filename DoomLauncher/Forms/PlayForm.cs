@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -33,6 +34,8 @@ namespace DoomLauncher
         private IList<IGameProfile> m_globalProfiles;
 
         private readonly Control[] m_tabControls;
+
+        private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
 
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
@@ -183,6 +186,27 @@ namespace DoomLauncher
 
                 if (gameProfile.SourcePortID.HasValue)
                     SelectedSourcePort = m_adapter.GetSourcePort(gameProfile.SourcePortID.Value);
+
+                var isDoom64 = GameFile.IsDoom64;
+                lblGame.Visible = isDoom64;
+                txtGame.Visible = isDoom64;
+
+                if (isDoom64)
+                {
+                    groupBox4.Visible = false;
+                    cmbIwad.Visible = false;
+                    cmbSourcePorts.Visible = false;
+                    chkDemo.Visible = false;
+                    cmbDemo.Visible = false;
+                    chkRecord.Visible = false;
+                    label2.Visible = false;
+                    txtDescription.Visible = false;
+                    label4.Visible = false;
+                    lnkOpenDemo.Visible = false;
+                    txtParameters.Visible = false;
+                    label3.Visible = false;
+                    groupBox2.Height = 100;
+                }
 
                 // Selected GameFile is an IWAD so lock the IWAD selection
                 if (IsIwad(GameFile))
