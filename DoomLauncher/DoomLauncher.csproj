@@ -130,6 +130,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\Launch\LaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\LaunchResult.cs" />
+    <Compile Include="Adapters\Launch\PlayDemoLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\ExtraParametersLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\RecordLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\MapSkillLaunchFeature.cs" />
     <Compile Include="Adapters\PlaySession.cs" />
     <Compile Include="Adapters\WadArchiveDataAdapter.cs" />
     <Compile Include="Archive\ArchiveReader.cs" />

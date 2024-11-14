@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Adapters.Launch;
+using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
@@ -123,28 +124,29 @@ namespace DoomLauncher
             launchFiles = SortParameters(launchFiles).ToList();
             BuildLaunchString(sb, sourcePort, launchFiles);
 
-            if (Map != null)
+            var launchParameters = new List<LaunchFeature>()
             {
-                sb.Append(sourcePort.WarpParameter(new SpData(Map)));
+                new MapSkillLaunchFeature(Map, Skill),
+                new ExtraParametersLaunchFeature(ExtraParameters)
+                
 
-                if (Skill != null)
-                    sb.Append(sourcePort.SkillParameter(new SpData(Skill)));
-            }
+            };
 
             if (Record)
-            {
-                RecordedFileName = Path.Combine(tempDirectory.GetFullPath(), Guid.NewGuid().ToString());
-                sb.Append(sourcePort.RecordParameter(new SpData(RecordedFileName)));
-            }
+                launchParameters.Add(new RecordLaunchFeature(tempDirectory));
 
-            if (PlayDemo && PlayDemoFile != null)
-            {
-                if (!AssertFile(PlayDemoFile, "", "demo file")) return null;
-                sb.Append(sourcePort.PlayDemoParameter(new SpData(PlayDemoFile)));
-            }
+            if (PlayDemo)
+                launchParameters.Add(new PlayDemoLaunchFeature(PlayDemoFile));
 
-            if (ExtraParameters != null)
-                sb.Append(" " + ExtraParameters);
+            var paramResult = launchParameters.Aggregate(LaunchResult.EMPTY, 
+                (result, param) => result.Combine(param.CreateParam(sourcePort)));
+
+            RecordedFileName = paramResult.RecordedFileName;
+            LastError = paramResult.ErrorMessage;
+            if (!string.IsNullOrEmpty(LastError))
+                return null;
+
+            sb.Append(paramResult.ParamString);
 
             if (!string.IsNullOrEmpty(sourcePortData.ExtraParameters))
                 sb.Append(" " + sourcePortData.ExtraParameters);
@@ -439,25 +441,28 @@ namespace DoomLauncher
             return true;
         }
 
-        public string LastError { get; private set; }
-        public IGameFile IWad { get; set; }
-        public string Map { get; set; }
-        public string Skill { get; set; }
-        public bool Record { get; set; }
-        public bool PlayDemo { get; set; }
-        public IGameFile[] AdditionalFiles { get; set; }
-        public string ExtraParameters { get; set; }
-        public string[] SpecificFiles { get; set; }
-        public bool SaveStatistics { get; set; }
-        public string LoadSaveFile { get; set; }
+        public string LastError { get; private set; } // Output
 
-        public ISourcePortData SourcePort { get; private set; }
-        public IGameFile GameFile { get; private set; }
-        public string RecordedFileName { get; private set; }
-        public string PlayDemoFile { get; set; }
+        public string RecordedFileName { get; private set; } // Output
 
-        public bool ExtractFiles { get; set; }
-        public bool IgnoreExtractError { get; set; }
+        public IGameFile IWad { get; set; } // Input
+        public string Map { get; set; } // Input
+        public string Skill { get; set; } // Input
+        public bool Record { get; set; } // Input
+        public bool PlayDemo { get; set; } // Input
+        public IGameFile[] AdditionalFiles { get; set; } // Input
+        public string ExtraParameters { get; set; } // Input
+        public string[] SpecificFiles { get; set; } // Input
+        public bool SaveStatistics { get; set; } // Input
+        public string LoadSaveFile { get; set; } // Input
+
+        public ISourcePortData SourcePort { get; private set; } // Input/Output (but should only be input)
+        public IGameFile GameFile { get; private set; } // Input/Output (but should only be input)
+        
+        public string PlayDemoFile { get; set; } // Input
+
+        public bool ExtractFiles { get; set; } // Input
+        public bool IgnoreExtractError { get; set; } // Input
 
         void proc_Exited(object sender, EventArgs e)
         {
