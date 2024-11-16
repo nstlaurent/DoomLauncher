@@ -65,7 +65,7 @@ namespace DoomLauncher
 
         private static ISaveGameReader CreateSaveGameReader(ISourcePortData sourcePort, FileInfo fi)
         {
-            return SourcePortUtil.CreateSourcePort(sourcePort).CreateSaveGameReader(fi);
+            return sourcePort.GetFlavor().CreateSaveGameReader(fi);
         }
 
         public void HandleUpdateSaveGames(ISourcePortData sourcePort, IGameFile gameFile, IFileData[] files)

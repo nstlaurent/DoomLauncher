@@ -4,9 +4,9 @@ using System.IO;
 
 namespace DoomLauncher.SourcePort
 {
-    public class HelionSourcePort : GenericSourcePort
+    public class HelionSourcePortFlavor : GenericSourcePortFlavor
     {
-        public HelionSourcePort(ISourcePortData sourcePortData)
+        public HelionSourcePortFlavor(ISourcePortData sourcePortData)
             : base(sourcePortData)
         {
 

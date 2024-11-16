@@ -306,9 +306,9 @@
     <Compile Include="Program.Init.cs" />
     <Compile Include="ProgressBarType.cs" />
     <Compile Include="SaveGame\HelionSaveGameReader.cs" />
-    <Compile Include="SourcePort\HelionSourcePort.cs" />
-    <Compile Include="SourcePort\LevelstatSourcePort.cs" />
-    <Compile Include="SourcePort\StatdumpSourcePort.cs" />
+    <Compile Include="SourcePort\HelionSourcePortFlavor.cs" />
+    <Compile Include="SourcePort\LevelstatSourcePortFlavor.cs" />
+    <Compile Include="SourcePort\StatdumpSourcePortFlavor.cs" />
     <Compile Include="Steam\AutomaticSteamCheck.cs" />
     <Compile Include="Steam\SteamGame.cs" />
     <Compile Include="Steam\SteamInstallation.cs" />
@@ -413,12 +413,11 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Config\ScreenFilter.cs" />
-    <Compile Include="SourcePort\DoomsdaySourcePort.cs" />
-    <Compile Include="SourcePort\GenericSourcePort.cs" />
-    <Compile Include="SourcePort\ISourcePort.cs" />
-    <Compile Include="SourcePort\SourcePortUtil.cs" />
+    <Compile Include="SourcePort\DoomsdaySourcePortFlavor.cs" />
+    <Compile Include="SourcePort\GenericSourcePortFlavor.cs" />
+    <Compile Include="SourcePort\ISourcePortFlavor.cs" />
     <Compile Include="SourcePort\SpData.cs" />
-    <Compile Include="SourcePort\ZDoomSourcePort.cs" />
+    <Compile Include="SourcePort\ZDoomSourcePortFlavor.cs" />
     <Compile Include="Statistics\LevelstatReader.cs" />
     <Compile Include="Config\AppVersion.cs" />
     <Compile Include="Config\ColumnConfig.cs" />

@@ -38,7 +38,7 @@ namespace DoomLauncher
             StringBuilder sb = new StringBuilder();
             GameFilePlayAdapter adapter = new GameFilePlayAdapter();
             adapter.HandleGameFile(gameFile, sb, m_config.TempDirectory, 
-                new GenericSourcePort(m_utility), files); //this checks File.Exists and might not be same file
+                new GenericSourcePortFlavor(m_utility), files); //this checks File.Exists and might not be same file
 
             try
             {

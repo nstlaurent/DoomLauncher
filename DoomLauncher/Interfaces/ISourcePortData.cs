@@ -16,7 +16,7 @@ namespace DoomLauncher.Interfaces
         LauncherPath AltSaveDirectory { get; set; }
         bool Archived { get; set; }
 
-        ISourcePort GetFlavor();
+        ISourcePortFlavor GetFlavor();
 
         string GetFullExecutablePath();
         LauncherPath GetReadSavePath();

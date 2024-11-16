@@ -483,12 +483,12 @@ namespace DoomLauncher
 
         private bool SaveStatisticsSupported(ISourcePortData sourcePort)
         {
-            return SourcePortUtil.CreateSourcePort(sourcePort).StatisticsSupported();
+            return sourcePort.GetFlavor().StatisticsSupported();
         }
 
         private bool LoadLatestSaveSupported(ISourcePortData sourcePort)
         {
-            return SourcePortUtil.CreateSourcePort(sourcePort).LoadSaveGameSupported();
+            return sourcePort.GetFlavor().LoadSaveGameSupported();
         }
 
         private void chkMap_CheckedChanged(object sender, EventArgs e)

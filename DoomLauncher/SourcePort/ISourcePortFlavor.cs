@@ -5,7 +5,7 @@ using System.IO;
 
 namespace DoomLauncher.SourcePort
 {
-    public interface ISourcePort
+    public interface ISourcePortFlavor
     {
         string IwadParameter(SpData data);
         string FileParameter(SpData data);

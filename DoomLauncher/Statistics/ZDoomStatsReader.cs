@@ -53,7 +53,7 @@ namespace DoomLauncher
             string[] zdsExtensions = new string[] { ".zds" };
             m_detectors.Add(new NewFileDetector(zdsExtensions, m_dir, true));
 
-            foreach (var userDir in ZDoomSourcePort.UserSaveGameDirectories)
+            foreach (var userDir in ZDoomSourcePortFlavor.UserSaveGameDirectories)
             {
                 if (Directory.Exists(userDir))
                     m_detectors.Add(new NewFileDetector(zdsExtensions, userDir, true));

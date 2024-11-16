@@ -10,11 +10,11 @@ using System.Text.RegularExpressions;
 
 namespace DoomLauncher.SourcePort
 {
-    public class GenericSourcePort : ISourcePort
+    public class GenericSourcePortFlavor : ISourcePortFlavor
     {
         protected readonly ISourcePortData m_sourcePortData;
 
-        public GenericSourcePort(ISourcePortData sourcePortData)
+        public GenericSourcePortFlavor(ISourcePortData sourcePortData)
         {
             m_sourcePortData = sourcePortData;
         }

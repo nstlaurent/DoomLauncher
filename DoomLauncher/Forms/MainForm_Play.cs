@@ -388,12 +388,12 @@ namespace DoomLauncher
 
         private void CreateFileDetectors(ISourcePortData sourcePortData)
         {
-            ISourcePort sourcePort = SourcePortUtil.CreateSourcePort(sourcePortData);
-            CreateScreenshotDetectors(sourcePortData, sourcePort);
-            CreateSaveGameDetectors(sourcePortData, sourcePort);
+            ISourcePortFlavor sourcePortFlavor = sourcePortData.GetFlavor();
+            CreateScreenshotDetectors(sourcePortData, sourcePortFlavor);
+            CreateSaveGameDetectors(sourcePortData, sourcePortFlavor);
         }
 
-        private void CreateSaveGameDetectors(ISourcePortData sourcePortData, ISourcePort sourcePort)
+        private void CreateSaveGameDetectors(ISourcePortData sourcePortData, ISourcePortFlavor sourcePort)
         {
             m_saveFileDetectors = CreateDefaultSaveGameDetectors();
             m_saveFileDetectors.Add(CreateSaveGameDetector(sourcePortData.GetReadSavePath().GetFullPath()));
@@ -407,7 +407,7 @@ namespace DoomLauncher
             Array.ForEach(m_saveFileDetectors.ToArray(), x => x.StartDetection());
         }
 
-        private void CreateScreenshotDetectors(ISourcePortData sourcePortData, ISourcePort sourcePort)
+        private void CreateScreenshotDetectors(ISourcePortData sourcePortData, ISourcePortFlavor sourcePort)
         {
             if (!AppConfiguration.ImportScreenshots)
             {
@@ -467,7 +467,7 @@ namespace DoomLauncher
             if (gameFile != null && gameFile.GameFileID.HasValue)
                 existingStats = DataSourceAdapter.GetStats(gameFile.GameFileID.Value).ToList();
 
-            return SourcePortUtil.CreateSourcePort(sourcePort).CreateStatisticsReader(gameFile, existingStats);
+            return sourcePort.GetFlavor().CreateStatisticsReader(gameFile, existingStats);
         }
 
         void m_statsReader_NewStastics(object sender, NewStatisticsEventArgs e)

@@ -81,7 +81,7 @@ namespace DoomLauncher
                 new SourcePortExtraParametersLaunchFeature(),
             };
 
-            ISourcePort sourcePort = SourcePortUtil.CreateSourcePort(sourcePortData);
+            ISourcePortFlavor sourcePortFlavor = sourcePortData.GetFlavor();
             StringBuilder sb = new StringBuilder();
 
             List<IGameFile> loadFiles = AdditionalFiles.ToList();
@@ -92,13 +92,13 @@ namespace DoomLauncher
 
             if (IWad != null)
             {
-                if (!AssertGameFile(gameFile, gameFileDirectory, tempDirectory, sourcePort, sb))
+                if (!AssertGameFile(gameFile, gameFileDirectory, tempDirectory, sourcePortFlavor, sb))
                 {
                     error = GetFileError(gameFile);
                     return null;
                 }
 
-                if (!HandleGameFileIWad(IWad, sourcePort, sourcePortData, sb, gameFileDirectory, tempDirectory, true))
+                if (!HandleGameFileIWad(IWad, sourcePortFlavor, sourcePortData, sb, gameFileDirectory, tempDirectory, true))
                 {
                     error = GetFileError(IWad);
                     return null;
@@ -108,7 +108,7 @@ namespace DoomLauncher
             List<string> launchFiles = new List<string>();
             foreach (IGameFile loadFile in loadFiles)
             {
-                if (!AssertGameFile(loadFile, gameFileDirectory, tempDirectory, sourcePort, sb))
+                if (!AssertGameFile(loadFile, gameFileDirectory, tempDirectory, sourcePortFlavor, sb))
                 {
                     error = GetFileError(loadFile);
                     return null;
@@ -122,7 +122,7 @@ namespace DoomLauncher
             }
 
             launchFiles = SortParameters(launchFiles).ToList();
-            BuildLaunchString(sb, sourcePort, launchFiles);
+            BuildLaunchString(sb, sourcePortFlavor, launchFiles);
 
 
             if (Record)
@@ -160,7 +160,7 @@ namespace DoomLauncher
 
         private static string GetFileError(IGameFile gameFile) => $"Failed to add {gameFile.FileNameNoPath}";
 
-        private bool AssertGameFile(IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory, ISourcePort sourcePort, StringBuilder sb)
+        private bool AssertGameFile(IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory, ISourcePortFlavor sourcePortFlavor, StringBuilder sb)
         {
             if (gameFile.IsDirectory())
                 return AssertDirectory(gameFile.FileName);
@@ -190,7 +190,7 @@ namespace DoomLauncher
 
         private bool HandleGameFileIWad(
             IGameFile gameFile, // Input
-            ISourcePort sourcePort,  // Input
+            ISourcePortFlavor sourcePortFlavor,  // Input
             ISourcePortData sourcePortData,  // Input
             StringBuilder sb, // Output
             LauncherPath gameFileDirectory, // Input
@@ -207,7 +207,7 @@ namespace DoomLauncher
                     return false;
                 }
 
-                sb.Append(sourcePort.IwadParameter(new SpData(file, gameFile, AdditionalFiles)));
+                sb.Append(sourcePortFlavor.IwadParameter(new SpData(file, gameFile, AdditionalFiles)));
             }
             catch (FileNotFoundException)
             {
@@ -274,7 +274,7 @@ namespace DoomLauncher
         //This uses Util.ExtractTempFile to avoid extracting files with the same name where the user can have the previous file locked.
         //E.g. opening MAP01 from a pk3, and then opening another MAP01 from a different pk3
         public bool HandleGameFile(IGameFile gameFile, StringBuilder sb, LauncherPath tempDirectory,
-            ISourcePort sourcePort, List<SpecificFilesForm.SpecificFilePath> pathFiles)
+            ISourcePortFlavor sourcePortFlavor, List<SpecificFilesForm.SpecificFilePath> pathFiles)
         {
             try
             {
@@ -298,7 +298,7 @@ namespace DoomLauncher
                     }
                 }
 
-                BuildLaunchString(sb, sourcePort, files);
+                BuildLaunchString(sb, sourcePortFlavor, files);
             }
             catch (FileNotFoundException)
             {
@@ -314,13 +314,13 @@ namespace DoomLauncher
             return true;
         }
 
-        private void BuildLaunchString(StringBuilder sb, ISourcePort sourcePort, List<string> files)
+        private void BuildLaunchString(StringBuilder sb, ISourcePortFlavor sourcePortFlavor, List<string> files)
         {
             List<string> dehFiles = new List<string>();
 
             if (files.Count > 0)
             {
-                sb.Append(sourcePort.FileParameter(new SpData()));
+                sb.Append(sourcePortFlavor.FileParameter(new SpData()));
                 var dehExtensions = Util.GetDehackedExtensions();
 
                 foreach (string str in files)

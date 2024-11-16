@@ -38,7 +38,7 @@ namespace UnitTest.Tests
                 for(int j = 0; j < 9; j++)
                 {
                     string map = string.Format("E{0}M{1}", i + 1, j + 1);
-                    Assert.AreEqual(GenericSourcePort.BuildWarpParameter(map), string.Format(" -warp {0} {1}", i + 1, j + 1));
+                    Assert.AreEqual(GenericSourcePortFlavor.BuildWarpParameter(map), string.Format(" -warp {0} {1}", i + 1, j + 1));
                 }
             }
 
@@ -50,20 +50,20 @@ namespace UnitTest.Tests
                 else
                     map = string.Format("MAP0{0}", i + 1);
 
-                Assert.AreEqual(GenericSourcePort.BuildWarpParameter(map), string.Format(" -warp {0}", i + 1));
+                Assert.AreEqual(GenericSourcePortFlavor.BuildWarpParameter(map), string.Format(" -warp {0}", i + 1));
             }
 
-            Assert.AreEqual(" -warp 0", GenericSourcePort.BuildWarpParameter("MAP00"));
+            Assert.AreEqual(" -warp 0", GenericSourcePortFlavor.BuildWarpParameter("MAP00"));
         }
 
         [TestMethod]
         public void TestMap()
         {
-            Assert.AreEqual(" +map START", GenericSourcePort.BuildWarpParameter("START"));
-            Assert.AreEqual(" +map MAPSTART", GenericSourcePort.BuildWarpParameter("MAPSTART"));
-            Assert.AreEqual(" +map MAP01START", GenericSourcePort.BuildWarpParameter("MAP01START"));
-            Assert.AreEqual(" +map MAP1", GenericSourcePort.BuildWarpParameter("MAP1"));
-            Assert.AreEqual(" +map MAP001", GenericSourcePort.BuildWarpParameter("MAP001"));
+            Assert.AreEqual(" +map START", GenericSourcePortFlavor.BuildWarpParameter("START"));
+            Assert.AreEqual(" +map MAPSTART", GenericSourcePortFlavor.BuildWarpParameter("MAPSTART"));
+            Assert.AreEqual(" +map MAP01START", GenericSourcePortFlavor.BuildWarpParameter("MAP01START"));
+            Assert.AreEqual(" +map MAP1", GenericSourcePortFlavor.BuildWarpParameter("MAP1"));
+            Assert.AreEqual(" +map MAP001", GenericSourcePortFlavor.BuildWarpParameter("MAP001"));
         }
 
         [TestMethod]

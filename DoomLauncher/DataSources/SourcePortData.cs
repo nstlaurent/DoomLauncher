@@ -2,6 +2,7 @@
 using DoomLauncher.SourcePort;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace DoomLauncher.DataSources
 {
@@ -19,7 +20,20 @@ namespace DoomLauncher.DataSources
         public bool Archived { get; set; }
         public LauncherPath Directory { get; set; }
 
-        public ISourcePort GetFlavor() => SourcePortUtil.CreateSourcePort(this);
+        public ISourcePortFlavor GetFlavor()
+        {
+            ISourcePortFlavor[] sourcePortFlavors = new ISourcePortFlavor[]
+            {
+                new ZDoomSourcePortFlavor(this),
+                new StatdumpSourcePortFlavor(this),
+                new LevelstatSourcePortFlavor(this),
+                new DoomsdaySourcePortFlavor(this),
+                new HelionSourcePortFlavor(this),
+                new GenericSourcePortFlavor(this)
+            };
+
+            return sourcePortFlavors.First(x => x.Supported());
+        }
 
         public string GetFullExecutablePath()
         {
