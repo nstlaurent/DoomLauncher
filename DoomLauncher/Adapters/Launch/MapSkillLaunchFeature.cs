@@ -1,9 +1,6 @@
-﻿using DoomLauncher.SourcePort;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.Adapters.Launch
 {
@@ -19,19 +16,19 @@ namespace DoomLauncher.Adapters.Launch
             _skill = skill;
         }
 
-        public LaunchResult CreateParam(ISourcePort sourcePort)
+        public LaunchResult CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
         {
             var sb = new StringBuilder();
 
             if (_map != null)
             {
-                sb.Append(sourcePort.WarpParameter(new SpData(_map)));
+                sb.Append(sourcePort.GetFlavor().WarpParameter(new SpData(_map)));
 
                 if (_skill != null)
-                    sb.Append(sourcePort.SkillParameter(new SpData(_skill)));
+                    sb.Append(sourcePort.GetFlavor().SkillParameter(new SpData(_skill)));
             }
 
-            return LaunchResult.Success(sb.ToString());
+            return LaunchResult.Param(sb.ToString());
         }
     }
 }

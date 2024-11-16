@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace DoomLauncher.Adapters.Launch
+﻿namespace DoomLauncher.Adapters.Launch
 {
     public class LaunchResult
     {
@@ -15,15 +8,18 @@ namespace DoomLauncher.Adapters.Launch
 
         public string RecordedFileName { get; }
 
+        public bool Exclusive { get; }
+
         public bool Failed { get => ErrorMessage != null; }
 
-        public static readonly LaunchResult EMPTY = LaunchResult.Success(""); 
+        public static readonly LaunchResult EMPTY = LaunchResult.Param(""); 
 
-        private LaunchResult(string paramString, string recordedFileName, string errorMessage) 
+        private LaunchResult(string paramString, string recordedFileName, string errorMessage, bool exclusive) 
         { 
-            ParamString = paramString;
+            ParamString = paramString ?? "";
             ErrorMessage = errorMessage;
             RecordedFileName = recordedFileName;
+            Exclusive = exclusive;
         }
 
         public LaunchResult Combine(LaunchResult other)
@@ -36,24 +32,34 @@ namespace DoomLauncher.Adapters.Launch
             {
                 return other;
             }
-            else 
+            else if (Exclusive)
             {
-                return Success($"{ParamString} {other.ParamString}".Trim(), RecordedFileName ?? other.RecordedFileName);
+                return this;
+            }
+            else
+            {
+                return ParamWithRecording($"{ParamString} {other.ParamString}".Trim(), RecordedFileName ?? other.RecordedFileName);
             }
         }
 
-        public static LaunchResult Success(string paramString, string recordedFileName = null)
+        public static LaunchResult ExclusiveParam(string paramString)
         {
-            if (paramString == null)
-            {
-                throw new ArgumentNullException(nameof(paramString));
-            }
-            return new LaunchResult(paramString, recordedFileName, null);
+            return new LaunchResult(paramString, null, null, true);
+        }
+
+        public static LaunchResult Param(string paramString)
+        {
+            return new LaunchResult(paramString, null, null, false);
+        }
+
+        public static LaunchResult ParamWithRecording(string paramString, string recordedFileName)
+        {
+            return new LaunchResult(paramString, recordedFileName, null, false);
         }
 
         public static LaunchResult Failure(string errorMessage)
         {
-            return new LaunchResult("", null, errorMessage);
+            return new LaunchResult("", null, errorMessage, false);
         }
     }
 }

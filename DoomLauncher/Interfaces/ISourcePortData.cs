@@ -1,4 +1,6 @@
-﻿namespace DoomLauncher.Interfaces
+﻿using DoomLauncher.SourcePort;
+
+namespace DoomLauncher.Interfaces
 {
     public interface ISourcePortData
     {
@@ -13,6 +15,9 @@
         string ExtraParameters { get; set; }
         LauncherPath AltSaveDirectory { get; set; }
         bool Archived { get; set; }
+
+        ISourcePort GetFlavor();
+
         string GetFullExecutablePath();
         LauncherPath GetReadSavePath();
         LauncherPath GetLoadSavePath();

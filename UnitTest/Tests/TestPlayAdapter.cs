@@ -114,7 +114,7 @@ namespace UnitTest.Tests
             port.ExtraParameters = "-extra";
 
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false, out var error);
-            string check = string.Format("-file \"{0}\"  -deh \"{1}\"  -extra",
+            string check = string.Format("-file \"{0}\"  -deh \"{1}\" -extra",
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.wad"),
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.deh"));
             Assert.AreEqual(check.Trim(), launch.Trim());

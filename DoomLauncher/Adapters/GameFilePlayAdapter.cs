@@ -73,13 +73,13 @@ namespace DoomLauncher
             IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad, out string error)
         {
             error = string.Empty;
-            if (m_options.HasFlag(GameFilePlayAdapterOptions.ExtraParamsOnly))
-            {
-                if (string.IsNullOrEmpty(ExtraParameters))
-                    return string.Empty;
 
-                return ExtraParameters;
-            }
+            var launchParameters = new List<LaunchFeature>()
+            {
+                new MapSkillLaunchFeature(Map, Skill),
+                new ExtraParametersLaunchFeature(ExtraParameters, m_options.HasFlag(GameFilePlayAdapterOptions.ExtraParamsOnly)),
+                new SourcePortExtraParametersLaunchFeature(),
+            };
 
             ISourcePort sourcePort = SourcePortUtil.CreateSourcePort(sourcePortData);
             StringBuilder sb = new StringBuilder();
@@ -124,13 +124,6 @@ namespace DoomLauncher
             launchFiles = SortParameters(launchFiles).ToList();
             BuildLaunchString(sb, sourcePort, launchFiles);
 
-            var launchParameters = new List<LaunchFeature>()
-            {
-                new MapSkillLaunchFeature(Map, Skill),
-                new ExtraParametersLaunchFeature(ExtraParameters)
-                
-
-            };
 
             if (Record)
                 launchParameters.Add(new RecordLaunchFeature(tempDirectory));
@@ -138,8 +131,14 @@ namespace DoomLauncher
             if (PlayDemo)
                 launchParameters.Add(new PlayDemoLaunchFeature(PlayDemoFile));
 
+            if (SaveStatistics)
+                launchParameters.Add(new StatisticsReaderLaunchFeature());
+
+            if (!string.IsNullOrEmpty(LoadSaveFile))
+                launchParameters.Add(new LoadSaveLaunchFeature(LoadSaveFile));
+
             var paramResult = launchParameters.Aggregate(LaunchResult.EMPTY, 
-                (result, param) => result.Combine(param.CreateParam(sourcePort)));
+                (result, param) => result.Combine(param.CreateParam(sourcePortData, gameFile)));
 
             RecordedFileName = paramResult.RecordedFileName;
             LastError = paramResult.ErrorMessage;
@@ -147,16 +146,6 @@ namespace DoomLauncher
                 return null;
 
             sb.Append(paramResult.ParamString);
-
-            if (!string.IsNullOrEmpty(sourcePortData.ExtraParameters))
-                sb.Append(" " + sourcePortData.ExtraParameters);
-
-            IStatisticsReader statsReader = sourcePort.CreateStatisticsReader(gameFile, Array.Empty<IStatsData>());
-            if (SaveStatistics && statsReader != null && !string.IsNullOrEmpty(statsReader.LaunchParameter))
-                sb.Append(" " + statsReader.LaunchParameter);
-
-            if (!string.IsNullOrEmpty(LoadSaveFile) && sourcePort.LoadSaveGameSupported())
-                sb.Append(" " + sourcePort.LoadSaveParameter(new SpData(LoadSaveFile)));
 
             SetVariableReplacements(gameFile, sb);
             return sb.ToString();
@@ -199,8 +188,14 @@ namespace DoomLauncher
             return false;
         }
 
-        private bool HandleGameFileIWad(IGameFile gameFile, ISourcePort sourcePort, ISourcePortData sourcePortData, StringBuilder sb, 
-            LauncherPath gameFileDirectory, LauncherPath tempDirectory, bool checkSpecific)
+        private bool HandleGameFileIWad(
+            IGameFile gameFile, // Input
+            ISourcePort sourcePort,  // Input
+            ISourcePortData sourcePortData,  // Input
+            StringBuilder sb, // Output
+            LauncherPath gameFileDirectory, // Input
+            LauncherPath tempDirectory,  // Input
+            bool checkSpecific) // Input
         {
             try
             {
@@ -242,8 +237,13 @@ namespace DoomLauncher
             return gameFile.SettingsSpecificFiles.Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private bool HandleGameFile(IGameFile gameFile, List<string> launchFiles, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
-            ISourcePortData sourcePort, bool checkSpecific)
+        private bool HandleGameFile(
+            IGameFile gameFile, // Input
+            List<string> launchFiles, // Output
+            LauncherPath gameFileDirectory, // Input
+            LauncherPath tempDirectory, // Input
+            ISourcePortData sourcePort, // Input
+            bool checkSpecific) // Input
         {
             if (gameFile.IsDirectory())
             {

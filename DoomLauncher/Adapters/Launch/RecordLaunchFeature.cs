@@ -1,10 +1,7 @@
-﻿using DoomLauncher.SourcePort;
+﻿using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.Adapters.Launch
 {
@@ -17,11 +14,11 @@ namespace DoomLauncher.Adapters.Launch
             _tempDirectory = tempDirectory;
         }
 
-        public LaunchResult CreateParam(ISourcePort sourcePort)
+        public LaunchResult CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
         {
             var recordedFileName = Path.Combine(_tempDirectory.GetFullPath(), Guid.NewGuid().ToString());
-            var paramString = sourcePort.RecordParameter(new SpData(recordedFileName));
-            return LaunchResult.Success(paramString, recordedFileName);
+            var paramString = sourcePort.GetFlavor().RecordParameter(new SpData(recordedFileName));
+            return LaunchResult.ParamWithRecording(paramString, recordedFileName);
         }
     }
 }

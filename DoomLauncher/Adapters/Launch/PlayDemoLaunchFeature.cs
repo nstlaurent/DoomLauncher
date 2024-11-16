@@ -1,11 +1,7 @@
-﻿using DoomLauncher.SourcePort;
+﻿using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
 
 namespace DoomLauncher.Adapters.Launch
 {
@@ -18,7 +14,7 @@ namespace DoomLauncher.Adapters.Launch
             _playDemoFile = playDemoFile;
         }
 
-        public LaunchResult CreateParam(ISourcePort sourcePort)
+        public LaunchResult CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
         {
             FileInfo fi = new FileInfo(_playDemoFile);
 
@@ -28,8 +24,8 @@ namespace DoomLauncher.Adapters.Launch
             }
             else
             {
-                var paramString = sourcePort.PlayDemoParameter(new SpData(_playDemoFile));
-                return LaunchResult.Success(paramString);
+                var paramString = sourcePort.GetFlavor().PlayDemoParameter(new SpData(_playDemoFile));
+                return LaunchResult.Param(paramString);
             }
         }
     }

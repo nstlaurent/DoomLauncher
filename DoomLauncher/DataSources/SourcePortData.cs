@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using DoomLauncher.SourcePort;
 using System;
 using System.IO;
 
@@ -17,6 +18,8 @@ namespace DoomLauncher.DataSources
         public LauncherPath AltSaveDirectory { get; set; }
         public bool Archived { get; set; }
         public LauncherPath Directory { get; set; }
+
+        public ISourcePort GetFlavor() => SourcePortUtil.CreateSourcePort(this);
 
         public string GetFullExecutablePath()
         {

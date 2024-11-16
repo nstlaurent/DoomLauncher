@@ -130,6 +130,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\Launch\LoadSaveLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\StatisticsReaderLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\SourcePortExtraParametersLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\LaunchFeature.cs" />
     <Compile Include="Adapters\Launch\LaunchResult.cs" />
     <Compile Include="Adapters\Launch\PlayDemoLaunchFeature.cs" />
