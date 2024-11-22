@@ -16,19 +16,23 @@ namespace DoomLauncher.Adapters.Launch
             _skill = skill;
         }
 
-        public LaunchResult CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
         {
-            var sb = new StringBuilder();
+            LaunchParameters result = LaunchParameters.EMPTY;
 
             if (_map != null)
             {
-                sb.Append(sourcePort.GetFlavor().WarpParameter(new SpData(_map)));
+                var warpParam = LaunchParameters.Param(sourcePort.GetFlavor().WarpParameter(new SpData(_map)));
+                result = warpParam;
 
                 if (_skill != null)
-                    sb.Append(sourcePort.GetFlavor().SkillParameter(new SpData(_skill)));
+                {
+                    var skillParam = LaunchParameters.Param(sourcePort.GetFlavor().SkillParameter(new SpData(_skill)));
+                    result = warpParam.Combine(skillParam);
+                }
             }
 
-            return LaunchResult.Param(sb.ToString());
+            return result;
         }
     }
 }

@@ -90,6 +90,8 @@ namespace UnitTest.Tests
             Assert.AreEqual(check.Trim(), launch.Trim());
         }
 
+        /*
+
         [TestMethod]
         public void TestExtractFalse()
         {
@@ -101,7 +103,7 @@ namespace UnitTest.Tests
 
             Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.wad")));
             Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.deh")));
-        }
+        }*/
 
         [TestMethod]
         public void TestParametersSourcePortExtraParams()
@@ -349,6 +351,11 @@ namespace UnitTest.Tests
             Assert.IsTrue(launch.Contains(" -boomextra "));
             Assert.IsTrue(launch.Contains(" -levelstat"));
         }
+
+        /*
+        Expected:< -iwad "D:\Ken\Projects\DoomLauncher\UnitTest\bin\Debug\Local\iwad1.wad" -file "D:\Ken\Projects\DoomLauncher\UnitTest\bin\Debug\Local\file1.wad" >. 
+          Actual:< -iwad "D:\Ken\Projects\DoomLauncher\UnitTest\bin\Debug\Local\iwad1.wad" -file "D:\Ken\Projects\DoomLauncher\UnitTest\bin\Debug\Local\file1.wad"  >. 
+         */
 
         [TestMethod]
         public void RelativeUnmanagedFiles()

@@ -3,7 +3,7 @@ using System.IO.Compression;
 
 namespace DoomLauncher
 {
-    class ZipArchiveReaderEntry : IArchiveEntry
+    class ZipArchiveReaderEntry : AbstractArchiveEntry
     {
         private readonly ZipArchiveEntry m_entry;
 
@@ -12,21 +12,21 @@ namespace DoomLauncher
             m_entry = zipArchiveEntry;
         }
 
-        public long Length => m_entry.Length;
+        public override long Length => m_entry.Length;
 
-        public void Read(byte[] buffer, int offset, int length)
+        public override void Read(byte[] buffer, int offset, int length)
         {
             m_entry.Open().Read(buffer, offset, length);
         }
 
-        public string Name => m_entry.Name;
-        public string FullName => m_entry.FullName;
+        public override string Name => m_entry.Name;
+        public override string FullName => m_entry.FullName;
 
-        public bool ExtractRequired => true;
+        public override bool ExtractRequired => true;
 
-        public bool IsDirectory => m_entry.FullName.EndsWith("/");
+        public override bool IsDirectory => m_entry.FullName.EndsWith("/");
 
-        public void ExtractToFile(string file, bool overwrite = false)
+        public override void ExtractToFile(string file, bool overwrite = false)
         {
             m_entry.ExtractToFile(file, overwrite);
         }
@@ -44,6 +44,6 @@ namespace DoomLauncher
             return FullName.GetHashCode();
         }
 
-        public string GetNameWithoutExtension() => Path.GetFileNameWithoutExtension(Name);
+        public override string GetNameWithoutExtension() => Path.GetFileNameWithoutExtension(Name);
     }
 }

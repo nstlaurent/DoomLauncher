@@ -14,18 +14,18 @@ namespace DoomLauncher.Adapters.Launch
             _playDemoFile = playDemoFile;
         }
 
-        public LaunchResult CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
         {
             FileInfo fi = new FileInfo(_playDemoFile);
 
             if (!fi.Exists)
             {
-                return LaunchResult.Failure($"Failed to find demo file {_playDemoFile}");
+                return LaunchParameters.Failure($"Failed to find demo file {_playDemoFile}");
             }
             else
             {
                 var paramString = sourcePort.GetFlavor().PlayDemoParameter(new SpData(_playDemoFile));
-                return LaunchResult.Param(paramString);
+                return LaunchParameters.Param(paramString);
             }
         }
     }

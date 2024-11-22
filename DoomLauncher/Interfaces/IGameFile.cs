@@ -42,5 +42,9 @@ namespace DoomLauncher.Interfaces
 
         bool IsUnmanaged();
         bool IsDirectory();
+
+        IArchiveReader OpenGameFile(LauncherPath gameFileDirectory);
+
+        bool ArchiveExists(LauncherPath gameFileDirectory);
     }
 }

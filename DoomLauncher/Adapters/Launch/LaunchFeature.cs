@@ -4,7 +4,7 @@ namespace DoomLauncher.Adapters.Launch
 {
     public interface LaunchFeature
     {
-        LaunchResult CreateParam(ISourcePortData sourcePort, IGameFile gameFile); 
+        LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile); 
     }
 
 }

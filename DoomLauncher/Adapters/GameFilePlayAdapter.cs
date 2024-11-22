@@ -74,56 +74,23 @@ namespace DoomLauncher
         {
             error = string.Empty;
 
-            var launchParameters = new List<LaunchFeature>()
-            {
-                new MapSkillLaunchFeature(Map, Skill),
-                new ExtraParametersLaunchFeature(ExtraParameters, m_options.HasFlag(GameFilePlayAdapterOptions.ExtraParamsOnly)),
-                new SourcePortExtraParametersLaunchFeature(),
-            };
-
             ISourcePortFlavor sourcePortFlavor = sourcePortData.GetFlavor();
             StringBuilder sb = new StringBuilder();
 
-            List<IGameFile> loadFiles = AdditionalFiles.ToList();
-            if (isGameFileIwad)
-                loadFiles.Remove(gameFile);
-            else if (!loadFiles.Contains(gameFile))
-                loadFiles.Add(gameFile);
 
+            var launchParameters = new List<LaunchFeature>();
+            
             if (IWad != null)
-            {
-                if (!AssertGameFile(gameFile, gameFileDirectory, tempDirectory, sourcePortFlavor, sb))
-                {
-                    error = GetFileError(gameFile);
-                    return null;
-                }
+                launchParameters.Add(new IWadLaunchFeature(IWad, gameFileDirectory, tempDirectory));
 
-                if (!HandleGameFileIWad(IWad, sourcePortFlavor, sourcePortData, sb, gameFileDirectory, tempDirectory, true))
-                {
-                    error = GetFileError(IWad);
-                    return null;
-                }
-            }
+            var additionalFiles = AdditionalFiles != null ? new List<IGameFile>(AdditionalFiles) : new List<IGameFile>();
+            var specificFiles = SpecificFiles != null ? new List<string>(SpecificFiles) : new List<string>();
+            launchParameters.Add(new AdditionalFilesLaunchFeature(
+                additionalFiles,
+                specificFiles, 
+                gameFileDirectory, tempDirectory, isGameFileIwad));
 
-            List<string> launchFiles = new List<string>();
-            foreach (IGameFile loadFile in loadFiles)
-            {
-                if (!AssertGameFile(loadFile, gameFileDirectory, tempDirectory, sourcePortFlavor, sb))
-                {
-                    error = GetFileError(loadFile);
-                    return null;
-                }
-
-                if (!HandleGameFile(loadFile, launchFiles, gameFileDirectory, tempDirectory, sourcePortData, true))
-                {
-                    error = GetFileError(loadFile);
-                    return null;
-                }
-            }
-
-            launchFiles = SortParameters(launchFiles).ToList();
-            BuildLaunchString(sb, sourcePortFlavor, launchFiles);
-
+            launchParameters.Add(new MapSkillLaunchFeature(Map, Skill));
 
             if (Record)
                 launchParameters.Add(new RecordLaunchFeature(tempDirectory));
@@ -131,13 +98,17 @@ namespace DoomLauncher
             if (PlayDemo)
                 launchParameters.Add(new PlayDemoLaunchFeature(PlayDemoFile));
 
+            launchParameters.Add(new ExtraParametersLaunchFeature(ExtraParameters, m_options.HasFlag(GameFilePlayAdapterOptions.ExtraParamsOnly)));
+
+            launchParameters.Add(new SourcePortExtraParametersLaunchFeature());
+
             if (SaveStatistics)
                 launchParameters.Add(new StatisticsReaderLaunchFeature());
 
             if (!string.IsNullOrEmpty(LoadSaveFile))
                 launchParameters.Add(new LoadSaveLaunchFeature(LoadSaveFile));
 
-            var paramResult = launchParameters.Aggregate(LaunchResult.EMPTY, 
+            var paramResult = launchParameters.Aggregate(LaunchParameters.EMPTY, 
                 (result, param) => result.Combine(param.CreateParam(sourcePortData, gameFile)));
 
             RecordedFileName = paramResult.RecordedFileName;
@@ -156,118 +127,6 @@ namespace DoomLauncher
             if (IWad != null)
                 sb.Replace("$iwad", Path.GetFileNameWithoutExtension(IWad.FileNameNoPath));
             sb.Replace("$filename", Path.GetFileNameWithoutExtension(gameFile.FileNameNoPath));
-        }
-
-        private static string GetFileError(IGameFile gameFile) => $"Failed to add {gameFile.FileNameNoPath}";
-
-        private bool AssertGameFile(IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory, ISourcePortFlavor sourcePortFlavor, StringBuilder sb)
-        {
-            if (gameFile.IsDirectory())
-                return AssertDirectory(gameFile.FileName);
-
-            if (gameFile.IsUnmanaged())
-            {
-                var launcherPath = new LauncherPath(gameFile.FileName);
-                if (!AssertFile(string.Empty, launcherPath.GetFullPath(), "game file"))
-                    return false;
-                return true;
-            }
-
-            if (!AssertFile(gameFileDirectory.GetFullPath(), gameFile.FileName, "game file"))
-                return false;
-
-            return true;
-        }
-
-        private bool AssertDirectory(string dir)
-        {
-            if (Directory.Exists(dir))
-                return true;
-
-            LastError = $"Directory {dir} does not exist.";
-            return false;
-        }
-
-        private bool HandleGameFileIWad(
-            IGameFile gameFile, // Input
-            ISourcePortFlavor sourcePortFlavor,  // Input
-            ISourcePortData sourcePortData,  // Input
-            StringBuilder sb, // Output
-            LauncherPath gameFileDirectory, // Input
-            LauncherPath tempDirectory,  // Input
-            bool checkSpecific) // Input
-        {
-            try
-            {
-                string[] extensions = sourcePortData.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                var file = GetFilesFromGameFileSettings(gameFile, gameFileDirectory, tempDirectory, checkSpecific, extensions, GetIwadSpecificFiles(gameFile)).FirstOrDefault();
-                if (file == null)
-                {
-                    LastError = "Failed to find any IWAD files in the select IWAD archive.\nView the IWAD and click 'Select Individual Files...' to ensure the IWAD file is selected.";
-                    return false;
-                }
-
-                sb.Append(sourcePortFlavor.IwadParameter(new SpData(file, gameFile, AdditionalFiles)));
-            }
-            catch (FileNotFoundException)
-            {
-                LastError = $"File not found: {gameFile.FileName}";
-                return false;
-            }
-            catch (IOException)
-            {
-                LastError = $"File in use: {gameFile.FileName}";
-                return false;
-            }
-            catch (Exception e)
-            {
-                LastError = $"There was an issue with the IWad: {gameFile.FileName}." +
-                    $"{Environment.NewLine}{Environment.NewLine}{e.Message}";
-                return false;
-            }
-
-            return true;
-        }
-
-        private string[] GetIwadSpecificFiles(IGameFile gameFile)
-        {
-            if (string.IsNullOrEmpty(gameFile.SettingsSpecificFiles))
-                return Array.Empty<string>();
-
-            return gameFile.SettingsSpecificFiles.Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        private bool HandleGameFile(
-            IGameFile gameFile, // Input
-            List<string> launchFiles, // Output
-            LauncherPath gameFileDirectory, // Input
-            LauncherPath tempDirectory, // Input
-            ISourcePortData sourcePort, // Input
-            bool checkSpecific) // Input
-        {
-            if (gameFile.IsDirectory())
-            {
-                launchFiles.Add(gameFile.FileName);
-                return true;
-            }
-
-            try
-            {
-                string[] extensions = sourcePort.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                launchFiles.AddRange(GetFilesFromGameFileSettings(gameFile, gameFileDirectory, tempDirectory, checkSpecific, extensions, SpecificFiles));
-            }
-            catch (FileNotFoundException)
-            {
-                LastError = string.Format("The game file was not found: {0}", gameFile.FileName);
-                return false;
-            }
-            catch (InvalidDataException)
-            {
-                LastError = string.Format("The game file does not appear to be a valid zip file: {0}", gameFile.FileName);
-                return false;
-            }
-
-            return true;
         }
 
         //This function is currently only used for loading files by utility (which also uses ISourcePort).
@@ -314,13 +173,13 @@ namespace DoomLauncher
             return true;
         }
 
-        private void BuildLaunchString(StringBuilder sb, ISourcePortFlavor sourcePortFlavor, List<string> files)
+        private void BuildLaunchString(StringBuilder sb, ISourcePortFlavor sourcePort, List<string> files)
         {
             List<string> dehFiles = new List<string>();
 
             if (files.Count > 0)
             {
-                sb.Append(sourcePortFlavor.FileParameter(new SpData()));
+                sb.Append(sourcePort.FileParameter(new SpData()));
                 var dehExtensions = Util.GetDehackedExtensions();
 
                 foreach (string str in files)
@@ -340,92 +199,6 @@ namespace DoomLauncher
                 foreach (string str in dehFiles)
                     sb.Append(string.Format("\"{0}\" ", str));
             }
-        }
-
-        private List<string> GetFilesFromGameFileSettings(IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory, 
-            bool checkSpecific, string[] extensions, string[] specificFiles)
-        {
-            List<string> files = new List<string>();
-
-            using (IArchiveReader reader = CreateArchiveReader(gameFile, gameFileDirectory))
-            {
-                IEnumerable<IArchiveEntry> entries;
-                if (checkSpecific && specificFiles != null && specificFiles.Length > 0)
-                {
-                    entries = reader.Entries;
-                }
-                else
-                {
-                    entries = reader.Entries.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.Contains('.') &&
-                        extensions.Any(y => y.Equals(Path.GetExtension(x.Name), StringComparison.OrdinalIgnoreCase)));
-                }
-
-                foreach (IArchiveEntry entry in entries)
-                {
-                    bool useFile = true;
-                    if (checkSpecific && specificFiles != null && specificFiles.Length > 0)
-                        useFile = specificFiles.Contains(entry.FullName);
-
-                    if (useFile)
-                    {
-                        if (entry.ExtractRequired)
-                        {
-                            string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
-                            if (ExtractFiles)
-                                TryExtractFile(entry, extractFile);
-                            files.Add(extractFile);
-                        }
-                        else
-                        {
-                            files.Add(entry.FullName);
-                        }
-                    }
-                }
-            }
-
-            return files;
-        }
-
-        private static void TryExtractFile(IArchiveEntry entry, string extractFile)
-        {
-            try
-            {
-                entry.ExtractToFile(extractFile, true);
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    if (File.Exists(extractFile))
-                    {
-                        // Sometimes the read only flag can be set and the file can't be overwritten. This is our temp directory anyway so turn it off.
-                        File.SetAttributes(extractFile, File.GetAttributes(extractFile) & ~FileAttributes.ReadOnly);
-                        entry.ExtractToFile(extractFile, true);
-                    }
-                }
-                catch
-                {
-                    throw ex;
-                }
-            }
-        }
-
-        private static IArchiveReader CreateArchiveReader(IGameFile gameFile, LauncherPath gameFileDirectory)
-        {
-            string file;
-            if (gameFile.IsUnmanaged())
-                file = new LauncherPath(gameFile.FileName).GetFullPath();
-            else
-                file = Path.Combine(gameFileDirectory.GetFullPath(), gameFile.FileName);
-
-            // If the unmanaged file is a pk3 then ArchiveReader.Create will read it as a zip and try to unpack
-            // Return FileArchiveReader instead so the pk3 will be added as a file
-            // Zip extensions are ignored in this case since Doom Launcher's base functionality revovles around reading zip contents
-            // SpecificFilesForm will also read zip files explicitly to allow user to select files in the archive
-            if (!gameFile.IsDirectory() && gameFile.IsUnmanaged() && !ArchiveUtil.ShouldReadPackagedArchive(gameFile.FileName))
-                return new FileArchiveReader(file);
-
-            return ArchiveReader.Create(file);
         }
 
         private bool AssertFile(string path, string filename, string displayTypeName)
@@ -467,24 +240,6 @@ namespace DoomLauncher
         void proc_Exited(object sender, EventArgs e)
         {
             ProcessExited?.Invoke(this, new EventArgs());
-        }
-
-        // Take .deh and .bex files and put them together so they cane be put in the same parameter
-        private IEnumerable<string> SortParameters(IEnumerable<string> parameters)
-        {
-            List<string> dehFiles = new List<string>();
-            var dehExtensions = Util.GetDehackedExtensions();
-
-            foreach (string file in parameters)
-            {
-                foreach (string deh in dehExtensions)
-                {
-                    if (Path.GetExtension(file).Equals(deh, StringComparison.OrdinalIgnoreCase))
-                        dehFiles.Add(file);
-                }
-            }
-
-            return parameters.Except(dehFiles).Union(dehFiles).ToList();
         }
     }
 }

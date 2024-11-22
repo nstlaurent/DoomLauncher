@@ -6,6 +6,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -424,6 +425,48 @@ namespace UnitTest.Tests
 
             var retrievedWrongGameFile = database.GetGameFile("wrongo.zip");
             Assert.IsTrue(TestUtil.AllFieldsEqualIgnore(wrongGameFile, retrievedWrongGameFile, "GameFileID"));
+        }
+
+        [TestMethod]
+        public void ArchiveExists_RecognisesManagedGameFiles()
+        {
+            var gameFilesPath = new LauncherPath("GameFiles");
+
+            var madeUpGameFile = CreateGameFile("madeup.zip", 14);
+            Assert.IsFalse(madeUpGameFile.IsUnmanaged());
+            Assert.IsFalse(madeUpGameFile.ArchiveExists(gameFilesPath));
+
+            var gameFileInArchive = CreateGameFile("test1.zip", 77);
+            Assert.IsFalse(gameFileInArchive.IsUnmanaged());
+            Assert.IsTrue(gameFileInArchive.ArchiveExists(gameFilesPath));
+        }
+
+        [TestMethod]
+        public void ArchiveExists_RecognisesUnmanagedGameFiles()
+        {
+            var gameFilesPath = new LauncherPath("GameFiles");
+            var resourcesPath = new LauncherPath("Resources");
+
+            var madeUpGameFile = CreateGameFile(Path.Combine(resourcesPath.GetFullPath(), "does-not-exist.zip"), 999);
+            Assert.IsTrue(madeUpGameFile.IsUnmanaged());
+            Assert.IsFalse(madeUpGameFile.ArchiveExists(gameFilesPath));
+
+            // Resources\pyrrhic.zip is a file that exists in the testing folder
+            var gameFileUnmanaged = CreateGameFile(Path.Combine(resourcesPath.GetFullPath(), "pyrrhic.zip"), 999);
+            Assert.IsTrue(gameFileUnmanaged.IsUnmanaged());
+            Assert.IsTrue(gameFileUnmanaged.ArchiveExists(gameFilesPath));
+        }
+
+        [TestMethod]
+        public void ArchiveExists_RecognisesUnmanagedGameDirectories()
+        {
+            var gameFilesPath = new LauncherPath("GameFiles");
+            var resourcesPath = new LauncherPath("Resources");
+
+            // Resources\TestSteamInstall is a directory that exists in the testing folder
+            var gameFileDirectory = CreateGameFile(Path.Combine(resourcesPath.GetFullPath(), "TestSteamInstall"), 999);
+            Assert.IsTrue(gameFileDirectory.IsDirectory());
+            Assert.IsTrue(gameFileDirectory.ArchiveExists(gameFilesPath));
         }
     }
 }

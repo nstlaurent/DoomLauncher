@@ -14,11 +14,11 @@ namespace DoomLauncher.Adapters.Launch
             _tempDirectory = tempDirectory;
         }
 
-        public LaunchResult CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
         {
             var recordedFileName = Path.Combine(_tempDirectory.GetFullPath(), Guid.NewGuid().ToString());
             var paramString = sourcePort.GetFlavor().RecordParameter(new SpData(recordedFileName));
-            return LaunchResult.ParamWithRecording(paramString, recordedFileName);
+            return LaunchParameters.ParamWithRecording(paramString, recordedFileName);
         }
     }
 }

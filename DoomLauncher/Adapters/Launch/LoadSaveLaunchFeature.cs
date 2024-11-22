@@ -12,7 +12,7 @@ namespace DoomLauncher.Adapters.Launch
             _loadSaveFile = loadSaveFile;
         }
 
-        public LaunchResult CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
         {
             string paramString;
             if (sourcePort.GetFlavor().LoadSaveGameSupported())
@@ -20,7 +20,7 @@ namespace DoomLauncher.Adapters.Launch
             else
                 paramString = "";
 
-            return LaunchResult.Param(paramString);
+            return LaunchParameters.Param(paramString);
         }
     }
 }

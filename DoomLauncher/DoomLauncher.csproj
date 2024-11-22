@@ -89,6 +89,11 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Collections.Specialized, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Specialized.4.3.0\lib\net46\System.Collections.Specialized.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -130,11 +135,14 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\Launch\AdditionalFilesLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\IWadLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\LaunchParameterType.cs" />
     <Compile Include="Adapters\Launch\LoadSaveLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\StatisticsReaderLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\SourcePortExtraParametersLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\LaunchFeature.cs" />
-    <Compile Include="Adapters\Launch\LaunchResult.cs" />
+    <Compile Include="Adapters\Launch\LaunchParameters.cs" />
     <Compile Include="Adapters\Launch\PlayDemoLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\ExtraParametersLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\RecordLaunchFeature.cs" />
