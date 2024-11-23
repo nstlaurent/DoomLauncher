@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Adapters.Launch;
+using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
@@ -132,86 +133,27 @@ namespace DoomLauncher
         //This function is currently only used for loading files by utility (which also uses ISourcePort).
         //This uses Util.ExtractTempFile to avoid extracting files with the same name where the user can have the previous file locked.
         //E.g. opening MAP01 from a pk3, and then opening another MAP01 from a different pk3
-        public bool HandleGameFile(IGameFile gameFile, StringBuilder sb, LauncherPath tempDirectory,
-            ISourcePortFlavor sourcePortFlavor, List<SpecificFilesForm.SpecificFilePath> pathFiles)
+        public bool HandleGameFile(
+            IGameFile gameFile, 
+            StringBuilder sb, // Output
+            LauncherPath tempDirectory,
+            ISourcePortFlavor sourcePortFlavor, 
+            List<SpecificFilesForm.SpecificFilePath> pathFiles)
         {
-            try
+
+            var utilityLaunchFeature = new UtilityFilesLaunchFeature(pathFiles, tempDirectory);
+            var result = utilityLaunchFeature.CreateParam(sourcePortFlavor, gameFile);
+
+            if (result.Failed)
             {
-                List<string> files = new List<string>();
-                foreach(var pathFile in pathFiles)
-                {
-                    if (gameFile.IsUnmanaged())
-                    {
-                        files.Add(pathFile.ExtractedFile);
-                        continue;
-                    }
-
-                    if (!File.Exists(pathFile.ExtractedFile))
-                        continue;
-
-                    using (IArchiveReader reader = ArchiveReader.Create(pathFile.ExtractedFile))
-                    {
-                        var entry = reader.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
-                        if (entry != null)
-                            files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
-                    }
-                }
-
-                BuildLaunchString(sb, sourcePortFlavor, files);
-            }
-            catch (FileNotFoundException)
-            {
-                LastError = string.Format("The game file was not found: {0}", gameFile.FileName);
+                LastError = result.ErrorMessage;
                 return false;
             }
-            catch (InvalidDataException)
+            else
             {
-                LastError = string.Format("The game file does not appear to be a valid zip file: {0}", gameFile.FileName);
-                return false;
+                sb.Append(result.ParamString);
+                return true;
             }
-
-            return true;
-        }
-
-        private void BuildLaunchString(StringBuilder sb, ISourcePortFlavor sourcePort, List<string> files)
-        {
-            List<string> dehFiles = new List<string>();
-
-            if (files.Count > 0)
-            {
-                sb.Append(sourcePort.FileParameter(new SpData()));
-                var dehExtensions = Util.GetDehackedExtensions();
-
-                foreach (string str in files)
-                {
-                    FileInfo fi = new FileInfo(str);
-                    if (!dehExtensions.Contains(fi.Extension, StringComparer.OrdinalIgnoreCase))
-                        sb.Append(string.Format("\"{0}\" ", str));
-                    else
-                        dehFiles.Add(str);
-                }
-            }
-
-            if (dehFiles.Count > 0)
-            {
-                sb.Append(" -deh ");
-
-                foreach (string str in dehFiles)
-                    sb.Append(string.Format("\"{0}\" ", str));
-            }
-        }
-
-        private bool AssertFile(string path, string filename, string displayTypeName)
-        {
-            FileInfo fi = new FileInfo(Path.Combine(path, filename));
-
-            if (!fi.Exists)
-            {
-                LastError = string.Format("Failed to find the {0}: {1}", displayTypeName, filename);
-                return false;
-            }
-
-            return true;
         }
 
         public string LastError { get; private set; } // Output

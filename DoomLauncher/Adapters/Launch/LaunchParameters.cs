@@ -1,11 +1,4 @@
-﻿using DoomLauncher.Interfaces;
-using DoomLauncher.SourcePort;
-using IWshRuntimeLibrary;
-using System.Collections.Generic;
-using System.Text;
-using System.Web.UI.WebControls;
-using System.Windows.Media.Media3D;
-
+﻿
 namespace DoomLauncher.Adapters.Launch
 {
     public class LaunchParameters
