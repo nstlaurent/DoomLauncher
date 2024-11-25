@@ -52,8 +52,10 @@ namespace DoomLauncher.Adapters.Launch
                     "View the IWAD and click 'Select Individual Files...' to ensure the IWAD file is selected.");
             }
 
+
             var paramString = sourcePort.GetFlavor().IwadParameter(new SpData(extractedFileName));
-            return LaunchParameters.Param(paramString);
+            var replaceIwadVariable = LaunchParameters.WithVariableReplacement("iwad", Path.GetFileNameWithoutExtension(_iwad.FileNameNoPath));
+            return LaunchParameters.Param(paramString).Combine(replaceIwadVariable);
         }
 
         private string GetExtractedFileName(ISourcePortData sourcePortData)

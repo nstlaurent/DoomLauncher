@@ -16,7 +16,7 @@ namespace DoomLauncher.Adapters.Launch
         public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
         {
             if (_extraParametersOnly)
-                return LaunchParameters.FinalParam(_extraParameters);
+                return LaunchParameters.ExclusiveParam(_extraParameters);
             else
                 return LaunchParameters.Param(_extraParameters);
         }

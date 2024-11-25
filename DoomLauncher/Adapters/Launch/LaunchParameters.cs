@@ -1,9 +1,15 @@
 ﻿
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
 namespace DoomLauncher.Adapters.Launch
 {
     public class LaunchParameters
     {
-        public string ParamString { get; } // Never null
+        public string ParamString { get => _paramString; } 
+
+        private readonly string _paramString; // Never null
 
         public string ErrorMessage { get; }
 
@@ -11,19 +17,22 @@ namespace DoomLauncher.Adapters.Launch
 
         public bool Failed { get => ErrorMessage != null; }
 
+        private readonly IDictionary<string, string> _variableReplacements; // Never null
+
         // Generic, ordered dictionaries do not exist (yet) in .NET. Tuple list is fine for us, we don't need random access.
         //private readonly List<(LaunchParameterType, List<string>)> _parameters;
 
-        private readonly bool _isFinal;
+        private readonly bool _isExclusive;
 
-        public static readonly LaunchParameters EMPTY = new LaunchParameters("", null, null, false);
+        public static readonly LaunchParameters EMPTY = new LaunchParameters("", null, null, false, null);
 
-        private LaunchParameters(string paramString, string recordedFileName, string errorMessage, bool isFinal)
+        private LaunchParameters(string paramString, string recordedFileName, string errorMessage, bool isExclusive, IDictionary<string, string> variableReplacements)
         {
-            ParamString = paramString ?? "";
             ErrorMessage = errorMessage;
             RecordedFileName = recordedFileName;
-            _isFinal = isFinal;
+            _variableReplacements = variableReplacements ?? new Dictionary<string, string>();
+            _isExclusive = isExclusive;
+            _paramString = ReplaceVariables(paramString ?? "");
         }
 
         public LaunchParameters Combine(LaunchParameters other)
@@ -36,9 +45,13 @@ namespace DoomLauncher.Adapters.Launch
             {
                 return other;
             }
-            else if (_isFinal)
+            else if (_isExclusive)
             {
                 return this;
+            }
+            else if (other._isExclusive)
+            {
+                return other;
             }
             else
             {
@@ -57,28 +70,63 @@ namespace DoomLauncher.Adapters.Launch
                     }
                 }*/
 
-                return new LaunchParameters($" {ParamString.Trim()} {other.ParamString.Trim()}", RecordedFileName ?? other.RecordedFileName, null, other._isFinal);
+                return new LaunchParameters(
+                    $"{ParamString.Trim()} {other.ParamString.Trim()}".Trim(), 
+                    RecordedFileName ?? other.RecordedFileName, 
+                    null, 
+                    other._isExclusive,
+                    CombineDictionaries(_variableReplacements, other._variableReplacements));
             }
         }
 
-        public static LaunchParameters FinalParam(string paramString)
+        private IDictionary<A, A> CombineDictionaries<A>(IDictionary<A, A> ourDict, IDictionary<A, A> otherDict)
         {
-            return new LaunchParameters(paramString, null, null, true);
+            var combinedDictionary = new Dictionary<A,A>(ourDict);
+            foreach (var key in otherDict.Keys)
+            {
+                if (!combinedDictionary.ContainsKey(key))
+                    combinedDictionary[key] = otherDict[key];
+            }
+            return combinedDictionary;
+        }
+
+        private string ReplaceVariables(string paramString)
+        {
+            var sb = new StringBuilder(paramString);
+            foreach (var key in _variableReplacements.Keys)
+            {
+                sb.Replace($"${key}", _variableReplacements[key]);
+            }
+            return sb.ToString();
+        }
+
+        public static LaunchParameters ExclusiveParam(string paramString)
+        {
+            return new LaunchParameters(paramString, null, null, true, null);
         }
 
         public static LaunchParameters Param(string paramString)
         {
-            return new LaunchParameters(paramString, null, null, false);
+            return new LaunchParameters(paramString, null, null, false, null);
         }
 
-        public static LaunchParameters ParamWithRecording(string paramString, string recordedFileName)
+        public static LaunchParameters WithRecordedFileName(string recordedFileName)
         {
-            return new LaunchParameters(paramString, recordedFileName, null, false);
+            return new LaunchParameters("", recordedFileName, null, false, null);
+        }
+
+        public static LaunchParameters WithVariableReplacement(string variable, string value)
+        {
+            var dict = new Dictionary<string, string>
+            {
+                { variable, value }
+            };
+            return new LaunchParameters("", null, null, false, dict);
         }
 
         public static LaunchParameters Failure(string errorMessage)
         {
-            return new LaunchParameters("", null, errorMessage, false);
+            return new LaunchParameters("", null, errorMessage, false, null);
         }
     }
 }

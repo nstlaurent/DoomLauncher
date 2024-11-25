@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace UnitTest.Tests
 {
     [TestClass]
-    public class TestLaunchResult
+    public class TestLaunchParameters
     {
         [TestMethod]
         public void Combine_AppendsTwoParams()
@@ -28,8 +28,8 @@ namespace UnitTest.Tests
         [TestMethod]
         public void Combine_TakesTheFirstRecordedFile()
         {
-            var a = LaunchParameters.ParamWithRecording("param1", "recording.file");
-            var b = LaunchParameters.ParamWithRecording("param2", "other.file");
+            var a = LaunchParameters.WithRecordedFileName("recording.file");
+            var b = LaunchParameters.WithRecordedFileName("other.file");
 
             var result = a.Combine(b);
 
@@ -40,7 +40,7 @@ namespace UnitTest.Tests
         public void Combine_TakesRecordedFileIfNotAlreadyPresent()
         {
             var a = LaunchParameters.Param("p1");
-            var b = LaunchParameters.ParamWithRecording("p2", "therecording.file");
+            var b = LaunchParameters.WithRecordedFileName("therecording.file");
 
             var result = a.Combine(b);
 
@@ -48,15 +48,15 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void Combine_FinalParameterStopsProcessing()
+        public void Combine_ExclusiveParameterIgnoresOtherParameters()
         {
             var a = LaunchParameters.Param("a");
             var b = LaunchParameters.Param("b");
-            var c = LaunchParameters.FinalParam("c");
+            var c = LaunchParameters.ExclusiveParam("c");
             var d = LaunchParameters.Param("d");
 
             var result = a.Combine(b).Combine(c).Combine(d);
-            Assert.AreEqual("a b c", result.ParamString);
+            Assert.AreEqual("c", result.ParamString);
         }
 
         [TestMethod]
@@ -73,6 +73,21 @@ namespace UnitTest.Tests
             var result2 = ok.Combine(failed2);
             Assert.IsTrue(result2.Failed);
             Assert.AreEqual("NO!", result2.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void Combine_StacksVariableReplacements()
+        {
+            var param1 = LaunchParameters.WithVariableReplacement("filename", "bongo.wad");
+            var param2 = LaunchParameters.WithVariableReplacement("iwad", "freedoom.wad");
+            var appliedParam = LaunchParameters.Param("$somethingElse $filename needs $iwad");
+            var result1 = appliedParam.Combine(param1).Combine(param2);
+            var result2 = param2.Combine(param1).Combine(appliedParam);
+            var result3 = param1.Combine(appliedParam).Combine(param2);
+
+            Assert.AreEqual("$somethingElse bongo.wad needs freedoom.wad", result1.ParamString);
+            Assert.AreEqual("$somethingElse bongo.wad needs freedoom.wad", result2.ParamString);
+            Assert.AreEqual("$somethingElse bongo.wad needs freedoom.wad", result3.ParamString);
         }
     }
 }

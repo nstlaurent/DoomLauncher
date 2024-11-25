@@ -352,11 +352,6 @@ namespace UnitTest.Tests
             Assert.IsTrue(launch.Contains(" -levelstat"));
         }
 
-        /*
-        Expected:< -iwad "D:\Ken\Projects\DoomLauncher\UnitTest\bin\Debug\Local\iwad1.wad" -file "D:\Ken\Projects\DoomLauncher\UnitTest\bin\Debug\Local\file1.wad" >. 
-          Actual:< -iwad "D:\Ken\Projects\DoomLauncher\UnitTest\bin\Debug\Local\iwad1.wad" -file "D:\Ken\Projects\DoomLauncher\UnitTest\bin\Debug\Local\file1.wad"  >. 
-         */
-
         [TestMethod]
         public void RelativeUnmanagedFiles()
         {
@@ -368,7 +363,7 @@ namespace UnitTest.Tests
 
             var gameFile = new GameFile() { FileName = LocalFile1 };
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _);
-            string check = string.Format(" -iwad \"{0}\" -file \"{1}\" ",
+            string check = string.Format("-iwad \"{0}\" -file \"{1}\"",
                 Path.Combine(Directory.GetCurrentDirectory(), LocalIwad1),
                 Path.Combine(Directory.GetCurrentDirectory(), LocalFile1));
             Assert.AreEqual(check, launch);
@@ -387,6 +382,24 @@ namespace UnitTest.Tests
             var gameFile = new GameFile() { FileName = LocalFile1 };
             var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _);
             Assert.IsTrue(launch.Contains("-savedir iwad1/file1"));
+        }
+
+        [TestMethod]
+        public void ExtraParametersOnly()
+        {
+            var adapter = new GameFilePlayAdapter(GameFilePlayAdapterOptions.ExtraParamsOnly);
+            adapter.IWad = new GameFile() { FileName = LocalIwad1 };
+            adapter.ExtraParameters = "-blah -blob";
+            adapter.Map = "E1M2";
+
+            LauncherPath gameFilePath = new LauncherPath("GameFiles");
+            LauncherPath tempPath = new LauncherPath("Temp");
+            var port = GetPrBoomTestPort(".wad,.deh");
+            var gameFile = new GameFile() { FileName = LocalFile1 };
+            var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _);
+            Assert.IsTrue(launch.Contains("-blah -blob"));
+            Assert.IsFalse(launch.Contains("E1M2")); 
+            Assert.IsFalse(launch.Contains("iwad"));
         }
 
         private void CreateDirectoriesAndFiles()
