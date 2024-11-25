@@ -76,8 +76,6 @@ namespace DoomLauncher
             error = string.Empty;
 
             ISourcePortFlavor sourcePortFlavor = sourcePortData.GetFlavor();
-            StringBuilder sb = new StringBuilder();
-
 
             var launchParameters = new List<LaunchFeature>();
             
@@ -109,19 +107,17 @@ namespace DoomLauncher
             if (!string.IsNullOrEmpty(LoadSaveFile))
                 launchParameters.Add(new LoadSaveLaunchFeature(LoadSaveFile));
 
-            var replaceFilenameVariable = LaunchParameters.WithVariableReplacement("filename", gameFile.FileNameNoPath);
+            var paramResult = launchParameters.Aggregate(LaunchParameters.EMPTY, 
+                (parameters, feature) => parameters.Combine(feature.CreateParam(sourcePortData, gameFile)));
 
-            var paramResult = launchParameters.Aggregate(replaceFilenameVariable, 
-                (result, param) => result.Combine(param.CreateParam(sourcePortData, gameFile)));
+            paramResult = paramResult.WithVariableReplacement("filename", gameFile.FileNameNoPath);
 
             RecordedFileName = paramResult.RecordedFileName;
             LastError = paramResult.ErrorMessage;
             if (!string.IsNullOrEmpty(LastError))
                 return null;
 
-            sb.Append(paramResult.ParamString);
-
-            return sb.ToString();
+            return paramResult.ParamString;
         }
 
         //This function is currently only used for loading files by utility (which also uses ISourcePort).

@@ -1,6 +1,5 @@
 ﻿
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace DoomLauncher.Adapters.Launch
@@ -18,9 +17,6 @@ namespace DoomLauncher.Adapters.Launch
         public bool Failed { get => ErrorMessage != null; }
 
         private readonly IDictionary<string, string> _variableReplacements; // Never null
-
-        // Generic, ordered dictionaries do not exist (yet) in .NET. Tuple list is fine for us, we don't need random access.
-        //private readonly List<(LaunchParameterType, List<string>)> _parameters;
 
         private readonly bool _isExclusive;
 
@@ -55,21 +51,6 @@ namespace DoomLauncher.Adapters.Launch
             }
             else
             {
-                /*
-                var newParameters = new List<(LaunchParameterType, List<string>)>();
-                foreach ((var ourParamType, var ourParamList) in _parameters)
-                {
-                    foreach ((var theirParamType, var theirParamList) in other._parameters)
-                    {
-                        if (ourParamType == theirParamType)
-                        {
-                            var newParamList = new List<string>(ourParamList);
-                            newParamList.AddRange(theirParamList);
-                            newParameters.Add((ourParamType, newParamList));
-                        }
-                    }
-                }*/
-
                 return new LaunchParameters(
                     $"{ParamString.Trim()} {other.ParamString.Trim()}".Trim(), 
                     RecordedFileName ?? other.RecordedFileName, 
@@ -77,6 +58,19 @@ namespace DoomLauncher.Adapters.Launch
                     other._isExclusive,
                     CombineDictionaries(_variableReplacements, other._variableReplacements));
             }
+        }
+        public LaunchParameters WithRecordedFileName(string recordedFileName)
+        {
+            return Combine(new LaunchParameters("", recordedFileName, null, false, null));
+        }
+
+        public LaunchParameters WithVariableReplacement(string variable, string value)
+        {
+            var dict = new Dictionary<string, string>
+            {
+                { variable, value }
+            };
+            return Combine(new LaunchParameters("", null, null, false, dict));
         }
 
         private IDictionary<A, A> CombineDictionaries<A>(IDictionary<A, A> ourDict, IDictionary<A, A> otherDict)
@@ -108,20 +102,6 @@ namespace DoomLauncher.Adapters.Launch
         public static LaunchParameters Param(string paramString)
         {
             return new LaunchParameters(paramString, null, null, false, null);
-        }
-
-        public static LaunchParameters WithRecordedFileName(string recordedFileName)
-        {
-            return new LaunchParameters("", recordedFileName, null, false, null);
-        }
-
-        public static LaunchParameters WithVariableReplacement(string variable, string value)
-        {
-            var dict = new Dictionary<string, string>
-            {
-                { variable, value }
-            };
-            return new LaunchParameters("", null, null, false, dict);
         }
 
         public static LaunchParameters Failure(string errorMessage)

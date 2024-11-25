@@ -19,7 +19,7 @@ namespace DoomLauncher.Adapters.Launch
             var recordedFileName = Path.Combine(_tempDirectory.GetFullPath(), Guid.NewGuid().ToString());
             var paramString = sourcePort.GetFlavor().RecordParameter(new SpData(recordedFileName));
 
-            return LaunchParameters.Param(paramString).Combine(LaunchParameters.WithRecordedFileName(recordedFileName));
+            return LaunchParameters.Param(paramString).WithRecordedFileName(recordedFileName);
         }
     }
 }

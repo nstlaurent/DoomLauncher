@@ -28,8 +28,8 @@ namespace UnitTest.Tests
         [TestMethod]
         public void Combine_TakesTheFirstRecordedFile()
         {
-            var a = LaunchParameters.WithRecordedFileName("recording.file");
-            var b = LaunchParameters.WithRecordedFileName("other.file");
+            var a = LaunchParameters.EMPTY.WithRecordedFileName("recording.file");
+            var b = LaunchParameters.EMPTY.WithRecordedFileName("other.file");
 
             var result = a.Combine(b);
 
@@ -40,7 +40,7 @@ namespace UnitTest.Tests
         public void Combine_TakesRecordedFileIfNotAlreadyPresent()
         {
             var a = LaunchParameters.Param("p1");
-            var b = LaunchParameters.WithRecordedFileName("therecording.file");
+            var b = LaunchParameters.EMPTY.WithRecordedFileName("therecording.file");
 
             var result = a.Combine(b);
 
@@ -78,8 +78,8 @@ namespace UnitTest.Tests
         [TestMethod]
         public void Combine_StacksVariableReplacements()
         {
-            var param1 = LaunchParameters.WithVariableReplacement("filename", "bongo.wad");
-            var param2 = LaunchParameters.WithVariableReplacement("iwad", "freedoom.wad");
+            var param1 = LaunchParameters.EMPTY.WithVariableReplacement("filename", "bongo.wad");
+            var param2 = LaunchParameters.EMPTY.WithVariableReplacement("iwad", "freedoom.wad");
             var appliedParam = LaunchParameters.Param("$somethingElse $filename needs $iwad");
             var result1 = appliedParam.Combine(param1).Combine(param2);
             var result2 = param2.Combine(param1).Combine(appliedParam);
