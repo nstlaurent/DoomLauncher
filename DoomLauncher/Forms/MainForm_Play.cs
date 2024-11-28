@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Adapters;
+using DoomLauncher.Adapters.Launch;
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
@@ -340,8 +341,7 @@ namespace DoomLauncher
                 StartPosition = FormStartPosition.CenterParent
             };
 
-            string launchParameters = playAdapter.GetLaunchParameters(AppConfiguration.GameFileDirectory,
-                AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile), out var error);
+            string launchParameters = playAdapter.GetLaunchParameters(AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile), out var error);
 
             if (launchParameters != null)
             {
@@ -429,25 +429,28 @@ namespace DoomLauncher
 
         private GameFilePlayAdapter CreatePlayAdapter(PlayForm form, EventHandler processExited, AppConfiguration appConfig)
         {
-            GameFilePlayAdapterOptions options = form.ExtraParametersOnly ? GameFilePlayAdapterOptions.ExtraParamsOnly : GameFilePlayAdapterOptions.None;
-            GameFilePlayAdapter playAdapter = new GameFilePlayAdapter(options);
-            playAdapter.IWad = form.SelectedIWad;
-            playAdapter.Map = form.SelectedMap;
-            playAdapter.Skill = form.SelectedSkill;
-            playAdapter.Record = form.Record;
-            playAdapter.SpecificFiles = form.SpecificFiles;
-            playAdapter.AdditionalFiles = form.GetAdditionalFiles().ToArray();
-            playAdapter.PlayDemo = form.PlayDemo;
-            playAdapter.ExtraParameters = form.ExtraParameters;
-            playAdapter.SaveStatistics = form.SaveStatistics;
-            playAdapter.IgnoreExtractError = AppConfiguration.AllowMultiplePlaySessions && m_activeSessions.Any();
+            var features = new List<ILaunchFeature>() {
+                new IWadLaunchFeature(form.SelectedIWad),
+                new MapSkillLaunchFeature(form.SelectedMap, form.SelectedSkill),
+                new RecordLaunchFeature(),
+                new AdditionalFilesLaunchFeature(form.GetAdditionalFiles(), form.SpecificFiles?.ToList<string>()),
+                new ExtraParametersLaunchFeature(form.ExtraParameters, form.ExtraParametersOnly),
+                new SourcePortExtraParametersLaunchFeature(),
+            };
+
+            if (form.PlayDemo && form.SelectedDemo != null)
+            {
+                var demoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
+                features.Add(new PlayDemoLaunchFeature(demoFile));
+            }
+
+            if (form.SaveStatistics)
+                features.Add(new StatisticsReaderLaunchFeature());
 
             if (form.LoadLatestSave)
-                playAdapter.LoadSaveFile = GetLoadLatestSave(form.GameFile, form.SelectedSourcePort);
+                features.Add(new LoadSaveLaunchFeature(GetLoadLatestSave(form.GameFile, form.SelectedSourcePort)));
 
-            playAdapter.ProcessExited += processExited;
-            if (form.SelectedDemo != null)
-                playAdapter.PlayDemoFile = Path.Combine(appConfig.DemoDirectory.GetFullPath(), form.SelectedDemo.FileName);
+            GameFilePlayAdapter playAdapter = new GameFilePlayAdapter(features);
             return playAdapter;
         }
 

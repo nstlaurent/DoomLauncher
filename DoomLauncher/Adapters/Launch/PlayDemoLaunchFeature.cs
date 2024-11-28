@@ -5,7 +5,7 @@ using System.IO;
 
 namespace DoomLauncher.Adapters.Launch
 {
-    public class PlayDemoLaunchFeature : LaunchFeature
+    public class PlayDemoLaunchFeature : ILaunchFeature
     {
         private readonly String _playDemoFile;
 
@@ -14,7 +14,7 @@ namespace DoomLauncher.Adapters.Launch
             _playDemoFile = playDemoFile;
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
             FileInfo fi = new FileInfo(_playDemoFile);
 

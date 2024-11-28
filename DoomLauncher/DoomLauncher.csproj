@@ -138,11 +138,10 @@
     <Compile Include="Adapters\Launch\AdditionalFilesLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\UtilityFilesLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\IWadLaunchFeature.cs" />
-    <Compile Include="Adapters\Launch\LaunchParameterType.cs" />
     <Compile Include="Adapters\Launch\LoadSaveLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\StatisticsReaderLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\SourcePortExtraParametersLaunchFeature.cs" />
-    <Compile Include="Adapters\Launch\LaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\ILaunchFeature.cs" />
     <Compile Include="Adapters\Launch\LaunchParameters.cs" />
     <Compile Include="Adapters\Launch\PlayDemoLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\ExtraParametersLaunchFeature.cs" />

@@ -1,4 +1,5 @@
 ﻿using DoomLauncher;
+using DoomLauncher.Adapters.Launch;
 using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
@@ -108,7 +109,12 @@ namespace UnitTest.Tests
         [TestMethod]
         public void TestParametersSourcePortExtraParams()
         {
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            var features = new List<ILaunchFeature>()
+            {
+                new ExtraParametersLaunchFeature("-extra", false)
+            };
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
 
@@ -130,16 +136,18 @@ namespace UnitTest.Tests
         {
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            adapter.ExtractFiles = false;
-            adapter.Skill = "3";
-            var port = GetPrBoomTestPort(".wad,.deh");
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false, out var error);
-            //only add skill with map
-            Assert.IsFalse(launch.Contains("-skill 3"));
 
-            adapter.Map = "MAP01";
-            launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false, out error);
+            var features = new List<ILaunchFeature>()
+            {
+                new MapSkillLaunchFeature("MAP01", "3")
+            };
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
+            adapter.ExtractFiles = false;
+
+            var port = GetPrBoomTestPort(".wad,.deh");
+
+            var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false, out _);
             Assert.IsTrue(launch.Contains("-skill 3"));
             Assert.IsTrue(launch.Contains("-warp 1"));
         }
@@ -149,16 +157,17 @@ namespace UnitTest.Tests
         {
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            adapter.ExtractFiles = false;
-            adapter.Skill = "3";
-            var port = GetTestPort(".wad,.deh");
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false, out var error);
-            //only add skill with map
-            Assert.IsFalse(launch.Contains("-skill 3"));
 
-            adapter.Map = "MAP01";
-            launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false, out error);
+            var features = new List<ILaunchFeature>()
+            {
+                new MapSkillLaunchFeature("MAP01", "3")
+            };
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
+            adapter.ExtractFiles = false;
+            var port = GetTestPort(".wad,.deh");
+
+            var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), port, false, out _);
             Assert.IsTrue(launch.Contains("-skill 3"));
             Assert.IsTrue(launch.Contains("+map MAP01"));
         }
@@ -168,9 +177,14 @@ namespace UnitTest.Tests
         {
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+
+            var features = new List<ILaunchFeature>()
+            {
+                new RecordLaunchFeature()
+            };
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             adapter.ExtractFiles = false;
-            adapter.Record = true;
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false, out var error);
 
             Assert.IsNotNull(adapter.RecordedFileName);
@@ -182,11 +196,15 @@ namespace UnitTest.Tests
         {
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+
             string demofile = Path.Combine(tempPath.GetFullPath(), "testplay.lmp");
+            var features = new List<ILaunchFeature>()
+            {
+                new PlayDemoLaunchFeature(demofile)
+            };
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             adapter.ExtractFiles = false;
-            adapter.PlayDemo = true;
-            adapter.PlayDemoFile = demofile;
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false, out var error);
             //the file doesn't exist
             Assert.IsNull(launch);
@@ -203,9 +221,13 @@ namespace UnitTest.Tests
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
 
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            adapter.AdditionalFiles = GetTestFiles().Skip(1).ToArray();
+            var additionalFiles = GetTestFiles().Skip(1).ToList();
+            var features = new List<ILaunchFeature>()
+            {
+                new AdditionalFilesLaunchFeature(additionalFiles, null)
+            };
 
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.pk3,.deh"), false, out var error);
 
             //-file parameters should be together, then -deh files should be together
@@ -242,8 +264,13 @@ namespace UnitTest.Tests
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
 
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            adapter.AdditionalFiles = new IGameFile[] { new GameFile() { FileName = "badadd.zip" } };
+            var additionalFiles = new List<IGameFile> { new GameFile() { FileName = "badadd.zip" } };
+            var features = new List<ILaunchFeature>()
+            {
+                new AdditionalFilesLaunchFeature(additionalFiles, null)
+            };
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
 
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false, out var error);
             Assert.IsNull(launch);
@@ -257,13 +284,16 @@ namespace UnitTest.Tests
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
 
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
             string[] wads;
-
             using (ZipArchive za = ZipFile.OpenRead(Path.Combine("GameFiles", GetTestFiles().First().FileName)))
                 wads = za.Entries.Where(x => Path.GetExtension(x.Name) == ".wad").Select(x => x.FullName).ToArray();
 
-            adapter.SpecificFiles = wads.ToArray();
+            var features = new List<ILaunchFeature>()
+            {
+                new AdditionalFilesLaunchFeature(null, wads.ToList<string>())
+            };
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
 
             string parameters = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFiles().First(), GetTestPort(".wad,.deh"), false, out var error);
             Assert.IsNull(adapter.LastError);
@@ -277,7 +307,7 @@ namespace UnitTest.Tests
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
 
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            
             List<string> wads = new List<string>();
 
             using (ZipArchive za = ZipFile.OpenRead(Path.Combine("GameFiles", GetTestFiles().First().FileName)))
@@ -293,8 +323,13 @@ namespace UnitTest.Tests
             using (ZipArchive za = ZipFile.OpenRead(Path.Combine("GameFiles", GetTestFiles().Skip(3).First().FileName)))
                 wads.AddRange(za.Entries.Where(x => Path.GetExtension(x.Name) == ".wad").Select(x => x.FullName));
 
-            adapter.AdditionalFiles = GetTestFiles().Skip(1).Take(2).ToArray(); //test2.wad, test3.wad only
-            adapter.SpecificFiles = wads.ToArray();
+            var additionalFiles = GetTestFiles().Skip(1).Take(2).ToList(); //test2.wad, test3.wad only
+
+            var features = new List<ILaunchFeature>()
+            {
+                new AdditionalFilesLaunchFeature(additionalFiles, wads)
+            };
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
 
             string parameters = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFiles().First(), GetTestPort(".wad,.deh"), false, out var error);
             Assert.IsNull(adapter.LastError);
@@ -320,12 +355,15 @@ namespace UnitTest.Tests
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
 
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            //testpathed.zip
-            string file = Path.Combine("data", "test.wad");
+            var specialFiles = new List<string> { Path.Combine("data", "test.wad") };
+            var features = new List<ILaunchFeature>()
+            {
+                new AdditionalFilesLaunchFeature(null, specialFiles)
+            };
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
 
             IGameFile gameFile = new GameFile() { FileName = "testpathed.zip" };
-            adapter.SpecificFiles = new string[] { file };
 
             string parameters = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, GetTestPort(".wad,.deh"), false, out var error);
             Assert.IsNull(adapter.LastError);
@@ -336,14 +374,19 @@ namespace UnitTest.Tests
         [TestMethod]
         public void TestExtraWithStats()
         {
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
+            var features = new List<ILaunchFeature>()
+            {
+                new ExtraParametersLaunchFeature("-extratest", false),
+                new SourcePortExtraParametersLaunchFeature(),
+                new StatisticsReaderLaunchFeature()
+            };
+
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             var boomPort = GetPrBoomTestPort(".wad,.deh");
             boomPort.ExtraParameters = "-boomextra";
-
-            adapter.ExtraParameters = "-extratest";
-            adapter.SaveStatistics = true;
 
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), boomPort, false, out var error);
 
@@ -355,10 +398,16 @@ namespace UnitTest.Tests
         [TestMethod]
         public void RelativeUnmanagedFiles()
         {
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            adapter.IWad = new GameFile() { FileName = LocalIwad1 };
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
+            var iwad = new GameFile() { FileName = LocalIwad1 };
+            var features = new List<ILaunchFeature>()
+            {
+                new IWadLaunchFeature(iwad)
+            };
+
+            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
+
             var port = GetPrBoomTestPort(".wad,.deh");
 
             var gameFile = new GameFile() { FileName = LocalFile1 };
@@ -372,13 +421,19 @@ namespace UnitTest.Tests
         [TestMethod]
         public void VariableReplacements()
         {
-            var adapter = new GameFilePlayAdapter();
-            adapter.IWad = new GameFile() { FileName = LocalIwad1 };
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
 
+            var iwad = new GameFile() { FileName = LocalIwad1 };
+            var features = new List<ILaunchFeature>()
+            {
+                new ExtraParametersLaunchFeature("-savedir $iwad/$filename", false),
+                new IWadLaunchFeature(iwad)
+            };
+
+            var adapter = new GameFilePlayAdapter(features);
             var port = GetPrBoomTestPort(".wad,.deh");
-            port.ExtraParameters = "-savedir $iwad/$filename";
+
             var gameFile = new GameFile() { FileName = LocalFile1 };
             var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _);
             Assert.IsTrue(launch.Contains("-savedir iwad1/file1"));
@@ -387,13 +442,18 @@ namespace UnitTest.Tests
         [TestMethod]
         public void ExtraParametersOnly()
         {
-            var adapter = new GameFilePlayAdapter(GameFilePlayAdapterOptions.ExtraParamsOnly);
-            adapter.IWad = new GameFile() { FileName = LocalIwad1 };
-            adapter.ExtraParameters = "-blah -blob";
-            adapter.Map = "E1M2";
-
             LauncherPath gameFilePath = new LauncherPath("GameFiles");
             LauncherPath tempPath = new LauncherPath("Temp");
+
+            var iwad = new GameFile() { FileName = LocalIwad1 };
+            var features = new List<ILaunchFeature>()
+            {
+                new ExtraParametersLaunchFeature("-blah -blob", true),
+                new IWadLaunchFeature(iwad),
+                new MapSkillLaunchFeature("E1M2", null)
+            };
+
+            var adapter = new GameFilePlayAdapter(features);
             var port = GetPrBoomTestPort(".wad,.deh");
             var gameFile = new GameFile() { FileName = LocalFile1 };
             var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _);

@@ -22,7 +22,8 @@ namespace DoomLauncher.Adapters.Launch
 
         public static readonly LaunchParameters EMPTY = new LaunchParameters("", null, null, false, null);
 
-        private LaunchParameters(string paramString, string recordedFileName, string errorMessage, bool isExclusive, IDictionary<string, string> variableReplacements)
+        private LaunchParameters(string paramString, string recordedFileName, string errorMessage, bool isExclusive, 
+            IDictionary<string, string> variableReplacements)
         {
             ErrorMessage = errorMessage;
             RecordedFileName = recordedFileName;
@@ -33,19 +34,11 @@ namespace DoomLauncher.Adapters.Launch
 
         public LaunchParameters Combine(LaunchParameters other)
         {
-            if (Failed)
+            if (Failed || _isExclusive)
             {
                 return this;
             }
-            else if (other.Failed)
-            {
-                return other;
-            }
-            else if (_isExclusive)
-            {
-                return this;
-            }
-            else if (other._isExclusive)
+            else if (other.Failed || other._isExclusive)
             {
                 return other;
             }
@@ -59,6 +52,7 @@ namespace DoomLauncher.Adapters.Launch
                     CombineDictionaries(_variableReplacements, other._variableReplacements));
             }
         }
+
         public LaunchParameters WithRecordedFileName(string recordedFileName)
         {
             return Combine(new LaunchParameters("", recordedFileName, null, false, null));
@@ -73,9 +67,10 @@ namespace DoomLauncher.Adapters.Launch
             return Combine(new LaunchParameters("", null, null, false, dict));
         }
 
+
         private IDictionary<A, A> CombineDictionaries<A>(IDictionary<A, A> ourDict, IDictionary<A, A> otherDict)
         {
-            var combinedDictionary = new Dictionary<A,A>(ourDict);
+            var combinedDictionary = new Dictionary<A, A>(ourDict);
             foreach (var key in otherDict.Keys)
             {
                 if (!combinedDictionary.ContainsKey(key))

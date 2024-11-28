@@ -5,18 +5,11 @@ using System.IO;
 
 namespace DoomLauncher.Adapters.Launch
 {
-    public class RecordLaunchFeature : LaunchFeature
+    public class RecordLaunchFeature : ILaunchFeature
     {
-        private readonly LauncherPath _tempDirectory;
-
-        public RecordLaunchFeature(LauncherPath tempDirectory)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
-            _tempDirectory = tempDirectory;
-        }
-
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
-        {
-            var recordedFileName = Path.Combine(_tempDirectory.GetFullPath(), Guid.NewGuid().ToString());
+            var recordedFileName = Path.Combine(tempDirectory.GetFullPath(), Guid.NewGuid().ToString()); // WRONG WRONG SHOULD BE DEMO DIRECTORY
             var paramString = sourcePort.GetFlavor().RecordParameter(new SpData(recordedFileName));
 
             return LaunchParameters.Param(paramString).WithRecordedFileName(recordedFileName);

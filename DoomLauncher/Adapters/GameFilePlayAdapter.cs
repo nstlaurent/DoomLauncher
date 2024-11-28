@@ -11,29 +11,35 @@ using System.Text;
 
 namespace DoomLauncher
 {
-    [Flags]
-    public enum GameFilePlayAdapterOptions
-    {
-        None = 0,
-        ExtraParamsOnly = 1
-    }
-
     public class GameFilePlayAdapter
     {
         public event EventHandler ProcessExited;
 
-        private readonly GameFilePlayAdapterOptions m_options;
+        private readonly List<ILaunchFeature> _features;
 
-        public GameFilePlayAdapter(GameFilePlayAdapterOptions options = GameFilePlayAdapterOptions.None)
+        public GameFilePlayAdapter(List<ILaunchFeature> features)
         {
-            m_options = options;
-            AdditionalFiles = Array.Empty<IGameFile>();
-            ExtractFiles = true;
+            var ourFeatures = new List<ILaunchFeature>(features);
+
+            if (!ourFeatures.Exists(f => f is AdditionalFilesLaunchFeature))
+            {
+                var iWadIndex = ourFeatures.FindIndex(f => f is IWadLaunchFeature);
+                var insertIndex = (iWadIndex == -1) ? 0 : iWadIndex + 1;
+                ourFeatures.Insert(insertIndex, new AdditionalFilesLaunchFeature(null, null));
+            }
+
+            _features = ourFeatures;
+        }
+
+        public GameFilePlayAdapter() : this(new List<ILaunchFeature>())
+        {
+            
         }
 
         public bool Launch(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
             IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad)
         {
+
             LastError = string.Empty;
             if (!Directory.Exists(sourcePort.Directory.GetFullPath()))
             {
@@ -70,104 +76,35 @@ namespace DoomLauncher
             return true;            
         }
 
-        public string GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
-            IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad, out string error)
+        public string GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory, IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad, out string error)
         {
-            error = string.Empty;
+            LaunchParameters parametersResult = LaunchParameters.EMPTY;
+            foreach (var feature in _features)
+            {
+                var newParameters = feature.CreateParam(sourcePortData, gameFile, isGameFileIwad, gameFileDirectory, tempDirectory);
+                parametersResult = parametersResult.Combine(newParameters);
+            }
 
-            ISourcePortFlavor sourcePortFlavor = sourcePortData.GetFlavor();
+            parametersResult = parametersResult.WithVariableReplacement("filename", gameFile.FileNameNoPath);
 
-            var launchParameters = new List<LaunchFeature>();
-            
-            if (IWad != null)
-                launchParameters.Add(new IWadLaunchFeature(IWad, gameFileDirectory, tempDirectory));
+            RecordedFileName = parametersResult.RecordedFileName;
+            LastError = error = parametersResult.ErrorMessage;
 
-            var additionalFiles = AdditionalFiles != null ? new List<IGameFile>(AdditionalFiles) : new List<IGameFile>();
-            var specificFiles = SpecificFiles != null ? new List<string>(SpecificFiles) : new List<string>();
-            launchParameters.Add(new AdditionalFilesLaunchFeature(
-                additionalFiles,
-                specificFiles, 
-                gameFileDirectory, tempDirectory, isGameFileIwad));
-
-            launchParameters.Add(new MapSkillLaunchFeature(Map, Skill));
-
-            if (Record)
-                launchParameters.Add(new RecordLaunchFeature(tempDirectory));
-
-            if (PlayDemo)
-                launchParameters.Add(new PlayDemoLaunchFeature(PlayDemoFile));
-
-            launchParameters.Add(new ExtraParametersLaunchFeature(ExtraParameters, m_options.HasFlag(GameFilePlayAdapterOptions.ExtraParamsOnly)));
-
-            launchParameters.Add(new SourcePortExtraParametersLaunchFeature());
-
-            if (SaveStatistics)
-                launchParameters.Add(new StatisticsReaderLaunchFeature());
-
-            if (!string.IsNullOrEmpty(LoadSaveFile))
-                launchParameters.Add(new LoadSaveLaunchFeature(LoadSaveFile));
-
-            var paramResult = launchParameters.Aggregate(LaunchParameters.EMPTY, 
-                (parameters, feature) => parameters.Combine(feature.CreateParam(sourcePortData, gameFile)));
-
-            paramResult = paramResult.WithVariableReplacement("filename", gameFile.FileNameNoPath);
-
-            RecordedFileName = paramResult.RecordedFileName;
-            LastError = paramResult.ErrorMessage;
             if (!string.IsNullOrEmpty(LastError))
                 return null;
 
-            return paramResult.ParamString;
-        }
-
-        //This function is currently only used for loading files by utility (which also uses ISourcePort).
-        //This uses Util.ExtractTempFile to avoid extracting files with the same name where the user can have the previous file locked.
-        //E.g. opening MAP01 from a pk3, and then opening another MAP01 from a different pk3
-        public bool HandleGameFile(
-            IGameFile gameFile, 
-            StringBuilder sb, // Output
-            LauncherPath tempDirectory,
-            ISourcePortFlavor sourcePortFlavor, 
-            List<SpecificFilesForm.SpecificFilePath> pathFiles)
-        {
-
-            var utilityLaunchFeature = new UtilityFilesLaunchFeature(pathFiles, tempDirectory);
-            var result = utilityLaunchFeature.CreateParam(sourcePortFlavor, gameFile);
-
-            if (result.Failed)
-            {
-                LastError = result.ErrorMessage;
-                return false;
-            }
-            else
-            {
-                sb.Append(result.ParamString);
-                return true;
-            }
+            return parametersResult.ParamString;
         }
 
         public string LastError { get; private set; } // Output
 
         public string RecordedFileName { get; private set; } // Output
 
-        public IGameFile IWad { get; set; } // Input
-        public string Map { get; set; } // Input
-        public string Skill { get; set; } // Input
-        public bool Record { get; set; } // Input
-        public bool PlayDemo { get; set; } // Input
-        public IGameFile[] AdditionalFiles { get; set; } // Input
-        public string ExtraParameters { get; set; } // Input
-        public string[] SpecificFiles { get; set; } // Input
-        public bool SaveStatistics { get; set; } // Input
-        public string LoadSaveFile { get; set; } // Input
-
         public ISourcePortData SourcePort { get; private set; } // Input/Output (but should only be input)
         public IGameFile GameFile { get; private set; } // Input/Output (but should only be input)
-        
-        public string PlayDemoFile { get; set; } // Input
 
+        /// TODO reinstate this functionality
         public bool ExtractFiles { get; set; } // Input
-        public bool IgnoreExtractError { get; set; } // Input
 
         void proc_Exited(object sender, EventArgs e)
         {

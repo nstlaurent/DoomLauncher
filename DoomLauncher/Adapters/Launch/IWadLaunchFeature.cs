@@ -6,30 +6,26 @@ using System.Linq;
 
 namespace DoomLauncher.Adapters.Launch
 {
-    public class IWadLaunchFeature : LaunchFeature
+    public class IWadLaunchFeature : ILaunchFeature
     {
         private readonly IGameFile _iwad;
-        private readonly LauncherPath _gameFileDirectory;
-        private readonly LauncherPath _tempDirectory;
 
-        public IWadLaunchFeature(IGameFile iwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        public IWadLaunchFeature(IGameFile iwad)
         {
             _iwad = iwad;
-            _gameFileDirectory = gameFileDirectory;
-            _tempDirectory = tempDirectory;
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
-            if (!gameFile.ArchiveExists(_gameFileDirectory))
+            if (!gameFile.ArchiveExists(gameFileDirectory))
             {
-                return LaunchParameters.Failure($"Couldn't find game file at {_gameFileDirectory.GetFullPath()}");
+                return LaunchParameters.Failure($"Couldn't find game file at {gameFileDirectory.GetFullPath()}");
             }
 
             string extractedFileName;
             try
             {
-                extractedFileName = GetExtractedFileName(sourcePort);
+                extractedFileName = GetExtractedFileName(sourcePort, gameFileDirectory, tempDirectory);
             }
             catch (FileNotFoundException)
             {
@@ -56,9 +52,9 @@ namespace DoomLauncher.Adapters.Launch
             return LaunchParameters.Param(paramString).WithVariableReplacement("iwad", Path.GetFileNameWithoutExtension(_iwad.FileNameNoPath));
         }
 
-        private string GetExtractedFileName(ISourcePortData sourcePortData)
+        private string GetExtractedFileName(ISourcePortData sourcePortData, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
-            using (IArchiveReader reader = _iwad.OpenGameFile(_gameFileDirectory))
+            using (IArchiveReader reader = _iwad.OpenGameFile(gameFileDirectory))
             {
                 IArchiveEntry firstMatchingEntry = GetFirstIWadEntry(reader, sourcePortData);
 
@@ -66,7 +62,7 @@ namespace DoomLauncher.Adapters.Launch
                 {
                     if (firstMatchingEntry.ExtractRequired)
                     { 
-                        string extractFile = Path.Combine(_tempDirectory.GetFullPath(), firstMatchingEntry.Name);
+                        string extractFile = Path.Combine(tempDirectory.GetFullPath(), firstMatchingEntry.Name);
                         firstMatchingEntry.ExtractToFileForceOverwrite(extractFile);
                         return extractFile;
                     }

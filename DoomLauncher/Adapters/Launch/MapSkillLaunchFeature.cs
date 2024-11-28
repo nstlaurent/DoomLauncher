@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DoomLauncher.Adapters.Launch
 {
-    public class MapSkillLaunchFeature : LaunchFeature
+    public class MapSkillLaunchFeature : ILaunchFeature
     {
 
         private readonly string _map;
@@ -16,7 +16,7 @@ namespace DoomLauncher.Adapters.Launch
             _skill = skill;
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
             LaunchParameters result = LaunchParameters.EMPTY;
 

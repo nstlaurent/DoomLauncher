@@ -8,25 +8,18 @@ using System;
 
 namespace DoomLauncher.Adapters.Launch
 {
-    public class UtilityFilesLaunchFeature : LaunchFeature
+    public class UtilityFilesLaunchFeature : ILaunchFeature
     {
-        private readonly LauncherPath _tempDirectory;
         private readonly List<SpecificFilesForm.SpecificFilePath> _pathFiles;
 
-        public UtilityFilesLaunchFeature(List<SpecificFilesForm.SpecificFilePath> pathFiles, LauncherPath tempDirectory)
+        public UtilityFilesLaunchFeature(List<SpecificFilesForm.SpecificFilePath> pathFiles)
         {
-            _tempDirectory = tempDirectory;
             _pathFiles = new List<SpecificFilesForm.SpecificFilePath>(pathFiles);
-
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
-            return CreateParam(sourcePort.GetFlavor(), gameFile);
-        }
-
-        public LaunchParameters CreateParam(ISourcePortFlavor sourcePortFlavor, IGameFile gameFile)
-        {
+            ISourcePortFlavor sourcePortFlavor = new GenericSourcePortFlavor(sourcePort);
             StringBuilder sb = new StringBuilder();
 
             try
@@ -47,7 +40,7 @@ namespace DoomLauncher.Adapters.Launch
                     {
                         var entry = reader.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
                         if (entry != null)
-                            files.Add(Util.ExtractTempFile(_tempDirectory.GetFullPath(), entry));
+                            files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
                     }
                 }
 

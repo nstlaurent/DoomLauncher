@@ -3,7 +3,7 @@ using DoomLauncher.SourcePort;
 
 namespace DoomLauncher.Adapters.Launch
 {
-    public class LoadSaveLaunchFeature : LaunchFeature
+    public class LoadSaveLaunchFeature : ILaunchFeature
     {
         private readonly string _loadSaveFile;
 
@@ -12,15 +12,15 @@ namespace DoomLauncher.Adapters.Launch
             _loadSaveFile = loadSaveFile;
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
-            string paramString;
-            if (sourcePort.GetFlavor().LoadSaveGameSupported())
-                paramString = sourcePort.GetFlavor().LoadSaveParameter(new SpData(_loadSaveFile));
+            if (!string.IsNullOrEmpty(_loadSaveFile) && sourcePort.GetFlavor().LoadSaveGameSupported())
+            {
+                var paramString = sourcePort.GetFlavor().LoadSaveParameter(new SpData(_loadSaveFile));
+                return LaunchParameters.Param(paramString);
+            }
             else
-                paramString = "";
-
-            return LaunchParameters.Param(paramString);
+                return LaunchParameters.EMPTY;
         }
     }
 }

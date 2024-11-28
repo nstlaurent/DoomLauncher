@@ -11,39 +11,34 @@ using System.Windows.Documents;
 
 namespace DoomLauncher.Adapters.Launch
 {
-    public class AdditionalFilesLaunchFeature : LaunchFeature
+    public class AdditionalFilesLaunchFeature : ILaunchFeature
     {
         private List<IGameFile> _additionalFiles;
         private List<string> _specificFiles;
-        private bool _isGameFileIWad;
-        private LauncherPath _gameFileDirectory;
-        private LauncherPath _tempDirectory;
 
-        public AdditionalFilesLaunchFeature(List<IGameFile> additionalFiles, List<string> specificFiles,
-            LauncherPath gameFileDirectory, LauncherPath tempDirectory, bool isGameFileIWad)
+        public AdditionalFilesLaunchFeature(List<IGameFile> additionalFiles, List<string> specificFiles)
         {
-            _additionalFiles = new List<IGameFile>(additionalFiles);
-            _specificFiles = specificFiles;
-            _gameFileDirectory = gameFileDirectory;
-            _tempDirectory = tempDirectory;
-            _isGameFileIWad = isGameFileIWad;
+            _additionalFiles = (additionalFiles != null) ? new List<IGameFile>(additionalFiles) : new List<IGameFile>();
+            _specificFiles = (specificFiles != null) ? new List<string>(specificFiles) : new List<string>();
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePortData, IGameFile gameFile)
+        public LaunchParameters CreateParam(ISourcePortData sourcePortData, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
-            if (_isGameFileIWad)
-                _additionalFiles.Remove(gameFile);
-            else if (!_additionalFiles.Contains(gameFile))
-                _additionalFiles.Add(gameFile);
+            var filesToUse = new List<IGameFile>(_additionalFiles);
+
+            if (isGameFileIwad)
+                filesToUse.Remove(gameFile);
+            else if (!filesToUse.Contains(gameFile))
+                filesToUse.Add(gameFile);
 
             List<string> launchFiles = new List<string>();
-            foreach (IGameFile file in _additionalFiles)
+            foreach (IGameFile file in filesToUse)
             {
-                if (!file.ArchiveExists(_gameFileDirectory))
+                if (!file.ArchiveExists(gameFileDirectory))
                 {
                     return LaunchParameters.Failure($"Couldn't find additional file at {new LauncherPath(file.FileName).GetFullPath()}");
                 }
-                launchFiles.AddRange(GetExtractedFileNames(sourcePortData, file));
+                launchFiles.AddRange(GetExtractedFileNames(sourcePortData, file, gameFileDirectory, tempDirectory));
             }
 
             // Build launch string
@@ -82,7 +77,7 @@ namespace DoomLauncher.Adapters.Launch
             }
         }
 
-        public List<string> GetExtractedFileNames(ISourcePortData sourcePortData, IGameFile gameFile)
+        public List<string> GetExtractedFileNames(ISourcePortData sourcePortData, IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
             List<string> launchFiles = new List<string>();
             if (gameFile.IsDirectory())
@@ -93,7 +88,7 @@ namespace DoomLauncher.Adapters.Launch
 
             try
             {
-                using (IArchiveReader reader = gameFile.OpenGameFile(_gameFileDirectory))
+                using (IArchiveReader reader = gameFile.OpenGameFile(gameFileDirectory))
                 {
                     IEnumerable<IArchiveEntry> relevantEntries = GetRelevantEntries(reader, sourcePortData);
 
@@ -101,7 +96,7 @@ namespace DoomLauncher.Adapters.Launch
                     {
                         if (entry.ExtractRequired)
                         {
-                            string extractFile = Path.Combine(_tempDirectory.GetFullPath(), entry.Name);
+                            string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
                             entry.ExtractToFileForceOverwrite(extractFile);
                             launchFiles.Add(extractFile);
                         }
