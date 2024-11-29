@@ -1,13 +1,9 @@
 ﻿using DoomLauncher.Adapters.Launch;
-using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
-using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace DoomLauncher
 {
@@ -19,16 +15,7 @@ namespace DoomLauncher
 
         public GameFilePlayAdapter(List<ILaunchFeature> features)
         {
-            var ourFeatures = new List<ILaunchFeature>(features);
-
-            if (!ourFeatures.Exists(f => f is GameFilesLaunchFeature))
-            {
-                var iWadIndex = ourFeatures.FindIndex(f => f is IWadLaunchFeature);
-                var insertIndex = (iWadIndex == -1) ? 0 : iWadIndex + 1;
-                ourFeatures.Insert(insertIndex, new GameFilesLaunchFeature(null, null));
-            }
-
-            _features = ourFeatures;
+            _features = AddGameFileFeatureIfMissing(new List<ILaunchFeature>(features));
         }
 
         public GameFilePlayAdapter() : this(new List<ILaunchFeature>())
@@ -36,27 +23,34 @@ namespace DoomLauncher
             
         }
 
-        public bool Launch(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
+        private static List<ILaunchFeature> AddGameFileFeatureIfMissing(List<ILaunchFeature> proposedFeatures)
+        {
+            if (!proposedFeatures.Exists(f => f is GameFilesLaunchFeature))
+            {
+                var iWadIndex = proposedFeatures.FindIndex(f => f is IWadLaunchFeature);
+                var insertIndex = (iWadIndex == -1) ? 0 : iWadIndex + 1;
+                proposedFeatures.Insert(insertIndex, new GameFilesLaunchFeature(null, null));
+            }
+            return proposedFeatures;
+        }
+
+        public LaunchResult Launch(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
             IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad)
         {
-
-            LastError = string.Empty;
             if (!Directory.Exists(sourcePort.Directory.GetFullPath()))
             {
-                LastError = string.Concat("The source port directory does not exist:", Environment.NewLine, Environment.NewLine, 
+                var errorMessage = string.Concat("The source port directory does not exist:", Environment.NewLine, Environment.NewLine,
                     sourcePort.Directory.GetPossiblyRelativePath());
-                return false;
+                return LaunchResult.Failure(errorMessage);
             }
 
             GameFile = gameFile;
             SourcePort = sourcePort;
 
-            LaunchParameters launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad, out var error);
+            LaunchParameters launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad);
             if (launchParameters.Failed)
             {
-                if (string.IsNullOrEmpty(LastError))
-                    LastError = $"Failed to create launch parameters: {launchParameters.ErrorMessage}";
-                return false;
+                return LaunchResult.Failure($"Failed to create launch parameters: {launchParameters.ErrorMessage}");
             }
        
             Directory.SetCurrentDirectory(sourcePort.Directory.GetFullPath());
@@ -69,14 +63,13 @@ namespace DoomLauncher
             }
             catch
             {
-                LastError = "Failed to execute the source port process.";
-                return false;
+                return LaunchResult.Failure("Failed to execute the source port process.");
             }
 
-            return true;            
+            return LaunchResult.Success();            
         }
 
-        public LaunchParameters GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory, IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad, out string error)
+        public LaunchParameters GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory, IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad)
         {
             LaunchParameters parametersResult = LaunchParameters.EMPTY;
             foreach (var feature in _features)
@@ -88,20 +81,20 @@ namespace DoomLauncher
             parametersResult = parametersResult.WithVariableReplacement("filename", gameFile.FileNameNoPath);
 
             RecordedFileName = parametersResult.RecordedFileName;
-            LastError = error = parametersResult.ErrorMessage;
-
-            if (!string.IsNullOrEmpty(LastError))
-                return null;
 
             return parametersResult;
         }
 
-        public string LastError { get; private set; } // Output
+        // Depended on by Exit event handler
+        public string RecordedFileName { get; private set; } // Output 
 
-        public string RecordedFileName { get; private set; } // Output
+        // Depended on by Exit event handler
+        public ISourcePortData SourcePort { get; private set; } // Output
 
-        public ISourcePortData SourcePort { get; private set; } // Input/Output (but should only be input)
-        public IGameFile GameFile { get; private set; } // Input/Output (but should only be input)
+        // Depended on by statistics event handler, which is using the GameFilePlayAdapter
+        // attached to the PlaySession
+        // Depended on by Exit event handler
+        public IGameFile GameFile { get; private set; } // Output
 
         /// TODO reinstate this functionality
         public bool ExtractFiles { get; set; } // Input

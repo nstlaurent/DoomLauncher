@@ -67,7 +67,6 @@ namespace DoomLauncher.Adapters.Launch
             return Combine(new LaunchParameters("", null, null, false, dict));
         }
 
-
         private IDictionary<A, A> CombineDictionaries<A>(IDictionary<A, A> ourDict, IDictionary<A, A> otherDict)
         {
             var combinedDictionary = new Dictionary<A, A>(ourDict);

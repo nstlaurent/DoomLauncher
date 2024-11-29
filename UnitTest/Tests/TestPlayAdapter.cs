@@ -76,7 +76,7 @@ namespace UnitTest.Tests
 
             //test .wad and deh
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), GetTestPort(".wad,.deh"), false, out var error).ParamString;
+                GetTestFile(), GetTestPort(".wad,.deh"), false).ParamString;
             string check = string.Format("-file \"{0}\"  -deh \"{1}\"",
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.wad"),
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.deh"));
@@ -87,7 +87,7 @@ namespace UnitTest.Tests
 
             //.wad only
             launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), GetTestPort(".wad"), false, out error).ParamString;
+                GetTestFile(), GetTestPort(".wad"), false).ParamString;
             check = string.Format("-file \"{0}\"",
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.wad"));
             Assert.AreEqual(check.Trim(), launch.Trim());
@@ -124,7 +124,7 @@ namespace UnitTest.Tests
             port.ExtraParameters = "-extra";
 
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), port, false, out var error).ParamString;
+                GetTestFile(), port, false).ParamString;
             string check = string.Format("-file \"{0}\"  -deh \"{1}\" -extra",
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.wad"),
                 Path.Combine(Directory.GetCurrentDirectory(), "Temp", "test1.deh"));
@@ -151,7 +151,7 @@ namespace UnitTest.Tests
             var port = GetPrBoomTestPort(".wad,.deh");
 
             var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), port, false, out _).ParamString;
+                GetTestFile(), port, false).ParamString;
             Assert.IsTrue(launch.Contains("-skill 3"));
             Assert.IsTrue(launch.Contains("-warp 1"));
         }
@@ -172,7 +172,7 @@ namespace UnitTest.Tests
             var port = GetTestPort(".wad,.deh");
 
             var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), port, false, out _).ParamString;
+                GetTestFile(), port, false).ParamString;
             Assert.IsTrue(launch.Contains("-skill 3"));
             Assert.IsTrue(launch.Contains("+map MAP01"));
         }
@@ -191,7 +191,7 @@ namespace UnitTest.Tests
             GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             adapter.ExtractFiles = false;
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), GetTestPort(".wad,.deh"), false, out var error).ParamString;
+                GetTestFile(), GetTestPort(".wad,.deh"), false).ParamString;
 
             Assert.IsNotNull(adapter.RecordedFileName);
             Assert.IsTrue(launch.Contains(string.Concat("-record \"", adapter.RecordedFileName, "\"")));
@@ -211,15 +211,15 @@ namespace UnitTest.Tests
 
             GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             adapter.ExtractFiles = false;
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), GetTestPort(".wad,.deh"), false, out var error)?.ParamString;
+            var parameters = adapter.GetLaunchParameters(gameFilePath, tempPath,
+                GetTestFile(), GetTestPort(".wad,.deh"), false);
             //the file doesn't exist
-            Assert.IsNull(launch);
-            Assert.IsNotNull(adapter.LastError);
+            Assert.IsTrue(parameters.Failed);
+            Assert.IsNotNull(parameters.ErrorMessage);
 
             File.WriteAllText(demofile, "test");
-            launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), GetTestPort(".wad,.deh"), false, out error).ParamString;
+            var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
+                GetTestFile(), GetTestPort(".wad,.deh"), false).ParamString;
             Assert.IsTrue(launch.Contains(string.Concat("-playdemo \"", demofile, "\"")));
         }
 
@@ -237,7 +237,7 @@ namespace UnitTest.Tests
 
             GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), GetTestPort(".wad,.pk3,.deh"), false, out var error).ParamString;
+                GetTestFile(), GetTestPort(".wad,.pk3,.deh"), false).ParamString;
 
             //-file parameters should be together, then -deh files should be together
             string check = string.Format(" -file \"{0}\\Temp\\test2.wad\" \"{0}\\Temp\\test2.pk3\" \"{0}\\Temp\\test3.wad\" \"{0}\\Temp\\test3.pk3\" \"{0}\\Temp\\test4.wad\" \"{0}\\Temp\\test4.pk3\" \"{0}\\Temp\\test1.wad\" \"{0}\\Temp\\test1.pk3\"  -deh \"{0}\\Temp\\test2.deh\" \"{0}\\Temp\\test3.deh\" \"{0}\\Temp\\test4.deh\" \"{0}\\Temp\\test1.deh\" ",
@@ -261,11 +261,12 @@ namespace UnitTest.Tests
             LauncherPath tempPath = new LauncherPath("Temp");
 
             GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                new GameFile() { FileName = "bad.zip" }, GetTestPort(".wad,.deh"), false, out var error)?.ParamString;
-            Assert.IsNull(launch);
-            Assert.IsNotNull(adapter.LastError);
-            Assert.IsTrue(adapter.LastError.Contains("bad.zip"));
+            var parameters = adapter.GetLaunchParameters(gameFilePath, tempPath,
+                new GameFile() { FileName = "bad.zip" }, GetTestPort(".wad,.deh"), false);
+
+            Assert.IsTrue(parameters.Failed);
+            Assert.IsNotNull(parameters.ErrorMessage);
+            Assert.IsTrue(parameters.ErrorMessage.Contains("bad.zip"));
         }
 
         [TestMethod]
@@ -282,11 +283,11 @@ namespace UnitTest.Tests
 
             GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
 
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), GetTestPort(".wad,.deh"), false, out var error)?.ParamString;
-            Assert.IsNull(launch);
-            Assert.IsNotNull(adapter.LastError);
-            Assert.IsTrue(adapter.LastError.Contains("badadd.zip"));
+            var parameters = adapter.GetLaunchParameters(gameFilePath, tempPath,
+                GetTestFile(), GetTestPort(".wad,.deh"), false);
+            Assert.IsTrue(parameters.Failed);
+            Assert.IsNotNull(parameters.ErrorMessage);
+            Assert.IsTrue(parameters.ErrorMessage.Contains("badadd.zip"));
         }
 
         [TestMethod]
@@ -306,11 +307,11 @@ namespace UnitTest.Tests
 
             GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
 
-            string parameters = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFiles().First(), GetTestPort(".wad,.deh"), false, out var error).ParamString;
-            Assert.IsNull(adapter.LastError);
-            Assert.IsTrue(parameters.Contains(".wad"));
-            Assert.IsFalse(parameters.Contains(".deh"));
+            var parameters = adapter.GetLaunchParameters(gameFilePath, tempPath,
+                GetTestFiles().First(), GetTestPort(".wad,.deh"), false);
+            Assert.IsNull(parameters.ErrorMessage);
+            Assert.IsTrue(parameters.ParamString.Contains(".wad"));
+            Assert.IsFalse(parameters.ParamString.Contains(".deh"));
         }
 
         [TestMethod]
@@ -343,14 +344,15 @@ namespace UnitTest.Tests
             };
             GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
 
-            string parameters = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFiles().First(), GetTestPort(".wad,.deh"), false, out var error).ParamString;
-            Assert.IsNull(adapter.LastError);
-            Assert.IsTrue(parameters.Contains("test1.wad"));
-            Assert.IsTrue(parameters.Contains("test2.wad"));
-            Assert.IsTrue(parameters.Contains("test3.wad"));
-            Assert.IsFalse(parameters.Contains("test4.wad"));
-            Assert.IsFalse(parameters.Contains(".deh"));
+            var parameters = adapter.GetLaunchParameters(gameFilePath, tempPath,
+                GetTestFiles().First(), GetTestPort(".wad,.deh"), false);
+
+            Assert.IsNull(parameters.ErrorMessage);
+            Assert.IsTrue(parameters.ParamString.Contains("test1.wad"));
+            Assert.IsTrue(parameters.ParamString.Contains("test2.wad"));
+            Assert.IsTrue(parameters.ParamString.Contains("test3.wad"));
+            Assert.IsFalse(parameters.ParamString.Contains("test4.wad"));
+            Assert.IsFalse(parameters.ParamString.Contains(".deh"));
 
             Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.wad")));
             Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test2.wad")));
@@ -378,10 +380,11 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile() { FileName = "testpathed.zip" };
 
-            string parameters = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                gameFile, GetTestPort(".wad,.deh"), false, out var error).ParamString;
-            Assert.IsNull(adapter.LastError);
-            Assert.IsTrue(parameters.Contains("test.wad"));
+            var parameters = adapter.GetLaunchParameters(gameFilePath, tempPath,
+                gameFile, GetTestPort(".wad,.deh"), false);
+
+            Assert.IsNull(parameters.ErrorMessage);
+            Assert.IsTrue(parameters.ParamString.Contains("test.wad"));
             Assert.IsTrue(File.Exists(Path.Combine(tempPath.GetFullPath(), "test.wad")));
         }
 
@@ -403,7 +406,7 @@ namespace UnitTest.Tests
             boomPort.ExtraParameters = "-boomextra";
 
             string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), boomPort, false, out var error).ParamString;
+                GetTestFile(), boomPort, false).ParamString;
 
             Assert.IsTrue(launch.Contains(" -extratest "));
             Assert.IsTrue(launch.Contains(" -boomextra "));
@@ -426,7 +429,7 @@ namespace UnitTest.Tests
             var port = GetPrBoomTestPort(".wad,.deh");
 
             var gameFile = new GameFile() { FileName = LocalFile1 };
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _).ParamString;
+            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false).ParamString;
             string check = string.Format("-iwad \"{0}\" -file \"{1}\"",
                 Path.Combine(Directory.GetCurrentDirectory(), LocalIwad1),
                 Path.Combine(Directory.GetCurrentDirectory(), LocalFile1));
@@ -450,7 +453,7 @@ namespace UnitTest.Tests
             var port = GetPrBoomTestPort(".wad,.deh");
 
             var gameFile = new GameFile() { FileName = LocalFile1 };
-            var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _).ParamString;
+            var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false).ParamString;
             Assert.IsTrue(launch.Contains("-savedir iwad1/file1"));
         }
 
@@ -471,7 +474,7 @@ namespace UnitTest.Tests
             var adapter = new GameFilePlayAdapter(features);
             var port = GetPrBoomTestPort(".wad,.deh");
             var gameFile = new GameFile() { FileName = LocalFile1 };
-            var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false, out _).ParamString;
+            var launch = adapter.GetLaunchParameters(gameFilePath, tempPath, gameFile, port, false).ParamString;
             Assert.IsTrue(launch.Contains("-blah -blob"));
             Assert.IsFalse(launch.Contains("E1M2")); 
             Assert.IsFalse(launch.Contains("iwad"));

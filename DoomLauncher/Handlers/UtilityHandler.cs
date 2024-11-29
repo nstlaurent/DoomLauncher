@@ -45,7 +45,7 @@ namespace DoomLauncher
             };
 
             GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
-            var launchParameters = adapter.GetLaunchParameters(null, m_config.TempDirectory, gameFile, m_utility, false, out var error);
+            var launchParameters = adapter.GetLaunchParameters(null, m_config.TempDirectory, gameFile, m_utility, false);
 
             if (launchParameters.Failed)
                 return false;

@@ -283,8 +283,10 @@ namespace DoomLauncher
             if (m_currentPlayForm.SaveStatistics)
                 statisticsReader = SetupStatsReader(sourcePort, gameFile);
 
-            if (playAdapter.Launch(AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, 
-                gameFile, sourcePort, isGameFileIwad))
+            var launchResult = playAdapter.Launch(AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory,
+                gameFile, sourcePort, isGameFileIwad);
+
+            if (!launchResult.Failed)
             {
                 m_activeSessions.Add(new PlaySession(playAdapter, statisticsReader, DateTime.Now));
 
@@ -300,7 +302,7 @@ namespace DoomLauncher
             {
                 UpdateDataSourceViews(gameFile);
                 HandleSelectionChange(GetCurrentViewControl(), true);
-                StyledMessageBox.Show(this, playAdapter.LastError, "Launch Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StyledMessageBox.Show(this, launchResult.ErrorMessage, "Launch Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -341,7 +343,8 @@ namespace DoomLauncher
                 StartPosition = FormStartPosition.CenterParent
             };
 
-            LaunchParameters launchParameters = playAdapter.GetLaunchParameters(AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile), out var error);
+            LaunchParameters launchParameters = playAdapter.GetLaunchParameters(
+                AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile));
 
             if (!launchParameters.Failed)
             {
@@ -368,7 +371,7 @@ namespace DoomLauncher
             }
             else
             {
-                form.DisplayText = $"Failed to generate launch parameters: {error}";
+                form.DisplayText = $"Failed to generate launch parameters: {launchParameters.ErrorMessage}";
             }
 
             form.SelectDisplayText(0, 0);
