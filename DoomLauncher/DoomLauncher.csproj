@@ -135,7 +135,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapters\Launch\AdditionalFilesLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\GameFilesLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\UtilityFilesLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\IWadLaunchFeature.cs" />
     <Compile Include="Adapters\Launch\LoadSaveLaunchFeature.cs" />

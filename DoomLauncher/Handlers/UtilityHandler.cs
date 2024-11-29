@@ -28,8 +28,10 @@ namespace DoomLauncher
             List<SpecificFilePath> files;
             if (gameFile.IsUnmanaged())
             {
-                files = new List<SpecificFilePath>();
-                files.Add(new SpecificFilePath() { ExtractedFile = gameFile.FileName, InternalFilePath = gameFile.FileName });
+                files = new List<SpecificFilePath>
+                {
+                    new SpecificFilePath() { ExtractedFile = gameFile.FileName, InternalFilePath = gameFile.FileName }
+                };
             }
             else if (!GetUserSelectedFiles(gameFile, out files))
             {
@@ -45,12 +47,12 @@ namespace DoomLauncher
             GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             var launchParameters = adapter.GetLaunchParameters(null, m_config.TempDirectory, gameFile, m_utility, false, out var error);
 
-            if (error != null)
+            if (launchParameters.Failed)
                 return false;
 
             try
             {
-                Process.Start(m_utility.GetFullExecutablePath(), launchParameters);
+                Process.Start(m_utility.GetFullExecutablePath(), launchParameters.ParamString);
             }
             catch
             {

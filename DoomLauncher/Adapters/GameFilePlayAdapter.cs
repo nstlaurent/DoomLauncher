@@ -21,11 +21,11 @@ namespace DoomLauncher
         {
             var ourFeatures = new List<ILaunchFeature>(features);
 
-            if (!ourFeatures.Exists(f => f is AdditionalFilesLaunchFeature))
+            if (!ourFeatures.Exists(f => f is GameFilesLaunchFeature))
             {
                 var iWadIndex = ourFeatures.FindIndex(f => f is IWadLaunchFeature);
                 var insertIndex = (iWadIndex == -1) ? 0 : iWadIndex + 1;
-                ourFeatures.Insert(insertIndex, new AdditionalFilesLaunchFeature(null, null));
+                ourFeatures.Insert(insertIndex, new GameFilesLaunchFeature(null, null));
             }
 
             _features = ourFeatures;
@@ -51,11 +51,11 @@ namespace DoomLauncher
             GameFile = gameFile;
             SourcePort = sourcePort;
 
-            string launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad, out var error);
-            if (launchParameters == null)
+            LaunchParameters launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad, out var error);
+            if (launchParameters.Failed)
             {
                 if (string.IsNullOrEmpty(LastError))
-                    LastError = $"Failed to create launch parameters: {error}";
+                    LastError = $"Failed to create launch parameters: {launchParameters.ErrorMessage}";
                 return false;
             }
        
@@ -63,7 +63,7 @@ namespace DoomLauncher
 
             try
             {
-                Process proc = Process.Start(sourcePort.GetFullExecutablePath(), launchParameters);
+                Process proc = Process.Start(sourcePort.GetFullExecutablePath(), launchParameters.ParamString);
                 proc.EnableRaisingEvents = true;
                 proc.Exited += proc_Exited;
             }
@@ -76,7 +76,7 @@ namespace DoomLauncher
             return true;            
         }
 
-        public string GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory, IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad, out string error)
+        public LaunchParameters GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory, IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad, out string error)
         {
             LaunchParameters parametersResult = LaunchParameters.EMPTY;
             foreach (var feature in _features)
@@ -93,7 +93,7 @@ namespace DoomLauncher
             if (!string.IsNullOrEmpty(LastError))
                 return null;
 
-            return parametersResult.ParamString;
+            return parametersResult;
         }
 
         public string LastError { get; private set; } // Output

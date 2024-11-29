@@ -341,13 +341,15 @@ namespace DoomLauncher
                 StartPosition = FormStartPosition.CenterParent
             };
 
-            string launchParameters = playAdapter.GetLaunchParameters(AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile), out var error);
+            LaunchParameters launchParameters = playAdapter.GetLaunchParameters(AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile), out var error);
 
-            if (launchParameters != null)
+            if (!launchParameters.Failed)
             {
-                launchParameters = launchParameters.Replace(@" -", string.Concat(Environment.NewLine, " -"));
-                launchParameters = launchParameters.Replace("\" \"", string.Concat("\"", Environment.NewLine, " \""));
-                if (launchParameters.StartsWith(Environment.NewLine)) launchParameters = launchParameters.Substring(Environment.NewLine.Length);
+                var paramString = launchParameters.ParamString;
+                paramString = paramString.Replace(@" -", string.Concat(Environment.NewLine, " -"));
+                paramString = paramString.Replace("\" \"", string.Concat("\"", Environment.NewLine, " \""));
+                if (paramString.StartsWith(Environment.NewLine))
+                    paramString = paramString.Substring(Environment.NewLine.Length);
                 string individualFiles = string.Empty;
 
                 if (m_currentPlayForm.SpecificFiles != null && m_currentPlayForm.SpecificFiles.Length > 0)
@@ -357,7 +359,7 @@ namespace DoomLauncher
                 if (!string.IsNullOrEmpty(sourcePort.ExtraParameters))
                     sourcePortParams = string.Concat(Environment.NewLine, Environment.NewLine, "Parameters from source port: ", sourcePort.ExtraParameters);
 
-                form.DisplayText = string.Concat(launchParameters, Environment.NewLine, Environment.NewLine, 
+                form.DisplayText = string.Concat(paramString, Environment.NewLine, Environment.NewLine, 
                     string.Format("Supported Extensions: {0}", sourcePort.SupportedExtensions),
                     individualFiles,
                     sourcePortParams,
@@ -433,7 +435,7 @@ namespace DoomLauncher
                 new IWadLaunchFeature(form.SelectedIWad),
                 new MapSkillLaunchFeature(form.SelectedMap, form.SelectedSkill),
                 new RecordLaunchFeature(),
-                new AdditionalFilesLaunchFeature(form.GetAdditionalFiles(), form.SpecificFiles?.ToList<string>()),
+                new GameFilesLaunchFeature(form.GetAdditionalFiles(), form.SpecificFiles?.ToList<string>()),
                 new ExtraParametersLaunchFeature(form.ExtraParameters, form.ExtraParametersOnly),
                 new SourcePortExtraParametersLaunchFeature(),
             };

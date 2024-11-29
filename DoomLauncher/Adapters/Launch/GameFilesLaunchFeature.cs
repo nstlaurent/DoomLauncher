@@ -1,30 +1,27 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
-using IWshRuntimeLibrary;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Documents;
 
 namespace DoomLauncher.Adapters.Launch
 {
-    public class AdditionalFilesLaunchFeature : ILaunchFeature
+    public class GameFilesLaunchFeature : ILaunchFeature
     {
-        private List<IGameFile> _additionalFiles;
+        private List<IGameFile> _gameFiles;
         private List<string> _specificFiles;
 
-        public AdditionalFilesLaunchFeature(List<IGameFile> additionalFiles, List<string> specificFiles)
+        public GameFilesLaunchFeature(List<IGameFile> gameFiles, List<string> specificFiles)
         {
-            _additionalFiles = (additionalFiles != null) ? new List<IGameFile>(additionalFiles) : new List<IGameFile>();
+            _gameFiles = (gameFiles != null) ? new List<IGameFile>(gameFiles) : new List<IGameFile>();
             _specificFiles = (specificFiles != null) ? new List<string>(specificFiles) : new List<string>();
         }
 
         public LaunchParameters CreateParam(ISourcePortData sourcePortData, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
         {
-            var filesToUse = new List<IGameFile>(_additionalFiles);
+            var filesToUse = new List<IGameFile>(_gameFiles);
 
             if (isGameFileIwad)
                 filesToUse.Remove(gameFile);
