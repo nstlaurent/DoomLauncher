@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using static DoomLauncher.GameFilePlayAdapter;
 
 namespace DoomLauncher
 {
@@ -288,7 +289,7 @@ namespace DoomLauncher
 
             if (!launchResult.Failed)
             {
-                m_activeSessions.Add(new PlaySession(playAdapter, statisticsReader, DateTime.Now));
+                m_activeSessions.Add(new PlaySession(launchResult.GameLaunchInfo, statisticsReader, DateTime.Now));
 
                 if (gameFile != null)
                 {
@@ -432,16 +433,20 @@ namespace DoomLauncher
             Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
         }
 
-        private GameFilePlayAdapter CreatePlayAdapter(PlayForm form, EventHandler processExited, AppConfiguration appConfig)
+        private GameFilePlayAdapter CreatePlayAdapter(PlayForm form, GameLaunchExitHandler processExited, AppConfiguration appConfig)
         {
             var features = new List<ILaunchFeature>() {
                 new IWadLaunchFeature(form.SelectedIWad),
                 new MapSkillLaunchFeature(form.SelectedMap, form.SelectedSkill),
-                new RecordLaunchFeature(),
                 new GameFilesLaunchFeature(form.GetAdditionalFiles(), form.SpecificFiles?.ToList<string>()),
                 new ExtraParametersLaunchFeature(form.ExtraParameters, form.ExtraParametersOnly),
                 new SourcePortExtraParametersLaunchFeature(),
             };
+
+            if (form.Record)
+            {
+                features.Add(new RecordLaunchFeature());
+            }
 
             if (form.PlayDemo && form.SelectedDemo != null)
             {
@@ -456,6 +461,7 @@ namespace DoomLauncher
                 features.Add(new LoadSaveLaunchFeature(GetLoadLatestSave(form.GameFile, form.SelectedSourcePort)));
 
             GameFilePlayAdapter playAdapter = new GameFilePlayAdapter(features);
+            playAdapter.ProcessExited += processExited;
             return playAdapter;
         }
 
@@ -484,11 +490,11 @@ namespace DoomLauncher
                 return;
 
             PlaySession session = m_activeSessions.FirstOrDefault(x => statisticsReader.Equals(x.StatisticsReader));
-            if (session == null || session.Adapter.GameFile == null)
+            if (session == null || session.GameLaunchInfo.GameFile == null)
                 return;
 
             e.Statistics.MapName = e.Statistics.MapName.ToUpper();
-            e.Statistics.GameFileID = session.Adapter.GameFile.GameFileID.Value;
+            e.Statistics.GameFileID = session.GameLaunchInfo.GameFile.GameFileID.Value;
             e.Statistics.SourcePortID = m_currentPlayForm.SelectedSourcePort.SourcePortID;
 
             if (e.Update)
@@ -506,19 +512,19 @@ namespace DoomLauncher
             return DataSourceAdapter.GetGameFileIWads().Any(x => x.GameFileID.Value == gameFile.GameFileID.Value);
         }
 
-        void playAdapter_ProcessExited(object sender, EventArgs e)
+        void playAdapter_ProcessExited(GameLaunchInfo launchInfo)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<object>(HandleProcessExited), new object[] { sender });
+                Invoke(new Action<GameLaunchInfo>(HandleProcessExited), new object[] { launchInfo });
             }
             else
             {
-                HandleProcessExited(sender);
+                HandleProcessExited(launchInfo);
             }
         }
 
-        private void HandleProcessExited(object sender)
+        private void HandleProcessExited(GameLaunchInfo gameLaunchInfo)
         {
             if (m_filterForm != null)
             {
@@ -526,22 +532,21 @@ namespace DoomLauncher
                 m_filterForm = null;
             }
 
-            GameFilePlayAdapter adapter = sender as GameFilePlayAdapter;
-            PlaySession session = m_activeSessions.FirstOrDefault(x => x.Adapter.Equals(adapter));
+            PlaySession session = m_activeSessions.FirstOrDefault(x => x.GameLaunchInfo.Equals(gameLaunchInfo));
             DateTime dtExit = DateTime.Now;
             Directory.SetCurrentDirectory(m_workingDirectory);
 
-            if (adapter.SourcePort != null)
+            if (gameLaunchInfo.SourcePort != null)
             {
-                IGameFile gameFile = adapter.GameFile;
+                IGameFile gameFile = gameLaunchInfo.GameFile;
 
                 if (gameFile != null && session != null)
                     SetMinutesPlayed(session, dtExit);
 
-                if (!string.IsNullOrEmpty(adapter.RecordedFileName))
-                    HandleRecordedDemo(adapter, gameFile);
+                if (!string.IsNullOrEmpty(gameLaunchInfo.RecordedFileName))
+                    HandleRecordedDemo(gameLaunchInfo, gameFile);
 
-                HandleDetectorFiles(adapter, gameFile);
+                HandleDetectorFiles(gameLaunchInfo.SourcePort, gameFile);
 
                 if (session != null && session.StatisticsReader != null)
                 {
@@ -567,7 +572,7 @@ namespace DoomLauncher
             }
 
             IGameFileView view = GetCurrentViewControl();
-            view.UpdateGameFile(adapter.GameFile);
+            view.UpdateGameFile(gameLaunchInfo.GameFile);
             HandleSelectionChange(view, true);
             ShouldShowToolTip = true;
         }
@@ -579,7 +584,7 @@ namespace DoomLauncher
 
         private void SetMinutesPlayed(PlaySession session, DateTime dtExit)
         {
-            IGameFile gameFile = session.Adapter.GameFile;
+            IGameFile gameFile = session.GameLaunchInfo.GameFile;
             gameFile.MinutesPlayed += Convert.ToInt32(dtExit.Subtract(session.Start).TotalMinutes);
             DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.MinutesPlayed });
             UpdateDataSourceViews(gameFile);
@@ -604,26 +609,26 @@ namespace DoomLauncher
             form.ShowDialog(this);
         }
 
-        private void HandleDetectorFiles(GameFilePlayAdapter adapter, IGameFile gameFile)
+        private void HandleDetectorFiles(ISourcePortData sourcePort, IGameFile gameFile)
         {
-            ScreenshotHandler.HandleNewScreenshots(adapter.SourcePort, gameFile, GetNewScreenshots());
+            ScreenshotHandler.HandleNewScreenshots(sourcePort, gameFile, GetNewScreenshots());
             SaveGameHandler savegameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
 
-            savegameHandler.HandleNewSaveGames(adapter.SourcePort, gameFile, GetNewSaveGames(m_saveFileDetectors, m_saveGames));
-            savegameHandler.HandleUpdateSaveGames(adapter.SourcePort, gameFile, m_saveGames);
+            savegameHandler.HandleNewSaveGames(sourcePort, gameFile, GetNewSaveGames(m_saveFileDetectors, m_saveGames));
+            savegameHandler.HandleUpdateSaveGames(sourcePort, gameFile, m_saveGames);
             savegameHandler.HandleDeleteSaveGames(GetDeletedSaveGames(m_saveFileDetectors), m_saveGames);
         }
 
-        private void HandleRecordedDemo(GameFilePlayAdapter adapter, IGameFile gameFile)
+        private void HandleRecordedDemo(GameLaunchInfo gameLaunchInfo, IGameFile gameFile)
         {
             DirectoryInfo di = new DirectoryInfo(AppConfiguration.TempDirectory.GetFullPath());
-            FileInfo fiTemp = new FileInfo(adapter.RecordedFileName);
+            FileInfo fiTemp = new FileInfo(gameLaunchInfo.RecordedFileName);
             FileInfo fi = di.GetFiles().FirstOrDefault(x => x.Name.Contains(fiTemp.Name));
 
             if (fi != null && fi.Exists)
             {
                 DemoHandler demoHandler = new DemoHandler(DataSourceAdapter, AppConfiguration.DemoDirectory);
-                demoHandler.HandleNewDemo(adapter.SourcePort, gameFile, fi.FullName,
+                demoHandler.HandleNewDemo(gameLaunchInfo.SourcePort, gameFile, fi.FullName,
                     m_currentPlayForm.RecordDescriptionText);
             }
             else

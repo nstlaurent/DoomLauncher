@@ -1,8 +1,12 @@
 ﻿
+using static DoomLauncher.GameFilePlayAdapter;
+
 namespace DoomLauncher.Adapters.Launch
 {
     public class LaunchResult
     {
+        public GameLaunchInfo GameLaunchInfo { get; }
+
         public string ErrorMessage { get; }
 
         public bool Failed
@@ -10,15 +14,16 @@ namespace DoomLauncher.Adapters.Launch
             get => !string.IsNullOrEmpty(ErrorMessage);
         }
 
-        private LaunchResult(string errorMessage)
+        private LaunchResult(GameLaunchInfo gameLaunchInfo, string errorMessage)
         {
+            GameLaunchInfo = gameLaunchInfo;
             ErrorMessage = errorMessage;
         }
 
-        public static LaunchResult Success() =>
-            new LaunchResult(null);
+        public static LaunchResult Success(GameLaunchInfo gameLaunchInfo) =>
+            new LaunchResult(gameLaunchInfo, null);
 
         public static LaunchResult Failure(string errorMessage) =>
-            new LaunchResult(errorMessage);
+            new LaunchResult(null, errorMessage);
     }
 }

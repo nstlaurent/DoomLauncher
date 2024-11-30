@@ -190,11 +190,11 @@ namespace UnitTest.Tests
 
             GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
             adapter.ExtractFiles = false;
-            string launch = adapter.GetLaunchParameters(gameFilePath, tempPath, 
-                GetTestFile(), GetTestPort(".wad,.deh"), false).ParamString;
+            var parameters = adapter.GetLaunchParameters(gameFilePath, tempPath,
+                GetTestFile(), GetTestPort(".wad,.deh"), false);
 
-            Assert.IsNotNull(adapter.RecordedFileName);
-            Assert.IsTrue(launch.Contains(string.Concat("-record \"", adapter.RecordedFileName, "\"")));
+            Assert.IsNotNull(parameters.RecordedFileName);
+            Assert.IsTrue(parameters.ParamString.Contains(string.Concat("-record \"", parameters.RecordedFileName, "\"")));
         }
 
         [TestMethod]

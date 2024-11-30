@@ -4,18 +4,23 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace DoomLauncher
 {
+
+
     public class GameFilePlayAdapter
     {
-        public event EventHandler ProcessExited;
+        public delegate void GameLaunchExitHandler(GameLaunchInfo info);
+
+        public event GameLaunchExitHandler ProcessExited;
 
         private readonly List<ILaunchFeature> _features;
 
         public GameFilePlayAdapter(List<ILaunchFeature> features)
         {
-            _features = AddGameFileFeatureIfMissing(new List<ILaunchFeature>(features));
+            _features = AddGameFileFeatureIfMissing(features);
         }
 
         public GameFilePlayAdapter() : this(new List<ILaunchFeature>())
@@ -25,13 +30,14 @@ namespace DoomLauncher
 
         private static List<ILaunchFeature> AddGameFileFeatureIfMissing(List<ILaunchFeature> proposedFeatures)
         {
-            if (!proposedFeatures.Exists(f => f is GameFilesLaunchFeature))
+            var updatedFeatures = new List<ILaunchFeature>(proposedFeatures);
+            if (!updatedFeatures.Exists(f => f is GameFilesLaunchFeature))
             {
-                var iWadIndex = proposedFeatures.FindIndex(f => f is IWadLaunchFeature);
+                var iWadIndex = updatedFeatures.FindIndex(f => f is IWadLaunchFeature);
                 var insertIndex = (iWadIndex == -1) ? 0 : iWadIndex + 1;
-                proposedFeatures.Insert(insertIndex, new GameFilesLaunchFeature(null, null));
+                updatedFeatures.Insert(insertIndex, new GameFilesLaunchFeature(null, null));
             }
-            return proposedFeatures;
+            return updatedFeatures;
         }
 
         public LaunchResult Launch(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
@@ -44,9 +50,6 @@ namespace DoomLauncher
                 return LaunchResult.Failure(errorMessage);
             }
 
-            GameFile = gameFile;
-            SourcePort = sourcePort;
-
             LaunchParameters launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad);
             if (launchParameters.Failed)
             {
@@ -55,53 +58,51 @@ namespace DoomLauncher
        
             Directory.SetCurrentDirectory(sourcePort.Directory.GetFullPath());
 
+            var gameLaunchInfo = new GameLaunchInfo(this, gameFile, sourcePort, launchParameters.RecordedFileName);
             try
             {
                 Process proc = Process.Start(sourcePort.GetFullExecutablePath(), launchParameters.ParamString);
                 proc.EnableRaisingEvents = true;
-                proc.Exited += proc_Exited;
+                proc.Exited += gameLaunchInfo.proc_Exited;
             }
             catch
             {
                 return LaunchResult.Failure("Failed to execute the source port process.");
             }
 
-            return LaunchResult.Success();            
+            return LaunchResult.Success(gameLaunchInfo);            
         }
 
         public LaunchParameters GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory, IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad)
         {
-            LaunchParameters parametersResult = LaunchParameters.EMPTY;
-            foreach (var feature in _features)
-            {
-                var newParameters = feature.CreateParam(sourcePortData, gameFile, isGameFileIwad, gameFileDirectory, tempDirectory);
-                parametersResult = parametersResult.Combine(newParameters);
-            }
-
-            parametersResult = parametersResult.WithVariableReplacement("filename", gameFile.FileNameNoPath);
-
-            RecordedFileName = parametersResult.RecordedFileName;
-
-            return parametersResult;
+            var paramList = _features.Select(f => f.CreateParam(sourcePortData, gameFile, isGameFileIwad, gameFileDirectory, tempDirectory));
+            var combinedParams = paramList.Aggregate(LaunchParameters.EMPTY, (a, b) => a.Combine(b));
+            return combinedParams.WithVariableReplacement("filename", gameFile.FileNameNoPath);
         }
-
-        // Depended on by Exit event handler
-        public string RecordedFileName { get; private set; } // Output 
-
-        // Depended on by Exit event handler
-        public ISourcePortData SourcePort { get; private set; } // Output
-
-        // Depended on by statistics event handler, which is using the GameFilePlayAdapter
-        // attached to the PlaySession
-        // Depended on by Exit event handler
-        public IGameFile GameFile { get; private set; } // Output
 
         /// TODO reinstate this functionality
         public bool ExtractFiles { get; set; } // Input
 
-        void proc_Exited(object sender, EventArgs e)
+        public class GameLaunchInfo
         {
-            ProcessExited?.Invoke(this, new EventArgs());
+            public IGameFile GameFile { get; }
+            public ISourcePortData SourcePort { get; }
+            public string RecordedFileName { get; }
+
+            private readonly GameFilePlayAdapter _adapter;
+
+            public GameLaunchInfo(GameFilePlayAdapter adapter, IGameFile gameFile, ISourcePortData sourcePort, string recordedFileName)
+            {
+                _adapter = adapter;
+                GameFile = gameFile;
+                SourcePort = sourcePort;
+                RecordedFileName = recordedFileName;
+            }
+
+            public void proc_Exited(object sender, EventArgs e)
+            {
+                _adapter.ProcessExited.Invoke(this);
+            }
         }
     }
 }
