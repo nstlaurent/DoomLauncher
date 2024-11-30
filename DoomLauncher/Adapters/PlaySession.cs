@@ -1,5 +1,5 @@
 ﻿using System;
-using static DoomLauncher.GameFilePlayAdapter;
+using static DoomLauncher.GameLauncher;
 
 namespace DoomLauncher.Adapters
 {

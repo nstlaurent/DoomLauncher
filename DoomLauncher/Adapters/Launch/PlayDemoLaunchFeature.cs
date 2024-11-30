@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Config;
+using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.IO;
@@ -14,7 +15,7 @@ namespace DoomLauncher.Adapters.Launch
             _playDemoFile = playDemoFile;
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
             FileInfo fi = new FileInfo(_playDemoFile);
 

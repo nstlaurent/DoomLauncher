@@ -1,11 +1,12 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Config;
+using DoomLauncher.Interfaces;
 using System;
 
 namespace DoomLauncher.Adapters.Launch
 {
     public class StatisticsReaderLaunchFeature : ILaunchFeature
     {
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
             IStatisticsReader statsReader = sourcePort.GetFlavor().CreateStatisticsReader(gameFile, Array.Empty<IStatsData>());
             return LaunchParameters.Param(statsReader?.LaunchParameter);

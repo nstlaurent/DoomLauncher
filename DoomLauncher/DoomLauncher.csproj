@@ -158,6 +158,7 @@
     <Compile Include="Archive\IArchiveEntry.cs" />
     <Compile Include="Config\ColorTheme.cs" />
     <Compile Include="Config\ColorThemeType.cs" />
+    <Compile Include="Config\IDirectoriesConfiguration.cs" />
     <Compile Include="Controls\CCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -554,7 +555,7 @@
     <Compile Include="DataSources\IdGamesGameFile.cs" />
     <Compile Include="DataSources\FileData.cs" />
     <Compile Include="DataSources\SourcePortData.cs" />
-    <Compile Include="Adapters\GameFilePlayAdapter.cs" />
+    <Compile Include="Adapters\GameLauncher.cs" />
     <Compile Include="Adapters\IdGamesDataAdapater.cs" />
     <Compile Include="Controls\GameFileEdit.cs">
       <SubType>UserControl</SubType>

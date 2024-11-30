@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Config;
+using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 
 namespace DoomLauncher.Adapters.Launch
@@ -12,7 +13,7 @@ namespace DoomLauncher.Adapters.Launch
             _loadSaveFile = loadSaveFile;
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
             if (!string.IsNullOrEmpty(_loadSaveFile) && sourcePort.GetFlavor().LoadSaveGameSupported())
             {

@@ -1,10 +1,11 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Config;
+using DoomLauncher.Interfaces;
 
 namespace DoomLauncher.Adapters.Launch
 {
     public interface ILaunchFeature
     {
-        LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory); 
+        LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories); 
     }
 
 }

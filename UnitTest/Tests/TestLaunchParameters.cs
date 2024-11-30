@@ -13,7 +13,7 @@ namespace UnitTest.Tests
             var b = LaunchParameters.Param("b");
 
             var result = a.Combine(b);
-            Assert.AreEqual("a b", result.ParamString);
+            Assert.AreEqual("a b", result.LaunchString);
         }
 
         [TestMethod]
@@ -21,8 +21,8 @@ namespace UnitTest.Tests
         {
             var a = LaunchParameters.Param("blah");
 
-            Assert.AreEqual("blah", a.Combine(LaunchParameters.EMPTY).ParamString);
-            Assert.AreEqual("blah", LaunchParameters.EMPTY.Combine(a).ParamString);
+            Assert.AreEqual("blah", a.Combine(LaunchParameters.EMPTY).LaunchString);
+            Assert.AreEqual("blah", LaunchParameters.EMPTY.Combine(a).LaunchString);
         }
 
         [TestMethod]
@@ -56,7 +56,7 @@ namespace UnitTest.Tests
             var d = LaunchParameters.Param("d");
 
             var result = a.Combine(b).Combine(c).Combine(d);
-            Assert.AreEqual("c", result.ParamString);
+            Assert.AreEqual("c", result.LaunchString);
         }
 
         [TestMethod]
@@ -85,9 +85,9 @@ namespace UnitTest.Tests
             var result2 = param2.Combine(param1).Combine(appliedParam);
             var result3 = param1.Combine(appliedParam).Combine(param2);
 
-            Assert.AreEqual("$somethingElse bongo.wad needs freedoom.wad", result1.ParamString);
-            Assert.AreEqual("$somethingElse bongo.wad needs freedoom.wad", result2.ParamString);
-            Assert.AreEqual("$somethingElse bongo.wad needs freedoom.wad", result3.ParamString);
+            Assert.AreEqual("$somethingElse bongo.wad needs freedoom.wad", result1.LaunchString);
+            Assert.AreEqual("$somethingElse bongo.wad needs freedoom.wad", result2.LaunchString);
+            Assert.AreEqual("$somethingElse bongo.wad needs freedoom.wad", result3.LaunchString);
         }
     }
 }

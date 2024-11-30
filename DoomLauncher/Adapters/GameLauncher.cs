@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Adapters.Launch;
+using DoomLauncher.Config;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,7 @@ using System.Linq;
 
 namespace DoomLauncher
 {
-
-
-    public class GameFilePlayAdapter
+    public class GameLauncher
     {
         public delegate void GameLaunchExitHandler(GameLaunchInfo info);
 
@@ -18,12 +17,15 @@ namespace DoomLauncher
 
         private readonly List<ILaunchFeature> _features;
 
-        public GameFilePlayAdapter(List<ILaunchFeature> features)
+        private readonly IDirectoriesConfiguration _directories;
+
+        public GameLauncher(IDirectoriesConfiguration directories, List<ILaunchFeature> features)
         {
             _features = AddGameFileFeatureIfMissing(features);
+            _directories = directories;
         }
 
-        public GameFilePlayAdapter() : this(new List<ILaunchFeature>())
+        public GameLauncher(IDirectoriesConfiguration directories) : this(directories, new List<ILaunchFeature>())
         {
             
         }
@@ -40,8 +42,7 @@ namespace DoomLauncher
             return updatedFeatures;
         }
 
-        public LaunchResult Launch(LauncherPath gameFileDirectory, LauncherPath tempDirectory,
-            IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad)
+        public LaunchResult Launch(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad)
         {
             if (!Directory.Exists(sourcePort.Directory.GetFullPath()))
             {
@@ -50,7 +51,7 @@ namespace DoomLauncher
                 return LaunchResult.Failure(errorMessage);
             }
 
-            LaunchParameters launchParameters = GetLaunchParameters(gameFileDirectory, tempDirectory, gameFile, sourcePort, isGameFileIwad);
+            LaunchParameters launchParameters = GetLaunchParameters(gameFile, sourcePort, isGameFileIwad);
             if (launchParameters.Failed)
             {
                 return LaunchResult.Failure($"Failed to create launch parameters: {launchParameters.ErrorMessage}");
@@ -61,7 +62,7 @@ namespace DoomLauncher
             var gameLaunchInfo = new GameLaunchInfo(this, gameFile, sourcePort, launchParameters.RecordedFileName);
             try
             {
-                Process proc = Process.Start(sourcePort.GetFullExecutablePath(), launchParameters.ParamString);
+                Process proc = Process.Start(sourcePort.GetFullExecutablePath(), launchParameters.LaunchString);
                 proc.EnableRaisingEvents = true;
                 proc.Exited += gameLaunchInfo.proc_Exited;
             }
@@ -73,9 +74,9 @@ namespace DoomLauncher
             return LaunchResult.Success(gameLaunchInfo);            
         }
 
-        public LaunchParameters GetLaunchParameters(LauncherPath gameFileDirectory, LauncherPath tempDirectory, IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad)
+        public LaunchParameters GetLaunchParameters(IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad)
         {
-            var paramList = _features.Select(f => f.CreateParam(sourcePortData, gameFile, isGameFileIwad, gameFileDirectory, tempDirectory));
+            var paramList = _features.Select(f => f.CreateParameter(gameFile, sourcePortData, isGameFileIwad, _directories));
             var combinedParams = paramList.Aggregate(LaunchParameters.EMPTY, (a, b) => a.Combine(b));
             return combinedParams.WithVariableReplacement("filename", gameFile.FileNameNoPath);
         }
@@ -89,9 +90,9 @@ namespace DoomLauncher
             public ISourcePortData SourcePort { get; }
             public string RecordedFileName { get; }
 
-            private readonly GameFilePlayAdapter _adapter;
+            private readonly GameLauncher _adapter;
 
-            public GameLaunchInfo(GameFilePlayAdapter adapter, IGameFile gameFile, ISourcePortData sourcePort, string recordedFileName)
+            public GameLaunchInfo(GameLauncher adapter, IGameFile gameFile, ISourcePortData sourcePort, string recordedFileName)
             {
                 _adapter = adapter;
                 GameFile = gameFile;

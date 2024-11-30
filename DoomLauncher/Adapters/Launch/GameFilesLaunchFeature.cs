@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Config;
+using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace DoomLauncher.Adapters.Launch
             _specificFiles = (specificFiles != null) ? new List<string>(specificFiles) : new List<string>();
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePortData, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
             var filesToUse = new List<IGameFile>(_gameFiles);
 
@@ -31,18 +32,18 @@ namespace DoomLauncher.Adapters.Launch
             List<string> launchFiles = new List<string>();
             foreach (IGameFile file in filesToUse)
             {
-                if (!file.ArchiveExists(gameFileDirectory))
+                if (!file.ArchiveExists(directories.GameFileDirectory))
                 {
                     return LaunchParameters.Failure($"Couldn't find additional file at {new LauncherPath(file.FileName).GetFullPath()}");
                 }
-                launchFiles.AddRange(GetExtractedFileNames(sourcePortData, file, gameFileDirectory, tempDirectory));
+                launchFiles.AddRange(GetExtractedFileNames(sourcePort, file, directories));
             }
 
             // Build launch string
             // -file "file1", "file2",.. -deh "deh1", "deh2",.. 
 
             StringBuilder sb = new StringBuilder();
-            BuildLaunchString(sb, sourcePortData.GetFlavor(), launchFiles);
+            BuildLaunchString(sb, sourcePort.GetFlavor(), launchFiles);
             return LaunchParameters.Param(sb.ToString());
         }
 
@@ -74,7 +75,7 @@ namespace DoomLauncher.Adapters.Launch
             }
         }
 
-        public List<string> GetExtractedFileNames(ISourcePortData sourcePortData, IGameFile gameFile, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        public List<string> GetExtractedFileNames(ISourcePortData sourcePortData, IGameFile gameFile, IDirectoriesConfiguration directories)
         {
             List<string> launchFiles = new List<string>();
             if (gameFile.IsDirectory())
@@ -85,7 +86,7 @@ namespace DoomLauncher.Adapters.Launch
 
             try
             {
-                using (IArchiveReader reader = gameFile.OpenGameFile(gameFileDirectory))
+                using (IArchiveReader reader = gameFile.OpenGameFile(directories.GameFileDirectory))
                 {
                     IEnumerable<IArchiveEntry> relevantEntries = GetRelevantEntries(reader, sourcePortData);
 
@@ -93,7 +94,7 @@ namespace DoomLauncher.Adapters.Launch
                     {
                         if (entry.ExtractRequired)
                         {
-                            string extractFile = Path.Combine(tempDirectory.GetFullPath(), entry.Name);
+                            string extractFile = Path.Combine(directories.TempDirectory.GetFullPath(), entry.Name);
                             entry.ExtractToFileForceOverwrite(extractFile);
                             launchFiles.Add(extractFile);
                         }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System;
+using DoomLauncher.Config;
 
 namespace DoomLauncher.Adapters.Launch
 {
@@ -17,7 +18,7 @@ namespace DoomLauncher.Adapters.Launch
             _pathFiles = new List<SpecificFilesForm.SpecificFilePath>(pathFiles);
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
             ISourcePortFlavor sourcePortFlavor = new GenericSourcePortFlavor(sourcePort);
             StringBuilder sb = new StringBuilder();
@@ -40,7 +41,7 @@ namespace DoomLauncher.Adapters.Launch
                     {
                         var entry = reader.Entries.FirstOrDefault(x => x.FullName == pathFile.InternalFilePath);
                         if (entry != null)
-                            files.Add(Util.ExtractTempFile(tempDirectory.GetFullPath(), entry));
+                            files.Add(Util.ExtractTempFile(directories.TempDirectory.GetFullPath(), entry));
                     }
                 }
 

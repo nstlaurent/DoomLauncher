@@ -44,15 +44,15 @@ namespace DoomLauncher
                 new ExtraParametersLaunchFeature(m_utility.ExtraParameters, false)
             };
 
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter(features);
-            var launchParameters = adapter.GetLaunchParameters(null, m_config.TempDirectory, gameFile, m_utility, false);
+            GameLauncher launcher = new GameLauncher(m_config, features);
+            var launchParameters = launcher.GetLaunchParameters(gameFile, m_utility, false);
 
             if (launchParameters.Failed)
                 return false;
 
             try
             {
-                Process.Start(m_utility.GetFullExecutablePath(), launchParameters.ParamString);
+                Process.Start(m_utility.GetFullExecutablePath(), launchParameters.LaunchString);
             }
             catch
             {

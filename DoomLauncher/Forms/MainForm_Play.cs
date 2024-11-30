@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using static DoomLauncher.GameFilePlayAdapter;
+using static DoomLauncher.GameLauncher;
 
 namespace DoomLauncher
 {
@@ -243,7 +243,7 @@ namespace DoomLauncher
 
         private void m_currentPlayForm_OnPreviewLaunchParameters(object sender, EventArgs e)
         {
-            GameFilePlayAdapter playAdapter = CreatePlayAdapter(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
+            GameLauncher playAdapter = CreateGameLauncher(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
             playAdapter.ExtractFiles = false;
             if (m_currentPlayForm.SettingsValid(out string err))
                 ShowLaunchParameters(playAdapter, m_currentPlayForm.GameFile, m_currentPlayForm.SelectedSourcePort);
@@ -271,7 +271,7 @@ namespace DoomLauncher
 
         private bool StartPlay(IGameFile gameFile, ISourcePortData sourcePort, bool screenFilter)
         {
-            GameFilePlayAdapter playAdapter = CreatePlayAdapter(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
+            GameLauncher playAdapter = CreateGameLauncher(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
             m_saveGames = Array.Empty<IFileData>();
 
             if (AppConfiguration.CopySaveFiles)
@@ -284,8 +284,7 @@ namespace DoomLauncher
             if (m_currentPlayForm.SaveStatistics)
                 statisticsReader = SetupStatsReader(sourcePort, gameFile);
 
-            var launchResult = playAdapter.Launch(AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory,
-                gameFile, sourcePort, isGameFileIwad);
+            var launchResult = playAdapter.Launch(gameFile, sourcePort, isGameFileIwad);
 
             if (!launchResult.Failed)
             {
@@ -336,7 +335,7 @@ namespace DoomLauncher
             saveGameHandler.CopySaveGamesToSourcePort(sourcePort, m_saveGames);
         }
 
-        private void ShowLaunchParameters(GameFilePlayAdapter playAdapter, IGameFile gameFile, ISourcePortData sourcePort)
+        private void ShowLaunchParameters(GameLauncher launcher, IGameFile gameFile, ISourcePortData sourcePort)
         {
             TextBoxForm form = new TextBoxForm
             {
@@ -344,12 +343,11 @@ namespace DoomLauncher
                 StartPosition = FormStartPosition.CenterParent
             };
 
-            LaunchParameters launchParameters = playAdapter.GetLaunchParameters(
-                AppConfiguration.GameFileDirectory, AppConfiguration.TempDirectory, gameFile, sourcePort, IsGameFileIwad(gameFile));
+            LaunchParameters launchParameters = launcher.GetLaunchParameters(gameFile, sourcePort, IsGameFileIwad(gameFile));
 
             if (!launchParameters.Failed)
             {
-                var paramString = launchParameters.ParamString;
+                var paramString = launchParameters.LaunchString;
                 paramString = paramString.Replace(@" -", string.Concat(Environment.NewLine, " -"));
                 paramString = paramString.Replace("\" \"", string.Concat("\"", Environment.NewLine, " \""));
                 if (paramString.StartsWith(Environment.NewLine))
@@ -433,7 +431,7 @@ namespace DoomLauncher
             Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
         }
 
-        private GameFilePlayAdapter CreatePlayAdapter(PlayForm form, GameLaunchExitHandler processExited, AppConfiguration appConfig)
+        private GameLauncher CreateGameLauncher(PlayForm form, GameLaunchExitHandler processExited, AppConfiguration appConfig)
         {
             var features = new List<ILaunchFeature>() {
                 new IWadLaunchFeature(form.SelectedIWad),
@@ -460,7 +458,7 @@ namespace DoomLauncher
             if (form.LoadLatestSave)
                 features.Add(new LoadSaveLaunchFeature(GetLoadLatestSave(form.GameFile, form.SelectedSourcePort)));
 
-            GameFilePlayAdapter playAdapter = new GameFilePlayAdapter(features);
+            GameLauncher playAdapter = new GameLauncher(appConfig, features);
             playAdapter.ProcessExited += processExited;
             return playAdapter;
         }

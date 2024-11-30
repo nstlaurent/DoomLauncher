@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Config;
+using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
 using System.IO;
@@ -15,17 +16,17 @@ namespace DoomLauncher.Adapters.Launch
             _iwad = iwad;
         }
 
-        public LaunchParameters CreateParam(ISourcePortData sourcePort, IGameFile gameFile, bool isGameFileIwad, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
-            if (!gameFile.ArchiveExists(gameFileDirectory))
+            if (!gameFile.ArchiveExists(directories.GameFileDirectory))
             {
-                return LaunchParameters.Failure($"Couldn't find game file at {gameFileDirectory.GetFullPath()}");
+                return LaunchParameters.Failure($"Couldn't find game file at {directories.GameFileDirectory.GetFullPath()}");
             }
 
             string extractedFileName;
             try
             {
-                extractedFileName = GetExtractedFileName(sourcePort, gameFileDirectory, tempDirectory);
+                extractedFileName = GetExtractedFileName(sourcePort, directories);
             }
             catch (FileNotFoundException)
             {
@@ -52,9 +53,9 @@ namespace DoomLauncher.Adapters.Launch
             return LaunchParameters.Param(paramString).WithVariableReplacement("iwad", Path.GetFileNameWithoutExtension(_iwad.FileNameNoPath));
         }
 
-        private string GetExtractedFileName(ISourcePortData sourcePortData, LauncherPath gameFileDirectory, LauncherPath tempDirectory)
+        private string GetExtractedFileName(ISourcePortData sourcePortData, IDirectoriesConfiguration directories)
         {
-            using (IArchiveReader reader = _iwad.OpenGameFile(gameFileDirectory))
+            using (IArchiveReader reader = _iwad.OpenGameFile(directories.GameFileDirectory))
             {
                 IArchiveEntry firstMatchingEntry = GetFirstIWadEntry(reader, sourcePortData);
 
@@ -62,7 +63,7 @@ namespace DoomLauncher.Adapters.Launch
                 {
                     if (firstMatchingEntry.ExtractRequired)
                     { 
-                        string extractFile = Path.Combine(tempDirectory.GetFullPath(), firstMatchingEntry.Name);
+                        string extractFile = Path.Combine(directories.TempDirectory.GetFullPath(), firstMatchingEntry.Name);
                         firstMatchingEntry.ExtractToFileForceOverwrite(extractFile);
                         return extractFile;
                     }

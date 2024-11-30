@@ -6,9 +6,9 @@ namespace DoomLauncher.Adapters.Launch
 {
     public class LaunchParameters
     {
-        public string ParamString { get => _paramString; } 
+        public string LaunchString { get => _launchString; } 
 
-        private readonly string _paramString; // Never null
+        private readonly string _launchString; // Never null
 
         public string ErrorMessage { get; }
 
@@ -22,14 +22,14 @@ namespace DoomLauncher.Adapters.Launch
 
         public static readonly LaunchParameters EMPTY = new LaunchParameters("", null, null, false, null);
 
-        private LaunchParameters(string paramString, string recordedFileName, string errorMessage, bool isExclusive, 
+        private LaunchParameters(string launchString, string recordedFileName, string errorMessage, bool isExclusive, 
             IDictionary<string, string> variableReplacements)
         {
             ErrorMessage = errorMessage;
             RecordedFileName = recordedFileName;
             _variableReplacements = variableReplacements ?? new Dictionary<string, string>();
             _isExclusive = isExclusive;
-            _paramString = ReplaceVariables(paramString ?? "");
+            _launchString = ReplaceVariables(launchString ?? "");
         }
 
         public LaunchParameters Combine(LaunchParameters other)
@@ -45,7 +45,7 @@ namespace DoomLauncher.Adapters.Launch
             else
             {
                 return new LaunchParameters(
-                    $"{ParamString.Trim()} {other.ParamString.Trim()}".Trim(), 
+                    $"{LaunchString.Trim()} {other.LaunchString.Trim()}".Trim(), 
                     RecordedFileName ?? other.RecordedFileName, 
                     null, 
                     other._isExclusive,
