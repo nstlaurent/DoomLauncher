@@ -7,7 +7,6 @@ using DoomLauncher.SourcePort;
 using DoomLauncher.Stylize;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -243,8 +242,7 @@ namespace DoomLauncher
 
         private void m_currentPlayForm_OnPreviewLaunchParameters(object sender, EventArgs e)
         {
-            GameLauncher playAdapter = CreateGameLauncher(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
-            playAdapter.ExtractFiles = false;
+            GameLauncher playAdapter = CreateGameLauncher(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration, false);
             if (m_currentPlayForm.SettingsValid(out string err))
                 ShowLaunchParameters(playAdapter, m_currentPlayForm.GameFile, m_currentPlayForm.SelectedSourcePort);
             else
@@ -271,7 +269,7 @@ namespace DoomLauncher
 
         private bool StartPlay(IGameFile gameFile, ISourcePortData sourcePort, bool screenFilter)
         {
-            GameLauncher playAdapter = CreateGameLauncher(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration);
+            GameLauncher playAdapter = CreateGameLauncher(m_currentPlayForm, playAdapter_ProcessExited, AppConfiguration, true);
             m_saveGames = Array.Empty<IFileData>();
 
             if (AppConfiguration.CopySaveFiles)
@@ -431,20 +429,18 @@ namespace DoomLauncher
             Array.ForEach(m_screenshotDetectors.ToArray(), x => x.StartDetection());
         }
 
-        private GameLauncher CreateGameLauncher(PlayForm form, GameLaunchExitHandler processExited, AppConfiguration appConfig)
+        private GameLauncher CreateGameLauncher(PlayForm form, GameLaunchExitHandler processExited, AppConfiguration appConfig, bool extractFiles)
         {
             var features = new List<ILaunchFeature>() {
-                new IWadLaunchFeature(form.SelectedIWad),
+                new IWadLaunchFeature(form.SelectedIWad, extractFiles),
                 new MapSkillLaunchFeature(form.SelectedMap, form.SelectedSkill),
-                new GameFilesLaunchFeature(form.GetAdditionalFiles(), form.SpecificFiles?.ToList<string>()),
+                new GameFilesLaunchFeature(form.GetAdditionalFiles(), form.SpecificFiles?.ToList<string>(), extractFiles),
                 new ExtraParametersLaunchFeature(form.ExtraParameters, form.ExtraParametersOnly),
                 new SourcePortExtraParametersLaunchFeature(),
             };
 
             if (form.Record)
-            {
                 features.Add(new RecordLaunchFeature());
-            }
 
             if (form.PlayDemo && form.SelectedDemo != null)
             {

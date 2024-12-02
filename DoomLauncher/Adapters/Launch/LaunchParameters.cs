@@ -10,15 +10,15 @@ namespace DoomLauncher.Adapters.Launch
 
         private readonly string _launchString; // Never null
 
-        public string ErrorMessage { get; }
+        public string ErrorMessage { get; } // Null unless failure
 
-        public string RecordedFileName { get; }
+        public string RecordedFileName { get; } // Null unless supplied
 
         public bool Failed { get => ErrorMessage != null; }
 
         private readonly IDictionary<string, string> _variableReplacements; // Never null
 
-        private readonly bool _isExclusive;
+        private readonly bool _isExclusive; // false unless supplied
 
         public static readonly LaunchParameters EMPTY = new LaunchParameters("", null, null, false, null);
 

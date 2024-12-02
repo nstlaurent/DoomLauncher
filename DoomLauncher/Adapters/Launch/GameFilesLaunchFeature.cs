@@ -13,11 +13,13 @@ namespace DoomLauncher.Adapters.Launch
     {
         private List<IGameFile> _gameFiles;
         private List<string> _specificFiles;
+        private bool _extractFiles;
 
-        public GameFilesLaunchFeature(List<IGameFile> gameFiles, List<string> specificFiles)
+        public GameFilesLaunchFeature(List<IGameFile> gameFiles, List<string> specificFiles, bool extractFiles = true)
         {
             _gameFiles = (gameFiles != null) ? new List<IGameFile>(gameFiles) : new List<IGameFile>();
             _specificFiles = (specificFiles != null) ? new List<string>(specificFiles) : new List<string>();
+            _extractFiles = extractFiles;
         }
 
         public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
@@ -42,13 +44,13 @@ namespace DoomLauncher.Adapters.Launch
             // Build launch string
             // -file "file1", "file2",.. -deh "deh1", "deh2",.. 
 
-            StringBuilder sb = new StringBuilder();
-            BuildLaunchString(sb, sourcePort.GetFlavor(), launchFiles);
-            return LaunchParameters.Param(sb.ToString());
+            var launchString = BuildLaunchString(sourcePort.GetFlavor(), launchFiles);
+            return LaunchParameters.Param(launchString);
         }
 
-        private void BuildLaunchString(StringBuilder sb, ISourcePortFlavor sourcePort, List<string> files)
+        private string BuildLaunchString(ISourcePortFlavor sourcePort, List<string> files)
         {
+            StringBuilder sb = new StringBuilder();
             List<string> dehFiles = new List<string>();
 
             if (files.Count > 0)
@@ -73,6 +75,7 @@ namespace DoomLauncher.Adapters.Launch
                 foreach (string str in dehFiles)
                     sb.Append(string.Format("\"{0}\" ", str));
             }
+            return sb.ToString();
         }
 
         public List<string> GetExtractedFileNames(ISourcePortData sourcePortData, IGameFile gameFile, IDirectoriesConfiguration directories)
@@ -95,7 +98,8 @@ namespace DoomLauncher.Adapters.Launch
                         if (entry.ExtractRequired)
                         {
                             string extractFile = Path.Combine(directories.TempDirectory.GetFullPath(), entry.Name);
-                            entry.ExtractToFileForceOverwrite(extractFile);
+                            if (_extractFiles)
+                                entry.ExtractToFileForceOverwrite(extractFile);
                             launchFiles.Add(extractFile);
                         }
                         else

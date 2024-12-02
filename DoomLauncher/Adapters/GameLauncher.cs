@@ -81,9 +81,6 @@ namespace DoomLauncher
             return combinedParams.WithVariableReplacement("filename", gameFile.FileNameNoPath);
         }
 
-        /// TODO reinstate this functionality
-        public bool ExtractFiles { get; set; } // Input
-
         public class GameLaunchInfo
         {
             public IGameFile GameFile { get; }

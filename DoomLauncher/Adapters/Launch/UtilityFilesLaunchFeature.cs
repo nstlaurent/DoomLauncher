@@ -45,8 +45,8 @@ namespace DoomLauncher.Adapters.Launch
                     }
                 }
 
-                BuildLaunchString(sb, sourcePortFlavor, files);
-                return LaunchParameters.Param(sb.ToString());
+                var launchString = BuildLaunchString(sourcePortFlavor, files);
+                return LaunchParameters.Param(launchString);
             }
             catch (FileNotFoundException)
             {
@@ -60,8 +60,9 @@ namespace DoomLauncher.Adapters.Launch
             }
         }
 
-        private void BuildLaunchString(StringBuilder sb, ISourcePortFlavor sourcePort, List<string> files)
+        private string BuildLaunchString(ISourcePortFlavor sourcePort, List<string> files)
         {
+            var sb = new StringBuilder();
             List<string> dehFiles = new List<string>();
 
             if (files.Count > 0)
@@ -86,6 +87,7 @@ namespace DoomLauncher.Adapters.Launch
                 foreach (string str in dehFiles)
                     sb.Append(string.Format("\"{0}\" ", str));
             }
+            return sb.ToString();
         }
     }
 }

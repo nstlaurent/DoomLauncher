@@ -10,10 +10,12 @@ namespace DoomLauncher.Adapters.Launch
     public class IWadLaunchFeature : ILaunchFeature
     {
         private readonly IGameFile _iwad;
+        private readonly bool _extractFiles;
 
-        public IWadLaunchFeature(IGameFile iwad)
+        public IWadLaunchFeature(IGameFile iwad, bool extractFiles = true)
         {
             _iwad = iwad;
+            _extractFiles = extractFiles;
         }
 
         public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
@@ -64,7 +66,8 @@ namespace DoomLauncher.Adapters.Launch
                     if (firstMatchingEntry.ExtractRequired)
                     { 
                         string extractFile = Path.Combine(directories.TempDirectory.GetFullPath(), firstMatchingEntry.Name);
-                        firstMatchingEntry.ExtractToFileForceOverwrite(extractFile);
+                        if (_extractFiles)
+                            firstMatchingEntry.ExtractToFileForceOverwrite(extractFile);
                         return extractFile;
                     }
                     else

@@ -5,7 +5,6 @@ using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -111,20 +110,29 @@ namespace UnitTest.Tests
             Assert.AreEqual(check.Trim(), launch.Trim());
         }
 
-        /*
+        
 
         [TestMethod]
         public void TestExtractFalse()
         {
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            adapter.ExtractFiles = false;
-            LauncherPath gameFilePath = new LauncherPath("GameFiles");
-            LauncherPath tempPath = new LauncherPath("Temp");
-            adapter.GetLaunchParameters(gameFilePath, tempPath, GetTestFile(), GetTestPort(".wad,.deh"), false, out var error);
+            IDirectoriesConfiguration directories = new DirectoriesConfiguration()
+            {
+                GameFileDirectory = new LauncherPath("GameFiles"),
+                TempDirectory = new LauncherPath("Temp")
+            };
 
-            Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.wad")));
-            Assert.IsFalse(File.Exists(Path.Combine(tempPath.GetFullPath(), "test1.deh")));
-        }*/
+            var features = new List<ILaunchFeature>()
+            {
+                new GameFilesLaunchFeature(new List<IGameFile>() { GetTestFile() }, null, false)
+            };
+
+            GameLauncher launcher = new GameLauncher(directories, features);
+
+            launcher.GetLaunchParameters(GetTestFile(), GetTestPort(".wad,.deh"), false);
+
+            Assert.IsFalse(File.Exists(Path.Combine(directories.TempDirectory.GetFullPath(), "test1.wad")));
+            Assert.IsFalse(File.Exists(Path.Combine(directories.TempDirectory.GetFullPath(), "test1.deh")));
+        }
 
         [TestMethod]
         public void TestParametersSourcePortExtraParams()
@@ -170,8 +178,6 @@ namespace UnitTest.Tests
             };
 
             GameLauncher launcher = new GameLauncher(directories, features);
-            launcher.ExtractFiles = false;
-
             var port = GetPrBoomTestPort(".wad,.deh");
 
             var launch = launcher.GetLaunchParameters(GetTestFile(), port, false).LaunchString;
@@ -194,7 +200,6 @@ namespace UnitTest.Tests
             };
 
             GameLauncher launcher = new GameLauncher(directories, features);
-            launcher.ExtractFiles = false;
             var port = GetTestPort(".wad,.deh");
 
             var launch = launcher.GetLaunchParameters(GetTestFile(), port, false).LaunchString;
@@ -217,7 +222,6 @@ namespace UnitTest.Tests
             };
 
             GameLauncher launcher = new GameLauncher(directories, features);
-            launcher.ExtractFiles = false;
             var parameters = launcher.GetLaunchParameters(GetTestFile(), GetTestPort(".wad,.deh"), false);
 
             Assert.IsNotNull(parameters.RecordedFileName);
@@ -240,7 +244,6 @@ namespace UnitTest.Tests
             };
 
             GameLauncher launcher = new GameLauncher(directories, features);
-            launcher.ExtractFiles = false;
             var parameters = launcher.GetLaunchParameters(GetTestFile(), GetTestPort(".wad,.deh"), false);
             //the file doesn't exist
             Assert.IsTrue(parameters.Failed);
