@@ -303,6 +303,9 @@ namespace DoomLauncher
         public IEnumerable<ISourcePortData> GetUtilities(bool loadArchived = false) =>
             GetSourcePorts(SourcePortLaunchType.Utility, loadArchived);
 
+        public IEnumerable<ISourcePortData> GetDoom64(bool loadArchived = false) => 
+            GetSourcePorts(SourcePortLaunchType.Doom64, loadArchived);
+
         private IEnumerable<ISourcePortData> GetSourcePorts(SourcePortLaunchType type, bool loadArchived)
         {
             int sqlArchive = loadArchived ? 1 : 0;

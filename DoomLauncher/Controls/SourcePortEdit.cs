@@ -11,6 +11,7 @@ namespace DoomLauncher
     public partial class SourcePortEdit : UserControl
     {
         private string m_directory, m_exec;
+        private SourcePortLaunchType m_launchType;
 
         public SourcePortEdit()
         {
@@ -40,6 +41,7 @@ namespace DoomLauncher
         {
             m_directory = sourcePort.Directory.GetPossiblyRelativePath();
             m_exec = sourcePort.Executable;
+            m_launchType = sourcePort.LaunchType;
 
             txtName.Text = txtExec.Text = txtExtensions.Text = txtFileOption.Text
                 = txtParameters.Text = txtAltSave.Text = string.Empty;
@@ -75,10 +77,18 @@ namespace DoomLauncher
         public string SourcePortExec { get { return txtExec.Text; } }
         public LauncherPath GetSourcePortDirectory() => new LauncherPath(m_directory);
 
+        private string GetFilter()
+        {
+            if (m_launchType == SourcePortLaunchType.Doom64)
+                return "Doom 64 Executable (DOOM64_x64.exe)|DOOM64_x64.exe|All Files (*.*)|*.*";
+            else
+                return "Executable (*.exe)|*.exe|All Files (*.*)|*.*";
+        }
+
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Executable (*.exe)|*.exe|All Files (*.*)|*.*";
+            dialog.Filter = GetFilter();
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {

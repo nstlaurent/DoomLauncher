@@ -129,8 +129,10 @@ namespace DoomLauncher
         {
             if (m_type == SourcePortLaunchType.SourcePort)
                 return "source port";
-            else
+            else if (m_type == SourcePortLaunchType.Utility)
                 return "utility";
+            else // Doom64
+                return "doom64";
         }
     }
 }

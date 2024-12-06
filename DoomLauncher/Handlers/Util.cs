@@ -316,6 +316,11 @@ namespace DoomLauncher
             return new string[] { ".pk3", ".ipk3", ".pk7", ".pke"};
         }
 
+        public static string[] GetExtraDoom64Extensions()
+        {
+            return new string[] { ".kpf" };
+        }
+
         public static GameFileFieldType[] DefaultGameFileUpdateFields
         {
             get

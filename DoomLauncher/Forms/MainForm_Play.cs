@@ -431,13 +431,17 @@ namespace DoomLauncher
 
         private GameLauncher CreateGameLauncher(PlayForm form, GameLaunchExitHandler processExited, AppConfiguration appConfig, bool extractFiles)
         {
-            var features = new List<ILaunchFeature>() {
-                new IWadLaunchFeature(form.SelectedIWad, extractFiles),
+            var features = new List<ILaunchFeature>();
+
+            if (form.SelectedIWad != null)
+                features.Add(new IWadLaunchFeature(form.SelectedIWad, extractFiles));
+
+            features.AddRange(new List<ILaunchFeature>() {
                 new MapSkillLaunchFeature(form.SelectedMap, form.SelectedSkill),
                 new GameFilesLaunchFeature(form.GetAdditionalFiles(), form.SpecificFiles?.ToList<string>(), extractFiles),
                 new ExtraParametersLaunchFeature(form.ExtraParameters, form.ExtraParametersOnly),
-                new SourcePortExtraParametersLaunchFeature(),
-            };
+                new SourcePortExtraParametersLaunchFeature()
+            });
 
             if (form.Record)
                 features.Add(new RecordLaunchFeature());

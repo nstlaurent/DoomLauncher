@@ -17,6 +17,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DoomLauncher
 {
@@ -1246,6 +1247,14 @@ namespace DoomLauncher
             HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
+        private void HandleEditDoom64()
+        {
+            SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, AppConfiguration, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.Doom64);
+            form.ShowPlayButton(false);
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.ShowDialog(this);
+        }
+
         private void HandleEditUtilities()
         {
             SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, AppConfiguration, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.Utility);
@@ -1402,27 +1411,7 @@ namespace DoomLauncher
 
         private void addDoom64ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HandleAddDoom64();
-        }
-
-        private void HandleAddDoom64()
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = "Select Doom64_x64.exe";
-            dialog.Multiselect = false;
-            dialog.Filter = "Doom64 executable|Doom64_x64.exe";
-
-            if (dialog.ShowDialog(this) == DialogResult.OK)
-            {
-                var doom64Config = new ConfigurationData()
-                {
-                    Name = "Doom64Exe",
-                    Value = dialog.FileName,
-                    UserCanModify = false
-                };
-
-                DataSourceAdapter.InsertConfiguration(doom64Config);
-            }
+            HandleEditDoom64();
         }
 
         private void UpdateLocal()
@@ -2240,7 +2229,31 @@ namespace DoomLauncher
             UtilityHandler handler = new UtilityHandler(this, AppConfiguration, utility);
             if (!handler.RunUtility(launchData.GameFile))
                 MessageBox.Show(this, "The utility was an invalid application or not found.", "Invalid Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
-    }
+        }
+
+        private void doom64ToolStripItem_Click(object sender, EventArgs e)
+        {
+            ToolStripItem strip = sender as ToolStripItem;
+            var doom64s = DataSourceAdapter.GetDoom64();
+            var doom64 = doom64s.FirstOrDefault(x => x.Name == strip.Text);
+            if (doom64 == null)
+            {
+                MessageBox.Show(this, "Failed to find Doom64.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            LaunchData launchData = GetLaunchFiles(SelectedItems(GetCurrentViewControl()), checkActiveSessions: false);
+            if (!launchData.Success)
+            {
+                if (!string.IsNullOrEmpty(launchData.ErrorTitle))
+                    MessageBox.Show(this, launchData.ErrorDescription, launchData.ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            UtilityHandler handler = new UtilityHandler(this, AppConfiguration, doom64);
+            if (!handler.RunUtility(launchData.GameFile))
+                MessageBox.Show(this, "The utility was an invalid application or not found.", "Invalid Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
         private void selectTagsToolStripMenuItem_Click(object sender, EventArgs e)
         {

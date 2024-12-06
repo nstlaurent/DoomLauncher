@@ -41,7 +41,7 @@ namespace DoomLauncher
             var features = new List<ILaunchFeature> 
             { 
                 new UtilityFilesLaunchFeature(files),
-                new ExtraParametersLaunchFeature(m_utility.ExtraParameters, false)
+                new SourcePortExtraParametersLaunchFeature()
             };
 
             GameLauncher launcher = new GameLauncher(m_config, features);

@@ -3,6 +3,7 @@
     public enum SourcePortLaunchType
     {
         SourcePort,
-        Utility
+        Utility,
+        Doom64
     }
 }

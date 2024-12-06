@@ -151,8 +151,8 @@ namespace DoomLauncher
 
             GameFile = gameFile;
 
-            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePortData), "Name");
-            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbIwad, Util.GetIWadsDataSource(m_adapter), typeof(IIWadData), "FileName");
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbSourcePorts, GetSourcePortsForComboBox(gameFile), typeof(ISourcePortData), "Name");
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbIwad, GetIWadsForComboBox(gameFile, m_adapter), typeof(IIWadData), "FileName");
 
             if (gameFile != null)
             {
@@ -166,6 +166,17 @@ namespace DoomLauncher
 
             LoadProfiles();
         }
+
+        private IEnumerable<ISourcePortData> GetSourcePortsForComboBox(IGameFile gameFile)
+        {
+            return gameFile.IsDoom64 ? m_adapter.GetDoom64() : m_adapter.GetSourcePorts();
+        }
+
+        private IEnumerable<IIWadData> GetIWadsForComboBox(IGameFile gameFile, IDataSourceAdapter adapter)
+        {
+            return gameFile.IsDoom64 ? new List<IIWadData>() :  Util.GetIWadsDataSource(adapter);
+        }
+
 
         public void SetGameProfile(IGameProfile gameProfile)
         {
@@ -188,24 +199,18 @@ namespace DoomLauncher
                     SelectedSourcePort = m_adapter.GetSourcePort(gameProfile.SourcePortID.Value);
 
                 var isDoom64 = GameFile.IsDoom64;
-                lblGame.Visible = isDoom64;
-                txtGame.Visible = isDoom64;
 
+                
                 if (isDoom64)
                 {
                     groupBox4.Visible = false;
                     cmbIwad.Visible = false;
-                    cmbSourcePorts.Visible = false;
+                    label2.Visible = false; // IWAD label
                     chkDemo.Visible = false;
                     cmbDemo.Visible = false;
                     chkRecord.Visible = false;
-                    label2.Visible = false;
                     txtDescription.Visible = false;
-                    label4.Visible = false;
                     lnkOpenDemo.Visible = false;
-                    txtParameters.Visible = false;
-                    label3.Visible = false;
-                    groupBox2.Height = 100;
                 }
 
                 // Selected GameFile is an IWAD so lock the IWAD selection

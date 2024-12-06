@@ -37,8 +37,6 @@ namespace DoomLauncher
             this.btnCancel = new System.Windows.Forms.Button();
             this.cmbIwad = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.txtGame = new System.Windows.Forms.TextBox();
-            this.lblGame = new System.Windows.Forms.Label();
             this.tblProfile = new System.Windows.Forms.TableLayoutPanel();
             this.lblProfile = new System.Windows.Forms.Label();
             this.cmbProfiles = new DoomLauncher.Controls.CComboBox();
@@ -154,8 +152,6 @@ namespace DoomLauncher
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.txtGame);
-            this.groupBox1.Controls.Add(this.lblGame);
             this.groupBox1.Controls.Add(this.tblProfile);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
@@ -166,25 +162,6 @@ namespace DoomLauncher
             this.groupBox1.Size = new System.Drawing.Size(256, 107);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-            // 
-            // txtGame
-            // 
-            this.txtGame.Enabled = false;
-            this.txtGame.Location = new System.Drawing.Point(51, 46);
-            this.txtGame.Name = "txtGame";
-            this.txtGame.Size = new System.Drawing.Size(193, 20);
-            this.txtGame.TabIndex = 20;
-            this.txtGame.TabStop = false;
-            this.txtGame.Text = "DOOM 64";
-            // 
-            // lblGame
-            // 
-            this.lblGame.AutoSize = true;
-            this.lblGame.Location = new System.Drawing.Point(6, 49);
-            this.lblGame.Name = "lblGame";
-            this.lblGame.Size = new System.Drawing.Size(35, 13);
-            this.lblGame.TabIndex = 11;
-            this.lblGame.Text = "Game";
             // 
             // tblProfile
             // 
@@ -884,7 +861,5 @@ namespace DoomLauncher
         private TableLayoutPanelDB tblInner;
         private FlowLayoutPanelDB flpButtons;
         private TableLayoutPanelDB tblFiles;
-        private System.Windows.Forms.Label lblGame;
-        private System.Windows.Forms.TextBox txtGame;
     }
 }

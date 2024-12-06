@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Windows.Markup.Localizer;
 
 namespace DoomLauncher
 {
@@ -68,14 +69,19 @@ namespace DoomLauncher
             IEnumerable<ISourcePortData> data;
             if (m_launchType == SourcePortLaunchType.Utility)
             {
-                titleBar.Title = "Utilities";
+                this.Text = titleBar.Title = "Utilities";
                 data = m_adapter.GetUtilities(loadArchived);
             }
-            else
+            else if (m_launchType == SourcePortLaunchType.SourcePort)
             {
-                titleBar.Title = "Source Ports";
+                this.Text = titleBar.Title = "Source Ports";
                 data = m_adapter.GetSourcePorts(loadArchived);
             }
+            else // Doom64
+            {
+                this.Text = titleBar.Title = "Doom 64";
+                data = m_adapter.GetDoom64(loadArchived);
+            };
 
             SetDataSource(data);
         }
@@ -150,10 +156,18 @@ namespace DoomLauncher
 
             IEnumerable<string> extensions = new string[] { ".wad" };
 
-            if (m_launchType == SourcePortLaunchType.SourcePort)
-                extensions = extensions.Union(Util.GetDehackedExtensions().Union(Util.GetSourcePortPkExtensions()));
-            else
-                extensions = extensions.Union(Util.GetSourcePortPkExtensions());
+            switch (m_launchType)
+            {
+                case SourcePortLaunchType.SourcePort:
+                    extensions = extensions.Union(Util.GetDehackedExtensions().Union(Util.GetSourcePortPkExtensions())); 
+                    break;
+                case SourcePortLaunchType.Utility:
+                    extensions = extensions.Union(Util.GetSourcePortPkExtensions());
+                    break;
+                case SourcePortLaunchType.Doom64:
+                    extensions = extensions.Union(Util.GetExtraDoom64Extensions());
+                    break;
+            }
 
             editForm.SetSupportedExtensions(string.Join(",", extensions));
 
