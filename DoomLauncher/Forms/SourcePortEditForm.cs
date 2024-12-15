@@ -40,7 +40,28 @@ namespace DoomLauncher
                 Height -= grpAdditionalFiles.Height;
             }
 
+            IEnumerable<string> extensions = GetSourcePortExtensions(type);
+            sourcePortEdit1.SetSupportedExtensions(string.Join(",", extensions));
+
             Stylizer.Stylize(this, DesignMode, StylizerOptions.SetupTitleBar);
+        }
+
+        private static IEnumerable<string> GetSourcePortExtensions(SourcePortLaunchType launchType)
+        {
+            IEnumerable<string> extensions = new string[] { ".wad" };
+            switch (launchType)
+            {
+                case SourcePortLaunchType.SourcePort:
+                    extensions = extensions.Union(Util.GetDehackedExtensions().Union(Util.GetSourcePortPkExtensions()));
+                    break;
+                case SourcePortLaunchType.Utility:
+                    extensions = extensions.Union(Util.GetSourcePortPkExtensions());
+                    break;
+                case SourcePortLaunchType.Doom64:
+                    extensions = extensions.Union(Util.GetExtraDoom64Extensions());
+                    break;
+            }
+            return extensions;
         }
 
         private void ctrlFiles_NewItemNeeded(object sender, AdditionalFilesEventArgs e)
@@ -75,11 +96,6 @@ namespace DoomLauncher
             m_sourcePort = sourcePort;
             sourcePortEdit1.UpdateDataSource(sourcePort);
             sourcePort.SettingsFiles = ctrlFiles.GetAdditionalFilesString();
-        }
-
-        public void SetSupportedExtensions(string text)
-        {
-            sourcePortEdit1.SetSupportedExtensions(text);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -132,7 +148,7 @@ namespace DoomLauncher
             else if (m_type == SourcePortLaunchType.Utility)
                 return "utility";
             else // Doom64
-                return "doom64";
+                return "Doom 64 installation";
         }
     }
 }

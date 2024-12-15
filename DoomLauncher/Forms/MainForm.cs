@@ -1249,10 +1249,34 @@ namespace DoomLauncher
 
         private void HandleEditDoom64()
         {
-            SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, AppConfiguration, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.Doom64);
-            form.ShowPlayButton(false);
-            form.StartPosition = FormStartPosition.CenterParent;
-            form.ShowDialog(this);
+            SourcePortEditForm editForm = new SourcePortEditForm(DataSourceAdapter, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.Doom64);
+            editForm.StartPosition = FormStartPosition.CenterParent;
+
+            ISourcePortData sourcePort = DataSourceAdapter.GetDoom64(false).FirstOrDefault();
+            bool isNew = sourcePort == null;
+            if (!isNew)
+            {
+                editForm.SetDataSource(sourcePort);
+
+                if (editForm.ShowDialog(this) == DialogResult.OK)
+                {
+                    editForm.UpdateDataSource(sourcePort);
+                    DataSourceAdapter.UpdateSourcePort(sourcePort);
+                }
+            } 
+            else // new
+            {
+                if (editForm.ShowDialog(this) == DialogResult.OK)
+                {
+                    var newSourcePort = new SourcePortData();
+                    editForm.UpdateDataSource(newSourcePort);
+                    newSourcePort.LaunchType = SourcePortLaunchType.Doom64;
+                    DataSourceAdapter.InsertSourcePort(newSourcePort);
+                }
+            }
+
+            // var doom64Directory = Path.GetDirectoryName(sourcePort.GetFullExecutablePath());
+            //var wadFile = Path.Combine(doom64Directory, "DOOM64.WAD");
         }
 
         private void HandleEditUtilities()

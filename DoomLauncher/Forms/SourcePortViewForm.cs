@@ -72,16 +72,11 @@ namespace DoomLauncher
                 this.Text = titleBar.Title = "Utilities";
                 data = m_adapter.GetUtilities(loadArchived);
             }
-            else if (m_launchType == SourcePortLaunchType.SourcePort)
+            else // SourcePortLaunchType.SourcePort (Doom64 not currently used for this screen)
             {
                 this.Text = titleBar.Title = "Source Ports";
                 data = m_adapter.GetSourcePorts(loadArchived);
             }
-            else // Doom64
-            {
-                this.Text = titleBar.Title = "Doom 64";
-                data = m_adapter.GetDoom64(loadArchived);
-            };
 
             SetDataSource(data);
         }
@@ -154,23 +149,6 @@ namespace DoomLauncher
         {
             SourcePortEditForm editForm = new SourcePortEditForm(m_adapter, m_tabViews, m_launchType);
 
-            IEnumerable<string> extensions = new string[] { ".wad" };
-
-            switch (m_launchType)
-            {
-                case SourcePortLaunchType.SourcePort:
-                    extensions = extensions.Union(Util.GetDehackedExtensions().Union(Util.GetSourcePortPkExtensions())); 
-                    break;
-                case SourcePortLaunchType.Utility:
-                    extensions = extensions.Union(Util.GetSourcePortPkExtensions());
-                    break;
-                case SourcePortLaunchType.Doom64:
-                    extensions = extensions.Union(Util.GetExtraDoom64Extensions());
-                    break;
-            }
-
-            editForm.SetSupportedExtensions(string.Join(",", extensions));
-
             editForm.StartPosition = FormStartPosition.CenterParent;
 
             if (editForm.ShowDialog(this) == DialogResult.OK)
@@ -183,6 +161,7 @@ namespace DoomLauncher
 
                 SelectSourcePort(sourcePort);
             }
+
         }
 
         private void SelectSourcePort(ISourcePortData sourcePort)
