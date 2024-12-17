@@ -6,6 +6,7 @@ using DoomLauncher.Interfaces;
 using DoomLauncher.DataSources;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace UnitTest.Tests
 {
@@ -38,7 +39,8 @@ namespace UnitTest.Tests
             var ultimateDoom = new SteamInstalledGame(SteamGame.ULTIMATE_DOOM,
                 @"C:\SteamLib1\Ultimate Doom",
                 new List<string>() { @"C:\SteamLib1\Ultimate Doom\doom.wad", @"C:\SteamLib1\Ultimate Doom\doom2.wad" },
-                new List<string>() { @"C:\SteamLib1\Ultimate Doom\sigil.wad", @"C:\SteamLib1\Ultimate Doom\id1.wad" });
+                new List<string>() { @"C:\SteamLib1\Ultimate Doom\sigil.wad", @"C:\SteamLib1\Ultimate Doom\id1.wad" },
+                null);
 
             var library = new SteamLibrary(@"C:\SteamLib1", new List<SteamInstalledGame>() { ultimateDoom });
             var steam = new SteamInstallation(@"C:\Steam", new List<SteamLibrary>() { library });
@@ -46,16 +48,17 @@ namespace UnitTest.Tests
             var automaticSteamCheck = new AutomaticSteamCheck(() => steam, database);
             List<string> loadedIwads = new List<string>();
             List<string> loadedPwads = new List<string>();
+            string loadedDoom64Exe = null;
 
             await automaticSteamCheck.LoadGamesFromSteam(
                 async list => loadedIwads = list, 
-                async list => loadedPwads = list);
+                async list => loadedPwads = list,
+                async exe => loadedDoom64Exe = exe);
 
             Assert.IsTrue(loadedIwads.Exists(file => file.Equals(@"C:\SteamLib1\Ultimate Doom\doom2.wad")));
             Assert.IsFalse(loadedIwads.Exists(file => file.Equals(@"C:\SteamLib1\Ultimate Doom\doom.wad"))); // Already exists
             Assert.IsTrue(loadedPwads.Exists(file => file.Equals(@"C:\SteamLib1\Ultimate Doom\id1.wad")));
             Assert.IsFalse(loadedPwads.Exists(file => file.Equals(@"C:\SteamLib1\Ultimate Doom\sigil.wad"))); // Already exists
-
         }
 
         [TestMethod]
@@ -65,7 +68,8 @@ namespace UnitTest.Tests
             var ultimateDoom = new SteamInstalledGame(SteamGame.ULTIMATE_DOOM,
                 @"C:\SteamLib1\Ultimate Doom",
                 new List<string>(), // No IWads
-                new List<string>() { @"C:\SteamLib1\Ultimate Doom\sigil.wad" });
+                new List<string>() { @"C:\SteamLib1\Ultimate Doom\sigil.wad" },
+                null);
 
             var library = new SteamLibrary(@"C:\SteamLib1", new List<SteamInstalledGame>() { ultimateDoom });
             var steam = new SteamInstallation(@"C:\Steam", new List<SteamLibrary>() { library });
@@ -73,13 +77,16 @@ namespace UnitTest.Tests
             var automaticSteamCheck = new AutomaticSteamCheck(() => steam, database);
             bool didTheIwadThing = false;
             bool didThePwadThing = false;
+            bool didTheDoom64Thing = false;
 
             await automaticSteamCheck.LoadGamesFromSteam(
                 async list => didTheIwadThing = true,
-                async list => didThePwadThing = true);
+                async list => didThePwadThing = true,
+                async exe => didTheDoom64Thing = true);
 
             Assert.IsTrue(didThePwadThing);
             Assert.IsFalse(didTheIwadThing);
+            Assert.IsFalse(didTheDoom64Thing);
         }
 
         [TestMethod]
@@ -89,7 +96,8 @@ namespace UnitTest.Tests
             var ultimateDoom = new SteamInstalledGame(SteamGame.ULTIMATE_DOOM,
                 @"C:\SteamLib1\Ultimate Doom",
                 new List<string>() { @"C:\SteamLib1\Ultimate Doom\doom2.wad" }, 
-                new List<string>()); // No PWads
+                new List<string>(),
+                null); // No PWads
 
             var library = new SteamLibrary(@"C:\SteamLib1", new List<SteamInstalledGame>() { ultimateDoom });
             var steam = new SteamInstallation(@"C:\Steam", new List<SteamLibrary>() { library });
@@ -97,13 +105,16 @@ namespace UnitTest.Tests
             var automaticSteamCheck = new AutomaticSteamCheck(() => steam, database);
             bool didTheIwadThing = false;
             bool didThePwadThing = false;
+            bool didTheDoom64Thing = false;
 
             await automaticSteamCheck.LoadGamesFromSteam(
                 async list => didTheIwadThing = true,
-                async list => didThePwadThing = true);
+                async list => didThePwadThing = true,
+                async exe => didTheDoom64Thing = true);
 
             Assert.IsFalse(didThePwadThing);
             Assert.IsTrue(didTheIwadThing);
+            Assert.IsFalse(didTheDoom64Thing);
         }
 
         [TestMethod]
@@ -113,7 +124,8 @@ namespace UnitTest.Tests
 
             await automaticSteamCheck.LoadGamesFromSteam(
                 async list => { },
-                async list => { }); // No problem
+                async list => { },
+                async exe => { }); // No problem
         }
     }
 }

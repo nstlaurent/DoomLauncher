@@ -2781,6 +2781,11 @@ namespace DoomLauncher
             }
         }
 
+        private async void loadWadsFromSteamMenuItem_Click(object sender, EventArgs e)
+        {
+            await AutoLoadSteamWads();
+        }
+
         private async void resyncToolStripMenuItem_Click(object sender, EventArgs e) =>
             await HandleResync(true);
 

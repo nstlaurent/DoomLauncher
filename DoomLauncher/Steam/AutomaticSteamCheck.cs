@@ -20,10 +20,11 @@ namespace DoomLauncher.Steam
         }
 
         public delegate Task AsyncWadInstaller(List<string> wads);
+        public delegate Task AsyncDoom64Installer(string doom64Exe);
 
         // We have to use Func<T, Task> instead of Action<T>, because we want to make sure the first
         // action fully completes before we run the second action.
-        public async Task LoadGamesFromSteam(AsyncWadInstaller addIwadToGame, AsyncWadInstaller addPwadToGame)
+        public async Task LoadGamesFromSteam(AsyncWadInstaller addIwadToGame, AsyncWadInstaller addPwadToGame, AsyncDoom64Installer addDoom64ExeToGame)
         {
             try
             {
@@ -42,6 +43,13 @@ namespace DoomLauncher.Steam
                 {
                     await addPwadToGame(pwadsFromSteam);
                 }
+
+                var doom64ExeFromSteam = steam.GetInstalledDoom64Exe();
+                if (doom64ExeFromSteam != null)
+                {
+                    await addDoom64ExeToGame(doom64ExeFromSteam);
+                }
+
             }
             catch (SteamLoaderException e)
             {

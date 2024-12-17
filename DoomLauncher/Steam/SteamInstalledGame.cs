@@ -7,12 +7,13 @@ namespace DoomLauncher.Steam
     {
         private readonly string m_gamePath;
 
-        public SteamInstalledGame(SteamGame game, string gamePath, List<string> installedIwads, List<string> installedPwads) 
+        public SteamInstalledGame(SteamGame game, string gamePath, List<string> installedIwads, List<string> installedPwads, string installedDoom64Exe) 
         {
             Game = game;
             m_gamePath = gamePath;
             InstalledIWads = installedIwads;
             InstalledPWads = installedPwads;
+            InstalledDoom64Exe = installedDoom64Exe;
         }
 
         public SteamGame Game { get; }
@@ -20,5 +21,7 @@ namespace DoomLauncher.Steam
         public List<string> InstalledIWads { get; }
 
         public List<string> InstalledPWads { get; }
+
+        public string InstalledDoom64Exe { get; }
     }
 }

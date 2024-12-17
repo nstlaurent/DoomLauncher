@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Controls;
+using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
 using DoomLauncher.Steam;
@@ -281,7 +282,33 @@ namespace DoomLauncher
             var steamCheck = new AutomaticSteamCheck(SteamLoader.LoadFromEnvironment, DbDataSourceAdapter.CreateAdapter());
             await steamCheck.LoadGamesFromSteam(
                 async iwads => await HandleAddGameFiles(AddFileType.IWad, iwads.ToArray(), null, FileManagement.Managed),
-                async pwads => await HandleAddGameFiles(AddFileType.GameFile, pwads.ToArray(), null, FileManagement.Managed));
+                async pwads => await HandleAddGameFiles(AddFileType.GameFile, pwads.ToArray(), null, FileManagement.Managed),
+                async doom64Exe => await HandleAddDoom64(doom64Exe));
+        }
+
+        private async Task HandleAddDoom64(string doom64Exe)
+        {
+            await Task.Run(() => 
+            {
+                var existingDoom64 = DataSourceAdapter.GetDoom64().FirstOrDefault();
+                if (existingDoom64 == null)
+                {
+                    var extensions = new List<string> { ".wad" };
+                    extensions.AddRange(Util.GetExtraDoom64Extensions());
+                    var extensionString = string.Join(",", extensions);
+
+                    SourcePortData newDoom64 = new SourcePortData()
+                    {
+                        Executable = Path.GetFileName(doom64Exe),
+                        Name = "Doom 64",
+                        LaunchType = SourcePortLaunchType.Doom64,
+                        SupportedExtensions = extensionString,
+                        Directory = new LauncherPath(Path.GetDirectoryName(doom64Exe)),
+                        FileOption = "-file"
+                    };
+                    DataSourceAdapter.InsertSourcePort(newDoom64);
+                }
+            });
         }
 
         private void CleanUpFiles()

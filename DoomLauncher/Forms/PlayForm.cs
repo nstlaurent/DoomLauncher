@@ -203,6 +203,8 @@ namespace DoomLauncher
                 
                 if (isDoom64)
                 {
+                    SelectedSourcePort = m_adapter.GetDoom64().FirstOrDefault();
+                    cmbSourcePorts.Enabled = false;
                     groupBox4.Visible = false;
                     cmbIwad.Visible = false;
                     label2.Visible = false; // IWAD label

@@ -18,17 +18,29 @@ namespace DoomLauncher.Steam
 
         public List<string> GetInstalledIWads()
         {
-            return getInstalledWads(game => game.InstalledIWads);
+            return getInstalledFiles(game => game.InstalledIWads);
         }
 
         public List<string> GetInstalledPWads()
         {
-            return getInstalledWads(game => game.InstalledPWads);
+            return getInstalledFiles(game => game.InstalledPWads);
         }
 
-        private delegate List<string> WadSelector(SteamInstalledGame game);
+        public string GetInstalledDoom64Exe()
+        {
+            return getInstalledFiles(game => 
+            { 
+                var exe = game.InstalledDoom64Exe;
+                if (exe != null)
+                    return new List<string> { exe };
+                else
+                    return new List<string>();
+            }).FirstOrDefault();
+        }
 
-        private List<string> getInstalledWads(WadSelector selector)
+        private delegate List<string> FileSelector(SteamInstalledGame game);
+
+        private List<string> getInstalledFiles(FileSelector selector)
         {
             // The same wad could appear in multiple Steam games, but
             // we just want the first one.

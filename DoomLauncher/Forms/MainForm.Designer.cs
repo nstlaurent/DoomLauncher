@@ -71,6 +71,7 @@
             this.addDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addIWADsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFIlesRecursivelyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadWadsFromSteamMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.sourcePortsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.utilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -442,6 +443,7 @@
             this.addDirectoryToolStripMenuItem,
             this.addIWADsToolStripMenuItem,
             this.addFIlesRecursivelyToolStripMenuItem1,
+            this.loadWadsFromSteamMenuItem,
             this.toolStripSeparator15,
             this.sourcePortsToolStripMenuItem,
             this.utilitiesToolStripMenuItem,
@@ -498,6 +500,13 @@
             this.addFIlesRecursivelyToolStripMenuItem1.Size = new System.Drawing.Size(230, 22);
             this.addFIlesRecursivelyToolStripMenuItem1.Text = "Add Files Recursively...";
             this.addFIlesRecursivelyToolStripMenuItem1.Click += new System.EventHandler(this.addFIlesRecursivelyToolStripMenuItem1_Click);
+            // 
+            // autoLoadFromSteamMenuItem
+            // 
+            this.loadWadsFromSteamMenuItem.Name = "loadWadsFromSteamMenuItem";
+            this.loadWadsFromSteamMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.loadWadsFromSteamMenuItem.Text = "Load WADs from Steam";
+            this.loadWadsFromSteamMenuItem.Click += new System.EventHandler(this.loadWadsFromSteamMenuItem_Click);
             // 
             // toolStripSeparator15
             // 
@@ -1006,6 +1015,7 @@
         private System.Windows.Forms.ToolStripMenuItem createZipToolStripMenuItem;
         private DoomLauncher.GlowButton btnUpdate;
         private System.Windows.Forms.ToolStripMenuItem addFIlesRecursivelyToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem loadWadsFromSteamMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
         private System.Windows.Forms.ToolStripMenuItem sortByToolStripMenuItem;
         private System.Windows.Forms.FlowLayoutPanel flpTags;
