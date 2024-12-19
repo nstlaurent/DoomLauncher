@@ -283,7 +283,7 @@ namespace DoomLauncher
             await steamCheck.LoadGamesFromSteam(
                 async iwads => await HandleAddGameFiles(AddFileType.IWad, iwads.ToArray(), null, FileManagement.Managed),
                 async pwads => await HandleAddGameFiles(AddFileType.GameFile, pwads.ToArray(), null, FileManagement.Managed),
-                async doom64Exe => await HandleAddDoom64(doom64Exe));
+                HandleAddDoom64);
         }
 
         private async Task HandleAddDoom64(string doom64Exe)

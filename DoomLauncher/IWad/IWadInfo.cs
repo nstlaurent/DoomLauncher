@@ -59,6 +59,8 @@ namespace DoomLauncher
                     return new IWadInfo("Strife Demo", "strife.png");
                 case "STRIFE1":
                     return new IWadInfo("Strife: Quest for the Sigil", "strife.png");
+                case "DOOM64":
+                    return new IWadInfo("Doom 64", string.Empty);
                 default:
                     break;
             }

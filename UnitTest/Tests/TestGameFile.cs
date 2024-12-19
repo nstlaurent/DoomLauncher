@@ -436,7 +436,9 @@ namespace UnitTest.Tests
             Assert.IsFalse(madeUpGameFile.IsUnmanaged());
             Assert.IsFalse(madeUpGameFile.ArchiveExists(gameFilesPath));
 
-            var gameFileInArchive = CreateGameFile("test1.zip", 77);
+            var gameFileInArchive = CreateGameFile("realthing.zip", 77);
+            File.Create(Path.Combine(gameFilesPath.GetFullPath(), "realthing.zip")).Close();
+
             Assert.IsFalse(gameFileInArchive.IsUnmanaged());
             Assert.IsTrue(gameFileInArchive.ArchiveExists(gameFilesPath));
         }
