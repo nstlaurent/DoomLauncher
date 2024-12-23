@@ -1,4 +1,5 @@
-﻿using DoomLauncher.DataSources;
+﻿using DoomLauncher.Adapters.Launch;
+using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System.Collections.Generic;
@@ -27,25 +28,31 @@ namespace DoomLauncher
             List<SpecificFilePath> files;
             if (gameFile.IsUnmanaged())
             {
-                files = new List<SpecificFilePath>();
-                files.Add(new SpecificFilePath() { ExtractedFile = gameFile.FileName, InternalFilePath = gameFile.FileName });
+                files = new List<SpecificFilePath>
+                {
+                    new SpecificFilePath() { ExtractedFile = gameFile.FileName, InternalFilePath = gameFile.FileName }
+                };
             }
             else if (!GetUserSelectedFiles(gameFile, out files))
             {
                 return true;
             }
 
-            StringBuilder sb = new StringBuilder();
-            GameFilePlayAdapter adapter = new GameFilePlayAdapter();
-            adapter.HandleGameFile(gameFile, sb, m_config.TempDirectory, 
-                new GenericSourcePort(m_utility), files); //this checks File.Exists and might not be same file
+            var features = new List<ILaunchFeature> 
+            { 
+                new UtilityFilesLaunchFeature(files),
+                new SourcePortExtraParametersLaunchFeature()
+            };
+
+            GameLauncher launcher = new GameLauncher(m_config, features);
+            var launchParameters = launcher.GetLaunchParameters(gameFile, m_utility, false);
+
+            if (launchParameters.Failed)
+                return false;
 
             try
             {
-                if (!string.IsNullOrEmpty(m_utility.ExtraParameters))
-                    sb.Append(" " + m_utility.ExtraParameters);
-
-                Process.Start(m_utility.GetFullExecutablePath(), sb.ToString().Trim());
+                Process.Start(m_utility.GetFullExecutablePath(), launchParameters.LaunchString);
             }
             catch
             {

@@ -1,7 +1,9 @@
 ﻿using DoomLauncher.Interfaces;
 using DoomLauncher.TextFileParsers;
+using Octokit;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,6 +18,7 @@ namespace DoomLauncher
         private static readonly string[] MapInfoNames = new string[] { "mapinfo", "zmapinfo" };
         private static readonly string[] MapInfoSubNames = new string[] { "mapinfo.", "zmapinfo." };
         private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");
+        private static readonly Regex ClassTypeRegex = new Regex(@"classtype\s*="); // Only Doom64 files have classtype in the MAPINFO
         private static readonly Regex IncludeRegex = new Regex(@"\s*include\s+(\S+)");
         private static readonly Regex MapRegex = new Regex(@"\s*map\s+\w+");
 
@@ -183,6 +186,17 @@ namespace DoomLauncher
             m_titlepics[file] = image;
         }
 
+        private bool IsDoom64Wad(string[] mapInfoData)
+        {
+            foreach (string data in mapInfoData)
+            {
+                MatchCollection matches = ClassTypeRegex.Matches(data);
+                if (matches.Count > 0)
+                    return true;
+            }
+            return false;
+        }
+
         private Palette GetPaletteOrDefault(IArchiveReader reader)
         {
             if (!DoomImageUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
@@ -295,6 +309,9 @@ namespace DoomLauncher
             }
 
             AddTitlepic(gameFile, reader, mapInfoData);
+
+            gameFile.IsDoom64 = IsDoom64Wad(mapInfoData);
+
             // Only scan wad files if there is no MapInfo
             if (!m_readMapInfo)
                 AppendMapSet(sb, MapStringFromGameFileWads(reader));

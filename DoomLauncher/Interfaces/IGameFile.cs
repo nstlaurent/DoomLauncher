@@ -38,7 +38,13 @@ namespace DoomLauncher.Interfaces
         int MinutesPlayed { get; set; }
         int FileSizeBytes { get; set; }
 
+        bool IsDoom64 { get; set; }
+
         bool IsUnmanaged();
         bool IsDirectory();
+
+        IArchiveReader OpenGameFile(LauncherPath gameFileDirectory);
+
+        bool ArchiveExists(LauncherPath gameFileDirectory);
     }
 }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -33,6 +34,8 @@ namespace DoomLauncher
         private IList<IGameProfile> m_globalProfiles;
 
         private readonly Control[] m_tabControls;
+
+        private AppConfiguration AppConfiguration => DataCache.Instance.AppConfiguration;
 
         public PlayForm(AppConfiguration appConfig, IDataSourceAdapter adapter)
         {
@@ -148,8 +151,8 @@ namespace DoomLauncher
 
             GameFile = gameFile;
 
-            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbSourcePorts, m_adapter.GetSourcePorts(), typeof(ISourcePortData), "Name");
-            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbIwad, Util.GetIWadsDataSource(m_adapter), typeof(IIWadData), "FileName");
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbSourcePorts, GetSourcePortsForComboBox(gameFile), typeof(ISourcePortData), "Name");
+            AutoCompleteCombo.SetAutoCompleteCustomSource(cmbIwad, GetIWadsForComboBox(gameFile, m_adapter), typeof(IIWadData), "FileName");
 
             if (gameFile != null)
             {
@@ -163,6 +166,17 @@ namespace DoomLauncher
 
             LoadProfiles();
         }
+
+        private IEnumerable<ISourcePortData> GetSourcePortsForComboBox(IGameFile gameFile)
+        {
+            return gameFile.IsDoom64 ? m_adapter.GetDoom64() : m_adapter.GetSourcePorts();
+        }
+
+        private IEnumerable<IIWadData> GetIWadsForComboBox(IGameFile gameFile, IDataSourceAdapter adapter)
+        {
+            return gameFile.IsDoom64 ? new List<IIWadData>() :  Util.GetIWadsDataSource(adapter);
+        }
+
 
         public void SetGameProfile(IGameProfile gameProfile)
         {
@@ -183,6 +197,23 @@ namespace DoomLauncher
 
                 if (gameProfile.SourcePortID.HasValue)
                     SelectedSourcePort = m_adapter.GetSourcePort(gameProfile.SourcePortID.Value);
+
+                var isDoom64 = GameFile.IsDoom64;
+
+                
+                if (isDoom64)
+                {
+                    SelectedSourcePort = m_adapter.GetDoom64().FirstOrDefault();
+                    cmbSourcePorts.Enabled = false;
+                    groupBox4.Visible = false;
+                    cmbIwad.Visible = false;
+                    label2.Visible = false; // IWAD label
+                    chkDemo.Visible = false;
+                    cmbDemo.Visible = false;
+                    chkRecord.Visible = false;
+                    txtDescription.Visible = false;
+                    lnkOpenDemo.Visible = false;
+                }
 
                 // Selected GameFile is an IWAD so lock the IWAD selection
                 if (IsIwad(GameFile))
@@ -459,12 +490,12 @@ namespace DoomLauncher
 
         private bool SaveStatisticsSupported(ISourcePortData sourcePort)
         {
-            return SourcePortUtil.CreateSourcePort(sourcePort).StatisticsSupported();
+            return sourcePort.GetFlavor().StatisticsSupported();
         }
 
         private bool LoadLatestSaveSupported(ISourcePortData sourcePort)
         {
-            return SourcePortUtil.CreateSourcePort(sourcePort).LoadSaveGameSupported();
+            return sourcePort.GetFlavor().LoadSaveGameSupported();
         }
 
         private void chkMap_CheckedChanged(object sender, EventArgs e)

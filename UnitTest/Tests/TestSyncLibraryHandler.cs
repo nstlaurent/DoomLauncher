@@ -128,6 +128,34 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void TestNonDoom64FileIsntDoom64()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+
+            string file = "mapinfo.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { file });
+
+            var gameFile = handler.DbDataSource.GetGameFiles().First();
+
+            Assert.IsFalse(gameFile.IsDoom64);
+        }
+
+        [TestMethod]
+        public void TestDoom64FileIsDoom64()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+
+            string file = "mapinfo_doom64.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            handler.Execute(new string[] { file });
+
+            var gameFile = handler.DbDataSource.GetGameFiles().First();
+
+            Assert.IsTrue(gameFile.IsDoom64);
+        }
+
+        [TestMethod]
         public void TestMapsMultiFile()
         {
             SyncLibraryHandler handler = CreateSyncLibraryHandler();

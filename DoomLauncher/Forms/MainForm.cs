@@ -17,6 +17,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DoomLauncher
 {
@@ -1246,6 +1247,38 @@ namespace DoomLauncher
             HandleSelectionChange(GetCurrentViewControl(), true);
         }
 
+        private void HandleEditDoom64()
+        {
+            SourcePortEditForm editForm = new SourcePortEditForm(DataSourceAdapter, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.Doom64);
+            editForm.StartPosition = FormStartPosition.CenterParent;
+
+            ISourcePortData sourcePort = DataSourceAdapter.GetDoom64(false).FirstOrDefault();
+            bool isNew = sourcePort == null;
+            if (!isNew)
+            {
+                editForm.SetDataSource(sourcePort);
+
+                if (editForm.ShowDialog(this) == DialogResult.OK)
+                {
+                    editForm.UpdateDataSource(sourcePort);
+                    DataSourceAdapter.UpdateSourcePort(sourcePort);
+                }
+            } 
+            else // new
+            {
+                if (editForm.ShowDialog(this) == DialogResult.OK)
+                {
+                    var newSourcePort = new SourcePortData();
+                    editForm.UpdateDataSource(newSourcePort);
+                    newSourcePort.LaunchType = SourcePortLaunchType.Doom64;
+                    DataSourceAdapter.InsertSourcePort(newSourcePort);
+                }
+            }
+
+            // var doom64Directory = Path.GetDirectoryName(sourcePort.GetFullExecutablePath());
+            //var wadFile = Path.Combine(doom64Directory, "DOOM64.WAD");
+        }
+
         private void HandleEditUtilities()
         {
             SourcePortViewForm form = new SourcePortViewForm(DataSourceAdapter, AppConfiguration, GetAdditionalTabViews().ToArray(), SourcePortLaunchType.Utility);
@@ -1398,6 +1431,11 @@ namespace DoomLauncher
         private async Task HandleAddIWads()
         {
             await HandleAddFiles(AddFileType.IWad, new string[] { "WAD", "iwad", "ipk3" }, "Select IWADs");
+        }
+
+        private void addDoom64ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HandleEditDoom64();
         }
 
         private void UpdateLocal()
@@ -2215,7 +2253,31 @@ namespace DoomLauncher
             UtilityHandler handler = new UtilityHandler(this, AppConfiguration, utility);
             if (!handler.RunUtility(launchData.GameFile))
                 MessageBox.Show(this, "The utility was an invalid application or not found.", "Invalid Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
-    }
+        }
+
+        private void doom64ToolStripItem_Click(object sender, EventArgs e)
+        {
+            ToolStripItem strip = sender as ToolStripItem;
+            var doom64s = DataSourceAdapter.GetDoom64();
+            var doom64 = doom64s.FirstOrDefault(x => x.Name == strip.Text);
+            if (doom64 == null)
+            {
+                MessageBox.Show(this, "Failed to find Doom64.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            LaunchData launchData = GetLaunchFiles(SelectedItems(GetCurrentViewControl()), checkActiveSessions: false);
+            if (!launchData.Success)
+            {
+                if (!string.IsNullOrEmpty(launchData.ErrorTitle))
+                    MessageBox.Show(this, launchData.ErrorDescription, launchData.ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            UtilityHandler handler = new UtilityHandler(this, AppConfiguration, doom64);
+            if (!handler.RunUtility(launchData.GameFile))
+                MessageBox.Show(this, "The utility was an invalid application or not found.", "Invalid Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
         private void selectTagsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2717,6 +2779,11 @@ namespace DoomLauncher
 
                 await HandleAddGameFiles(AddFileType.GameFile, files.ToArray());
             }
+        }
+
+        private async void loadWadsFromSteamMenuItem_Click(object sender, EventArgs e)
+        {
+            await AutoLoadSteamWads();
         }
 
         private async void resyncToolStripMenuItem_Click(object sender, EventArgs e) =>

@@ -1,17 +1,18 @@
 ﻿using System;
+using static DoomLauncher.GameLauncher;
 
 namespace DoomLauncher.Adapters
 {
     public class PlaySession
     {
-        public PlaySession(GameFilePlayAdapter adapter, IStatisticsReader statisticsReader, DateTime start)
+        public PlaySession(GameLaunchInfo launchInfo, IStatisticsReader statisticsReader, DateTime start)
         {
-            Adapter = adapter;
+            GameLaunchInfo = launchInfo;
             StatisticsReader = statisticsReader;
             Start = start;
         }
 
-        public GameFilePlayAdapter Adapter { get; }
+        public GameLaunchInfo GameLaunchInfo { get; }
         public IStatisticsReader StatisticsReader { get; }
         public DateTime Start { get; set; }
     }

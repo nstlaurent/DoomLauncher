@@ -3,7 +3,7 @@ using System.IO;
 
 namespace DoomLauncher.Archive.SevenZip
 {
-    public class SevenZipArchiveEntry : IArchiveEntry
+    public class SevenZipArchiveEntry : AbstractArchiveEntry
     {
         private readonly SevenZipExtractor m_extractor;
         private readonly ArchiveFileInfo m_archiveFileInfo;
@@ -17,17 +17,17 @@ namespace DoomLauncher.Archive.SevenZip
             m_streamManager = streamManager;
         }
 
-        public long Length => (long)m_archiveFileInfo.Size;
+        public override long Length => (long)m_archiveFileInfo.Size;
 
-        public string Name => Path.GetFileName(m_archiveFileInfo.FileName);
+        public override string Name => Path.GetFileName(m_archiveFileInfo.FileName);
 
-        public string FullName => m_archiveFileInfo.FileName;
+        public override string FullName => m_archiveFileInfo.FileName;
 
-        public bool ExtractRequired => true;
+        public override bool ExtractRequired => true;
 
-        public bool IsDirectory => m_archiveFileInfo.IsDirectory;
+        public override bool IsDirectory => m_archiveFileInfo.IsDirectory;
 
-        public void ExtractToFile(string file, bool overwrite = false)
+        public override void ExtractToFile(string file, bool overwrite = false)
         {
             if (!overwrite && File.Exists(file))
                 return;
@@ -36,7 +36,7 @@ namespace DoomLauncher.Archive.SevenZip
                 m_extractor.ExtractFile(m_archiveFileInfo.Index, fs);
         }
 
-        public void Read(byte[] buffer, int offset, int length)
+        public override void Read(byte[] buffer, int offset, int length)
         {
             if (m_ms == null)
             {
@@ -62,6 +62,6 @@ namespace DoomLauncher.Archive.SevenZip
             return FullName.GetHashCode();
         }
 
-        public string GetNameWithoutExtension() => Path.GetFileNameWithoutExtension(Name);
+        public override string GetNameWithoutExtension() => Path.GetFileNameWithoutExtension(Name);
     }
 }

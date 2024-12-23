@@ -54,10 +54,13 @@ namespace DoomLauncher.DataSources
         public bool SettingsSaved { get; set; }
         public bool SettingsExtraParamsOnly { get; set; }
         public int? SettingsGameProfileID { get; set; }
+
         public bool IsGlobal => false;
 
         public int MinutesPlayed { get; set; }
         public virtual int FileSizeBytes { get; set; }
+
+        public bool IsDoom64 { get; set; }
 
         public bool IsUnmanaged() => IsUnmanaged(FileName);
 
@@ -81,6 +84,43 @@ namespace DoomLauncher.DataSources
                 return false;
 
             return Util.IsDirectory(FileName);
+        }
+
+        public IArchiveReader OpenGameFile(LauncherPath gameFileDirectory)
+        {
+            string file;
+            if (IsUnmanaged())
+                file = new LauncherPath(FileName).GetFullPath();
+            else
+                file = Path.Combine(gameFileDirectory.GetFullPath(), FileName);
+
+            // If the unmanaged file is a pk3 then ArchiveReader.Create will read it as a zip and try to unpack
+            // Return FileArchiveReader instead so the pk3 will be added as a file
+            // Zip extensions are ignored in this case since Doom Launcher's base functionality revovles around reading zip contents
+            // SpecificFilesForm will also read zip files explicitly to allow user to select files in the archive
+            if (!IsDirectory() && IsUnmanaged() && !ArchiveUtil.ShouldReadPackagedArchive(FileName))
+                return new FileArchiveReader(file);
+
+            return ArchiveReader.Create(file);
+        }
+
+        public bool ArchiveExists(LauncherPath gameFileDirectory)
+        {
+            if (IsDirectory())
+            {
+                return Directory.Exists(FileName);
+            }
+            else if (IsUnmanaged())
+            {
+                var launcherPath = new LauncherPath(FileName);
+                FileInfo fi = new FileInfo(launcherPath.GetFullPath());
+                return fi.Exists;
+            }
+            else 
+            {
+                FileInfo fi = new FileInfo(Path.Combine(gameFileDirectory.GetFullPath(), FileName));
+                return fi.Exists;
+            }
         }
 
         public object Clone()

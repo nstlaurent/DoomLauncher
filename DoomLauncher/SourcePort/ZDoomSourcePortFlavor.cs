@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace DoomLauncher.SourcePort
 {
-    public class ZDoomSourcePort : GenericSourcePort
+    public class ZDoomSourcePortFlavor : GenericSourcePortFlavor
     {
         private static readonly string[] DirectoryNames = new string[] { "GZDoom", "VKDoom" };
 
@@ -18,7 +18,7 @@ namespace DoomLauncher.SourcePort
         public static string UserSaveGameDirectory(string name) => Path.Combine(UserDirectoryBase, "Saved Games", name);
         public static string UserScreenshotDirectory(string name) => Path.Combine(UserDirectoryBase, "Pictures", "Screenshots", name);
 
-        public ZDoomSourcePort(ISourcePortData sourcePortData)
+        public ZDoomSourcePortFlavor(ISourcePortData sourcePortData)
             : base(sourcePortData)
         {
 

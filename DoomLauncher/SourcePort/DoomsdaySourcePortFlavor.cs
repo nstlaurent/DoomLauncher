@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace DoomLauncher.SourcePort
 {
-    public class DoomsdaySourcePort : GenericSourcePort
+    public class DoomsdaySourcePortFlavor : GenericSourcePortFlavor
     {
-        public DoomsdaySourcePort(ISourcePortData sourcePortData)
+        public DoomsdaySourcePortFlavor(ISourcePortData sourcePortData)
             : base(sourcePortData)
         {
 

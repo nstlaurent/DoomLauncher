@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace DoomLauncher
 {
-    public class AppConfiguration
+    public class AppConfiguration : IDirectoriesConfiguration
     {
         public static readonly CultureInfo Culture = new CultureInfo("en-US");
 

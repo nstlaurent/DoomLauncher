@@ -5,9 +5,9 @@ using System.IO;
 
 namespace DoomLauncher.SourcePort
 {
-    public class StatdumpSourcePort : GenericSourcePort
+    public class StatdumpSourcePortFlavor : GenericSourcePortFlavor
     {
-        public StatdumpSourcePort(ISourcePortData sourcePortData)
+        public StatdumpSourcePortFlavor(ISourcePortData sourcePortData)
             : base(sourcePortData)
         {
         

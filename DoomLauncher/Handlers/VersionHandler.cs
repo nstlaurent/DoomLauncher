@@ -94,6 +94,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_7_0, AppVersion.Version_3_7_0);
                 ExecuteUpdate(Pre_Version_3_7_0_Update1, AppVersion.Version_3_7_0_Update1);
                 ExecuteUpdate(Pre_Version_3_7_4, AppVersion.Version_3_7_4);
+                ExecuteUpdate(Pre_Version_3_7_7, AppVersion.Version_3_7_7);
             }
 
             return new VersionUpdateResults(m_restartRequired);
@@ -885,6 +886,17 @@ namespace DoomLauncher
             {
                 screenshotWidth.Value = Util.GetPreviewScreenshotWidth(Convert.ToInt32(screenshotWidth.Value)).ToString();
                 m_adapter.UpdateConfiguration(screenshotWidth);
+            }
+        }
+
+        private void Pre_Version_3_7_7()
+        {
+            var dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
+
+            if (!dt.Select("name = 'IsDoom64'").Any())
+            {
+                DataAccess.ExecuteNonQuery("alter table GameFiles add column 'IsDoom64' INTEGER;");
+                DataAccess.ExecuteNonQuery("update GameFiles set IsDoom64 = 0");
             }
         }
 

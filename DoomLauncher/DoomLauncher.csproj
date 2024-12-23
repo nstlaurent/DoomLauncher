@@ -89,6 +89,11 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Collections.Specialized, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Specialized.4.3.0\lib\net46\System.Collections.Specialized.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -130,6 +135,19 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\Launch\GameFilesLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\LaunchResult.cs" />
+    <Compile Include="Adapters\Launch\UtilityFilesLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\IWadLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\LoadSaveLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\StatisticsReaderLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\SourcePortExtraParametersLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\ILaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\LaunchParameters.cs" />
+    <Compile Include="Adapters\Launch\PlayDemoLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\ExtraParametersLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\RecordLaunchFeature.cs" />
+    <Compile Include="Adapters\Launch\MapSkillLaunchFeature.cs" />
     <Compile Include="Adapters\PlaySession.cs" />
     <Compile Include="Adapters\WadArchiveDataAdapter.cs" />
     <Compile Include="Archive\ArchiveReader.cs" />
@@ -140,6 +158,7 @@
     <Compile Include="Archive\IArchiveEntry.cs" />
     <Compile Include="Config\ColorTheme.cs" />
     <Compile Include="Config\ColorThemeType.cs" />
+    <Compile Include="Config\IDirectoriesConfiguration.cs" />
     <Compile Include="Controls\CCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -297,9 +316,9 @@
     <Compile Include="Program.Init.cs" />
     <Compile Include="ProgressBarType.cs" />
     <Compile Include="SaveGame\HelionSaveGameReader.cs" />
-    <Compile Include="SourcePort\HelionSourcePort.cs" />
-    <Compile Include="SourcePort\LevelstatSourcePort.cs" />
-    <Compile Include="SourcePort\StatdumpSourcePort.cs" />
+    <Compile Include="SourcePort\HelionSourcePortFlavor.cs" />
+    <Compile Include="SourcePort\LevelstatSourcePortFlavor.cs" />
+    <Compile Include="SourcePort\StatdumpSourcePortFlavor.cs" />
     <Compile Include="Steam\AutomaticSteamCheck.cs" />
     <Compile Include="Steam\SteamGame.cs" />
     <Compile Include="Steam\SteamInstallation.cs" />
@@ -404,12 +423,11 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Config\ScreenFilter.cs" />
-    <Compile Include="SourcePort\DoomsdaySourcePort.cs" />
-    <Compile Include="SourcePort\GenericSourcePort.cs" />
-    <Compile Include="SourcePort\ISourcePort.cs" />
-    <Compile Include="SourcePort\SourcePortUtil.cs" />
+    <Compile Include="SourcePort\DoomsdaySourcePortFlavor.cs" />
+    <Compile Include="SourcePort\GenericSourcePortFlavor.cs" />
+    <Compile Include="SourcePort\ISourcePortFlavor.cs" />
     <Compile Include="SourcePort\SpData.cs" />
-    <Compile Include="SourcePort\ZDoomSourcePort.cs" />
+    <Compile Include="SourcePort\ZDoomSourcePortFlavor.cs" />
     <Compile Include="Statistics\LevelstatReader.cs" />
     <Compile Include="Config\AppVersion.cs" />
     <Compile Include="Config\ColumnConfig.cs" />
@@ -537,7 +555,7 @@
     <Compile Include="DataSources\IdGamesGameFile.cs" />
     <Compile Include="DataSources\FileData.cs" />
     <Compile Include="DataSources\SourcePortData.cs" />
-    <Compile Include="Adapters\GameFilePlayAdapter.cs" />
+    <Compile Include="Adapters\GameLauncher.cs" />
     <Compile Include="Adapters\IdGamesDataAdapater.cs" />
     <Compile Include="Controls\GameFileEdit.cs">
       <SubType>UserControl</SubType>

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Windows.Markup.Localizer;
 
 namespace DoomLauncher
 {
@@ -68,12 +69,12 @@ namespace DoomLauncher
             IEnumerable<ISourcePortData> data;
             if (m_launchType == SourcePortLaunchType.Utility)
             {
-                titleBar.Title = "Utilities";
+                this.Text = titleBar.Title = "Utilities";
                 data = m_adapter.GetUtilities(loadArchived);
             }
-            else
+            else // SourcePortLaunchType.SourcePort (Doom64 not currently used for this screen)
             {
-                titleBar.Title = "Source Ports";
+                this.Text = titleBar.Title = "Source Ports";
                 data = m_adapter.GetSourcePorts(loadArchived);
             }
 
@@ -148,15 +149,6 @@ namespace DoomLauncher
         {
             SourcePortEditForm editForm = new SourcePortEditForm(m_adapter, m_tabViews, m_launchType);
 
-            IEnumerable<string> extensions = new string[] { ".wad" };
-
-            if (m_launchType == SourcePortLaunchType.SourcePort)
-                extensions = extensions.Union(Util.GetDehackedExtensions().Union(Util.GetSourcePortPkExtensions()));
-            else
-                extensions = extensions.Union(Util.GetSourcePortPkExtensions());
-
-            editForm.SetSupportedExtensions(string.Join(",", extensions));
-
             editForm.StartPosition = FormStartPosition.CenterParent;
 
             if (editForm.ShowDialog(this) == DialogResult.OK)
@@ -169,6 +161,7 @@ namespace DoomLauncher
 
                 SelectSourcePort(sourcePort);
             }
+
         }
 
         private void SelectSourcePort(ISourcePortData sourcePort)

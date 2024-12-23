@@ -102,7 +102,16 @@ namespace DoomLauncher.Steam
                  where File.Exists(absolutePath)
                  select absolutePath).ToList();
 
-            return new SteamInstalledGame(game, gamePath, installedIwads, installedPwads);
+            string installedDoom64Exe = null;
+            if (game.ExpectedDoom64Exe != null)
+            {
+                var absolutePath = Path.Combine(gamePath, game.ExpectedDoom64Exe);
+                if (File.Exists(absolutePath))
+                    installedDoom64Exe = absolutePath;
+            }
+
+
+            return new SteamInstalledGame(game, gamePath, installedIwads, installedPwads, installedDoom64Exe);
         }
 
         private static string CalculateSteamInstallPath()

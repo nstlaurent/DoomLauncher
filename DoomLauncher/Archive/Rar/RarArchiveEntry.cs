@@ -3,7 +3,7 @@ using System.IO;
 
 namespace DoomLauncher.Archive.Rar
 {
-    public class RarArchiveEntry : IArchiveEntry
+    public class RarArchiveEntry : AbstractArchiveEntry
     {
         private readonly SharpCompress.Archives.Rar.RarArchiveEntry m_entry;
 
@@ -12,17 +12,17 @@ namespace DoomLauncher.Archive.Rar
             m_entry = entry;
         }
 
-        public long Length => m_entry.Size;
+        public override long Length => m_entry.Size;
 
-        public string Name => Path.GetFileName(m_entry.Key);
+        public override string Name => Path.GetFileName(m_entry.Key);
 
-        public string FullName => m_entry.Key;
+        public override string FullName => m_entry.Key;
 
-        public bool ExtractRequired => true;
+        public override bool ExtractRequired => true;
 
-        public bool IsDirectory => m_entry.IsDirectory;
+        public override bool IsDirectory => m_entry.IsDirectory;
 
-        public void ExtractToFile(string file, bool overwrite = false)
+        public override void ExtractToFile(string file, bool overwrite = false)
         {
             if (!overwrite && File.Exists(file))
                 return;
@@ -30,7 +30,7 @@ namespace DoomLauncher.Archive.Rar
             m_entry.WriteToFile(file);
         }
 
-        public void Read(byte[] buffer, int offset, int length)
+        public override void Read(byte[] buffer, int offset, int length)
         {
             using (MemoryStream ms = new MemoryStream(buffer, offset, length))
                 m_entry.WriteTo(ms);
@@ -49,6 +49,6 @@ namespace DoomLauncher.Archive.Rar
             return FullName.GetHashCode();
         }
 
-        public string GetNameWithoutExtension() => Path.GetFileNameWithoutExtension(Name);
+        public override string GetNameWithoutExtension() => Path.GetFileNameWithoutExtension(Name);
     }
 }
