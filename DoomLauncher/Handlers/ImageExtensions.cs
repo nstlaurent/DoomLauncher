@@ -71,12 +71,6 @@ namespace DoomLauncher
             grPhoto.Clear(backColor);
             grPhoto.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-            grPhoto.DrawImage(imgPhoto,
-                new Rectangle(0, 0, width, height),
-                new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
-                GraphicsUnit.Pixel);
-
-            bmPhoto = Blur(bmPhoto, new Rectangle(0, 0, width, height), 8);
             grPhoto = Graphics.FromImage(bmPhoto);
 
             grPhoto.DrawImage(imgPhoto,
@@ -220,8 +214,16 @@ namespace DoomLauncher
 
                     // now that we know the average for the blur size, set each pixel to that color
                     for (int x = xx; x < xx + blurSize && x < image.Width && x < rectangle.Width; x++)
+                    {
                         for (int y = yy; y < yy + blurSize && y < image.Height && y < rectangle.Height; y++)
-                            blurred.SetPixel(x, y, Color.FromArgb(avgR, avgG, avgB));
+                        {
+                            double avg = (avgR + avgG + avgB) / 3.0;
+                            double avgR2 = (avgR * 3.0 + avg) / 4.0;
+                            double avgG2 = (avgG * 3.0 + avg) / 4.0;
+                            double avgB2 = (avgB * 3.0 + avg) / 4.0;
+                            blurred.SetPixel(x, y, Color.FromArgb((int)avgR2, (int)avgG2, (int)avgB2));
+                        }
+                    }
                 }
             }
 
