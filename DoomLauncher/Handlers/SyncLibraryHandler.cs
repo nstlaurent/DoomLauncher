@@ -1,11 +1,7 @@
 ﻿using DoomLauncher.Interfaces;
 using DoomLauncher.TextFileParsers;
-using Octokit;
-using SharpCompress.Common;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;

@@ -1,9 +1,7 @@
-﻿using DoomLauncher.Interfaces;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace DoomLauncher.TextFileParsers
 {
