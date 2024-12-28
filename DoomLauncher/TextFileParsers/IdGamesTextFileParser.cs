@@ -1,29 +1,34 @@
-﻿using DoomLauncher.Interfaces;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace DoomLauncher.TextFileParsers
 {
-    public class IdGamesTextFileParser : ITextFileParser
+    public class IdGamesTextFileParser
     {
-        private static string s_fullRegex = @"\s*{0}\s*:[^\r\n]*";
-        private static string s_fullRegexDescription = @"\s*{0}\s*:[^=]*";
-        private static string s_regex = @"\s*{0}\s*:\s*";
-        private string[] m_dateParseFormats;
+        private static readonly string s_fullRegex = @"\s*{0}\s*:[^\r\n]*";
+        private static readonly string s_fullRegexDescription = @"\s*{0}\s*:[^=]*";
+        private static readonly string s_regex = @"\s*{0}\s*:\s*";
+        private readonly string[] m_dateParseFormats;
+
         public IdGamesTextFileParser(string[] dateParseFormats)
         {
             m_dateParseFormats = dateParseFormats.ToArray();
         }
 
-        public void Parse(string text)
+        public IdGamesTextInfo Parse(string text)
         {
-            Title = FindValue(text, "Title", s_fullRegex, false);
-            Author = FindValue(text, "Authors*", s_fullRegex, false);
-            Description = FindValue(text, "Description", s_fullRegexDescription, false).Replace("\r\n", "\n");
-            ReleaseDate = null;
+            var title = FindValue(text, "Title", s_fullRegex, false);
+            var author = FindValue(text, "Authors*", s_fullRegex, false);
+            var releaseDate = ParseReleaseDate(text);
+            var description = FindValue(text, "Description", s_fullRegexDescription, false).Replace("\r\n", "\n");
 
+            return new IdGamesTextInfo(title, author, releaseDate, description);
+        }
+
+        private DateTime? ParseReleaseDate(string text)
+        {
             string[] dateItems = new string[] { "Date Finished", "Release date" };
 
             string date = string.Empty;
@@ -39,12 +44,13 @@ namespace DoomLauncher.TextFileParsers
                 DateTime dt;
                 date = date.Replace(".", "/");
                 if (ParseDate1(date, m_dateParseFormats, out dt))
-                    ReleaseDate = dt;
+                    return dt;
                 else if (ParseDate2(date, m_dateParseFormats, out dt))
-                    ReleaseDate = dt;
+                    return dt;
                 else if (ParseDate3(date, m_dateParseFormats, out dt))
-                    ReleaseDate = dt;
+                    return dt;
             }
+            return null;
         }
 
         private bool ParseDate1(string date, string[] dateParseFormats, out DateTime dt)
@@ -83,10 +89,5 @@ namespace DoomLauncher.TextFileParsers
 
             return string.Empty;
         }
-
-        public string Title { get; set; }
-        public string Author { get; set; }
-        public DateTime? ReleaseDate { get; set; }
-        public string Description { get; set; }
     }
 }

@@ -14,12 +14,12 @@ namespace UnitTest.Tests
         public void TestEmpty()
         {
             IdGamesTextFileParser parser = new IdGamesTextFileParser(s_formats);
-            parser.Parse(string.Empty);
+            var info = parser.Parse(string.Empty);
 
-            Assert.AreEqual(string.Empty, parser.Title);
-            Assert.AreEqual(string.Empty, parser.Author);
-            Assert.AreEqual(null, parser.ReleaseDate);
-            Assert.AreEqual(string.Empty, parser.Description);
+            Assert.AreEqual(string.Empty, info.Title);
+            Assert.AreEqual(string.Empty, info.Author);
+            Assert.AreEqual(null, info.ReleaseDate);
+            Assert.AreEqual(string.Empty, info.Description);
         }
 
         [TestMethod]
@@ -27,17 +27,17 @@ namespace UnitTest.Tests
         {
             IdGamesTextFileParser parser = new IdGamesTextFileParser(s_formats);
 
-            parser.Parse("Release date: this is garbage");
-            Assert.AreEqual(null, parser.ReleaseDate);
+            var info = parser.Parse("Release date: this is garbage");
+            Assert.AreEqual(null, info.ReleaseDate);
 
             parser.Parse("Release date: ");
-            Assert.AreEqual(null, parser.ReleaseDate);
+            Assert.AreEqual(null, info.ReleaseDate);
 
             parser.Parse("Release date:");
-            Assert.AreEqual(null, parser.ReleaseDate);
+            Assert.AreEqual(null, info.ReleaseDate);
 
             parser.Parse("Release date: 1234");
-            Assert.AreEqual(null, parser.ReleaseDate);
+            Assert.AreEqual(null, info.ReleaseDate);
         }
 
         [TestMethod]
@@ -62,8 +62,8 @@ namespace UnitTest.Tests
 
             foreach (string date in dates)
             {
-                parser.Parse(date);
-                Assert.AreEqual(parser.ReleaseDate, assert);
+                var info = parser.Parse(date);
+                Assert.AreEqual(info.ReleaseDate, assert);
             }
         }
 
@@ -80,19 +80,19 @@ namespace UnitTest.Tests
                         dEsCrIpTioN             : 21 head to head deathmatch maps with faced paced action.  This is a 1on1 specific mapset. For FFA more than 4 players is not recommended.";
 
             IdGamesTextFileParser parser = new IdGamesTextFileParser(s_formats);
-            parser.Parse(test);
+            var info = parser.Parse(test);
 
-            Assert.AreEqual("Onslaught DM 3 (v.1.1)", parser.Title);
-            Assert.AreEqual(DateTime.Parse("01/17/07", CultureInfo.InvariantCulture), parser.ReleaseDate);
-            Assert.AreEqual("Hobomaster22, Ak-01", parser.Author); //Could be Author: or Authors:
-            Assert.AreEqual("21 head to head deathmatch maps with faced paced action.  This is a 1on1 specific mapset. For FFA more than 4 players is not recommended.", parser.Description);
+            Assert.AreEqual("Onslaught DM 3 (v.1.1)", info.Title);
+            Assert.AreEqual(DateTime.Parse("01/17/07", CultureInfo.InvariantCulture), info.ReleaseDate);
+            Assert.AreEqual("Hobomaster22, Ak-01", info.Author); //Could be Author: or Authors:
+            Assert.AreEqual("21 head to head deathmatch maps with faced paced action.  This is a 1on1 specific mapset. For FFA more than 4 players is not recommended.", info.Description);
 
             test = test.Replace("AUTHORS", "AUTHOR");
             parser.Parse(test);
-            Assert.AreEqual("Onslaught DM 3 (v.1.1)", parser.Title);
-            Assert.AreEqual(DateTime.Parse("01/17/07", CultureInfo.InvariantCulture), parser.ReleaseDate);
-            Assert.AreEqual("Hobomaster22, Ak-01", parser.Author); //Could be Author: or Authors:
-            Assert.AreEqual("21 head to head deathmatch maps with faced paced action.  This is a 1on1 specific mapset. For FFA more than 4 players is not recommended.", parser.Description);
+            Assert.AreEqual("Onslaught DM 3 (v.1.1)", info.Title);
+            Assert.AreEqual(DateTime.Parse("01/17/07", CultureInfo.InvariantCulture), info.ReleaseDate);
+            Assert.AreEqual("Hobomaster22, Ak-01", info.Author); //Could be Author: or Authors:
+            Assert.AreEqual("21 head to head deathmatch maps with faced paced action.  This is a 1on1 specific mapset. For FFA more than 4 players is not recommended.", info.Description);
 
             test = @"===========================================================================
                     Primary purpose         : Deathmatch
@@ -102,11 +102,11 @@ namespace UnitTest.Tests
                     Release DATE            : 
                     AUTHORS                 : 
                     dEsCrIpTioN             : ";
-            parser.Parse(test);
-            Assert.AreEqual(string.Empty, parser.Title);
-            Assert.AreEqual(null, parser.ReleaseDate);
-            Assert.AreEqual(string.Empty, parser.Author);
-            Assert.AreEqual(string.Empty, parser.Description);
+            info = parser.Parse(test);
+            Assert.AreEqual(string.Empty, info.Title);
+            Assert.AreEqual(null, info.ReleaseDate);
+            Assert.AreEqual(string.Empty, info.Author);
+            Assert.AreEqual(string.Empty, info.Description);
         }
     }
 }
