@@ -1,7 +1,9 @@
 ﻿using DoomLauncher.Interfaces;
 using DoomLauncher.TextFileParsers;
 using Octokit;
+using SharpCompress.Common;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
@@ -243,44 +245,54 @@ namespace DoomLauncher
                 file.MapCount = file.Map.Count(x => x == ',') + 1;
         }
 
+        private bool isTxtFile(string filename) =>
+            Path.GetExtension(filename).Equals(".txt", StringComparison.OrdinalIgnoreCase);
+
+        private byte[] ReadBuffer(IArchiveEntry entry)
+        {
+            byte[] buffer = new byte[entry.Length];
+            try
+            {
+                entry.Read(buffer, 0, Convert.ToInt32(entry.Length));
+            }
+            catch (Exception)
+            {
+                // Do not fail because we couldn't read a text file
+            }
+            return buffer;
+        }
+
+        private IdGamesTextInfo ParseIdGamesTextInfo(IArchiveEntry entry)
+        {
+            string buffer = Encoding.UTF7.GetString(ReadBuffer(entry));
+            return new IdGamesTextFileParser(DateParseFormats).Parse(buffer);
+        }
+
+        public string GetUserFriendlyFilename(string filename)
+        {
+            var words = Path.GetFileNameWithoutExtension(filename).Replace("_", " ").Replace("-", " ").Split();
+            var capitalisedWords = words.Select(word => string.Concat(word[0].ToString().ToUpper(), word.Substring(1)));
+            return string.Join(" ", capitalisedWords.ToArray());
+        }
+
+
         private void FillTextFileInfo(IGameFile gameFile, IArchiveReader reader)
         {
-            bool bParsedTxt = false;
+            var textInfos = from entry in reader.Entries
+                            where isTxtFile(entry.FullName)
+                            let info = ParseIdGamesTextInfo(entry)
+                            orderby info.QualityScore descending
+                            select info;
 
-            foreach (var entry in reader.Entries)
-            {
-                if (Path.GetExtension(entry.FullName).Equals(".txt", StringComparison.OrdinalIgnoreCase))
-                {
-                    byte[] buffer = new byte[entry.Length];
-                    try
-                    {
-                        entry.Read(buffer, 0, Convert.ToInt32(entry.Length));
-                    }
-                    catch (Exception)
-                    {
-                        // Do not fail because we couldn't read a text file
-                    }
+            var bestInfo = textInfos.Aggregate(IdGamesTextInfo.EMPTY, (a, b) => a.Combine(b));
 
-                    IdGamesTextFileParser parser = new IdGamesTextFileParser(DateParseFormats);
-                    parser.Parse(Encoding.UTF7.GetString(buffer));
+            gameFile.Title = bestInfo.Title;
+            gameFile.Author = bestInfo.Author;
+            gameFile.ReleaseDate = bestInfo.ReleaseDate;
+            gameFile.Description = bestInfo.Description;
 
-                    bParsedTxt = !string.IsNullOrEmpty(parser.Title) || !string.IsNullOrEmpty(parser.Author) || !string.IsNullOrEmpty(parser.Description);
-
-                    if (bParsedTxt)
-                    {
-                        gameFile.Title = parser.Title;
-                        gameFile.Author = parser.Author;
-                        gameFile.ReleaseDate = parser.ReleaseDate;
-                        gameFile.Description = parser.Description;
-                    }
-                }
-
-                if (bParsedTxt)
-                    break;
-            }
-
-            if (string.IsNullOrEmpty(gameFile.Title))
-                gameFile.Title = gameFile.FileNameNoPath;
+            if (string.IsNullOrWhiteSpace(gameFile.Title))
+                gameFile.Title = GetUserFriendlyFilename(gameFile.FileNameNoPath);
         }
 
         private static string CreateExceptionMsg(Exception ex)

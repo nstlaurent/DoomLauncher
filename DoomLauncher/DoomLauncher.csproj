@@ -278,6 +278,7 @@
     <Compile Include="Handlers\GameFileTileManager.cs" />
     <Compile Include="Config\Icons.cs" />
     <Compile Include="Handlers\GameProfileUtil.cs" />
+    <Compile Include="TextFileParsers\IdGamesTextInfo.cs" />
     <Compile Include="Handlers\ImageExtensions.cs" />
     <Compile Include="Handlers\MenuConstants.cs" />
     <Compile Include="Handlers\ArchiveUtil.cs" />
@@ -698,7 +699,6 @@
     <Compile Include="Interfaces\IGameFile.cs" />
     <Compile Include="Interfaces\IIWadData.cs" />
     <Compile Include="Interfaces\ISourcePortData.cs" />
-    <Compile Include="Interfaces\ITextFileParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\SearchControl.cs">
