@@ -40,15 +40,13 @@ namespace DoomLauncher.TextFileParsers
 
         public override bool Equals(object obj)
         {
-            return obj != null 
-                && obj is IdGamesTextInfo info 
+            return obj != null
+                && obj is IdGamesTextInfo info
                 && (Title, Author, ReleaseDate, Description).Equals((info.Title, info.Author, info.ReleaseDate, info.Description));
         }
 
-        public override int GetHashCode()
-        {
-            return (Title, Author, ReleaseDate, Description).GetHashCode();
-        }
+        public override int GetHashCode() => 
+            (Title, Author, ReleaseDate, Description).GetHashCode();
     }
 
 }
