@@ -2,7 +2,7 @@
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Interfaces;
-using DoomLauncher.Steam;
+using DoomLauncher.GameStores;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -279,8 +279,8 @@ namespace DoomLauncher
 
         private async Task AutoLoadSteamWads()
         {
-            var steamCheck = new AutomaticSteamCheck(SteamLoader.LoadFromEnvironment, DbDataSourceAdapter.CreateAdapter());
-            await steamCheck.LoadGamesFromSteam(
+            var gameStoreCheck = new AutomaticGameStoreCheck(StoreGameLoader.LoadAllStoreGamesFromRegistry, DbDataSourceAdapter.CreateAdapter());
+            await gameStoreCheck.LoadGamesFromGameStores(
                 async iwads => await HandleAddGameFiles(AddFileType.IWad, iwads.ToArray(), null, FileManagement.Managed),
                 async pwads => await HandleAddGameFiles(AddFileType.GameFile, pwads.ToArray(), null, FileManagement.Managed),
                 HandleAddDoom64);

@@ -1,51 +1,53 @@
 ﻿using System.Collections.Generic;
 
-namespace DoomLauncher.Steam
+namespace DoomLauncher.GameStores
 {
-    public class SteamGame
+    public class StoreGame
     {
-        public readonly static SteamGame ULTIMATE_DOOM = new SteamGame(2280, "DOOM + DOOM II", 
+        public readonly static StoreGame ULTIMATE_DOOM = new StoreGame(2280, 1317223010, "DOOM + DOOM II", 
             new List<string> { @"rerelease\doom.wad", @"rerelease\doom2.wad", @"rerelease\plutonia.wad", @"rerelease\tnt.wad", 
                                @"base\doom.wad", @"base\doom2\doom2.wad", @"base\plutonia\plutonia.wad", @"base\tnt\tnt.wad" }, 
             new List<string> { @"rerelease\id1.wad", @"rerelease\nerve.wad", @"rerelease\masterlevels.wad", @"rerelease\sigil.wad" },
             null);
 
-        public readonly static SteamGame DOOM2 = new SteamGame(2300, "DOOM II", 
+        public readonly static StoreGame DOOM2 = new StoreGame(2300, null, "DOOM II", 
             new List<string> { "base\\doom2.wad" }, 
             new List<string>(), 
             null);
 
-        public readonly static SteamGame FINAL_DOOM = new SteamGame(2290, "Final DOOM", 
+        public readonly static StoreGame FINAL_DOOM = new StoreGame(2290, null, "Final DOOM", 
             new List<string> { "base\\plutonia.wad", "base\\tnt.wad" }, 
             new List<string>(),
             null);
 
-        public readonly static SteamGame HERETIC = new SteamGame(2390, "Heretic: Shadow of the Serpent Riders", 
+        public readonly static StoreGame HERETIC = new StoreGame(2390, 1290366318, "Heretic: Shadow of the Serpent Riders", 
             new List<string> { "base\\heretic.wad" }, 
             new List<string>(),
             null);
 
-        public readonly static SteamGame HEXEN = new SteamGame(2360, "Hexen: Beyond Heretic",
+        public readonly static StoreGame HEXEN = new StoreGame(2360, 1247951670, "Hexen: Beyond Heretic",
             new List<string> { "base\\hexen.wad" },
             new List<string>(), 
             null);
 
-        public readonly static SteamGame STRIFE = new SteamGame(317040, "Strife: Veteran Edition",
+        public readonly static StoreGame STRIFE = new StoreGame(317040, 1432899949, "Strife: Veteran Edition",
             new List<string> { "strife1.wad" },
             new List<string>(), 
             null);
 
-        public readonly static SteamGame DOOM64 = new SteamGame(1148590, "Doom 64",
+        public readonly static StoreGame DOOM64 = new StoreGame(1148590, 1456611261, "Doom 64",
             new List<string> { "doom64.wad" },
             new List<string>(), 
             "doom64_x64.exe");
 
-        public static readonly List<SteamGame> GAMES_IN_PRIORITY_ORDER = new List<SteamGame>() 
+        public static readonly List<StoreGame> GAMES_IN_PRIORITY_ORDER = new List<StoreGame>() 
         { 
             ULTIMATE_DOOM, DOOM2, FINAL_DOOM, HERETIC, HEXEN, STRIFE, DOOM64
         };
 
-        public int GameId { get; }
+        public int SteamId { get; }
+
+        public int? GogId { get; }
 
         public string Name { get; }
 
@@ -55,9 +57,10 @@ namespace DoomLauncher.Steam
 
         public string ExpectedDoom64Exe { get; }
 
-        private SteamGame(int gameId, string name, List<string> expectedIWadFiles, List<string> expectedPwadFiles, string expectedDoom64Exe)
+        private StoreGame(int steamId, int? gogId, string name, List<string> expectedIWadFiles, List<string> expectedPwadFiles, string expectedDoom64Exe)
         {
-            GameId = gameId;
+            SteamId = steamId;
+            GogId = gogId;
             Name = name;
             ExpectedIWadFiles = expectedIWadFiles;
             ExpectedPWadFiles = expectedPwadFiles;
@@ -66,17 +69,17 @@ namespace DoomLauncher.Steam
 
         public override bool Equals(object obj)
         {
-            if (obj is SteamGame)
+            if (obj is StoreGame)
             {
-                SteamGame other = (SteamGame)obj;
-                return other.GameId == GameId;
+                StoreGame other = (StoreGame)obj;
+                return other.SteamId == SteamId;
             }
             return false;
         }
 
         public override int GetHashCode()
         {
-            return GameId;
+            return SteamId;
         }
     }
 }

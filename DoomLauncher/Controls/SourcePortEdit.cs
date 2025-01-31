@@ -87,6 +87,7 @@ namespace DoomLauncher
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = GetFilter();
+            dialog.InitialDirectory = m_directory;
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {

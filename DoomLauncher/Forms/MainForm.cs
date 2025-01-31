@@ -693,6 +693,13 @@ namespace DoomLauncher
             if (gameFile.GameFileID.HasValue)
                 DataSourceAdapter.DeleteStatsByFile(gameFile.GameFileID.Value);
 
+            // If we're deleting Doom64, delete the source port too
+            if (gameFile.IsDoom64)
+            {
+                var doom64SourcePort = DataSourceAdapter.GetDoom64().FirstOrDefault();
+                DataSourceAdapter.DeleteSourcePort(doom64SourcePort);
+            }
+
             var tagMapping = DataSourceAdapter.GetTagMappings(gameFile.GameFileID.Value);
             tagMapping.ToList().ForEach(x => DataSourceAdapter.DeleteTagMapping(x));
 
