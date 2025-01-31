@@ -89,6 +89,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Tests\TestGameStoreFiles.cs" />
     <Compile Include="TestInit.cs" />
     <Compile Include="Tests\TestArchives.cs" />
     <Compile Include="Tests\TestDirectoryArchive.cs" />
@@ -107,7 +108,6 @@
     <Compile Include="Tests\TestSpecificFiles.cs" />
     <Compile Include="Tests\TestAutomaticSteamCheck.cs" />
     <Compile Include="Tests\TestSteamLoader.cs" />
-    <Compile Include="Tests\TestSteamInstallation.cs" />
     <Compile Include="Tests\TestUtil.cs" />
     <Compile Include="Tests\TestFile.cs" />
     <Compile Include="Tests\TestLoadFiles.cs" />

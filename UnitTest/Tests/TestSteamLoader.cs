@@ -1,42 +1,36 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using DoomLauncher.Steam;
+using DoomLauncher.GameStores;
 using System.Linq;
+using static DoomLauncher.GameStores.StoreGameLoader;
 
 namespace UnitTest.Tests
 {
     [TestClass]
     public class TestSteamLoader
     {
+        
         [TestMethod]
         public void LoadFromPath_FindsExpectedWads()
         {
-            // Assuming Steam configured in TestSteamInstall
-
             // Assuming fixtures:
 
             // SteamGame.ULTIMATE_DOOM:
             // TestSteamLibrary1 / steamapps / common / TestDoom
 
-            // SteamGame.HERETIC:
-            // TestSteamLibrary1 / steamapps / common / TestHeretic
-            // TestSteamLibrary2 / steamapps / common / TestHeretic
 
-            // SteamGame.HEXEN:
-            // TestSteamLibrary2 / steamapps / common / TestHexen
+            GameFinder finder = _ => @"Resources\TestSteamLibrary1\steamapps\common\TestDoom";
 
-            var steam = SteamLoader.LoadFromPath(@"Resources\TestSteamInstall");
+            var gameStoreFiles = StoreGameLoader.LoadStoreGame(StoreGame.ULTIMATE_DOOM, @"Resources\TestSteamLibrary1\steamapps\common\TestDoom");
 
-            var iwads = steam.GetInstalledIWads();
-            Assert.AreEqual(6, iwads.Count);
+            var iwads = gameStoreFiles.InstalledIWads;
+            Assert.AreEqual(4, iwads.Count);
             Assert.IsTrue(iwads.Exists(x => x.Contains("doom.wad")));
             Assert.IsTrue(iwads.Exists(x => x.Contains("doom2.wad")));
             Assert.IsTrue(iwads.Exists(x => x.Contains("plutonia.wad")));
             Assert.IsTrue(iwads.Exists(x => x.Contains("tnt.wad")));
-            Assert.IsTrue(iwads.Exists(x => x.Contains("heretic.wad")));
-            Assert.IsTrue(iwads.Exists(x => x.Contains("hexen.wad")));
 
-            var pwads = steam.GetInstalledPWads();
+            var pwads = gameStoreFiles.InstalledPWads;
             Assert.AreEqual(4, pwads.Count);
             Assert.IsTrue(pwads.Exists(x => x.Contains("nerve.wad")));
             Assert.IsTrue(pwads.Exists(x => x.Contains("id1.wad")));
@@ -45,10 +39,10 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(SteamLoaderException))]
-        public void LoadFromPath_FailsIfSteamPathIsWrong()
+        public void LoadFromPath_ReturnsEmptyFilesIfDirectoryNotFound()
         {
-            SteamLoader.LoadFromPath(@"Resources\DoesNotExist");
+            var gameStoreFiles = StoreGameLoader.LoadStoreGame(StoreGame.ULTIMATE_DOOM, @"Resources\DoesNotExist");
+            Assert.AreEqual(gameStoreFiles, GameStoreFiles.EMPTY);
         }
     }
 }

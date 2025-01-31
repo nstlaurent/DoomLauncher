@@ -320,12 +320,10 @@
     <Compile Include="SourcePort\HelionSourcePortFlavor.cs" />
     <Compile Include="SourcePort\LevelstatSourcePortFlavor.cs" />
     <Compile Include="SourcePort\StatdumpSourcePortFlavor.cs" />
-    <Compile Include="Steam\AutomaticSteamCheck.cs" />
-    <Compile Include="Steam\SteamGame.cs" />
-    <Compile Include="Steam\SteamInstallation.cs" />
-    <Compile Include="Steam\SteamInstalledGame.cs" />
-    <Compile Include="Steam\SteamLibrary.cs" />
-    <Compile Include="Steam\SteamLoader.cs" />
+    <Compile Include="GameStores\AutomaticGameStoreCheck.cs" />
+    <Compile Include="GameStores\StoreGame.cs" />
+    <Compile Include="GameStores\StoreGameLoader.cs" />
+    <Compile Include="GameStores\GameStoreFiles.cs" />
     <Compile Include="Stylize\CToolStripRenderer.cs" />
     <Compile Include="Stylize\DarkTheme.cs" />
     <Compile Include="Stylize\DefaultTheme.cs" />

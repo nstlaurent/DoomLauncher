@@ -1,7 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using DoomLauncher.Handlers;
 

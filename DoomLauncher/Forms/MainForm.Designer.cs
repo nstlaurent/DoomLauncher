@@ -505,7 +505,7 @@
             // 
             this.loadWadsFromSteamMenuItem.Name = "loadWadsFromSteamMenuItem";
             this.loadWadsFromSteamMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.loadWadsFromSteamMenuItem.Text = "Load WADs from Steam";
+            this.loadWadsFromSteamMenuItem.Text = "Load WADs from Steam or GOG";
             this.loadWadsFromSteamMenuItem.Click += new System.EventHandler(this.loadWadsFromSteamMenuItem_Click);
             // 
             // toolStripSeparator15
