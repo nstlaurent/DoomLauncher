@@ -4,9 +4,9 @@ namespace DoomLauncher
 {
     class IWadInfo
     {
-        public readonly string Title;
-        public readonly string TileImage;
-        public readonly bool HasMetadata;
+        public string Title { get; }
+        public string TileImage { get; }
+        public bool HasMetadata { get; }
 
         public IWadInfo(string title, string tileImage, bool hasMeta = false)
         {
@@ -60,7 +60,7 @@ namespace DoomLauncher
                 case "STRIFE1":
                     return new IWadInfo("Strife: Quest for the Sigil", "strife.png");
                 case "DOOM64":
-                    return new IWadInfo("Doom 64", string.Empty);
+                    return new IWadInfo("Doom 64", "doom64.png");
                 default:
                     break;
             }

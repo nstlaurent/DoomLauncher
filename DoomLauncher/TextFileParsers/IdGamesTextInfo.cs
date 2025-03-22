@@ -6,14 +6,16 @@ namespace DoomLauncher.TextFileParsers
 {
     public class IdGamesTextInfo
     {
-        public static readonly IdGamesTextInfo EMPTY = new IdGamesTextInfo(null, null, null, null);
+        public static readonly IdGamesTextInfo EMPTY = new IdGamesTextInfo(null, null, null, null, null);
 
-        public IdGamesTextInfo(string title, string author, DateTime? releaseDate, string description)
+        public IdGamesTextInfo(string title, string author, DateTime? releaseDate, string description, string game)
         {
             Title = title ?? "";
             Author = author ?? "";
             ReleaseDate = releaseDate;
             Description = description ?? "";
+            Game = game ?? "";
+
         }
 
         public int QualityScore 
@@ -31,22 +33,26 @@ namespace DoomLauncher.TextFileParsers
                 !string.IsNullOrWhiteSpace(Title) ? Title : other.Title,
                 !string.IsNullOrWhiteSpace(Author) ? Author : other.Author, 
                 ReleaseDate ?? other.ReleaseDate,
-                !string.IsNullOrWhiteSpace(Description) ? Description : other.Description);
+                !string.IsNullOrWhiteSpace(Description) ? Description : other.Description,
+                !string.IsNullOrWhiteSpace(Game) ? Game : other.Game);
 
         public string Title { get; }
         public string Author { get; }
         public DateTime? ReleaseDate { get; }
         public string Description { get; }
 
+        public string Game { get; }
+
         public override bool Equals(object obj)
         {
             return obj != null
                 && obj is IdGamesTextInfo info
-                && (Title, Author, ReleaseDate, Description).Equals((info.Title, info.Author, info.ReleaseDate, info.Description));
+                && (Title, Author, ReleaseDate, Description, Game).Equals(
+                    (info.Title, info.Author, info.ReleaseDate, info.Description, info.Game));
         }
 
         public override int GetHashCode() => 
-            (Title, Author, ReleaseDate, Description).GetHashCode();
+            (Title, Author, ReleaseDate, Description, Game).GetHashCode();
     }
 
 }

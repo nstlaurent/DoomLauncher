@@ -71,6 +71,7 @@ namespace UnitTest.Tests
         public void TestStrings()
         {
             string test = @"===========================================================================
+                        Advanced engine needed  : PrBoom+ or GZdoom.
                         Primary purpose         : Deathmatch
                         ===========================================================================
                         TitLe                   : Onslaught DM 3 (v.1.1)
