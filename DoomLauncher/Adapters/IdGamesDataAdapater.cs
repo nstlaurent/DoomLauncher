@@ -59,8 +59,15 @@ namespace DoomLauncher
             if (fieldType != GameFileFieldType.Filename && fieldType != GameFileFieldType.GameFileID && searchText.Length < minLength)
                 return Array.Empty<IGameFile>();
 
-            if (fieldType == GameFileFieldType.Filename && searchText.Length < minLength)
-                searchText += ".zip";
+            if (fieldType == GameFileFieldType.Filename)
+            {
+                var fi = new FileInfo(searchText);
+                if (!string.IsNullOrEmpty(fi.Extension))
+                    searchText = searchText.Replace(fi.Extension, string.Empty);
+
+                if (searchText.Length < minLength)
+                    searchText += ".zip";
+            }
 
             return GetFiles(string.Format(query, Uri.EscapeDataString(searchText)),
                 options.SearchField.SearchFieldType == GameFileFieldType.GameFileID ? "content" : "file");
