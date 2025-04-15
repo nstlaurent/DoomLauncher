@@ -89,6 +89,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Tests\TestRecursiveArchiveReader.cs" />
     <Compile Include="Tests\TestGameStoreFiles.cs" />
     <Compile Include="TestInit.cs" />
     <Compile Include="Tests\TestArchives.cs" />

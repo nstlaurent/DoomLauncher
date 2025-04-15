@@ -156,6 +156,7 @@
     <Compile Include="Archive\FileArchiveReader.cs" />
     <Compile Include="Archive\Directory\DirectoryArchiveReader.cs" />
     <Compile Include="Archive\IArchiveEntry.cs" />
+    <Compile Include="Archive\RecursiveArchiveReader.cs" />
     <Compile Include="Config\ColorTheme.cs" />
     <Compile Include="Config\ColorThemeType.cs" />
     <Compile Include="Config\IDirectoriesConfiguration.cs" />
@@ -273,12 +274,18 @@
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
-    <Compile Include="Handlers\DoomImageUtil.cs" />
+    <Compile Include="Handlers\Sync\IGameFileFragment.cs" />
+    <Compile Include="Handlers\Sync\MapStringGameFileFragment.cs" />
+    <Compile Include="Handlers\Sync\SyncResult.cs" />
+    <Compile Include="Handlers\Sync\Doom64GameFileFragment.cs" />
+    <Compile Include="Handlers\Sync\TextFileGameFileFragment.cs" />
+    <Compile Include="Handlers\Sync\TitlePicUtil.cs" />
     <Compile Include="Handlers\FileMapComparer.cs" />
     <Compile Include="Handlers\GameFileTileManager.cs" />
     <Compile Include="Config\Icons.cs" />
     <Compile Include="Handlers\GameProfileUtil.cs" />
-    <Compile Include="TextFileParsers\IdGamesTextInfo.cs" />
+    <Compile Include="Handlers\Sync\TitlePicGameFileFragment.cs" />
+    <Compile Include="Handlers\Sync\IdGamesTextInfo.cs" />
     <Compile Include="Handlers\ImageExtensions.cs" />
     <Compile Include="Handlers\MenuConstants.cs" />
     <Compile Include="Handlers\ArchiveUtil.cs" />
@@ -744,7 +751,7 @@
       <DependentUpon>TagEditForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Config\TagMapLookup.cs" />
-    <Compile Include="TextFileParsers\IdGamesTextFileParser.cs" />
+    <Compile Include="Handlers\Sync\IdGamesTextFileParser.cs" />
     <Compile Include="Handlers\ToolTipHandler.cs" />
     <Compile Include="Forms\TxtGenerator.cs">
       <SubType>Form</SubType>
@@ -1085,9 +1092,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Handlers\Sync\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release $(SolutionDir)DoomLauncherRelease\bin\$(ConfigurationName)\DoomLauncherRelease.exe

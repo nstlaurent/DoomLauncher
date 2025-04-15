@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace DoomLauncher.TextFileParsers
+namespace DoomLauncher.Handlers.Sync
 {
     public class IdGamesTextFileParser
     {

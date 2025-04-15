@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using DoomLauncher.Handlers.Sync;
 
 namespace UnitTest.Tests
 {
@@ -43,10 +44,10 @@ namespace UnitTest.Tests
 
             string file = "uroburos.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { "uroburos.zip" });
+            var syncResult = handler.Execute(new string[] { "uroburos.zip" });
 
-            Assert.AreEqual(1, handler.AddedGameFiles.Count);
-            Assert.AreEqual(file, handler.AddedGameFiles[0].FileName);
+            Assert.AreEqual(1, syncResult.AddedGameFiles.Count);
+            Assert.AreEqual(file, syncResult.AddedGameFiles[0].FileName);
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
 
@@ -68,9 +69,9 @@ namespace UnitTest.Tests
             string[] files = new string[] { "uroburos.zip", "pyrrhic.zip" };
             Array.ForEach(files, x => File.Copy(Path.Combine("Resources", x), Path.Combine(s_filedir, x)));
 
-            handler.Execute(files);
+            var syncResult = handler.Execute(files);
 
-            Assert.AreEqual(2, handler.AddedGameFiles.Count);
+            Assert.AreEqual(2, syncResult.AddedGameFiles.Count);
             Assert.AreEqual(2, handler.DbDataSource.GetGameFilesCount());
 
             var gameFiles = handler.DbDataSource.GetGameFiles();
@@ -179,10 +180,10 @@ namespace UnitTest.Tests
             Assert.AreEqual(0, handler.DbDataSource.GetGameFilesCount());
 
             string file = "joymaps1.zip";
-            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { file });
+            File.Copy(Path.Combine("Resources", "joymaps1.zip"), Path.Combine(s_filedir, "joymaps1.zip"));
+            var syncResult = handler.Execute(new string[] { "joymaps1.zip" });
 
-            Assert.AreEqual(1, handler.AddedGameFiles.Count);
+            Assert.AreEqual(1, syncResult.AddedGameFiles.Count);
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             var gameFile = handler.DbDataSource.GetGameFiles().First();
 
@@ -192,12 +193,12 @@ namespace UnitTest.Tests
             Assert.IsTrue(gameFile.Description.StartsWith("This was a livestreamed communal mapping session"));
             Assert.AreEqual(gameFile.ReleaseDate, DateTime.Parse("8/1/2016", CultureInfo.InvariantCulture));
 
-            File.Copy(Path.Combine("Resources", "uroburos.zip"), Path.Combine(s_filedir, file), true);
-            handler.Execute(new string[] { file });
+            File.Copy(Path.Combine("Resources", "uroburos.zip"), Path.Combine(s_filedir, "joymaps1.zip"), true);
+            var syncResult2 = handler.Execute(new string[] { "joymaps1.zip" });
 
-            Assert.AreEqual(0, handler.AddedGameFiles.Count);
-            Assert.AreEqual(1, handler.UpdatedGameFiles.Count);
-            Assert.AreEqual("joymaps1.zip", handler.UpdatedGameFiles[0].FileName);
+            Assert.AreEqual(0, syncResult2.AddedGameFiles.Count);
+            Assert.AreEqual(1, syncResult2.UpdatedGameFiles.Count);
+            Assert.AreEqual("joymaps1.zip", syncResult2.UpdatedGameFiles[0].FileName);
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
             gameFile = handler.DbDataSource.GetGameFiles().First();
 
@@ -218,14 +219,15 @@ namespace UnitTest.Tests
             string file = "uroburos.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
 
+            var syncResult = SyncResult.EMPTY;
             using (var reader = File.OpenWrite(Path.Combine(s_filedir, file))) //lock file
             {
-                handler.Execute(new string[] { file });
+                syncResult = handler.Execute(new string[] { file });
             }
 
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
-            Assert.AreEqual(1, handler.InvalidFiles.Length);
-            Assert.AreEqual(file, handler.InvalidFiles[0].FileName);
+            Assert.AreEqual(1, syncResult.InvalidFiles.Count);
+            Assert.AreEqual(file, syncResult.InvalidFiles[0].FileName);
         }
 
         [TestMethod]
@@ -237,11 +239,11 @@ namespace UnitTest.Tests
             string file = "bad.zip";
             File.WriteAllText(Path.Combine(s_filedir, file), "bad data");
 
-            handler.Execute(new string[] { file });
+            var syncResult = handler.Execute(new string[] { file });
 
             Assert.AreEqual(1, handler.DbDataSource.GetGameFilesCount());
-            Assert.AreEqual(1, handler.InvalidFiles.Length);
-            Assert.AreEqual(file, handler.InvalidFiles[0].FileName);
+            Assert.AreEqual(1, syncResult.InvalidFiles.Count);
+            Assert.AreEqual(file, syncResult.InvalidFiles[0].FileName);
         }
 
         [TestMethod]
@@ -251,10 +253,11 @@ namespace UnitTest.Tests
 
             string file = "uroburos.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { file });
 
-            Assert.AreEqual(1, handler.AddedGameFiles.Count);
-            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image titlepic);
+            var syncResult = handler.Execute(new string[] { file });
+
+            Assert.AreEqual(1, syncResult.AddedGameFiles.Count);
+            bool hasTitlepic = syncResult.GetTitlePic(syncResult.AddedGameFiles[0], out Image titlepic);
             Assert.IsTrue(hasTitlepic);
             Assert.AreEqual(320, titlepic.Width);
             Assert.AreEqual(200, titlepic.Height);
@@ -267,10 +270,10 @@ namespace UnitTest.Tests
 
             string file = "pyrrhic.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { file });
+            var syncResult = handler.Execute(new string[] { file });
 
-            Assert.AreEqual(1, handler.AddedGameFiles.Count);
-            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image titlepic);
+            Assert.AreEqual(1, syncResult.AddedGameFiles.Count);
+            bool hasTitlepic = syncResult.GetTitlePic(syncResult.AddedGameFiles[0], out Image titlepic);
             Assert.IsTrue(hasTitlepic);
             Assert.AreEqual(640, titlepic.Width);
             Assert.AreEqual(400, titlepic.Height);
@@ -283,10 +286,10 @@ namespace UnitTest.Tests
 
             string file = "joymaps1.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { file });
+            var syncResult = handler.Execute(new string[] { file });
 
-            Assert.AreEqual(1, handler.AddedGameFiles.Count);
-            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image titlepic);
+            Assert.AreEqual(1, syncResult.AddedGameFiles.Count);
+            bool hasTitlepic = syncResult.GetTitlePic(syncResult.AddedGameFiles[0], out Image titlepic);
             Assert.IsTrue(hasTitlepic);
             Assert.AreEqual(320, titlepic.Width);
             Assert.AreEqual(200, titlepic.Height);
@@ -299,10 +302,10 @@ namespace UnitTest.Tests
 
             string file = "zmapinfo.zip";
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
-            handler.Execute(new string[] { file });
+            var syncResult = handler.Execute(new string[] { file });
 
-            Assert.AreEqual(1, handler.AddedGameFiles.Count);
-            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image titlepic);
+            Assert.AreEqual(1, syncResult.AddedGameFiles.Count);
+            bool hasTitlepic = syncResult.GetTitlePic(syncResult.AddedGameFiles[0], out Image titlepic);
             Assert.IsTrue(hasTitlepic);
             Assert.AreEqual(478, titlepic.Width);
             Assert.AreEqual(313, titlepic.Height);
@@ -317,17 +320,17 @@ namespace UnitTest.Tests
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
             string file2 = "joymaps1.zip";
             File.Copy(Path.Combine("Resources", file2), Path.Combine(s_filedir, file2));
-            handler.Execute(new string[] { file, file2 });
+            var syncResult = handler.Execute(new string[] { file, file2 });
 
-            Assert.AreEqual(2, handler.AddedGameFiles.Count);
+            Assert.AreEqual(2, syncResult.AddedGameFiles.Count);
 
-            bool hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[0], out Image pyrrhicTitlepic);
+            bool hasTitlepic = syncResult.GetTitlePic(syncResult.AddedGameFiles[0], out Image pyrrhicTitlepic);
             Assert.IsTrue(hasTitlepic);
    
             Assert.AreEqual(640, pyrrhicTitlepic.Width);
             Assert.AreEqual(400, pyrrhicTitlepic.Height);
 
-            hasTitlepic = handler.GetTitlePic(handler.AddedGameFiles[1], out Image joymapsTitlepic);
+            hasTitlepic = syncResult.GetTitlePic(syncResult.AddedGameFiles[1], out Image joymapsTitlepic);
             Assert.IsTrue(hasTitlepic);
 
             Assert.AreEqual(320, joymapsTitlepic.Width);
@@ -350,12 +353,12 @@ namespace UnitTest.Tests
             // Change directory to force ignore relative paths
             string dir = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(s_filedir);
-            handler.Execute(new string[] { fullPathFile1, fullPathFile2 });
-            Assert.AreEqual(2, handler.AddedGameFiles.Count);
+            var syncResult = handler.Execute(new string[] { fullPathFile1, fullPathFile2 });
+            Assert.AreEqual(2, syncResult.AddedGameFiles.Count);
             Directory.SetCurrentDirectory(dir);
 
-            Assert.AreEqual(fullPathFile1, handler.AddedGameFiles[0].FileName);
-            Assert.AreEqual(fullPathFile2, handler.AddedGameFiles[1].FileName);
+            Assert.AreEqual(fullPathFile1, syncResult.AddedGameFiles[0].FileName);
+            Assert.AreEqual(fullPathFile2, syncResult.AddedGameFiles[1].FileName);
         }
 
         [TestMethod]
@@ -371,11 +374,11 @@ namespace UnitTest.Tests
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file1));
             File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file2));
 
-            handler.Execute(new string[] { fullPathFile1, fullPathFile2 });
-            Assert.AreEqual(2, handler.AddedGameFiles.Count);
+            var syncResult = handler.Execute(new string[] { fullPathFile1, fullPathFile2 });
+            Assert.AreEqual(2, syncResult.AddedGameFiles.Count);
 
-            Assert.AreEqual(Path.Combine(s_filedir, file1), handler.AddedGameFiles[0].FileName);
-            Assert.AreEqual(Path.Combine(s_filedir, file2), handler.AddedGameFiles[1].FileName);
+            Assert.AreEqual(Path.Combine(s_filedir, file1), syncResult.AddedGameFiles[0].FileName);
+            Assert.AreEqual(Path.Combine(s_filedir, file2), syncResult.AddedGameFiles[1].FileName);
         }
 
         [TestMethod]
@@ -386,11 +389,11 @@ namespace UnitTest.Tests
             SyncLibraryHandler handler = CreateSyncLibraryHandler(false, FileManagement.Managed);
             File.Copy(Path.Combine("Resources", file1), Path.Combine(s_filedir, file1));
 
-            handler.Execute(new string[] { file1 });
-            Assert.AreEqual(1, handler.AddedGameFiles.Count);
-            Assert.AreEqual(0, handler.InvalidFiles.Length);
+            var syncResult = handler.Execute(new string[] { file1 });
+            Assert.AreEqual(1, syncResult.AddedGameFiles.Count);
+            Assert.AreEqual(0, syncResult.InvalidFiles.Count);
 
-            var addedFile = handler.AddedGameFiles[0];
+            var addedFile = syncResult.AddedGameFiles[0];
             Assert.AreEqual(addedFile.Map, "MAP01");
         }
 

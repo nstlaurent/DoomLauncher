@@ -1,8 +1,6 @@
-﻿using DoomLauncher.Controls;
-using DoomLauncher.TextFileParsers;
+﻿using DoomLauncher.Handlers.Sync;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Globalization;
 
 namespace UnitTest.Tests
 {

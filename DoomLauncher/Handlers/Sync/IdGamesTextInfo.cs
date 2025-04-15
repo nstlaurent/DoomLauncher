@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DoomLauncher.TextFileParsers
+namespace DoomLauncher.Handlers.Sync
 {
     public class IdGamesTextInfo
     {
