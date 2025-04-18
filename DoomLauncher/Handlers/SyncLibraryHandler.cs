@@ -14,25 +14,10 @@ namespace DoomLauncher
     public class SyncLibraryHandler
     {
         public delegate void SyncProgressHandler(SyncProgressEvent e);
+        public event SyncProgressHandler SyncFileChanged;
 
-        public event SyncProgressHandler SyncFileChange;
-
-        public class SyncProgressEvent
-        {
-            public string CurrentSyncFileName { get; }
-            public int SyncFileCurrent { get; }
-            public int SyncFileCount { get; }
-
-            public SyncProgressEvent(string currentSyncFileName, int syncFileCurrent, int syncFileCount)
-            {
-                CurrentSyncFileName = currentSyncFileName;
-                SyncFileCurrent = syncFileCurrent;
-                SyncFileCount = SyncFileCount;
-            }
-        }
-
-        public event EventHandler GameFileDataNeeded; // Ask for data to be filled in from the currently downloaded file
-        public IGameFile CurrentGameFile { get; set; } // Used by MainForm_Sync
+        public delegate void GameFileDataNeededHandler(GameFileDataNeededEvent e);
+        public event GameFileDataNeededHandler GameFileDataNeeded;
 
         public IGameFileDataSourceAdapter DbDataSource { get; } // Used by the tests
         private IGameFileDataSourceAdapter SyncDataSource { get; }
@@ -58,7 +43,7 @@ namespace DoomLauncher
 
             foreach (string fileName in files)
             {
-                SyncFileChange?.Invoke(new SyncProgressEvent(fileName, syncFileCurrent, files.Length));
+                SyncFileChanged?.Invoke(new SyncProgressEvent(fileName, syncFileCurrent, files.Length));
                 result += SyncFile(fileName);
                 syncFileCurrent++;
             }
@@ -72,8 +57,7 @@ namespace DoomLauncher
             if (resultSoFar.Failed)
                 return resultSoFar;
 
-            CurrentGameFile = fileToUpdate; // Handpass the file to the GameFileDataNeeded handler code
-            GameFileDataNeeded?.Invoke(this, EventArgs.Empty); // "IF THIS IS THE CURRENTLY DOWNLOADED FILE, FILL IN DETAILS FROM IT"
+            GameFileDataNeeded?.Invoke(new GameFileDataNeededEvent(fileToUpdate));
 
             try
             {
@@ -187,6 +171,30 @@ namespace DoomLauncher
         {
             List<string> recursiveExtensions = new List<string>(Util.GetReadablePkExtensions()).Append(".wad").ToList();
             return entry.Name.Contains('.') && recursiveExtensions.Exists(ext => ext.Equals(Path.GetExtension(entry.Name), StringComparison.OrdinalIgnoreCase));
+        }
+
+        public class SyncProgressEvent
+        {
+            public string CurrentSyncFileName { get; }
+            public int SyncFileCurrent { get; }
+            public int SyncFileCount { get; }
+
+            public SyncProgressEvent(string currentSyncFileName, int syncFileCurrent, int syncFileCount)
+            {
+                CurrentSyncFileName = currentSyncFileName;
+                SyncFileCurrent = syncFileCurrent;
+                SyncFileCount = SyncFileCount;
+            }
+        }
+
+        public class GameFileDataNeededEvent
+        {
+            public IGameFile CurrentGameFile { get; }
+
+            public GameFileDataNeededEvent(IGameFile currentGameFile)
+            {
+                CurrentGameFile = currentGameFile;
+            }
         }
     }
 }

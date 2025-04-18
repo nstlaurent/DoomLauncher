@@ -101,7 +101,7 @@ namespace DoomLauncher
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 
                     fileManagement, gameFileFragments);
 
-                handler.SyncFileChange += syncHandler_SyncFileChange;
+                handler.SyncFileChanged += syncHandler_SyncFileChanged;
                 handler.GameFileDataNeeded += syncHandler_GameFileDataNeeded;
 
                 syncResult = handler.Execute(files);
@@ -176,7 +176,7 @@ namespace DoomLauncher
             }
         }
 
-        void syncHandler_SyncFileChange(SyncLibraryHandler.SyncProgressEvent e)
+        void syncHandler_SyncFileChanged(SyncLibraryHandler.SyncProgressEvent e)
         {
             if (InvokeRequired)
                 Invoke(new Action<SyncLibraryHandler.SyncProgressEvent>(ProgressBarUpdate), new object[] { e });
@@ -184,26 +184,21 @@ namespace DoomLauncher
                 ProgressBarUpdate(e);
         }
 
-        void syncHandler_GameFileDataNeeded(object sender, EventArgs e)
+        void syncHandler_GameFileDataNeeded(SyncLibraryHandler.GameFileDataNeededEvent e)
         {
-            SyncLibraryHandler handler = sender as SyncLibraryHandler;
-
-            if (handler != null)
-            {
-                if (InvokeRequired)
-                    Invoke(new Action<SyncLibraryHandler>(HandleGameFileDataNeeded), new object[] { handler });
-                else
-                    HandleGameFileDataNeeded(handler);
-            }
+            if (InvokeRequired)
+                Invoke(new Action<SyncLibraryHandler.GameFileDataNeededEvent>(HandleGameFileDataNeeded), new object[] { e });
+            else
+                HandleGameFileDataNeeded(e);
         }
 
-        void HandleGameFileDataNeeded(SyncLibraryHandler handler)
+        void HandleGameFileDataNeeded(SyncLibraryHandler.GameFileDataNeededEvent e)
         {
-            if (CurrentDownloadFile != null && CurrentDownloadFile.FileName == handler.CurrentGameFile.FileName)
+            if (CurrentDownloadFile != null && CurrentDownloadFile.FileName == e.CurrentGameFile.FileName)
             {
-                handler.CurrentGameFile.Title = CurrentDownloadFile.Title;
-                handler.CurrentGameFile.Author = CurrentDownloadFile.Author;
-                handler.CurrentGameFile.ReleaseDate = CurrentDownloadFile.ReleaseDate;
+                e.CurrentGameFile.Title = CurrentDownloadFile.Title;
+                e.CurrentGameFile.Author = CurrentDownloadFile.Author;
+                e.CurrentGameFile.ReleaseDate = CurrentDownloadFile.ReleaseDate;
             }
         }
 
