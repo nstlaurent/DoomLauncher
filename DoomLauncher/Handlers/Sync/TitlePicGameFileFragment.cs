@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace DoomLauncher.Handlers.Sync
 {
-    class TitlePicFileFragment : IGameFileFragment
+    public class TitlePicFileFragment : IGameFileFragment
     {
         private const string DefaultTitlepicName = "TITLEPIC";
         private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");

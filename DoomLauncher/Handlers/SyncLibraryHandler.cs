@@ -7,52 +7,39 @@ using System.Text;
 using WadReader;
 using DoomLauncher.Handlers.Sync;
 using DoomLauncher.Archive;
+using DoomLauncher.Config;
 
 namespace DoomLauncher
 {
     public class SyncLibraryHandler
     {
-        // For looking inside WAD files
-        private static readonly string[] MapInfoNames = new string[] { "mapinfo", "zmapinfo" };
-        private static readonly string[] MapInfoSubNames = new string[] { "mapinfo.", "zmapinfo." };
-
         public event EventHandler SyncFileChange; // Notify progress, file by file
         public event EventHandler GameFileDataNeeded; // Ask for data to be filled in from the currently downloaded file
 
+        public IGameFileDataSourceAdapter DbDataSource { get; } // Used by the tests
+        private IGameFileDataSourceAdapter SyncDataSource { get; }
 
-        public IGameFileDataSourceAdapter DbDataSource { get; set; } // Internal
-        public LauncherPath TempDirectory { get; set; }  //  Internal
-        public string[] DateParseFormats // Internal
-        {
-            get;
-            set;
-        }
-        public IGameFile CurrentGameFile { get; set; } // Input, Output
+        public IGameFile CurrentGameFile { get; set; } // Used by MainForm_Sync
 
-        public int SyncFileCurrent { get; private set; } // Output, used by Progress Bar in MainForm_Sync
-        public int SyncFileCount { get; private set; } // Output, used by Progress Bar in MainForm_Sync
-        public string CurrentSyncFileName { get; private set; } // Output
+        public int SyncFileCurrent { get; private set; } // Used by MainForm_Sync
+        public int SyncFileCount { get; private set; } // Used by Progress Bar in MainForm_Sync
+        public string CurrentSyncFileName { get; private set; } // Used by MainForm_Sync
 
         private readonly FileManagement m_fileManagement;
-        private readonly Palette m_palette;
-
-        private IGameFileDataSourceAdapter SyncDataSource { get; set; }
-        private LauncherPath GameFileDirectory { get; set; }
-
+        private readonly List<IGameFileFragment> m_gameFileFragments;
+        private readonly IDirectoriesConfiguration m_directories;
 
         public SyncLibraryHandler(IGameFileDataSourceAdapter dbDataSource, IGameFileDataSourceAdapter syncDataSource,
-            LauncherPath gameFileDirectory, LauncherPath tempDirectory, string[] dateParseFormats, FileManagement fileManagement,
-            Palette palette, bool pullTitlepic)
+            IDirectoriesConfiguration directories, FileManagement fileManagement, List<IGameFileFragment> gameFileFragments)
         {
             DbDataSource = dbDataSource;
             SyncDataSource = syncDataSource;
-            GameFileDirectory = gameFileDirectory;
-            TempDirectory = tempDirectory;
-            DateParseFormats = dateParseFormats;
+            m_gameFileFragments = gameFileFragments;
             m_fileManagement = fileManagement;
-            m_palette = palette;
+            m_directories = directories;
 
             SyncFileCurrent = SyncFileCount = 0;
+
         }
 
         public SyncResult Execute(string[] files)
@@ -81,45 +68,16 @@ namespace DoomLauncher
 
         public SyncResult SyncFile(string fileName)
         {
-            SyncResult resultSoFar = SyncResult.EMPTY;
-
-            IGameFile fileToUpdate = SyncDataSource.GetGameFile(fileName);
-            IGameFile existing = DbDataSource.GetGameFile(fileName);
-
-            // If we've already got a copy in the DB, modify that one
-            if (existing != null)
-                fileToUpdate = existing;
-
-            if (fileToUpdate == null)
-            {
-                resultSoFar += SyncResult.InvalidFile(fileName, "Not found");
-
-                // Delete the file from managed storage
-                try
-                {
-                    FileInfo fileDelete = new FileInfo(Path.Combine(GameFileDirectory.GetFullPath(), fileName));
-                    if (fileDelete.Exists)
-                        fileDelete.Delete();
-                }
-                catch
-                {
-                    //delete failed, just keep going
-                }
-
+            SyncResult resultSoFar = PrepareGameFileForUpdate(fileName, out var existingFile, out var fileToUpdate);
+            if (resultSoFar.Failed)
                 return resultSoFar;
-            }
-
-            // Surely we can bring this inside GameFile (No - m_fileManagement is supplied externally)
-            if (m_fileManagement == FileManagement.Unmanaged)
-                fileToUpdate.FileName = LauncherPath.GetRelativePath(fileName);
 
             CurrentGameFile = fileToUpdate; // Handpass the file to the GameFileDataNeeded handler code
             GameFileDataNeeded?.Invoke(this, EventArgs.Empty); // "IF THIS IS THE CURRENTLY DOWNLOADED FILE, FILL IN DETAILS FROM IT"
-            fileToUpdate.Downloaded = existing == null ? DateTime.Now : existing.Downloaded;
 
             try
             {
-                using (IArchiveReader reader = new RecursiveArchiveReader(CreateArchiveReader(fileToUpdate), CreateReaderForRecursiveEntry))
+                using (IArchiveReader reader = new RecursiveArchiveReader(CreateRootArchiveReader(fileToUpdate), CreateBranchArchiveReader))
                 {
                     resultSoFar += PopulateGameFileFromArchive(fileToUpdate, reader);
                 }
@@ -137,64 +95,86 @@ namespace DoomLauncher
             catch (Exception ex)
             {
                 fileToUpdate.Map = string.Empty;
-                resultSoFar += SyncResult.InvalidFile(fileName, CreateExceptionMsg(ex));
+                var errorMsg = string.Concat("Unexpected exception - ", ex.Message, ex.StackTrace);
+                resultSoFar += SyncResult.InvalidFile(fileName, errorMsg);
             }
 
-            // Upsert to database
-            if (existing == null)
-            {
-                DbDataSource.InsertGameFile(fileToUpdate);
-
-                IGameFile gameFile = DbDataSource.GetGameFile(fileToUpdate.FileName);
-                if (gameFile != null)
-                    resultSoFar += SyncResult.AddedGameFile(gameFile);
-            }
-            else
-            {
-                DbDataSource.UpdateGameFile(fileToUpdate, Util.DefaultGameFileUpdateFields);
-                resultSoFar += SyncResult.UpdatedGameFile(fileToUpdate);
-            }
+            resultSoFar += Upsert(existingFile, fileToUpdate);
 
             return resultSoFar;
         }
 
-        private IArchiveReader CreateArchiveReader(IGameFile file)
+        private SyncResult PrepareGameFileForUpdate(string fileName, out IGameFile existingFile, out IGameFile fileToUpdate)
         {
-            if (m_fileManagement == FileManagement.Unmanaged)
-                return ArchiveReader.Create(new LauncherPath(file.FileName).GetFullPath());
+            var resultSoFar = SyncResult.EMPTY;
 
-            return ArchiveReader.Create(Path.Combine(GameFileDirectory.GetFullPath(), file.FileName));
+            fileToUpdate = SyncDataSource.GetGameFile(fileName);
+            existingFile = DbDataSource.GetGameFile(fileName);
+
+            // If we've already got a copy in the DB, modify that one
+            if (existingFile != null)
+                fileToUpdate = existingFile;
+
+            if (fileToUpdate == null)
+            {
+                // Delete the file from managed storage
+                try
+                {
+                    FileInfo fileDelete = new FileInfo(Path.Combine(m_directories.GameFileDirectory.GetFullPath(), fileName));
+                    if (fileDelete.Exists)
+                        fileDelete.Delete();
+                }
+                catch
+                {
+                    //delete failed, just keep going
+                }
+                return SyncResult.InvalidFile(fileName, "Not found");
+            }
+
+            if (m_fileManagement == FileManagement.Unmanaged)
+                fileToUpdate.FileName = LauncherPath.GetRelativePath(fileName);
+
+            fileToUpdate.Downloaded = existingFile == null ? DateTime.Now : existingFile.Downloaded;
+
+            return SyncResult.EMPTY;
         }
 
-        private static string CreateExceptionMsg(Exception ex)
+        private SyncResult Upsert(IGameFile existingFile, IGameFile fileToUpdate)
         {
-            return string.Concat("Unexpected exception - ", ex.Message, ex.StackTrace);
+            if (existingFile == null)
+            {
+                DbDataSource.InsertGameFile(fileToUpdate);
+
+                IGameFile gameFile = DbDataSource.GetGameFile(fileToUpdate.FileName);
+                return (gameFile != null) ? SyncResult.AddedGameFile(gameFile) : SyncResult.EMPTY;
+            }
+            else
+            {
+                DbDataSource.UpdateGameFile(fileToUpdate, Util.DefaultGameFileUpdateFields);
+                return SyncResult.UpdatedGameFile(fileToUpdate);
+            }
         }
 
         private SyncResult PopulateGameFileFromArchive(IGameFile gameFile, IArchiveReader reader)
         {
-            // Look in MAPINFO lumps for map string
-            var entryList = reader.Entries.ToList();
-            var mapInfoEntries = reader.Entries.Where(IsEntryMapInfo).ToArray();
-            string[] mapInfoData = GetArchiveEntryData(mapInfoEntries);
-
-            var gameFileFragments = new List<IGameFileFragment>
-            {
-                new TextFileGameFileFragment(DateParseFormats),
-                new TitlePicFileFragment(m_palette),
-                new Doom64GameFileFragment(),
-                new MapStringGameFileFragment(TempDirectory)
-            };
-
-            var syncResults = gameFileFragments.Select(frag => frag.ApplyToGameFile(gameFile, reader, mapInfoData));
+            string[] mapInfoData = MapInfoUtil.GetMapInfoData(reader);
+            var syncResults = m_gameFileFragments.Select(frag => frag.ApplyToGameFile(gameFile, reader, mapInfoData));
             return syncResults.Aggregate(SyncResult.EMPTY, (a, b) => a + b);
         }
 
-        private IArchiveReader CreateReaderForRecursiveEntry(IArchiveEntry entry)
+        private IArchiveReader CreateRootArchiveReader(IGameFile file)
+        {
+            if (m_fileManagement == FileManagement.Unmanaged)
+                return ArchiveReader.Create(new LauncherPath(file.FileName).GetFullPath());
+
+            return ArchiveReader.Create(Path.Combine(m_directories.GameFileDirectory.GetFullPath(), file.FileName));
+        }
+
+        private IArchiveReader CreateBranchArchiveReader(IArchiveEntry entry)
         {
             if (IsRecursiveEntry(entry))
             {
-                string extractedFile = Util.ExtractTempFile(TempDirectory.GetFullPath(), entry);
+                string extractedFile = Util.ExtractTempFile(m_directories.TempDirectory.GetFullPath(), entry);
                 return ArchiveReader.Create(extractedFile);
             }
             else
@@ -207,49 +187,6 @@ namespace DoomLauncher
         {
             List<string> recursiveExtensions = new List<string>(Util.GetReadablePkExtensions()).Append(".wad").ToList();
             return entry.Name.Contains('.') && recursiveExtensions.Exists(ext => ext.Equals(Path.GetExtension(entry.Name), StringComparison.OrdinalIgnoreCase));
-        }
-
-        private string[] GetArchiveEntryData(params IArchiveEntry[] entries)
-        {
-            string[] data = new string[entries.Length];
-            for (int i = 0; i < entries.Length; i++)
-            {
-                try
-                {
-                    data[i] = Encoding.UTF8.GetString(entries[i].ReadEntry());
-                }
-                catch
-                {
-                    data[i] = string.Empty;
-                }
-            }
-
-            return data;
-        }
-
-        private static bool IsEntryMapInfo(IArchiveEntry entry)
-        {
-            try
-            {
-                string entryName = entry.GetNameWithoutExtension();
-                foreach (string name in MapInfoNames)
-                {
-                    if (entryName.Equals(name, StringComparison.OrdinalIgnoreCase))
-                        return true;
-                }
-
-                foreach (string name in MapInfoSubNames)
-                {
-                    if (entryName.StartsWith(name, StringComparison.OrdinalIgnoreCase))
-                        return true;
-                }
-
-                return false;
-            }
-            catch (ArgumentException)
-            {
-                return false;
-            }
         }
     }
 }

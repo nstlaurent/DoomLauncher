@@ -1,107 +1,20 @@
 ﻿using DoomLauncher;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using DoomLauncher.Archive;
 
 namespace UnitTest.Tests
 {
-    public class Tree
-    {
-        public string Name { get; }
-
-        public List<Tree> Children { get; }
-
-        public bool HasChildren => Children.Count > 0;
-
-        public Tree(string name, params Tree[] children)
-        {
-            Name = name;
-            Children = children.ToList();
-        }
-    }
-
-    public class TreeReader : IArchiveReader
-    {
-        public static int TreeReadersCreated { get; set; }
-        public static int TreeReadersDisposed { get; set; }
-
-        public Tree Tree { get; }
-
-        public TreeReader(Tree tree)
-        {
-            Tree = tree;
-            TreeReadersCreated++;
-        }
-
-        public IEnumerable<IArchiveEntry> Entries => 
-            Tree.Children.Select(tree => new TreeEntry(tree));
-
-        public bool EntriesHaveExtensions => false;
-
-        public void Dispose()
-        {
-            TreeReadersDisposed++;
-        }
-    }
-
-    public class TreeEntry : AbstractArchiveEntry
-    {
-        public Tree Tree { get; }
-
-        public TreeEntry(Tree tree)
-        {
-            Tree = tree;
-        }
-
-        public TreeReader GetTreeReader()
-        {
-            if (Tree.HasChildren)
-                return new TreeReader(Tree);
-            else
-                return null;
-        }
-
-        public override long Length => 1;
-
-        public override string Name => Tree.Name;
-
-        public override string FullName => Name;
-
-        public override bool ExtractRequired => false;
-
-        public override bool IsDirectory => false;
-
-        public override void ExtractToFile(string file, bool overwrite = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string GetNameWithoutExtension()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Read(byte[] buffer, int offset, int length)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
     [TestClass]
     public class TestRecursiveArchiveReader
     {
-
-
         [TestInitialize]
         public void Initialize()
         {
             TreeReader.TreeReadersCreated = 0;
             TreeReader.TreeReadersDisposed = 0;
         }
-
 
         private IArchiveReader GetReaderFromEntry(IArchiveEntry entry) =>
             (entry as TreeEntry)?.GetTreeReader();

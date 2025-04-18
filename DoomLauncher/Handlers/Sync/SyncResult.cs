@@ -17,11 +17,12 @@ namespace DoomLauncher.Handlers.Sync
         public Dictionary<IGameFile, Image> TitlePics { get; }
         public List<IGameFile> FailedTitlePicFiles { get; }
 
+        public bool Failed => InvalidFiles.Count > 0;
+
         public List<IGameFile> AddedOrUpdatedFiles
         {
             get => AddedGameFiles.Union(UpdatedGameFiles).ToList();
         }
-
 
         private SyncResult(List<IGameFile> addedGameFiles, List<IGameFile> updatedGameFiles, List<InvalidFile> invalidFiles,
             Dictionary<IGameFile, Image> titlePics, List<IGameFile> failedTitlePicFiles)

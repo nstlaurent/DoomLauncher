@@ -275,6 +275,7 @@
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
     <Compile Include="Handlers\Sync\IGameFileFragment.cs" />
+    <Compile Include="Handlers\Sync\MapInfoUtil.cs" />
     <Compile Include="Handlers\Sync\MapStringGameFileFragment.cs" />
     <Compile Include="Handlers\Sync\SyncResult.cs" />
     <Compile Include="Handlers\Sync\Doom64GameFileFragment.cs" />

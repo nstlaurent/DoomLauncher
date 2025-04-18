@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WadReader;
 
 namespace DoomLauncher
 {
@@ -87,9 +88,19 @@ namespace DoomLauncher
 
             try
             {
-                handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration.GameFileDirectory, 
-                    AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats, fileManagement, DataCache.Instance.DefaultPalette, 
-                    AppConfiguration.AutomaticallyPullTitlpic);
+                var gameFileFragments = new List<IGameFileFragment>()
+                {
+                    new TextFileGameFileFragment(AppConfiguration.DateParseFormats),
+                    new Doom64GameFileFragment(),
+                    new MapStringGameFileFragment(AppConfiguration.TempDirectory)
+                };
+
+                if (AppConfiguration.AutomaticallyPullTitlpic)
+                    gameFileFragments.Add(new TitlePicFileFragment(DataCache.Instance.DefaultPalette));
+
+                handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 
+                    fileManagement, gameFileFragments);
+
                 handler.SyncFileChange += syncHandler_SyncFileChange;
                 handler.GameFileDataNeeded += syncHandler_GameFileDataNeeded;
 

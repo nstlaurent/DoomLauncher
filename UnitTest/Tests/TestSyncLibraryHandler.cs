@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using DoomLauncher.Handlers.Sync;
+using System.Collections.Generic;
 
 namespace UnitTest.Tests
 {
@@ -399,8 +400,25 @@ namespace UnitTest.Tests
 
         private static SyncLibraryHandler CreateSyncLibraryHandler(bool pullTitlepic = false, FileManagement fileManagement = FileManagement.Managed)
         {
-            return new SyncLibraryHandler(TestUtil.CreateAdapter(), CreateDirectoryAdapater(), new LauncherPath(s_filedir), 
-                new LauncherPath(s_tempdir), new string[] {"dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" }, fileManagement, null, pullTitlepic);
+            var directories = new DirectoriesConfiguration 
+            { 
+                GameFileDirectory = new LauncherPath(s_filedir),
+                TempDirectory = new LauncherPath(s_tempdir)
+            };
+
+            var dateParseFormats = new string[] { "dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" };
+
+            var gameFileFragments = new List<IGameFileFragment>()
+            {
+                new TextFileGameFileFragment(dateParseFormats),
+                new Doom64GameFileFragment(),
+                new MapStringGameFileFragment(directories.TempDirectory)
+            };
+
+            if (pullTitlepic)
+                gameFileFragments.Add(new TitlePicFileFragment(DataCache.Instance.DefaultPalette));
+
+            return new SyncLibraryHandler(TestUtil.CreateAdapter(), CreateDirectoryAdapater(), directories, fileManagement, gameFileFragments);
         }
 
         private static DirectoryDataSourceAdapter CreateDirectoryAdapater()

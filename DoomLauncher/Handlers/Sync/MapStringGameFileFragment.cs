@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace DoomLauncher.Handlers.Sync
 {
-    class MapStringGameFileFragment : IGameFileFragment
+    public class MapStringGameFileFragment : IGameFileFragment
     {
         private readonly LauncherPath m_tempDirectory;
         private static readonly Regex MapRegex = new Regex(@"\s*map\s+\w+");

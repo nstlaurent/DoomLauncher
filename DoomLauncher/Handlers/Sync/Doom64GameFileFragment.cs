@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 
 namespace DoomLauncher.Handlers.Sync {
-    class Doom64GameFileFragment : IGameFileFragment
+    public class Doom64GameFileFragment : IGameFileFragment
     {
         private static readonly Regex ClassTypeRegex = new Regex(@"classtype\s*="); // Only Doom64 files have classtype in the MAPINFO
 
