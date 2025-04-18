@@ -176,17 +176,12 @@ namespace DoomLauncher
             }
         }
 
-        void syncHandler_SyncFileChange(object sender, EventArgs e)
+        void syncHandler_SyncFileChange(SyncLibraryHandler.SyncProgressEvent e)
         {
-            SyncLibraryHandler handler = sender as SyncLibraryHandler;
-
-            if (handler != null)
-            {
-                if (InvokeRequired)
-                    Invoke(new Action<SyncLibraryHandler>(ProgressBarUpdate), new object[] { handler });
-                else
-                    ProgressBarUpdate(handler);
-            }
+            if (InvokeRequired)
+                Invoke(new Action<SyncLibraryHandler.SyncProgressEvent>(ProgressBarUpdate), new object[] { e });
+            else
+                ProgressBarUpdate(e);
         }
 
         void syncHandler_GameFileDataNeeded(object sender, EventArgs e)
@@ -212,13 +207,13 @@ namespace DoomLauncher
             }
         }
 
-        void ProgressBarUpdate(SyncLibraryHandler handler)
+        void ProgressBarUpdate(SyncLibraryHandler.SyncProgressEvent e)
         {
             if (m_progressBars.TryGetValue(ProgressBarType.Sync, out var progressBar))
             {
-                progressBar.Maximum = handler.SyncFileCount;
-                progressBar.Value = handler.SyncFileCurrent;
-                progressBar.DisplayText = string.Format("Reading {0}...", handler.CurrentSyncFileName);
+                progressBar.Maximum = e.SyncFileCount;
+                progressBar.Value = e.SyncFileCurrent;
+                progressBar.DisplayText = string.Format("Reading {0}...", e.CurrentSyncFileName);
             }
         }
 

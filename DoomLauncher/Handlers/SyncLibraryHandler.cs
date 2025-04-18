@@ -13,17 +13,29 @@ namespace DoomLauncher
 {
     public class SyncLibraryHandler
     {
-        public event EventHandler SyncFileChange; // Notify progress, file by file
+        public delegate void SyncProgressHandler(SyncProgressEvent e);
+
+        public event SyncProgressHandler SyncFileChange;
+
+        public class SyncProgressEvent
+        {
+            public string CurrentSyncFileName { get; }
+            public int SyncFileCurrent { get; }
+            public int SyncFileCount { get; }
+
+            public SyncProgressEvent(string currentSyncFileName, int syncFileCurrent, int syncFileCount)
+            {
+                CurrentSyncFileName = currentSyncFileName;
+                SyncFileCurrent = syncFileCurrent;
+                SyncFileCount = SyncFileCount;
+            }
+        }
+
         public event EventHandler GameFileDataNeeded; // Ask for data to be filled in from the currently downloaded file
+        public IGameFile CurrentGameFile { get; set; } // Used by MainForm_Sync
 
         public IGameFileDataSourceAdapter DbDataSource { get; } // Used by the tests
         private IGameFileDataSourceAdapter SyncDataSource { get; }
-
-        public IGameFile CurrentGameFile { get; set; } // Used by MainForm_Sync
-
-        public int SyncFileCurrent { get; private set; } // Used by MainForm_Sync
-        public int SyncFileCount { get; private set; } // Used by Progress Bar in MainForm_Sync
-        public string CurrentSyncFileName { get; private set; } // Used by MainForm_Sync
 
         private readonly FileManagement m_fileManagement;
         private readonly List<IGameFileFragment> m_gameFileFragments;
@@ -37,30 +49,18 @@ namespace DoomLauncher
             m_gameFileFragments = gameFileFragments;
             m_fileManagement = fileManagement;
             m_directories = directories;
-
-            SyncFileCurrent = SyncFileCount = 0;
-
         }
 
         public SyncResult Execute(string[] files)
         {
-            // Handle multiple files, such that a UI process can track progress
-            SyncFileCount = files.Length;
-            SyncFileCurrent = 0;
-
+            int syncFileCurrent = 0;
             SyncResult result = SyncResult.EMPTY;
 
             foreach (string fileName in files)
             {
-                if (SyncFileChange != null)
-                {
-                    CurrentSyncFileName = fileName;
-                    SyncFileChange(this, EventArgs.Empty);
-                }
-
+                SyncFileChange?.Invoke(new SyncProgressEvent(fileName, syncFileCurrent, files.Length));
                 result += SyncFile(fileName);
-
-                SyncFileCurrent++;
+                syncFileCurrent++;
             }
 
             return result;

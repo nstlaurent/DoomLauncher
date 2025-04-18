@@ -6,7 +6,7 @@ namespace DoomLauncher.Archive
     public class RecursiveArchiveReader : IArchiveReader
     {
         private readonly IArchiveReader m_root;
-        private readonly Func<IArchiveEntry, IArchiveReader> m_getChildReader;
+        private readonly Func<IArchiveEntry, IArchiveReader> m_getChildReader; // null return value means no children
 
         private delegate void DisposeMethod();
         private event DisposeMethod Disposing;
