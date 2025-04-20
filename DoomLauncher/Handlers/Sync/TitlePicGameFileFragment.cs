@@ -10,10 +10,7 @@ namespace DoomLauncher.Handlers.Sync
     {
         private const string DefaultTitlepicName = "TITLEPIC";
         private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");
-
         private readonly Palette m_palette;
-        //private readonly Dictionary<IGameFile, Image> m_titlepics = new Dictionary<IGameFile, Image>();
-        private readonly List<IGameFile> m_failedTitlepics = new List<IGameFile>();
 
         public TitlePicFileFragment(Palette palette)
         {
@@ -34,8 +31,7 @@ namespace DoomLauncher.Handlers.Sync
             Palette palette = GetPaletteOrDefault(reader);
             if (!TitlePicUtil.ConvertToImage(entry.ReadEntry(), palette, out Image image))
             {
-                if (!m_failedTitlepics.Contains(file))
-                    return SyncResult.FailedTitlePicFile(file);
+                return SyncResult.FailedTitlePicFile(file);
             }
 
             return SyncResult.TitlePic(file, image);

@@ -8,7 +8,7 @@ namespace DoomLauncher.Adapters.Launch
 {
     public class PlayDemoLaunchFeature : ILaunchFeature
     {
-        private readonly String _playDemoFile;
+        private readonly string _playDemoFile;
 
         public PlayDemoLaunchFeature(string playDemoFile)
         {
