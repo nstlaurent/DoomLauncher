@@ -22,7 +22,7 @@ namespace DoomLauncher.Handlers.Sync
         {
             get
             {
-                var fields = new List<object>() { Title, Author, ReleaseDate, Description };
+                var fields = new List<object>() { Title, Author, ReleaseDate, Description, Game };
                 return fields.Where(x => x != null && !(x is string s && string.IsNullOrWhiteSpace(s))).Count();
             }
         }

@@ -90,6 +90,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Tests\Helpers\DirectoriesConfiguration.cs" />
+    <Compile Include="Tests\TestDoom64GameFileFragment.cs" />
     <Compile Include="Tests\TestRecursiveArchiveReader.cs" />
     <Compile Include="Tests\TestGameStoreFiles.cs" />
     <Compile Include="TestInit.cs" />

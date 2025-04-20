@@ -91,7 +91,7 @@ namespace DoomLauncher
                 var gameFileFragments = new List<IGameFileFragment>()
                 {
                     new TextFileGameFileFragment(AppConfiguration.DateParseFormats),
-                    new Doom64GameFileFragment(),
+                    new Doom64GameFileFragment(DataSourceAdapter),
                     new MapStringGameFileFragment(AppConfiguration.TempDirectory)
                 };
 

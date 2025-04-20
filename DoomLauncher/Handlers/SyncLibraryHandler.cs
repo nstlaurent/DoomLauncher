@@ -17,9 +17,8 @@ namespace DoomLauncher
         public delegate void GameFileDataNeededHandler(GameFileDataNeededEvent e);
         public event GameFileDataNeededHandler GameFileDataNeeded;
 
-        public IGameFileDataSourceAdapter DbDataSource { get; } // Used by the tests
-        private IGameFileDataSourceAdapter SyncDataSource { get; }
-
+        private readonly IGameFileDataSourceAdapter m_dbDataSource;
+        private readonly IGameFileDataSourceAdapter m_syncDataSource;
         private readonly FileManagement m_fileManagement;
         private readonly List<IGameFileFragment> m_gameFileFragments;
         private readonly IDirectoriesConfiguration m_directories;
@@ -27,8 +26,8 @@ namespace DoomLauncher
         public SyncLibraryHandler(IGameFileDataSourceAdapter dbDataSource, IGameFileDataSourceAdapter syncDataSource,
             IDirectoriesConfiguration directories, FileManagement fileManagement, List<IGameFileFragment> gameFileFragments)
         {
-            DbDataSource = dbDataSource;
-            SyncDataSource = syncDataSource;
+            m_dbDataSource = dbDataSource;
+            m_syncDataSource = syncDataSource;
             m_gameFileFragments = gameFileFragments;
             m_fileManagement = fileManagement;
             m_directories = directories;
@@ -90,8 +89,8 @@ namespace DoomLauncher
         {
             var resultSoFar = SyncResult.EMPTY;
 
-            fileToUpdate = SyncDataSource.GetGameFile(fileName);
-            existingFile = DbDataSource.GetGameFile(fileName);
+            fileToUpdate = m_syncDataSource.GetGameFile(fileName);
+            existingFile = m_dbDataSource.GetGameFile(fileName);
 
             // If we've already got a copy in the DB, modify that one
             if (existingFile != null)
@@ -125,14 +124,14 @@ namespace DoomLauncher
         {
             if (existingFile == null)
             {
-                DbDataSource.InsertGameFile(fileToUpdate);
+                m_dbDataSource.InsertGameFile(fileToUpdate);
 
-                IGameFile gameFile = DbDataSource.GetGameFile(fileToUpdate.FileName);
+                IGameFile gameFile = m_dbDataSource.GetGameFile(fileToUpdate.FileName);
                 return (gameFile != null) ? SyncResult.AddedGameFile(gameFile) : SyncResult.EMPTY;
             }
             else
             {
-                DbDataSource.UpdateGameFile(fileToUpdate, Util.DefaultGameFileUpdateFields);
+                m_dbDataSource.UpdateGameFile(fileToUpdate, Util.DefaultGameFileUpdateFields);
                 return SyncResult.UpdatedGameFile(fileToUpdate);
             }
         }

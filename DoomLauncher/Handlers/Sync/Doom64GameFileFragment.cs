@@ -6,9 +6,27 @@ namespace DoomLauncher.Handlers.Sync {
     {
         private static readonly Regex ClassTypeRegex = new Regex(@"classtype\s*="); // Only Doom64 files have classtype in the MAPINFO
 
+        private readonly IDataSourceAdapter m_database;
+
+        public Doom64GameFileFragment(IDataSourceAdapter database)
+        {
+            m_database = database;
+        }
+
         public SyncResult ApplyToGameFile(IGameFile file, IArchiveReader reader, string[] mapInfoData)
         {
-            file.IsDoom64 = IsDoom64Wad(mapInfoData);
+            var isDoom64 = IsDoom64Wad(mapInfoData);
+            file.IsDoom64 = isDoom64;
+
+            if (isDoom64)
+            {
+                var doom64Iwad = m_database.GetGameFile("doom64.zip");
+                if (doom64Iwad != null)
+                {
+                    file.IWadID = doom64Iwad.IWadID;
+                }
+            }
+
             return SyncResult.EMPTY;
         }
 
