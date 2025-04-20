@@ -33,7 +33,7 @@ namespace DoomLauncher
             m_directories = directories;
         }
 
-        public SyncResult Execute(string[] files)
+        public SyncResult SyncManyFiles(string[] files)
         {
             int syncFileCurrent = 0;
             SyncResult result = SyncResult.EMPTY;

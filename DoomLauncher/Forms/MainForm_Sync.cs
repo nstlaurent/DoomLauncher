@@ -104,7 +104,7 @@ namespace DoomLauncher
                 handler.SyncFileChanged += syncHandler_SyncFileChanged;
                 handler.GameFileDataNeeded += syncHandler_GameFileDataNeeded;
 
-                syncResult = handler.Execute(files);
+                syncResult = handler.SyncManyFiles(files);
                 SyncTitlePics(syncResult);
 
                 if (m_pendingZdlFiles != null)
