@@ -180,7 +180,7 @@ namespace DoomLauncher
             {
                 CurrentSyncFileName = currentSyncFileName;
                 SyncFileCurrent = syncFileCurrent;
-                SyncFileCount = SyncFileCount;
+                SyncFileCount = syncFileCount;
             }
         }
 
