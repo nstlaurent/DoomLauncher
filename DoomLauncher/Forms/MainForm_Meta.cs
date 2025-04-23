@@ -33,8 +33,8 @@ namespace DoomLauncher
             {
                 if (iwads.Contains(localFile.GameFileID.Value))
                 {
-                    IWadInfo info = IWadInfo.GetIWadInfo(localFile.FileNameNoPath);
-                    if (info != null && !info.HasMetadata)
+                    IWadInfo info = IWadInfo.FromFileName(localFile.FileNameNoPath);
+                    if (info != null)
                     {
                         iwadWarn.Add(localFile.FileNameNoPath);
                         continue;

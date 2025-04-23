@@ -228,7 +228,7 @@ namespace DoomLauncher
                     SettingsSpecificFiles = @SettingsSpecificFiles, SettingsStat = @SettingsStat, SettingsLoadLatestSave = @SettingsLoadLatestSave, 
                     FileName = @FileName, MapCount = @MapCount, 
                     MinutesPlayed = @MinutesPlayed, SettingsGameProfileID = @SettingsGameProfileID, SettingsSaved = @SettingsSaved,
-                    SettingsExtraParamsOnly = @SettingsExtraParamsOnly
+                    SettingsExtraParamsOnly = @SettingsExtraParamsOnly, IntendedGame = @IntendedGame, IsSyncNeeded = @IsSyncNeeded
                     where GameFileID = @gameFileID");
             }
 
@@ -247,7 +247,6 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("GameFileID", gameFile.GameFileID.Value),
                 DataAccess.DbAdapter.CreateParameter("LastPlayed", gameFile.LastPlayed.HasValue ? gameFile.LastPlayed : (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("Downloaded", gameFile.Downloaded.HasValue ? gameFile.Downloaded : (object)DBNull.Value),
-
                 DataAccess.DbAdapter.CreateParameter("SettingsMap", gameFile.SettingsMap ?? (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("SettingsSkill", gameFile.SettingsSkill ?? (object)DBNull.Value),
                 DataAccess.DbAdapter.CreateParameter("SettingsExtraParams", gameFile.SettingsExtraParams ?? (object)DBNull.Value),
@@ -265,7 +264,9 @@ namespace DoomLauncher
 
                 DataAccess.DbAdapter.CreateParameter("MinutesPlayed", gameFile.MinutesPlayed),
 
-                DataAccess.DbAdapter.CreateParameter("FileName", gameFile.FileName)
+                DataAccess.DbAdapter.CreateParameter("FileName", gameFile.FileName),
+                DataAccess.DbAdapter.CreateParameter("IntendedGame", gameFile.IntendedGame?.GameName ?? (object)DBNull.Value),
+                DataAccess.DbAdapter.CreateParameter("IsSyncNeeded", gameFile.IsSyncNeeded)
             };
 
             if (m_outOfDateDatabase)

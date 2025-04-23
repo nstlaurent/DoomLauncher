@@ -29,6 +29,8 @@
         SettingsGameProfileID,
         SettingsSaved,
         SettingsLoadLatestSave,
-        SettingsExtraParamsOnly
+        SettingsExtraParamsOnly,
+        IntendedGame,
+        IsSyncNeeded
     }
 }

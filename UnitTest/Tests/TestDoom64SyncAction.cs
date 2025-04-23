@@ -70,5 +70,17 @@ namespace UnitTest.Tests
             Assert.IsFalse(result.Failed);
             Assert.AreEqual(666, file.IWadID);
         }
+
+        [TestMethod]
+        public void ApplyToGameFile_SetsIntendedGameToDoom64()
+        {
+            var syncAction = new Doom64SyncAction(database);
+            GameFile file = new GameFile { GameFileID = 1 };
+            var mapInfoData = new string[] { "classtype = something" };
+
+            syncAction.ApplyToGameFile(file, null, mapInfoData);
+
+            Assert.AreEqual(IWadInfo.DOOM64, file.IntendedGame);
+        }
     }
 }

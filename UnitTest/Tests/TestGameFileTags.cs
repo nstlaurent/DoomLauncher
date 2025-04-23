@@ -43,7 +43,8 @@ namespace UnitTest.Tests
                 SettingsMap = "the settings map",
                 SettingsSkill = "the settings skill",
                 SettingsSpecificFiles = "the settings specific files",
-                SettingsGameProfileID = 567
+                SettingsGameProfileID = 567,
+                IntendedGame = IWadInfo.DOOM2
             };
 
             return gameFile;

@@ -10,6 +10,7 @@ namespace DoomLauncher
 {
     public partial class GameFileTileViewControl : UserControl, IGameFileView, IGameFileSortableView
     {
+        public event GameFilesHandler DisplayingGameFiles;
         public event EventHandler ItemClick;
         public event EventHandler ItemDoubleClick;
         public event EventHandler SelectionChange;
@@ -482,6 +483,7 @@ namespace DoomLauncher
             {
                 m_selectedTiles.ForEach(x => x.SetSelected(true));
             }
+            DisplayingGameFiles?.Invoke(gameFiles);
         }
 
         private void SetLayout(List<IGameFile> gameFiles, IEnumerable<IFileData> screenshots, IEnumerable<IFileData> thumbnails)

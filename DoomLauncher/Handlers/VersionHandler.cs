@@ -95,6 +95,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_7_0_Update1, AppVersion.Version_3_7_0_Update1);
                 ExecuteUpdate(Pre_Version_3_7_4, AppVersion.Version_3_7_4);
                 ExecuteUpdate(Pre_Version_3_7_7, AppVersion.Version_3_7_7);
+                ExecuteUpdate(Pre_Version_3_7_8, AppVersion.Version_3_7_8);
             }
 
             return new VersionUpdateResults(m_restartRequired);
@@ -166,11 +167,11 @@ namespace DoomLauncher
             if (dt.Rows.Count == 0)
             {
                 string query = @"CREATE TABLE 'Configuration' (
-	                'ConfigID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	                'Name'	TEXT NOT NULL,
-	                'Value'	TEXT NOT NULL,
-	                'AvailableValues'	TEXT NOT NULL,
-	                'UserCanModify'	INTEGER);";
+                    'ConfigID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    'Name'	TEXT NOT NULL,
+                    'Value'	TEXT NOT NULL,
+                    'AvailableValues'	TEXT NOT NULL,
+                    'UserCanModify'	INTEGER);";
 
                 DataAccess.ExecuteNonQuery(query);
 
@@ -214,15 +215,15 @@ namespace DoomLauncher
             if (dt.Rows.Count == 0)
             {
                 string query = @"CREATE TABLE 'Tags' (
-	            'TagID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	            'Name'	TEXT NOT NULL,
-	            'HasTab'	INTEGER NOT NULL);";
+                'TagID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                'Name'	TEXT NOT NULL,
+                'HasTab'	INTEGER NOT NULL);";
                 DataAccess.ExecuteSelect(query);
 
                 query = @"CREATE TABLE 'TagMapping' (
-	            'FileID'	INTEGER NOT NULL,
-	            'TagID'	INTEGER NOT NULL,
-	            PRIMARY KEY(FileID,TagID));";
+                'FileID'	INTEGER NOT NULL,
+                'TagID'	INTEGER NOT NULL,
+                PRIMARY KEY(FileID,TagID));";
                 DataAccess.ExecuteSelect(query);
             }
 
@@ -313,8 +314,8 @@ namespace DoomLauncher
                 DataAccess.ExecuteNonQuery("update Configuration set UserCanModify = 1 where Name = 'GameFileDirectory'");
 
                 string query = @"CREATE TABLE 'Stats' (
-	            'StatID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	            'GameFileID'	INTEGER NOT NULL,
+                'StatID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                'GameFileID'	INTEGER NOT NULL,
                 'KillCount'	INTEGER NOT NULL,
                 'TotalKills'	INTEGER NOT NULL,
                 'SecretCount'	INTEGER NOT NULL,
@@ -500,18 +501,18 @@ namespace DoomLauncher
             if (dt.Rows.Count == 0)
             {
                 string query = @"CREATE TABLE 'GameProfiles' (
-	                    'GameProfileID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        'GameProfileID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                         'GameFileID'	INTEGER NOT NULL,
                         'SourcePortID'	INTEGER NOT NULL,
                         'IWadID'	INTEGER NOT NULL,
                         'Name'	TEXT NOT NULL,
-	                    'SettingsMap'	TEXT,
-	                    'SettingsSkill'	TEXT,
-	                    'SettingsExtraParams'	TEXT,
-	                    'SettingsFiles'	TEXT,
-	                    'SettingsFilesSourcePort'	TEXT,
-	                    'SettingsFilesIWAD'	TEXT,
-	                    'SettingsSpecificFiles'	TEXT,
+                        'SettingsMap'	TEXT,
+                        'SettingsSkill'	TEXT,
+                        'SettingsExtraParams'	TEXT,
+                        'SettingsFiles'	TEXT,
+                        'SettingsFilesSourcePort'	TEXT,
+                        'SettingsFilesIWAD'	TEXT,
+                        'SettingsSpecificFiles'	TEXT,
                         'SettingsStat'	INTEGER,
                         'SettingsSaved' INTEGER);";
 
@@ -707,7 +708,7 @@ namespace DoomLauncher
             {
                 string query = @"CREATE TABLE 'CleanupFiles' (
                     'CleanupFileID'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	                'FileName' TEXT NOT NULL);";
+                    'FileName' TEXT NOT NULL);";
 
                 DataAccess.ExecuteNonQuery(query);
             }
@@ -897,6 +898,28 @@ namespace DoomLauncher
             {
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'IsDoom64' INTEGER;");
                 DataAccess.ExecuteNonQuery("update GameFiles set IsDoom64 = 0");
+            }
+        }
+
+        private void Pre_Version_3_7_8()
+        {
+            var dt = DataAccess.ExecuteSelect("pragma table_info(GameFiles);").Tables[0];
+
+            if (!dt.Select("name = 'IntendedGame'").Any())
+            {
+                DataAccess.ExecuteNonQuery("alter table GameFiles add column 'IntendedGame' TEXT;");
+                DataAccess.ExecuteNonQuery("update GameFiles set IntendedGame = 'DOOM64' where IsDoom64 = 1;");
+            }
+
+            if (dt.Select("name = 'IsDoom64'").Any())
+            {
+                DataAccess.ExecuteNonQuery("alter table GameFiles drop column 'IsDoom64';");
+            }
+
+            if (!dt.Select("name = 'IsSyncNeeded'").Any())
+            {
+                DataAccess.ExecuteNonQuery("alter table GameFiles add column 'IsSyncNeeded' INTEGER NOT NULL DEFAULT 0;");
+                DataAccess.ExecuteNonQuery("update GameFiles set IsSyncNeeded = 1");
             }
         }
 

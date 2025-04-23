@@ -91,6 +91,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Tests\TestIntendedIwadSyncAction.cs" />
     <Compile Include="Tests\Helpers\DirectoriesConfiguration.cs" />
     <Compile Include="Tests\TestDoom64SyncAction.cs" />
     <Compile Include="Tests\TestDoom64TitlePicSyncAction.cs" />

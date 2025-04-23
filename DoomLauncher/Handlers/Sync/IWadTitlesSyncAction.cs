@@ -11,7 +11,7 @@ namespace DoomLauncher.Handlers.Sync
     {
         public SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
         {
-            IWadInfo info = IWadInfo.GetIWadInfo(gameFile.FileName);
+            IWadInfo info = IWadInfo.FromFileName(gameFile.FileName);
             if (info != null)
                 gameFile.Title = info.Title;
 

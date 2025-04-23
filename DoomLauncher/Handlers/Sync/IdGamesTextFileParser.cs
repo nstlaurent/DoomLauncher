@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DoomLauncher.Handlers.Sync
@@ -25,7 +26,15 @@ namespace DoomLauncher.Handlers.Sync
             var description = FindValue(text, "Description", s_fullRegexDescription, false).Replace("\r\n", "\n");
             var game = FindValue(text, "Game", s_fullRegex, false);
 
-            return new IdGamesTextInfo(title, author, releaseDate, description, game);
+            return new IdGamesTextInfo(title, author, releaseDate, description, GetGameString(game));
+        }
+
+        private static string GetGameString(string rawString)
+        {
+            var sb = new StringBuilder(rawString);
+            sb.Replace(" ", "");
+            sb.Replace("II", "2");
+            return sb.ToString().Trim().ToUpper();
         }
 
         private DateTime? ParseReleaseDate(string text)

@@ -6,6 +6,8 @@ namespace DoomLauncher
 {
     class TabHandler
     {
+        public event GameFilesHandler DisplayingGameFiles;
+
         private readonly Dictionary<IGameFileView, TabItem> m_tabLookup = new Dictionary<IGameFileView, TabItem>();
         private readonly List<ITabView> m_tabs = new List<ITabView>();
 
@@ -16,7 +18,7 @@ namespace DoomLauncher
         }
 
         public TabHandler(CTabControl tabControl)
-        {            
+        {
             TabControl = tabControl;
         }
 
@@ -44,11 +46,12 @@ namespace DoomLauncher
 
         public void AddTab(ITabView tab)
         {
+
             TabPage page = CreateTabPage(tab);
 
             m_tabLookup.Add(tab.GameFileViewControl, new TabItem { TabView = tab, TabPage = page });
             m_tabs.Add(tab);
-
+            SubscribeToTabEvents(tab);
             TabControl.TabPages.Add(page);
         }
 
@@ -59,6 +62,18 @@ namespace DoomLauncher
 
             m_tabLookup.Add(tab.GameFileViewControl, new TabItem { TabView = tab, TabPage = page });
             m_tabs.Insert(index, tab);
+            SubscribeToTabEvents(tab);
+        }
+
+        private static bool IsTabUpdatable(ITabView tabView) =>
+            !tabView.Key.Equals("Id Games");
+
+        private void SubscribeToTabEvents(ITabView tab)
+        {
+            if (IsTabUpdatable(tab))
+            {
+                tab.GameFileViewControl.DisplayingGameFiles += (gameFiles) => DisplayingGameFiles?.Invoke(gameFiles);
+            }
         }
 
         public void RemoveTab(ITabView tab)

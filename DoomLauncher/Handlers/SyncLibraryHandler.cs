@@ -80,6 +80,8 @@ namespace DoomLauncher
                 resultSoFar += SyncResult.InvalidFile(fileName, errorMsg);
             }
 
+            fileToUpdate.IsSyncNeeded = false;
+
             resultSoFar += Upsert(existingFile, fileToUpdate);
 
             return resultSoFar;

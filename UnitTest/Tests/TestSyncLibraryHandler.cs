@@ -416,6 +416,31 @@ namespace UnitTest.Tests
             Assert.AreEqual(addedFile.Map, "MAP01");
         }
 
+        [TestMethod]
+        public void SyncClearsTheIsSyncNeededFlag()
+        {
+            SyncLibraryHandler handler = CreateSyncLibraryHandler();
+            Assert.AreEqual(0, database.GetGameFilesCount());
+
+            // Establish existing file
+            string file = "uroburos.zip";
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+            var syncResult = handler.SyncManyFiles(new string[] { "uroburos.zip" });
+            Assert.AreEqual(1, database.GetGameFilesCount());
+            
+            // Set IsSyncNeeded = true
+            var gameFile = database.GetGameFile("uroburos.zip");
+            gameFile.IsSyncNeeded = true;
+            database.UpdateGameFile(gameFile);
+            gameFile = database.GetGameFile("uroburos.zip");
+            Assert.IsTrue(gameFile.IsSyncNeeded);
+
+            syncResult = handler.SyncManyFiles(new string[] { "uroburos.zip" });
+
+            gameFile = database.GetGameFile("uroburos.zip");
+            Assert.IsFalse(gameFile.IsSyncNeeded);
+        }
+
         private SyncLibraryHandler CreateSyncLibraryHandler(bool pullTitlepic = false, FileManagement fileManagement = FileManagement.Managed)
         {
             var directories = new DirectoriesConfiguration 

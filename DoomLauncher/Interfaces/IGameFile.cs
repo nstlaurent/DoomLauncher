@@ -39,7 +39,11 @@ namespace DoomLauncher.Interfaces
         int MinutesPlayed { get; set; }
         int FileSizeBytes { get; set; }
 
-        bool IsDoom64 { get; set; }
+        bool IsDoom64 { get; }
+
+        IWadInfo IntendedGame { get; set; }
+
+        bool IsSyncNeeded { get; set; }
 
         bool IsUnmanaged();
         bool IsDirectory();

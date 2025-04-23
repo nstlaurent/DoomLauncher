@@ -22,7 +22,7 @@ namespace DoomLauncher.Handlers.Sync
             {
                 try
                 {
-                    data[i] = Encoding.UTF8.GetString(entries[i].ReadEntry());
+                    data[i] = entries[i].ReadString(Encoding.UTF8);
                 }
                 catch
                 {
