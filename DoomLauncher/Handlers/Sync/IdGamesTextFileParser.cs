@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace DoomLauncher.TextFileParsers
+namespace DoomLauncher.Handlers.Sync
 {
     public class IdGamesTextFileParser
     {
@@ -23,8 +23,9 @@ namespace DoomLauncher.TextFileParsers
             var author = FindValue(text, "Authors*", s_fullRegex, false);
             var releaseDate = ParseReleaseDate(text);
             var description = FindValue(text, "Description", s_fullRegexDescription, false).Replace("\r\n", "\n");
+            var game = FindValue(text, "Game", s_fullRegex, false);
 
-            return new IdGamesTextInfo(title, author, releaseDate, description);
+            return new IdGamesTextInfo(title, author, releaseDate, description, game);
         }
 
         private DateTime? ParseReleaseDate(string text)

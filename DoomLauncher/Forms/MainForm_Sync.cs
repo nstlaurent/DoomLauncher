@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Handlers.Sync;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,51 +8,52 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WadReader;
 
 namespace DoomLauncher
 {
     public partial class MainForm
     {
-        private async Task<SyncLibraryHandler> SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
+        private async Task<SyncResult> SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
         {
             ProgressBarStart(ProgressBarType.Sync);
-            SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
+            SyncResult syncResult =  await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
             ProgressBarEnd(ProgressBarType.Sync);
-            SyncLocalDatabaseComplete(handler, updateViews);
-            return handler;
+            SyncLocalDatabaseComplete(syncResult, updateViews);
+            return syncResult;
         }
 
-        void SyncLocalDatabaseComplete(SyncLibraryHandler handler, bool updateViews)
+        void SyncLocalDatabaseComplete(SyncResult syncResult, bool updateViews)
         {
             if (updateViews)
             {
                 UpdateLocal();
                 HandleTabSelectionChange();
 
-                foreach (IGameFile updateGameFile in handler.UpdatedGameFiles)
+                foreach (IGameFile updateGameFile in syncResult.UpdatedGameFiles)
                     UpdateDataSourceViews(updateGameFile);
 
                 IGameFileView view = GetCurrentViewControl();
                 IGameFile selectedFile = view.SelectedItem;
-                if (selectedFile != null && handler.UpdatedGameFiles.Contains(selectedFile))
+                if (selectedFile != null && syncResult.UpdatedGameFiles.Contains(selectedFile))
                     HandleSelectionChange(view, true);
             }
 
-            if (handler != null && handler.FailedTitlePicFiles.Count > 0)
+            if (syncResult != null && syncResult.FailedTitlePicFiles.Count > 0)
             {
                 StringBuilder sb = new StringBuilder("The following files had title images but failed to convert to a valid image:");
                 sb.AppendLine();
                 sb.AppendLine();
-                foreach (IGameFile gameFile in handler.FailedTitlePicFiles)
+                foreach (IGameFile gameFile in syncResult.FailedTitlePicFiles)
                     sb.Append(gameFile.FileNameNoPath);
 
                 MessageBox.Show(this, sb.ToString(), "Image Conversion Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            if (handler != null &&
-                (handler.InvalidFiles.Length > 0 || m_zdlInvalidFiles.Count > 0))
+            if (syncResult != null &&
+                (syncResult.InvalidFiles.Count > 0 || m_zdlInvalidFiles.Count > 0))
             {
-                DisplayInvalidFilesError(handler.InvalidFiles.Union(m_zdlInvalidFiles));
+                DisplayInvalidFilesError(syncResult.InvalidFiles.Union(m_zdlInvalidFiles));
             }
             else if (m_launchFile != null)
             {
@@ -79,20 +81,31 @@ namespace DoomLauncher
                 sb.ToString(), false);
         }
 
-        private SyncLibraryHandler ExecuteSyncHandler(string[] files, FileManagement fileManagement, ITagData tag = null)
+        private SyncResult ExecuteSyncHandler(string[] files, FileManagement fileManagement, ITagData tag = null)
         {
             SyncLibraryHandler handler = null;
+            SyncResult syncResult = SyncResult.EMPTY;
 
             try
             {
-                handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration.GameFileDirectory, 
-                    AppConfiguration.TempDirectory, AppConfiguration.DateParseFormats, fileManagement, DataCache.Instance.DefaultPalette, 
-                    AppConfiguration.AutomaticallyPullTitlpic);
-                handler.SyncFileChange += syncHandler_SyncFileChange;
+                var gameFileFragments = new List<IGameFileFragment>()
+                {
+                    new TextFileGameFileFragment(AppConfiguration.DateParseFormats),
+                    new Doom64GameFileFragment(DataSourceAdapter),
+                    new MapStringGameFileFragment(AppConfiguration.TempDirectory)
+                };
+
+                if (AppConfiguration.AutomaticallyPullTitlpic)
+                    gameFileFragments.Add(new TitlePicFileFragment(DataCache.Instance.DefaultPalette));
+
+                handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 
+                    fileManagement, gameFileFragments);
+
+                handler.SyncFileChanged += syncHandler_SyncFileChanged;
                 handler.GameFileDataNeeded += syncHandler_GameFileDataNeeded;
 
-                handler.Execute(files);
-                SyncTitlePics(handler);
+                syncResult = handler.SyncManyFiles(files);
+                SyncTitlePics(syncResult);
 
                 if (m_pendingZdlFiles != null)
                 {
@@ -101,21 +114,21 @@ namespace DoomLauncher
                 }
 
                 if (tag != null)
-                    TagSyncFiles(handler, tag);
+                    TagSyncFiles(syncResult, tag);
             }
             catch (Exception ex)
             {
                 Util.DisplayUnexpectedException(this, ex);
             }
 
-            return handler;
+            return syncResult;
         }
 
-        private void SyncTitlePics(SyncLibraryHandler handler)
+        private void SyncTitlePics(SyncResult syncResult)
         {
-            foreach (IGameFile gameFile in handler.AddedGameFiles.Union(handler.UpdatedGameFiles))
+            foreach (IGameFile gameFile in syncResult.AddedOrUpdatedFiles)
             {
-                if (!handler.GetTitlePic(gameFile, out Image image))
+                if (!syncResult.GetTitlePic(gameFile, out Image image))
                     continue;
 
                 image = image.ScaleDoomImage();
@@ -132,10 +145,10 @@ namespace DoomLauncher
             }
         }
 
-        private void TagSyncFiles(SyncLibraryHandler handler, ITagData tag)
+        private void TagSyncFiles(SyncResult syncResult, ITagData tag)
         {
-            DataCache.Instance.AddGameFileTag(handler.AddedGameFiles, tag, out _);
-            DataCache.Instance.AddGameFileTag(handler.UpdatedGameFiles, tag, out _);
+            DataCache.Instance.AddGameFileTag(syncResult.AddedGameFiles, tag, out _);
+            DataCache.Instance.AddGameFileTag(syncResult.UpdatedGameFiles, tag, out _);
             DataCache.Instance.TagMapLookup.Refresh(new ITagData[] { tag });
         }
 
@@ -163,49 +176,39 @@ namespace DoomLauncher
             }
         }
 
-        void syncHandler_SyncFileChange(object sender, EventArgs e)
+        void syncHandler_SyncFileChanged(SyncLibraryHandler.SyncProgressEvent e)
         {
-            SyncLibraryHandler handler = sender as SyncLibraryHandler;
+            if (InvokeRequired)
+                Invoke(new Action<SyncLibraryHandler.SyncProgressEvent>(ProgressBarUpdate), new object[] { e });
+            else
+                ProgressBarUpdate(e);
+        }
 
-            if (handler != null)
+        void syncHandler_GameFileDataNeeded(SyncLibraryHandler.GameFileDataNeededEvent e)
+        {
+            if (InvokeRequired)
+                Invoke(new Action<SyncLibraryHandler.GameFileDataNeededEvent>(HandleGameFileDataNeeded), new object[] { e });
+            else
+                HandleGameFileDataNeeded(e);
+        }
+
+        void HandleGameFileDataNeeded(SyncLibraryHandler.GameFileDataNeededEvent e)
+        {
+            if (CurrentDownloadFile != null && CurrentDownloadFile.FileName == e.CurrentGameFile.FileName)
             {
-                if (InvokeRequired)
-                    Invoke(new Action<SyncLibraryHandler>(ProgressBarUpdate), new object[] { handler });
-                else
-                    ProgressBarUpdate(handler);
+                e.CurrentGameFile.Title = CurrentDownloadFile.Title;
+                e.CurrentGameFile.Author = CurrentDownloadFile.Author;
+                e.CurrentGameFile.ReleaseDate = CurrentDownloadFile.ReleaseDate;
             }
         }
 
-        void syncHandler_GameFileDataNeeded(object sender, EventArgs e)
-        {
-            SyncLibraryHandler handler = sender as SyncLibraryHandler;
-
-            if (handler != null)
-            {
-                if (InvokeRequired)
-                    Invoke(new Action<SyncLibraryHandler>(HandleGameFileDataNeeded), new object[] { handler });
-                else
-                    HandleGameFileDataNeeded(handler);
-            }
-        }
-
-        void HandleGameFileDataNeeded(SyncLibraryHandler handler)
-        {
-            if (CurrentDownloadFile != null && CurrentDownloadFile.FileName == handler.CurrentGameFile.FileName)
-            {
-                handler.CurrentGameFile.Title = CurrentDownloadFile.Title;
-                handler.CurrentGameFile.Author = CurrentDownloadFile.Author;
-                handler.CurrentGameFile.ReleaseDate = CurrentDownloadFile.ReleaseDate;
-            }
-        }
-
-        void ProgressBarUpdate(SyncLibraryHandler handler)
+        void ProgressBarUpdate(SyncLibraryHandler.SyncProgressEvent e)
         {
             if (m_progressBars.TryGetValue(ProgressBarType.Sync, out var progressBar))
             {
-                progressBar.Maximum = handler.SyncFileCount;
-                progressBar.Value = handler.SyncFileCurrent;
-                progressBar.DisplayText = string.Format("Reading {0}...", handler.CurrentSyncFileName);
+                progressBar.Maximum = e.SyncFileCount;
+                progressBar.Value = e.SyncFileCurrent;
+                progressBar.DisplayText = string.Format("Reading {0}...", e.CurrentSyncFileName);
             }
         }
 
@@ -266,10 +269,10 @@ namespace DoomLauncher
                 case SyncFileOption.Add:
                     ProgressBarStart(ProgressBarType.Sync);
 
-                    SyncLibraryHandler handler = await Task.Run(() => ExecuteSyncHandler(files.ToArray(), FileManagement.Managed));
+                    SyncResult syncResult = await Task.Run(() => ExecuteSyncHandler(files.ToArray(), FileManagement.Managed));
 
                     ProgressBarEnd(ProgressBarType.Sync);
-                    SyncLocalDatabaseComplete(handler, true);
+                    SyncLocalDatabaseComplete(syncResult, true);
                     break;
 
                 case SyncFileOption.Delete:

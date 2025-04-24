@@ -337,6 +337,7 @@ namespace DoomLauncher
                     GameFileFieldType.Rating,
                     GameFileFieldType.Map,
                     GameFileFieldType.MapCount,
+                    GameFileFieldType.IWadID
                 };
             }
         }

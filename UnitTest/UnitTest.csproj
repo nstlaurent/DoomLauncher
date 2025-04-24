@@ -89,6 +89,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Tests\Helpers\DirectoriesConfiguration.cs" />
+    <Compile Include="Tests\TestDoom64GameFileFragment.cs" />
+    <Compile Include="Tests\TestRecursiveArchiveReader.cs" />
     <Compile Include="Tests\TestGameStoreFiles.cs" />
     <Compile Include="TestInit.cs" />
     <Compile Include="Tests\TestArchives.cs" />
@@ -125,6 +128,9 @@
     <Compile Include="Tests\TestStatdump.cs" />
     <Compile Include="Tests\TestUpdateInfo.cs" />
     <Compile Include="Tests\TestGameProfile.cs" />
+    <Compile Include="Tests\Helpers\Tree.cs" />
+    <Compile Include="Tests\Helpers\TreeReader.cs" />
+    <Compile Include="Tests\Helpers\TreeEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DoomLauncher\DoomLauncher.csproj">
@@ -260,6 +266,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -8,7 +8,7 @@
             Reason = reason;
         }
 
-        public string FileName { get; set; }
-        public string Reason { get; set; }
+        public string FileName { get; }
+        public string Reason { get; }
     }
 }
