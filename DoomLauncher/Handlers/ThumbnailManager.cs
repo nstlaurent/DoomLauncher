@@ -21,7 +21,7 @@ namespace DoomLauncher
 
             foreach (var iwad in iwads)
             {
-                if (!IWadInfo.TryGetIWadInfo(iwad.FileName, out var iwadInfo) || 
+                if (!iwad.IWadID.HasValue || !IWadInfo.TryGetIWadInfo(iwad.FileName, out var iwadInfo) || 
                     string.IsNullOrEmpty(iwadInfo.TileImage) || !File.Exists(iwadInfo.TileImage))
                     continue;
 
