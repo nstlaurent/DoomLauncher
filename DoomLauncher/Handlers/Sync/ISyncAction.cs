@@ -2,6 +2,7 @@
 
 namespace DoomLauncher.Handlers.Sync
 {
+
     public interface ISyncAction
     {
         SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData);
