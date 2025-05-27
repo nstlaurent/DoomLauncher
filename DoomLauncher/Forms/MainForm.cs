@@ -2,6 +2,7 @@
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Handlers;
+using DoomLauncher.Handlers.Sync;
 using DoomLauncher.Interfaces;
 using DoomLauncher.Stylize;
 using PresentationControls;
@@ -1582,7 +1583,8 @@ namespace DoomLauncher
             switch (type)
             {
                 case AddFileType.GameFile:
-                    await SyncLocalDatabase(files, fileManagement, true, tag);
+                    var syncResult = await SyncLocalDatabase(files, fileManagement, true);
+                    TagSyncFiles(syncResult, tag);
                     break;
                 case AddFileType.IWad:
                     var handler = await SyncLocalDatabase(files, fileManagement, fileAddResults.ReplacedFiles.Count > 0);
@@ -1600,6 +1602,13 @@ namespace DoomLauncher
                 fileAddResults.Errors.ForEach(x => sb.Append(string.Concat(tab, x.FileName, ": ", x.Error, Environment.NewLine)));
                 MessageBox.Show(this, sb.ToString(), "Failed to Add", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void TagSyncFiles(SyncResult syncResult, ITagData tag)
+        {
+            DataCache.Instance.AddGameFileTag(syncResult.AddedGameFiles, tag, out _);
+            DataCache.Instance.AddGameFileTag(syncResult.UpdatedGameFiles, tag, out _);
+            DataCache.Instance.TagMapLookup.Refresh(new ITagData[] { tag });
         }
 
         private async Task<FileAddResults> CopyFiles(string[] fileNames, FileManagement fileManagement, ProgressBarForm progressBar)

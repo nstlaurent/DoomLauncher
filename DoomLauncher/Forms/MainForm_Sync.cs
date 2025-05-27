@@ -97,7 +97,7 @@ namespace DoomLauncher
                 sb.ToString(), false);
         }
 
-        private SyncResult ExecuteSyncHandler(string[] files, FileManagement fileManagement, ITagData tag = null)
+        private SyncResult ExecuteSyncHandler(string[] files, FileManagement fileManagement)
         {
             SyncLibraryHandler handler = null;
             SyncResult syncResult = SyncResult.EMPTY;
@@ -137,9 +137,6 @@ namespace DoomLauncher
                     SyncPendingZdlFiles();
                     m_pendingZdlFiles = null;
                 }
-
-                if (tag != null)
-                    TagSyncFiles(syncResult, tag);
             }
             catch (Exception ex)
             {
@@ -168,13 +165,6 @@ namespace DoomLauncher
                 ScreenshotHandler.InsertScreenshot(gameFile, imageStream, screenshots, out _);
                 imageStream?.Dispose();
             }
-        }
-
-        private void TagSyncFiles(SyncResult syncResult, ITagData tag)
-        {
-            DataCache.Instance.AddGameFileTag(syncResult.AddedGameFiles, tag, out _);
-            DataCache.Instance.AddGameFileTag(syncResult.UpdatedGameFiles, tag, out _);
-            DataCache.Instance.TagMapLookup.Refresh(new ITagData[] { tag });
         }
 
         private void SyncPendingZdlFiles()
