@@ -1584,7 +1584,8 @@ namespace DoomLauncher
             {
                 case AddFileType.GameFile:
                     var syncResult = await SyncLocalDatabase(files, fileManagement, true);
-                    TagSyncFiles(syncResult, tag);
+                    if (tag != null)
+                        TagSyncFiles(syncResult, tag);
                     break;
                 case AddFileType.IWad:
                     var handler = await SyncLocalDatabase(files, fileManagement, fileAddResults.ReplacedFiles.Count > 0);
