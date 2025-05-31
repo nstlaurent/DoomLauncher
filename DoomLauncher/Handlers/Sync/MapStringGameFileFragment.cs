@@ -12,8 +12,8 @@ namespace DoomLauncher.Handlers.Sync
     public class MapStringGameFileFragment : IGameFileFragment
     {
         private readonly LauncherPath m_tempDirectory;
-        private static readonly Regex MapRegex = new Regex(@"\s*map\s+\w+");
-        private static readonly Regex IncludeRegex = new Regex(@"\s*include\s+(\S+)");
+        private static readonly Regex MapRegex = new Regex(@"\s*map\s+\w+", RegexOptions.IgnoreCase);
+        private static readonly Regex IncludeRegex = new Regex(@"\s*include\s+(\S+)", RegexOptions.IgnoreCase);
 
         public MapStringGameFileFragment(LauncherPath tempDirectory)
         {
@@ -22,7 +22,7 @@ namespace DoomLauncher.Handlers.Sync
 
         public SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
         {
-            var maps = GetMaps(gameFile, reader, mapInfoData);
+            var maps = GetMaps(reader, mapInfoData);
             var mapString = string.Join(", ", maps.ToArray());
 
             gameFile.Map = mapString;
@@ -32,7 +32,7 @@ namespace DoomLauncher.Handlers.Sync
             return SyncResult.EMPTY;
         }   
 
-        private List<string> GetMaps(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
+        private List<string> GetMaps(IArchiveReader reader, string[] mapInfoData)
         {
             List<string> maps = new List<string>();
             if (mapInfoData.Length > 0)
