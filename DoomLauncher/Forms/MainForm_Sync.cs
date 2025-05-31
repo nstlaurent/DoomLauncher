@@ -150,18 +150,24 @@ namespace DoomLauncher
         {
             foreach (IGameFile gameFile in syncResult.AddedOrUpdatedFiles)
             {
+                // Get the titlepic as a bitmap in memory from a lump in the wad
                 if (!syncResult.GetTitlePic(gameFile, out Image image))
                     continue;
 
+                // Force the image to the right aspect ratio
                 image = image.ScaleDoomImage();
 
+                // Look in the database for screenshots
                 var screenshots = DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
+
+                // Skip if we already have a "screenshot" that is really a titlepic
                 if (ScreenshotHandler.FindScreenshot(screenshots, image, out MemoryStream imageStream))
                     continue;
 
                 if (imageStream == null)
                     continue;
 
+                // Insert the titlepic as a screenshot
                 ScreenshotHandler.InsertScreenshot(gameFile, imageStream, screenshots, out _);
                 imageStream?.Dispose();
             }

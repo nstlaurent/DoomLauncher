@@ -49,7 +49,6 @@ namespace DoomLauncher.Handlers.Sync
         public bool GetTitlePic(IGameFile gameFile, out Image image) =>
             TitlePics.TryGetValue(gameFile, out image);
 
-
         public static SyncResult AddedGameFile(IGameFile gameFile)
         {
             return new SyncResult(

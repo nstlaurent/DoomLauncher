@@ -8,5 +8,6 @@
         SaveGame = 3,
         Thumbnail = 4,
         TileImage = 5,
+        TitlePic = 6
     }
 }
