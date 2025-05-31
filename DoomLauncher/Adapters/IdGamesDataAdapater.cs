@@ -9,6 +9,11 @@ using System.Net;
 
 namespace DoomLauncher
 {
+    public class IdGamesBadResponseException : Exception
+    {
+        public IdGamesBadResponseException() : base("Bad response from idgames") { }
+    }
+
     class IdGamesDataAdapater : IGameFileDataSourceAdapter
     {
         static string[] QueryLookup = { 
@@ -130,6 +135,9 @@ namespace DoomLauncher
 
             reader.Close();
             response.Close();
+
+            if (xmlResponse.Length == 0)
+                throw new IdGamesBadResponseException();
 
             StringReader xmlReader = new StringReader(xmlResponse);
             DataSet ds = new DataSet();
