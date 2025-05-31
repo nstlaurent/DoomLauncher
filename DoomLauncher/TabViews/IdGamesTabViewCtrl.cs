@@ -10,6 +10,7 @@ namespace DoomLauncher
     public partial class IdGamesTabViewCtrl : OptionsTabViewCtrl
     {
         private bool m_working;
+        private string m_errorMessage;
 
         public IdGamesTabViewCtrl(object key, string title, IGameFileDataSourceAdapter adapter, GameFileFieldType[] selectFields, GameFileViewFactory factory)
             : base(key, title, adapter, selectFields, factory)
@@ -29,7 +30,7 @@ namespace DoomLauncher
             
             m_working = true;
             IdGamesDataSource = null;
-            base.SetDisplayText("Searching...");
+            SetDisplayText("Searching...");
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += UpdateIdGamesView_Worker;
@@ -39,10 +40,10 @@ namespace DoomLauncher
 
         private void UpdateIdGamesView_Worker(object sender, DoWorkEventArgs e)
         {
+            m_errorMessage = string.Empty;
             try
             {
                 IEnumerable<GameFileSearchField> searchFields = e.Argument as IEnumerable<GameFileSearchField>;
-
                 if (searchFields == null || !searchFields.Any())
                 {
                     IdGamesDataSource = Adapter.GetGameFiles();
@@ -57,9 +58,15 @@ namespace DoomLauncher
                     IdGamesDataSource = ret;
                 }
             }
-            catch
+            catch (IdGamesBadResponseException ex)
             {
-                IdGamesDataSource = new IGameFile[0];
+                m_errorMessage = ex.Message;
+                IdGamesDataSource = null;
+            }
+            catch (Exception ex)
+            {
+                m_errorMessage = $"Failed to query id games: {ex.Message}";
+                IdGamesDataSource = null;
             }
         }
 
@@ -67,13 +74,19 @@ namespace DoomLauncher
         {
             m_working = false;
 
+            if (m_errorMessage.Length > 0)
+            {
+                SetDisplayText(m_errorMessage);
+                return;
+            }
+
             if (IdGamesDataSource != null)
             {
-                base.SetDataSource(IdGamesDataSource);
+                SetDataSource(IdGamesDataSource);
             }
             else
             {
-                base.SetDisplayText("Error retrieving data from id Games");
+                SetDisplayText("Error retrieving data from id Games");
                 MessageBox.Show(this, "There was an error retrieving data from id Games.", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
