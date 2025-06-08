@@ -24,6 +24,7 @@ namespace DoomLauncher
         public ITagData[] PreviousTags { get; private set; }
         public Image DefaultImage { get; private set; }
         public Palette DefaultPalette { get; private set; }
+        public Palette HexenPalette { get; private set; }
 
         public void Init(IDataSourceAdapter adapter)
         {
@@ -32,6 +33,7 @@ namespace DoomLauncher
             TagMapLookup = new TagMapLookup(adapter);
             DefaultImage = ImageExtensions.FromFileOrDefault(Path.Combine(LauncherPath.GetDataDirectory(), "TileImages", "DoomLauncherTile.png"));
             DefaultPalette = Palette.From(Properties.Resources.DoomPalette);
+            HexenPalette = Palette.From(Properties.Resources.HexenPalette);
             ThumbnailManager.SetIWads(DataSourceAdapter.GetGameFileIWads().ToList());
 
             switch (AppConfiguration.ColorTheme)

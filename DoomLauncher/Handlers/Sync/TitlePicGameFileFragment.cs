@@ -1,34 +1,39 @@
 ﻿using DoomLauncher.Interfaces;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using WadReader;
 using System.Drawing;
+using System;
+using System.IO;
 
 namespace DoomLauncher.Handlers.Sync
 {
     public class TitlePicFileFragment : IGameFileFragment
     {
         private const string DefaultTitlepicName = "TITLEPIC";
+        private const string AltTitlepicName = "TITLE";
         private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");
         private readonly Palette m_palette;
+        private readonly Palette m_altPalette;
 
-        public TitlePicFileFragment(Palette palette)
+        public TitlePicFileFragment(Palette doomPalette, Palette hexenPalette)
         {
-            m_palette = palette;
+            m_palette = doomPalette;
+            m_altPalette = hexenPalette;
         }
 
         public SyncResult ApplyToGameFile(IGameFile file, IArchiveReader reader, string[] mapInfoData)
         {
-            var m_titlepics = new Dictionary<IGameFile, Image>();
-
             string titlepicName = DefaultTitlepicName;
             if (GetTitlepicNameFromMapInfo(mapInfoData, out string newTitlepicName))
                 titlepicName = newTitlepicName;
 
             if (!TitlePicUtil.GetEntry(reader, titlepicName, out IArchiveEntry entry))
-                return SyncResult.EMPTY;
+            {
+                if (!TitlePicUtil.GetEntry(reader, AltTitlepicName, out entry))
+                    return SyncResult.EMPTY;
+            }
 
-            Palette palette = GetPaletteOrDefault(reader);
+            Palette palette = GetPaletteOrDefault(file, reader);
             if (!TitlePicUtil.ConvertToImage(entry.ReadEntry(), palette, out Image image))
             {
                 return SyncResult.FailedTitlePicFile(file);
@@ -54,10 +59,15 @@ namespace DoomLauncher.Handlers.Sync
             return false;
         }
 
-        private Palette GetPaletteOrDefault(IArchiveReader reader)
+        private Palette GetPaletteOrDefault(IGameFile gameFile, IArchiveReader reader)
         {
             if (!TitlePicUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
+            {
+                if (Path.GetFileNameWithoutExtension(gameFile.FileNameNoPath).Equals("hexdd", StringComparison.OrdinalIgnoreCase))
+                    return m_altPalette;
+
                 return m_palette;
+            }
 
             Palette palette = Palette.From(paletteEntry.ReadEntry());
             if (palette != null)

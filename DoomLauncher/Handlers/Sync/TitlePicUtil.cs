@@ -8,6 +8,9 @@ namespace DoomLauncher.Handlers.Sync
 {
     public static class TitlePicUtil
     {
+        const int TitleWidth = 320;
+        const int TitleHeight = 200;
+
         public static bool FindPalette(IArchiveReader archive, out IArchiveEntry entry) =>
             GetEntry(archive, "PLAYPAL", out entry);
 
@@ -43,6 +46,10 @@ namespace DoomLauncher.Handlers.Sync
                     doomImage = PaletteReaders.ReadFlat(data);
                 else
                     doomImage = PaletteReaders.ReadColumn(data);
+
+                // Heretic/hexen didn't use doom image format and was a flat list of indices
+                if (doomImage == null && data.Length == TitleWidth * TitleHeight)
+                    doomImage = DoomImage.FromPaletteIndices(TitleWidth, TitleHeight, data.Select(x => (ushort)x).ToArray(), 0, 0);
 
                 if (palette != null && doomImage != null)
                     doomImage = doomImage.PaletteToArgb(palette);
