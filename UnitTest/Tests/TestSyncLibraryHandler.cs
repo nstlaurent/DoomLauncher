@@ -419,7 +419,7 @@ namespace UnitTest.Tests
             };
 
             if (pullTitlepic)
-                gameFileFragments.Add(new TitlePicFileFragment(DataCache.Instance.DefaultPalette));
+                gameFileFragments.Add(new TitlePicFileFragment(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette));
 
             return new SyncLibraryHandler(database, CreateDirectoryAdapater(), directories, fileManagement, gameFileFragments);
         }

@@ -96,7 +96,7 @@ namespace DoomLauncher
                 };
 
                 if (AppConfiguration.AutomaticallyPullTitlpic)
-                    gameFileFragments.Add(new TitlePicFileFragment(DataCache.Instance.DefaultPalette));
+                    gameFileFragments.Add(new TitlePicFileFragment(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette));
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 
                     fileManagement, gameFileFragments);
