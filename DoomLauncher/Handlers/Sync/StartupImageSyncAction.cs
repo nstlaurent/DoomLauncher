@@ -52,6 +52,7 @@ namespace DoomLauncher.Handlers.Sync {
             return SyncResult.EMPTY;
         }
 
+
         // Each pixel is an index into the 16-length palette array.
         // However, this is a planar image, meaning that each index is split apart into bits, 
         // rather than being stored as a single byte.
