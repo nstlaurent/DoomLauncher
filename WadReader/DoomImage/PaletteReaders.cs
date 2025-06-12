@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 
 namespace WadReader
 {
@@ -14,6 +14,8 @@ namespace WadReader
                 case 128 * 128:
                     return true;
                 case 256 * 256:
+                    return true;
+                case 320 * 200: // TITLE images use this size
                     return true;
                 default:
                     return false;
@@ -40,23 +42,11 @@ namespace WadReader
 
         public static DoomImage ReadFlat(byte[] data)
         {
-            int dim = FlatDimension(data.Length);
-            if (dim == 0)
+            if (!FlatDimension(data.Length, out int width, out int height))
                 return null;
 
-            ushort[] indices = new ushort[dim * dim];
-
-            int offset = 0;
-            for (int y = 0; y < dim; y++)
-            {
-                for (int x = 0; x < dim; x++)
-                {
-                    indices[offset] = data[offset];
-                    offset++;
-                }
-            }
-
-            return DoomImage.FromPaletteIndices(dim, dim, indices, 0, 0);
+            ushort[] indices = data.Select(x => (ushort)x).ToArray();
+            return DoomImage.FromPaletteIndices(width, height, indices, 0, 0);
         }
 
         public static DoomImage ReadColumn(byte[] data)
@@ -121,12 +111,32 @@ namespace WadReader
             }
         }
 
-        private static int FlatDimension(int length)
+        private static bool FlatDimension(int length, out int width, out int height)
         {
-            if (length != 64 * 64 || length != 128 * 128 || length != 256 * 256)
-                return 0;
+            if (length == 64 * 64)
+            {
+                width = height = 64;
+            }
+            else if (length == 128 * 128)
+            {
+                width = height = 128;
+            }
+            else if (length == 256 * 256)
+            {
+                width = height = 256;
+            }
+            else if (length == 320 * 200)
+            {
+                width = 320;
+                height = 200;
+            }
+            else
+            {
+                width = height = 0;
+                return false;
+            }
 
-            return (int)Math.Sqrt(length);
+            return true;
         }
 
         private static bool LargerThanMaxColumnDataSize(byte[] data, int width, int height)
