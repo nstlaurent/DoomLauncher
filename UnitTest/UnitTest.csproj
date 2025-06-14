@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="Tests\Helpers\DirectoriesConfiguration.cs" />
     <Compile Include="Tests\TestDoom64GameFileFragment.cs" />
+    <Compile Include="Tests\TestDoom64TitlePicGameFileFragment.cs" />
     <Compile Include="Tests\TestMapStringGameFileFragment.cs" />
     <Compile Include="Tests\TestRecursiveArchiveReader.cs" />
     <Compile Include="Tests\TestGameStoreFiles.cs" />
@@ -159,6 +160,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Directory.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\doom64_without_titlepic.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\doom64_with_titlepic.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\invalid1.wad">
