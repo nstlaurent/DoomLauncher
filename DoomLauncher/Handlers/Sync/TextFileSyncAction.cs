@@ -6,11 +6,11 @@ using System.IO;
 
 namespace DoomLauncher.Handlers.Sync
 {
-    public class TextFileGameFileFragment : IGameFileFragment
+    public class TextFileSyncAction : ISyncAction
     {
         private readonly string[] m_dateParseFormats;
 
-        public TextFileGameFileFragment(string[] dateParseFormats) 
+        public TextFileSyncAction(string[] dateParseFormats) 
         {
             m_dateParseFormats = dateParseFormats;
         }

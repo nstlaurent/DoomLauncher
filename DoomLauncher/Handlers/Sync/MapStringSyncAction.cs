@@ -9,13 +9,13 @@ using System.Web.UI.WebControls;
 
 namespace DoomLauncher.Handlers.Sync
 {
-    public class MapStringGameFileFragment : IGameFileFragment
+    public class MapStringSyncAction : ISyncAction
     {
         private readonly LauncherPath m_tempDirectory;
         private static readonly Regex MapRegex = new Regex(@"\s*map\s+\w+", RegexOptions.IgnoreCase);
         private static readonly Regex IncludeRegex = new Regex(@"\s*include\s+(\S+)", RegexOptions.IgnoreCase);
 
-        public MapStringGameFileFragment(LauncherPath tempDirectory)
+        public MapStringSyncAction(LauncherPath tempDirectory)
         {
             m_tempDirectory = tempDirectory;
         }

@@ -2,13 +2,13 @@
 using System.Text.RegularExpressions;
 
 namespace DoomLauncher.Handlers.Sync {
-    public class Doom64GameFileFragment : IGameFileFragment
+    public class Doom64SyncAction : ISyncAction
     {
         private static readonly Regex ClassTypeRegex = new Regex(@"classtype\s*="); // Only Doom64 files have classtype in the MAPINFO
 
         private readonly IDataSourceAdapter m_database;
 
-        public Doom64GameFileFragment(IDataSourceAdapter database)
+        public Doom64SyncAction(IDataSourceAdapter database)
         {
             m_database = database;
         }

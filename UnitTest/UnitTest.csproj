@@ -90,9 +90,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Tests\Helpers\DirectoriesConfiguration.cs" />
-    <Compile Include="Tests\TestDoom64GameFileFragment.cs" />
-    <Compile Include="Tests\TestDoom64TitlePicGameFileFragment.cs" />
-    <Compile Include="Tests\TestMapStringGameFileFragment.cs" />
+    <Compile Include="Tests\TestDoom64SyncAction.cs" />
+    <Compile Include="Tests\TestDoom64TitlePicSyncAction.cs" />
+    <Compile Include="Tests\TestMapStringSyncAction.cs" />
     <Compile Include="Tests\TestRecursiveArchiveReader.cs" />
     <Compile Include="Tests\TestGameStoreFiles.cs" />
     <Compile Include="TestInit.cs" />

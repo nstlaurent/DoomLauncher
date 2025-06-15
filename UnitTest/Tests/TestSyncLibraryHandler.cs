@@ -411,17 +411,17 @@ namespace UnitTest.Tests
 
             var dateParseFormats = new string[] { "dd/M/yy", "dd/MM/yyyy", "dd MMMM yyyy" };
 
-            var gameFileFragments = new List<IGameFileFragment>()
+            var syncActions = new List<ISyncAction>()
             {
-                new TextFileGameFileFragment(dateParseFormats),
-                new Doom64GameFileFragment(database),
-                new MapStringGameFileFragment(directories.TempDirectory)
+                new TextFileSyncAction(dateParseFormats),
+                new Doom64SyncAction(database),
+                new MapStringSyncAction(directories.TempDirectory)
             };
 
             if (pullTitlepic)
-                gameFileFragments.Add(new TitlePicFileFragment(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette));
+                syncActions.Add(new TitlePicSyncAction(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette));
 
-            return new SyncLibraryHandler(database, CreateDirectoryAdapater(), directories, fileManagement, gameFileFragments);
+            return new SyncLibraryHandler(database, CreateDirectoryAdapater(), directories, fileManagement, syncActions);
         }
 
         private static DirectoryDataSourceAdapter CreateDirectoryAdapater()

@@ -88,17 +88,17 @@ namespace DoomLauncher
 
             try
             {
-                var gameFileFragments = new List<IGameFileFragment>()
+                var syncActions = new List<ISyncAction>()
                 {
-                    new TextFileGameFileFragment(AppConfiguration.DateParseFormats),
-                    new Doom64GameFileFragment(DataSourceAdapter),
-                    new MapStringGameFileFragment(AppConfiguration.TempDirectory),
-                    new TitlePicFileFragment(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
-                    new Doom64TitlePicGameFileFragment()
+                    new TextFileSyncAction(AppConfiguration.DateParseFormats),
+                    new Doom64SyncAction(DataSourceAdapter),
+                    new MapStringSyncAction(AppConfiguration.TempDirectory),
+                    new TitlePicSyncAction(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
+                    new Doom64TitlePicSyncAction()
                 };
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 
-                    fileManagement, gameFileFragments);
+                    fileManagement, syncActions);
 
                 handler.SyncFileChanged += syncHandler_SyncFileChanged;
                 handler.GameFileDataNeeded += syncHandler_GameFileDataNeeded;

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 
 namespace DoomLauncher.Handlers.Sync {
-    public class Doom64TitlePicGameFileFragment : IGameFileFragment
+    public class Doom64TitlePicSyncAction : ISyncAction
     {
         public SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
         {
