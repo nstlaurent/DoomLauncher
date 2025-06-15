@@ -7,7 +7,7 @@ using System.IO;
 
 namespace DoomLauncher.Handlers.Sync
 {
-    public class TitlePicFileFragment : IGameFileFragment
+    public class TitlePicSyncAction : ISyncAction
     {
         private const string DefaultTitlepicName = "TITLEPIC";
         private const string AltTitlepicName = "TITLE";
@@ -15,7 +15,7 @@ namespace DoomLauncher.Handlers.Sync
         private readonly Palette m_palette;
         private readonly Palette m_altPalette;
 
-        public TitlePicFileFragment(Palette doomPalette, Palette hexenPalette)
+        public TitlePicSyncAction(Palette doomPalette, Palette hexenPalette)
         {
             m_palette = doomPalette;
             m_altPalette = hexenPalette;

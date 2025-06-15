@@ -12,7 +12,7 @@ using DoomLauncher.DataSources;
 namespace UnitTest.Tests
 {
     [TestClass]
-    public class TestDoom64GameFileFragment
+    public class TestDoom64SyncAction
     {
         private IDataSourceAdapter database;
 
@@ -25,12 +25,12 @@ namespace UnitTest.Tests
         [TestMethod]
         public void ApplyToGameFile_IdentifiesDoom64FileFromMapInfo()
         {
-            var gameFileFragment = new Doom64GameFileFragment(database);
+            var syncAction = new Doom64SyncAction(database);
             
             GameFile file = new GameFile { GameFileID = 1 };
             var mapInfoData = new string[] { "classtype = something" };
 
-            var result = gameFileFragment.ApplyToGameFile(file, null, mapInfoData);
+            var result = syncAction.ApplyToGameFile(file, null, mapInfoData);
 
             Assert.IsFalse(result.Failed);
             Assert.IsTrue(file.IsDoom64);
@@ -39,12 +39,12 @@ namespace UnitTest.Tests
         [TestMethod]
         public void ApplyToGameFile_IdentifiesNonDoom64FileFromMapInfo()
         {
-            var gameFileFragment = new Doom64GameFileFragment(database);
+            var syncAction = new Doom64SyncAction(database);
 
             GameFile file = new GameFile { GameFileID = 1 };
             var mapInfoData = new string[] { "somethingElse = something" };
 
-            var result = gameFileFragment.ApplyToGameFile(file, null, mapInfoData);
+            var result = syncAction.ApplyToGameFile(file, null, mapInfoData);
 
             Assert.IsFalse(result.Failed);
             Assert.IsFalse(file.IsDoom64);
@@ -53,7 +53,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void ApplyToGameFile_LinksDoom64GameFileWithDoom64IWad()
         {
-            var gameFileFragment = new Doom64GameFileFragment(database);
+            var syncAction = new Doom64SyncAction(database);
             GameFile file = new GameFile { GameFileID = 1 };
             var mapInfoData = new string[] { "classtype = something" };
 
@@ -65,7 +65,7 @@ namespace UnitTest.Tests
             IGameFile newDoom64IWad = new GameFile { GameFileID = 777, FileName = "doom64.zip", IWadID = 666 };
             database.InsertGameFile(newDoom64IWad);
 
-            var result = gameFileFragment.ApplyToGameFile(file, null, mapInfoData);
+            var result = syncAction.ApplyToGameFile(file, null, mapInfoData);
 
             Assert.IsFalse(result.Failed);
             Assert.AreEqual(666, file.IWadID);

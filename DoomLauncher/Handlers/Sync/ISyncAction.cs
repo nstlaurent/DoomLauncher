@@ -2,12 +2,12 @@
 
 namespace DoomLauncher.Handlers.Sync
 {
-    public interface IGameFileFragment
+    public interface ISyncAction
     {
         SyncResult ApplyToGameFile(IGameFile file, IArchiveReader reader, string[] mapInfoData);
     }
 
-    class EmptyGameFileFragment : IGameFileFragment
+    class EmptySyncAction : ISyncAction
     {
         public SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
         {
@@ -15,9 +15,9 @@ namespace DoomLauncher.Handlers.Sync
         }
     }
 
-    public static class GameFileFragmentExtensions
+    public static class SyncActionExtensions
     {
-        public static IGameFileFragment OnlyIf(this IGameFileFragment action, bool condition) =>
-            condition ? action : new EmptyGameFileFragment();
+        public static ISyncAction OnlyIf(this ISyncAction action, bool condition) =>
+            condition ? action : new EmptySyncAction();
     }
 }

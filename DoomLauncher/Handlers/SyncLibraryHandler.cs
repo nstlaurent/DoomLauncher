@@ -20,15 +20,15 @@ namespace DoomLauncher
         private readonly IGameFileDataSourceAdapter m_dbDataSource;
         private readonly IGameFileDataSourceAdapter m_syncDataSource;
         private readonly FileManagement m_fileManagement;
-        private readonly List<IGameFileFragment> m_gameFileFragments;
+        private readonly List<ISyncAction> m_syncActions;
         private readonly IDirectoriesConfiguration m_directories;
 
         public SyncLibraryHandler(IGameFileDataSourceAdapter dbDataSource, IGameFileDataSourceAdapter syncDataSource,
-            IDirectoriesConfiguration directories, FileManagement fileManagement, List<IGameFileFragment> gameFileFragments)
+            IDirectoriesConfiguration directories, FileManagement fileManagement, List<ISyncAction> syncActions)
         {
             m_dbDataSource = dbDataSource;
             m_syncDataSource = syncDataSource;
-            m_gameFileFragments = gameFileFragments;
+            m_syncActions = syncActions;
             m_fileManagement = fileManagement;
             m_directories = directories;
         }
@@ -139,7 +139,7 @@ namespace DoomLauncher
         private SyncResult PopulateGameFileFromArchive(IGameFile gameFile, IArchiveReader reader)
         {
             string[] mapInfoData = MapInfoUtil.GetMapInfoData(reader);
-            var syncResults = m_gameFileFragments.Select(frag => frag.ApplyToGameFile(gameFile, reader, mapInfoData));
+            var syncResults = m_syncActions.Select(frag => frag.ApplyToGameFile(gameFile, reader, mapInfoData));
             return syncResults.Aggregate(SyncResult.EMPTY, (a, b) => a + b);
         }
 

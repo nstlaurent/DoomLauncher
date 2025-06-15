@@ -7,7 +7,7 @@ using System.IO;
 namespace UnitTest.Tests
 {
     [TestClass]
-    public class TestMapStringGameFileFragment
+    public class TestMapStringSyncAction
     {
         [TestMethod]
         public void MapString()
@@ -22,7 +22,7 @@ namespace UnitTest.Tests
                 }
             ";
 
-            var frag = new MapStringGameFileFragment(new LauncherPath(Directory.GetCurrentDirectory()));
+            var frag = new MapStringSyncAction(new LauncherPath(Directory.GetCurrentDirectory()));
             var gameFile = new GameFile();
             frag.ApplyToGameFile(gameFile, null, new string[] { mapInfo });
 

@@ -7,7 +7,7 @@ using System.IO;
 namespace UnitTest.Tests
 {
     [TestClass]
-    public class TestDoom64TitlePicGameFileFragment
+    public class TestDoom64TitlePicSyncAction
     {
         [TestMethod]
         public void ApplyGameFile_FindsDoom64TitlePic()
@@ -17,7 +17,7 @@ namespace UnitTest.Tests
                 GameFileID = 11,
                 FileName = "horizon.zip"
             };
-            var syncAction = new Doom64TitlePicGameFileFragment();
+            var syncAction = new Doom64TitlePicSyncAction();
             var reader = ArchiveReader.Create(Path.Combine("Resources", "doom64_with_titlepic.zip"));
 
             var result = syncAction.ApplyToGameFile(gameFile, reader, new string[0]);
@@ -33,7 +33,7 @@ namespace UnitTest.Tests
                 GameFileID = 44,
                 FileName = "blah.zip"
             };
-            var syncAction = new Doom64TitlePicGameFileFragment();
+            var syncAction = new Doom64TitlePicSyncAction();
             var reader = ArchiveReader.Create(Path.Combine("Resources", "doom64_without_titlepic.zip"));
 
             var result = syncAction.ApplyToGameFile(gameFile, reader, new string[0]);
