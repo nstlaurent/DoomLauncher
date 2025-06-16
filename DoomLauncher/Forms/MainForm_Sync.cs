@@ -94,7 +94,8 @@ namespace DoomLauncher
                     new Doom64SyncAction(DataSourceAdapter),
                     new MapStringSyncAction(AppConfiguration.TempDirectory),
                     new TitlePicSyncAction(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
-                    new Doom64TitlePicSyncAction()
+                    new Doom64TitlePicSyncAction(),
+                    new StartupImageSyncAction()
                 };
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 

@@ -17,7 +17,7 @@ namespace UnitTest.Tests
             TreeReadersCreated++;
         }
 
-        public IEnumerable<IArchiveEntry> Entries => 
+        public IEnumerable<IArchiveEntry> Entries =>
             Tree.Children.Select(tree => new TreeEntry(tree));
 
         public bool EntriesHaveExtensions => false;
