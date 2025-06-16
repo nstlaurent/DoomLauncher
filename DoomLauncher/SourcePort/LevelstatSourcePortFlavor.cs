@@ -19,6 +19,7 @@ namespace DoomLauncher.SourcePort
             || CheckFileNameWithoutExtension("inter-heretic")
             || CheckFileNameContains("boom-plus.exe") // prboom-plus + glboom-plus
             || CheckFileNameWithoutExtension("dsda-doom")
+            || CheckFileNameWithoutExtension("nyan-doom")
             || CheckFileNameWithoutExtension("fdwl")
             || CheckFileNameWithoutExtension("woof")
             || CheckFileNameWithoutExtension("nugget-doom")
