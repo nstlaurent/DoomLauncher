@@ -143,7 +143,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(74, 52);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Crispy Doom, PrBoom+, DSDA-Doom, Helion, Woof!";
+            this.label2.Text = "Crispy Doom, PrBoom+, DSDA-Doom, Nyan Doom, Helion, Woof!";
             // 
             // label1
             // 
