@@ -112,6 +112,7 @@
     <Compile Include="Tests\TestSourcePort.cs" />
     <Compile Include="Tests\TestSpecificFiles.cs" />
     <Compile Include="Tests\TestAutomaticSteamCheck.cs" />
+    <Compile Include="Tests\TestStartupImageSyncAction.cs" />
     <Compile Include="Tests\TestSteamLoader.cs" />
     <Compile Include="Tests\TestUtil.cs" />
     <Compile Include="Tests\TestFile.cs" />
@@ -184,6 +185,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\pathtest.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\planarimage.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\prboomsave1.dsg">
@@ -274,7 +278,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\happy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

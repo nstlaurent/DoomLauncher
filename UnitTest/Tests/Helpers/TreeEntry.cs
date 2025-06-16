@@ -1,5 +1,6 @@
 ﻿using DoomLauncher;
 using System;
+using System.Linq;
 
 namespace UnitTest.Tests
 {
@@ -20,7 +21,7 @@ namespace UnitTest.Tests
                 return null;
         }
 
-        public override long Length => 1;
+        public override long Length => Tree.Content.Length;
 
         public override string Name => Tree.Name;
 
@@ -35,14 +36,11 @@ namespace UnitTest.Tests
             throw new NotImplementedException();
         }
 
-        public override string GetNameWithoutExtension()
-        {
-            throw new NotImplementedException();
-        }
+        public override string GetNameWithoutExtension() => Name;
 
         public override void Read(byte[] buffer, int offset, int length)
         {
-            throw new NotImplementedException();
+            Tree.Content.Take(buffer.Length).ToArray().CopyTo(buffer, offset);
         }
     }
 }

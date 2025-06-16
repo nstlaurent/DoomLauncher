@@ -278,6 +278,7 @@
     <Compile Include="Handlers\Sync\ISyncAction.cs" />
     <Compile Include="Handlers\Sync\MapInfoUtil.cs" />
     <Compile Include="Handlers\Sync\MapStringSyncAction.cs" />
+    <Compile Include="Handlers\Sync\StartupImageSyncAction.cs" />
     <Compile Include="Handlers\Sync\SyncResult.cs" />
     <Compile Include="Handlers\Sync\Doom64SyncAction.cs" />
     <Compile Include="Handlers\Sync\TextFileSyncAction.cs" />
