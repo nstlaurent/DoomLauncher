@@ -510,6 +510,9 @@ namespace DoomLauncher
             return (attr & FileAttributes.Directory) == FileAttributes.Directory;
         }
 
+        public static string ReadString(this IArchiveEntry entry, Encoding encoding) =>
+            encoding.GetString(ReadEntry(entry));
+
         public static byte[] ReadEntry(this IArchiveEntry entry)
         {
             byte[] data = new byte[entry.Length];
