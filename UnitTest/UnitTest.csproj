@@ -93,6 +93,7 @@
     <Compile Include="Tests\TestDoom64SyncAction.cs" />
     <Compile Include="Tests\TestDoom64TitlePicSyncAction.cs" />
     <Compile Include="Tests\TestGameInfoSyncAction.cs" />
+    <Compile Include="Tests\TestIWadTitlesSyncAction.cs" />
     <Compile Include="Tests\TestMapStringSyncAction.cs" />
     <Compile Include="Tests\TestRecursiveArchiveReader.cs" />
     <Compile Include="Tests\TestGameStoreFiles.cs" />

@@ -277,6 +277,7 @@
     <Compile Include="Handlers\Sync\Doom64TitlePicSyncAction.cs" />
     <Compile Include="Handlers\Sync\GameInfoSyncAction.cs" />
     <Compile Include="Handlers\Sync\ISyncAction.cs" />
+    <Compile Include="Handlers\Sync\IWadTitlesSyncAction.cs" />
     <Compile Include="Handlers\Sync\MapInfoUtil.cs" />
     <Compile Include="Handlers\Sync\MapStringSyncAction.cs" />
     <Compile Include="Handlers\Sync\StartupImageSyncAction.cs" />
