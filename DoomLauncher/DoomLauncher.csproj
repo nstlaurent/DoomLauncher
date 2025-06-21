@@ -275,6 +275,7 @@
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
     <Compile Include="Handlers\Sync\Doom64TitlePicSyncAction.cs" />
+    <Compile Include="Handlers\Sync\GameConfSyncAction.cs" />
     <Compile Include="Handlers\Sync\GameInfoSyncAction.cs" />
     <Compile Include="Handlers\Sync\ISyncAction.cs" />
     <Compile Include="Handlers\Sync\IWadTitlesSyncAction.cs" />
