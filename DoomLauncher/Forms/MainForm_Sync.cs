@@ -95,11 +95,11 @@ namespace DoomLauncher
                     new Doom64SyncAction(DataSourceAdapter),
                     new MapStringSyncAction(AppConfiguration.TempDirectory),
                     new GameInfoSyncAction(),
+                    new StartupImageSyncAction(),
                     new TitlePicSyncAction(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
                     new Doom64TitlePicSyncAction(),
-                    new StartupImageSyncAction(),
                     new IWadTitlesSyncAction(),
-                    new GameConfSyncAction(DataSourceAdapter),
+                    new GameConfSyncAction(DataSourceAdapter)
                 };
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 
