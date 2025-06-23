@@ -90,14 +90,16 @@ namespace DoomLauncher
             {
                 var syncActions = new List<ISyncAction>()
                 {
+                    // Lower on the list is higher priority
                     new TextFileSyncAction(AppConfiguration.DateParseFormats),
                     new Doom64SyncAction(DataSourceAdapter),
                     new MapStringSyncAction(AppConfiguration.TempDirectory),
                     new GameInfoSyncAction(),
+                    new StartupImageSyncAction(),
                     new TitlePicSyncAction(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
                     new Doom64TitlePicSyncAction(),
-                    new StartupImageSyncAction(),
-                    new IWadTitlesSyncAction()
+                    new IWadTitlesSyncAction(),
+                    new GameConfSyncAction(DataSourceAdapter)
                 };
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 

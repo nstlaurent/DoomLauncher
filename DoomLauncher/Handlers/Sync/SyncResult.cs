@@ -42,7 +42,7 @@ namespace DoomLauncher.Handlers.Sync
                 addedGameFiles: CombineLists(AddedGameFiles, other.AddedGameFiles),
                 updatedGameFiles: CombineLists(UpdatedGameFiles, other.UpdatedGameFiles),
                 invalidFiles: CombineLists(InvalidFiles, other.InvalidFiles),
-                titlePics: CombineDictionariesKeepFirst(TitlePics, other.TitlePics),
+                titlePics: CombineDictionariesKeepLatest(TitlePics, other.TitlePics),
                 failedTitlePicFiles: CombineLists(FailedTitlePicFiles, other.FailedTitlePicFiles));
         }
 
@@ -109,13 +109,13 @@ namespace DoomLauncher.Handlers.Sync
         }
 
         // Keep the existing key/values
-        private static Dictionary<K, V> CombineDictionariesKeepFirst<K, V>(Dictionary<K, V> ourDict, Dictionary<K, V> otherDict)
+        private static Dictionary<K, V> CombineDictionariesKeepLatest<K, V>(Dictionary<K, V> ourDict, Dictionary<K, V> otherDict)
         {
-            var combinedDictionary = new Dictionary<K, V>(ourDict);
-            foreach (var key in otherDict.Keys)
+            var combinedDictionary = new Dictionary<K, V>(otherDict);
+            foreach (var key in ourDict.Keys)
             {
                 if (!combinedDictionary.ContainsKey(key))
-                    combinedDictionary[key] = otherDict[key];
+                    combinedDictionary[key] = ourDict[key];
             }
             return combinedDictionary;
         }
