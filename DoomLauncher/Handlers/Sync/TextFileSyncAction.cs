@@ -8,36 +8,47 @@ namespace DoomLauncher.Handlers.Sync
 {
     public class TextFileSyncAction : ISyncAction
     {
-        private readonly string[] m_dateParseFormats;
+        private readonly Func<string, IdGamesTextInfo> m_parseTextFile;
 
-        public TextFileSyncAction(string[] dateParseFormats) 
+        public TextFileSyncAction(Func<string, IdGamesTextInfo> parseTextFile)
         {
-            m_dateParseFormats = dateParseFormats;
+            m_parseTextFile = parseTextFile;
         }
 
-        public SyncResult ApplyToGameFile(IGameFile file, IArchiveReader reader, string[] mapInfoData)
-        {
-            FillTextFileInfo(file, reader);
-            return SyncResult.EMPTY;
-        }
-
-        private void FillTextFileInfo(IGameFile gameFile, IArchiveReader reader)
+        public SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
         {
             var textInfos = from entry in reader.Entries
-                            where isTxtFile(entry.FullName)
-                            let info = ParseIdGamesTextInfo(entry)
+                            where isTxtFile(entry.FullName) || entry.FullName.ToLower().Equals("wadinfo")
+                            let info = m_parseTextFile(entry.ReadString(Encoding.UTF7))
                             orderby info.QualityScore descending
                             select info;
 
+
             var bestInfo = textInfos.Aggregate(IdGamesTextInfo.EMPTY, (a, b) => a.Combine(b));
 
-            gameFile.Title = bestInfo.Title;
-            gameFile.Author = bestInfo.Author;
-            gameFile.ReleaseDate = bestInfo.ReleaseDate;
-            gameFile.Description = bestInfo.Description;
+            if (!string.IsNullOrEmpty(bestInfo.Title))
+                gameFile.Title = bestInfo.Title;
+
+            if (!string.IsNullOrEmpty(bestInfo.Author))
+                gameFile.Author = bestInfo.Author;
+
+            if (bestInfo.ReleaseDate != null)
+                gameFile.ReleaseDate = bestInfo.ReleaseDate;
+
+            if (!string.IsNullOrEmpty(bestInfo.Description))
+                gameFile.Description = bestInfo.Description;
 
             if (string.IsNullOrWhiteSpace(gameFile.Title))
                 gameFile.Title = GetUserFriendlyFilename(gameFile.FileNameNoPath);
+
+            return SyncResult.EMPTY;
+        }
+
+        private string GetUserFriendlyFilename(string filename)
+        {
+            var words = Path.GetFileNameWithoutExtension(filename).Replace("_", " ").Replace("-", " ").Split();
+            var capitalisedWords = words.Select(word => string.Concat(word[0].ToString().ToUpper(), word.Substring(1)));
+            return string.Join(" ", capitalisedWords.ToArray());
         }
 
         private bool isTxtFile(string filename)
@@ -51,33 +62,5 @@ namespace DoomLauncher.Handlers.Sync
                 return false; // Path.GetExtension is a bit of a stickler, but we just need yes or no.
             }
         }
-
-        private IdGamesTextInfo ParseIdGamesTextInfo(IArchiveEntry entry)
-        {
-            string buffer = Encoding.UTF7.GetString(ReadBuffer(entry));
-            return new IdGamesTextFileParser(m_dateParseFormats).Parse(buffer);
-        }
-
-        private string GetUserFriendlyFilename(string filename)
-        {
-            var words = Path.GetFileNameWithoutExtension(filename).Replace("_", " ").Replace("-", " ").Split();
-            var capitalisedWords = words.Select(word => string.Concat(word[0].ToString().ToUpper(), word.Substring(1)));
-            return string.Join(" ", capitalisedWords.ToArray());
-        }
-
-        private byte[] ReadBuffer(IArchiveEntry entry)
-        {
-            byte[] buffer = new byte[entry.Length];
-            try
-            {
-                entry.Read(buffer, 0, Convert.ToInt32(entry.Length));
-            }
-            catch (Exception)
-            {
-                // Do not fail because we couldn't read a text file
-            }
-            return buffer;
-        }
-
     }
 }
