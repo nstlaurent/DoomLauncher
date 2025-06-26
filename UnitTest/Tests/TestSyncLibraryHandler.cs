@@ -413,7 +413,7 @@ namespace UnitTest.Tests
 
             var syncActions = new List<ISyncAction>()
             {
-                new TextFileSyncAction(dateParseFormats),
+                new TextFileSyncAction(new IdGamesTextFileParser(dateParseFormats).Parse),
                 new Doom64SyncAction(database),
                 new MapStringSyncAction(directories.TempDirectory)
             };

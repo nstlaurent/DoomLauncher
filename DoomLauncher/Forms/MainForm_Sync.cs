@@ -91,7 +91,7 @@ namespace DoomLauncher
                 var syncActions = new List<ISyncAction>()
                 {
                     // Lower on the list is higher priority
-                    new TextFileSyncAction(AppConfiguration.DateParseFormats),
+                    new TextFileSyncAction(new IdGamesTextFileParser(AppConfiguration.DateParseFormats).Parse),
                     new Doom64SyncAction(DataSourceAdapter),
                     new MapStringSyncAction(AppConfiguration.TempDirectory),
                     new GameInfoSyncAction(),
