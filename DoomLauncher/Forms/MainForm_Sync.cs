@@ -169,7 +169,7 @@ namespace DoomLauncher
                     continue;
 
                 // Insert the titlepic as a screenshot
-                ScreenshotHandler.InsertScreenshot(gameFile, imageStream, screenshots, out _);
+                new ScreenshotHandler(DataSourceAdapter, AppConfiguration).InsertScreenshot(gameFile, imageStream, screenshots, out _);
                 imageStream?.Dispose();
             }
         }

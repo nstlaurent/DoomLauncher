@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Config;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,21 +9,37 @@ using System.Linq;
 
 namespace DoomLauncher
 {
-    public static class ScreenshotHandler
+    public class ScreenshotHandler
     {
-        public static bool InsertScreenshot(IGameFile gameFile, MemoryStream imageStream, IEnumerable<IFileData> existingScreenshots, out IFileData fileData)
+        private readonly IDataSourceAdapter m_database;
+        private readonly IDirectoriesConfiguration m_config;
+
+        public ScreenshotHandler(IDataSourceAdapter database, IDirectoriesConfiguration config)
+        {
+            m_database = database;
+            m_config = config;
+        }
+
+        // Insert in-memory file into the right place in the file system, and into the database
+        // Only used for titlepic. This should become a TitlePic thing instead of screenshot
+        public bool InsertScreenshot(
+            IGameFile gameFile, 
+            MemoryStream imageStream, 
+            IEnumerable<IFileData> existingScreenshots, // Cached to avoid getting from database. Used to update everyone's order.
+            out IFileData fileData)
         {
             fileData = null;
             if (gameFile == null || !gameFile.GameFileID.HasValue)
                 return false;
 
+            // Not required
             if (existingScreenshots == null)
-                existingScreenshots = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
+                existingScreenshots = m_database.GetFiles(gameFile, FileType.Screenshot);
 
             try
             {
                 string fileName = Guid.NewGuid().ToString() + ".png";
-                string path = Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), fileName);
+                string path = m_config.ScreenshotDirectory.GetFullPath(fileName);
 
                 using (FileStream fs = new FileStream(path, FileMode.Create))
                     imageStream.WriteTo(fs);
@@ -36,15 +53,17 @@ namespace DoomLauncher
                     FileOrder = 0
                 };
 
-                DataCache.Instance.DataSourceAdapter.InsertFile(fileData);
+                m_database.InsertFile(fileData);
 
+                // Better as an SQL thing tbh
                 int order = 1;
                 foreach (IFileData file in existingScreenshots)
                 {
                     file.FileOrder = order++;
-                    DataCache.Instance.DataSourceAdapter.UpdateFile(file);
+                    m_database.UpdateFile(file);
                 }
 
+                // Doesn't belong here, this is someone else's problem
                 ThumbnailManager.UpdateThumbnail(gameFile);
             }
             catch
@@ -55,6 +74,7 @@ namespace DoomLauncher
             return true;
         }
         
+        // Invoked when screenshots taken in-game are found in the source port
         public static IEnumerable<IFileData> HandleNewScreenshots(ISourcePortData sourcePort, IGameFile gameFile, string[] files)
         {
             List<IFileData> ret = new List<IFileData>();
