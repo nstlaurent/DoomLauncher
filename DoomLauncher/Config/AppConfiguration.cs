@@ -78,6 +78,8 @@ namespace DoomLauncher
                     return ScreenshotDirectory;
                 case FileType.Thumbnail:
                     return ThumbnailDirectory;
+                case FileType.TitlePic:
+                    return TitlePicDirectory;
                 default:
                     throw new ArgumentException($"Invalid FileType {type}");
             }
@@ -290,6 +292,7 @@ namespace DoomLauncher
         public LauncherPath TempDirectory { get; private set; }
         public LauncherPath DemoDirectory { get; private set; }
         public LauncherPath ThumbnailDirectory { get; private set; }
+        public LauncherPath TitlePicDirectory { get; private set; }
         public string IdGamesUrl { get; private set; }
         public string ApiPage { get; private set; }
         public string MirrorUrl { get; private set; }
