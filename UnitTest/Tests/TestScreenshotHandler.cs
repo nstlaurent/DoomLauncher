@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 
 
 namespace UnitTest.Tests
@@ -26,9 +27,6 @@ namespace UnitTest.Tests
         {
             database = TestUtil.CreateAdapter();
             Directory.CreateDirectory("Screenshots");
-            File.Copy(@"Resources/happy.png", @"Screenshots/happy.png");
-
-            Assert.IsTrue(File.Exists(@"Screenshots/happy.png"));
         }
 
         [TestCleanup]
@@ -76,6 +74,29 @@ namespace UnitTest.Tests
             Assert.IsFalse(succeeded);
             Assert.IsNull(fileData);
         }
+
+        [TestMethod]
+        public void InsertScreenshot_CreatesFileAndDatabaseEntry()
+        {
+            var screenshotHandler = new ScreenshotHandler(database, config);
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "Boo.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("Boo.zip");
+
+            var imageStream = GetImageStream(@"Resources\happy.png");
+
+            var succeeded = screenshotHandler.InsertScreenshot(gameFile, imageStream, null, out var fileData);
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
+
+            Assert.IsTrue(succeeded);
+            Assert.IsNotNull(fileData);
+            Assert.IsNotNull(fileDataFromDB);
+            Assert.AreEqual(fileData.FileName, fileDataFromDB.FileName);
+            Assert.IsTrue(File.Exists(config.ScreenshotDirectory.GetFullPath(fileData.FileName)));
+        }
+
 
         private static MemoryStream GetImageStream(string fileName)
         {
