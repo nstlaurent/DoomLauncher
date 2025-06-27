@@ -476,6 +476,16 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
         }
 
+        public void IncrementFileOrder(IGameFile gameFile, FileType fileType)
+        {
+            DataAccess.ExecuteNonQuery("update Files set FileOrder = FileOrder + 1 where GameFileID = @gameFileID and FileTypeID = @fileTypeID", 
+                new DbParameter[] 
+                { 
+                    DataAccess.DbAdapter.CreateParameter("gameFileID", gameFile.GameFileID.Value),
+                    DataAccess.DbAdapter.CreateParameter("fileTypeID", (int)fileType) 
+                });
+        }
+
         public void UpdateFile(IFileData file)
         {
             string query = @"update Files set 

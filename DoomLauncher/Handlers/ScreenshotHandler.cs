@@ -25,16 +25,11 @@ namespace DoomLauncher
         public bool InsertScreenshot(
             IGameFile gameFile, 
             MemoryStream imageStream, 
-            IEnumerable<IFileData> existingScreenshots, // Cached to avoid getting from database. Used to update everyone's order.
             out IFileData fileData)
         {
             fileData = null;
             if (gameFile == null || !gameFile.GameFileID.HasValue)
                 return false;
-
-            // Not required
-            if (existingScreenshots == null)
-                existingScreenshots = m_database.GetFiles(gameFile, FileType.Screenshot);
 
             try
             {
@@ -54,14 +49,7 @@ namespace DoomLauncher
                 };
 
                 m_database.InsertFile(fileData);
-
-                // Better as an SQL thing tbh
-                int order = 1;
-                foreach (IFileData file in existingScreenshots)
-                {
-                    file.FileOrder = order++;
-                    m_database.UpdateFile(file);
-                }
+                m_database.IncrementFileOrder(gameFile, FileType.Screenshot);
 
                 // Doesn't belong here, this is someone else's problem
                 ThumbnailManager.UpdateThumbnail(gameFile);
