@@ -2012,11 +2012,6 @@ namespace DoomLauncher
             HandleManageTags();
         }
 
-        private void manageTagsToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            HandleManageTags();
-        }
-
         private void manageTagsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HandleManageTags();
@@ -2286,89 +2281,28 @@ namespace DoomLauncher
                 MessageBox.Show(this, "The utility was an invalid application or not found.", "Invalid Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void selectTagsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            IGameFile[] gameFiles = SelectedItems(GetCurrentViewControl());
-            if (gameFiles.Length == 0)
-                return;
-
-            TagSelectForm form = new TagSelectForm();
-            form.StartPosition = FormStartPosition.CenterParent;
-            form.TagSelectControl.Init(new TagSelectOptions() { ShowCheckBoxes = true });
-
-            if (gameFiles.Length == 1)
-            {
-                IGameFile gameFile = gameFiles[0];
-                ITagData[] existingTags = DataCache.Instance.TagMapLookup.GetTags(gameFile);
-
-                form.TagSelectControl.SetCheckedTags(existingTags);
-                if (form.ShowDialog(this) == DialogResult.OK)
-                {
-                    IGameFile[] updateGameFiles = new IGameFile[] { gameFile };
-                    DataCache.Instance.UpdateGameFileTags(updateGameFiles, form.TagSelectControl.GetCheckedTags());
-
-                    GetCurrentViewControl().UpdateGameFile(gameFile);
-                    HandleSelectionChange(GetCurrentViewControl(), true);
-                }
-
-                return;
-            }
-
-            if (form.ShowDialog(this) == DialogResult.OK)
-            {
-                DataCache.Instance.UpdateGameFileTags(gameFiles, form.TagSelectControl.GetCheckedTags());
-
-                foreach (var gameFile in gameFiles)
-                    GetCurrentViewControl().UpdateGameFile(gameFile);
-                HandleSelectionChange(GetCurrentViewControl(), true);
-            }
-        }
-
         private void tagToolStripItem_Click(object sender, EventArgs e)
         {
-            if (!(sender is ToolStripItem strip))
+            if (!(sender is ToolStripMenuItem strip))
                 return;
 
+            // This is the tag that was clicked
             ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.TagID.Equals(strip.Tag));
             if (tag == null)
                 return;
 
             IGameFile[] gameFiles = SelectedItems(GetCurrentViewControl());
-            DataCache.Instance.AddGameFileTag(gameFiles, tag, out List<IGameFile> alreadyTagged);
 
+            if (strip.Checked)
+                DataCache.Instance.AddGameFileTag(gameFiles, tag, out List<IGameFile> alreadyTagged);
+            else 
+                DataCache.Instance.RemoveGameFileTag(gameFiles, tag);
+
+            // Update mutable cache of tag mappings & publish an event
             DataCache.Instance.TagMapLookup.Refresh(new ITagData[] { tag });
             UpdateTagTabData(tag.TagID);
 
-            foreach (IGameFile gameFile in gameFiles)
-                GetCurrentViewControl().UpdateGameFile(gameFile);
-
-            if (alreadyTagged.Count > 0)
-            {
-                StringBuilder sbError = new StringBuilder(string.Join(", ", alreadyTagged.Select(x => x.FileNameNoPath).ToArray()));
-                sbError.Insert(0, "The file(s) ");
-                sbError.Append(" already have the tag ");
-                sbError.Append(tag.Name);
-                MessageBox.Show(this, sbError.ToString(), "Already Tagged", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-
-            HandleSelectionChange(GetCurrentViewControl(), true);
-        }
-
-        private void removeTagToolStripItem_Click(object sender, EventArgs e)
-        {
-            if (!(sender is ToolStripItem strip))
-                return;
-
-            ITagData tag = DataCache.Instance.Tags.FirstOrDefault(x => x.TagID.Equals(strip.Tag));
-            if (tag == null)
-                return;
-
-            IGameFile[] gameFiles = SelectedItems(GetCurrentViewControl());
-            DataCache.Instance.RemoveGameFileTag(gameFiles, tag);
-
-            DataCache.Instance.TagMapLookup.Refresh(new ITagData[] { tag });
-            UpdateTagTabData(tag.TagID);
-
+            // Update the current view 
             foreach (IGameFile gameFile in gameFiles)
                 GetCurrentViewControl().UpdateGameFile(gameFile);
 

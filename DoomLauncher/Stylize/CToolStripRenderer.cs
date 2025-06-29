@@ -16,7 +16,7 @@ namespace DoomLauncher
         protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
         {
             Color color = e.Item.Selected ? ColorTheme.Current.HighlightText : ColorTheme.Current.Text;
-            e.Graphics.DrawString(e.Item.Text, e.Item.Font, new SolidBrush(color), new PointF(24, 2));
+            e.Graphics.DrawString(e.Item.Text, e.Item.Font, new SolidBrush(color), new PointF(34, 2));
         }
 
         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
