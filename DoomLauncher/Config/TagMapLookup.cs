@@ -11,8 +11,8 @@ namespace DoomLauncher
 
         private readonly IDataSourceAdapter m_adapter;
 
-        private Dictionary<int, ITagMapping[]> m_fileTagMapping;
-        private Dictionary<int, ITagData> m_tags;
+        private Dictionary<int, ITagMapping[]> m_fileTagMapping; // GameFileID -> ITagMapping
+        private Dictionary<int, ITagData> m_tags; // TagID -> ITagData
 
         public TagMapLookup(IDataSourceAdapter adapter)
         {

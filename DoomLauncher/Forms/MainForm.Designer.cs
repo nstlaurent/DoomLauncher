@@ -42,13 +42,9 @@
             this.updateMetadataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.sortByToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectTagsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.removeTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.manageTagsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.utilityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageUtilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
@@ -149,9 +145,7 @@
             this.updateMetadataToolStripMenuItem,
             this.toolStripSeparator8,
             this.sortByToolStripMenuItem,
-            this.selectTagsToolStripMenuItem,
             this.tagToolStripMenuItem,
-            this.removeTagToolStripMenuItem,
             this.utilityToolStripMenuItem,
             this.toolStripSeparator5,
             this.deleteToolStripMenuItem,
@@ -232,13 +226,6 @@
             this.sortByToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.sortByToolStripMenuItem.Text = "Sort By";
             // 
-            // selectTagsToolStripMenuItem
-            // 
-            this.selectTagsToolStripMenuItem.Name = "selectTagsToolStripMenuItem";
-            this.selectTagsToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.selectTagsToolStripMenuItem.Text = "Select Tags...";
-            this.selectTagsToolStripMenuItem.Click += new System.EventHandler(this.selectTagsToolStripMenuItem_Click);
-            // 
             // tagToolStripMenuItem
             // 
             this.tagToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -259,27 +246,6 @@
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
-            // 
-            // removeTagToolStripMenuItem
-            // 
-            this.removeTagToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.manageTagsToolStripMenuItem1,
-            this.toolStripSeparator7});
-            this.removeTagToolStripMenuItem.Name = "removeTagToolStripMenuItem";
-            this.removeTagToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.removeTagToolStripMenuItem.Text = "Remove Tag";
-            // 
-            // manageTagsToolStripMenuItem1
-            // 
-            this.manageTagsToolStripMenuItem1.Name = "manageTagsToolStripMenuItem1";
-            this.manageTagsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.manageTagsToolStripMenuItem1.Text = "Manage Tags...";
-            this.manageTagsToolStripMenuItem1.Click += new System.EventHandler(this.manageTagsToolStripMenuItem1_Click);
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
             // 
             // utilityToolStripMenuItem
             // 
@@ -989,9 +955,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem manageTagsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeTagToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem manageTagsToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem updateMetadataToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
@@ -1021,7 +984,6 @@
         private System.Windows.Forms.FlowLayoutPanel flpTags;
         private DoomLauncher.FormButton btnTags;
         private System.Windows.Forms.Label lblSelectedTag;
-        private System.Windows.Forms.ToolStripMenuItem selectTagsToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitTagSelect;
         private System.Windows.Forms.ToolStripMenuItem addDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;

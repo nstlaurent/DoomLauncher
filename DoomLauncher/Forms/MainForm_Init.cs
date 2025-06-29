@@ -170,44 +170,37 @@ namespace DoomLauncher
             IGameFileView currentControl = GetCurrentViewControl();
             if (currentControl != null)
             {
-                List<ITagData> addTags = new List<ITagData>();
-                List<ITagData> removeTags = new List<ITagData>();
-
                 DataCache.Instance.UpdateTags();
 
-                foreach (var gameFile in SelectedItems(currentControl))
-                {
-                    if (gameFile.GameFileID.HasValue)
-                    {
-                        var gameFileTags = DataCache.Instance.TagMapLookup.GetTags(gameFile);
-                        var currentRemoveTags = DataCache.Instance.Tags.Where(x => gameFileTags.Any(y => y.TagID == x.TagID));
-                        var currentAddTags = DataCache.Instance.Tags.Except(currentRemoveTags);
-
-                        addTags = addTags.Union(currentAddTags).ToList();
-                        removeTags = removeTags.Union(currentRemoveTags).ToList();
-                    }
-                }
+                var selectedGameFiles = SelectedItems(currentControl);
+                var selectedGameFileTags = selectedGameFiles.SelectMany(DataCache.Instance.TagMapLookup.GetTags);
 
                 ToolStripMenuItem tagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Tag") as ToolStripMenuItem;
-                ToolStripMenuItem removeTagToolStrip = mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Remove Tag") as ToolStripMenuItem;
 
                 if (tagToolStrip != null)
                 {
-                    BuildTagToolStrip(tagToolStrip, addTags, tagToolStripItem_Click);
-                    BuildTagToolStrip(removeTagToolStrip, removeTags, removeTagToolStripItem_Click);
+                    BuildTagToolStrip(tagToolStrip, selectedGameFileTags, tagToolStripItem_Click);
                 }
             }
         }
 
-        private void BuildTagToolStrip(ToolStripMenuItem tagToolStrip, IEnumerable<ITagData> tags, EventHandler handler)
+        private void BuildTagToolStrip(ToolStripMenuItem tagToolStrip, IEnumerable<ITagData> myTags, EventHandler handler)
         {
             while (tagToolStrip.DropDownItems.Count > 2)
                 tagToolStrip.DropDownItems.RemoveAt(tagToolStrip.DropDownItems.Count - 1);
 
-            foreach (ITagData tag in tags)
+            var allTags = DataCache.Instance.Tags;
+
+            foreach (ITagData tag in allTags)
             {
-                var item = tagToolStrip.DropDownItems.Add(tag.FavoriteName, null, handler);
-                item.Tag = tag.TagID;
+                var tagItem = new ToolStripMenuItem();
+                tagItem.Text = tag.FavoriteName;
+                tagItem.CheckOnClick = true;
+                tagItem.Checked = myTags.Any(t => t.TagID == tag.TagID);
+                tagItem.Click += handler;
+                tagItem.Tag = tag.TagID;
+
+                tagToolStrip.DropDownItems.Add(tagItem);
             }
         }
 
