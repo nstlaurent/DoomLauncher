@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Config;
+using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,52 +12,31 @@ namespace DoomLauncher
 {
     public class ScreenshotHandler
     {
-        private readonly IDataSourceAdapter m_database;
-        private readonly IDirectoriesConfiguration m_config;
+        private readonly IFileHandler m_fileHandler;
 
-        public ScreenshotHandler(IDataSourceAdapter database, IDirectoriesConfiguration config)
+        public ScreenshotHandler(IFileHandler fileHandler)
         {
-            m_database = database;
-            m_config = config;
+            m_fileHandler = fileHandler;
         }
 
         // Insert in-memory file into the right place in the file system, and into the database
         // Only used for titlepic. This should become a TitlePic thing instead of screenshot
-        public bool InsertScreenshot(
-            IGameFile gameFile, 
-            MemoryStream imageStream, 
-            out IFileData fileData)
+        public bool InsertScreenshot(IGameFile gameFile, MemoryStream imageStream, out IFileData fileData)
         {
-            fileData = null;
-            if (gameFile == null || !gameFile.GameFileID.HasValue)
-                return false;
-
             try
             {
-                string fileName = Guid.NewGuid().ToString() + ".png";
-                string path = m_config.ScreenshotDirectory.GetFullPath(fileName);
+                fileData = m_fileHandler.InsertFileFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
 
-                using (FileStream fs = new FileStream(path, FileMode.Create))
-                    imageStream.WriteTo(fs);
-
-                fileData = new FileData
+                if (fileData != null)
                 {
-                    FileName = fileName,
-                    GameFileID = gameFile.GameFileID.Value,
-                    SourcePortID = -1,
-                    FileTypeID = FileType.Screenshot,
-                    FileOrder = 0
-                };
-
-                m_database.InsertFile(fileData);
-                m_database.IncrementFileOrder(gameFile, FileType.Screenshot);
-
-                // Doesn't belong here, this is someone else's problem
-                ThumbnailManager.UpdateThumbnail(gameFile);
+                    // Doesn't belong here, this is someone else's problem
+                    ThumbnailManager.UpdateThumbnail(gameFile);
+                }
             }
             catch
             {
-                //failed, nothing to do
+                fileData = null;
+                return false;
             }
 
             return true;

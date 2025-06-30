@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Handlers.Sync;
+﻿using DoomLauncher.Handlers;
+using DoomLauncher.Handlers.Sync;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -169,7 +170,7 @@ namespace DoomLauncher
                     continue;
 
                 // Insert the titlepic as a screenshot
-                new ScreenshotHandler(DataSourceAdapter, AppConfiguration).InsertScreenshot(gameFile, imageStream, out _);
+                new ScreenshotHandler(new FileHandler(DataSourceAdapter, AppConfiguration)).InsertScreenshot(gameFile, imageStream, out _);
                 imageStream?.Dispose();
             }
         }

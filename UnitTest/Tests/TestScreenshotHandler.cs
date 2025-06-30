@@ -1,9 +1,9 @@
 ﻿using DoomLauncher;
 using DoomLauncher.Config;
 using DoomLauncher.DataSources;
+using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -42,7 +42,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertScreenshot_NullGameFileFails()
         {
-            var screenshotHandler = new ScreenshotHandler(database, config);
+            var screenshotHandler = new ScreenshotHandler(new FileHandler(database, config));
             var imageStream = GetImageStream(@"Resources\happy.png");
 
             var succeeded = screenshotHandler.InsertScreenshot(null, imageStream, out var fileData);
@@ -54,7 +54,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertScreenshot_NullGameFileIdFails()
         {
-            var screenshotHandler = new ScreenshotHandler(database, config);
+            var screenshotHandler = new ScreenshotHandler(new FileHandler(database, config));
 
             var gameFile = new GameFile()
             {
@@ -72,7 +72,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertScreenshot_CreatesFileAndDatabaseEntry()
         {
-            var screenshotHandler = new ScreenshotHandler(database, config);
+            var screenshotHandler = new ScreenshotHandler(new FileHandler(database, config));
 
             // Save a game file
             IGameFile gameFile = new GameFile() { FileName = "Boo.zip" };
@@ -94,7 +94,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertScreenshot_BumpsUpTheOrderOfTheOtherFiles()
         {
-            var screenshotHandler = new ScreenshotHandler(database, config);
+            var screenshotHandler = new ScreenshotHandler(new FileHandler(database, config));
 
             // Save a game file
             IGameFile gameFile = new GameFile() { FileName = "Boo.zip" };
