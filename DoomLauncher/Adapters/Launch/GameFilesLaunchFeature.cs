@@ -91,7 +91,7 @@ namespace DoomLauncher.Adapters.Launch
             {
                 using (IArchiveReader reader = gameFile.OpenGameFile(directories.GameFileDirectory))
                 {
-                    IEnumerable<IArchiveEntry> relevantEntries = GetRelevantEntries(reader, sourcePortData);
+                    IEnumerable<IArchiveEntry> relevantEntries = GetRelevantEntries(reader, sourcePortData, _specificFiles);
 
                     foreach (IArchiveEntry entry in relevantEntries)
                     {
@@ -122,12 +122,19 @@ namespace DoomLauncher.Adapters.Launch
         }
 
 
-        private IEnumerable<IArchiveEntry> GetRelevantEntries(IArchiveReader reader, ISourcePortData sourcePortData)
+        public static IEnumerable<IArchiveEntry> GetRelevantEntries(IArchiveReader reader, ISourcePortData sourcePortData, IList<string> specificFiles)
         {
             // Go with the specific files if available, otherwise pick out the SourcePort's allowed extensions
-            if (_specificFiles != null && _specificFiles.Count > 0)
+            if (specificFiles != null && specificFiles.Count > 0)
             {
-                return reader.Entries.Where(entry => _specificFiles.Contains(entry.FullName));
+                // This could be a relative unmanaged file which means the partial path must convert to a full path for comparison
+                if (reader is FileArchiveReader && reader.Entries.Any())
+                {
+                    var filePaths = specificFiles.Select(x => new LauncherPath(x)).ToArray();
+                    return reader.Entries.Where(entry => filePaths.Any(filePath => entry.FullName == filePath.GetFullPath()));
+                }
+
+                return reader.Entries.Where(entry => specificFiles.Contains(entry.FullName));
             }
             else
             {
@@ -135,7 +142,7 @@ namespace DoomLauncher.Adapters.Launch
             }
         }
 
-        private bool EntryMatchesSourcePortExtensions(IArchiveEntry entry, ISourcePortData sourcePortData)
+        private static bool EntryMatchesSourcePortExtensions(IArchiveEntry entry, ISourcePortData sourcePortData)
         {
             string[] extensions = sourcePortData.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             return !string.IsNullOrEmpty(entry.Name) && entry.Name.Contains('.')

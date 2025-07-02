@@ -82,23 +82,7 @@ namespace DoomLauncher.Adapters.Launch
         private IArchiveEntry GetFirstIWadEntry(IArchiveReader reader, ISourcePortData sourcePortData)
         {
             var specificFiles = _iwad.SettingsSpecificFiles;
-
-            // Go with the IWAD's specific files if available, otherwise pick out the SourcePort's allowed extensions
-            if (!string.IsNullOrEmpty(specificFiles))
-            {
-                return reader.Entries.Where(entry => specificFiles.Contains(entry.FullName)).FirstOrDefault();
-            }
-            else
-            {
-                return reader.Entries.Where(x => EntryMatchesSourcePortExtensions(x, sourcePortData)).FirstOrDefault();
-            }
-        }
-
-        private bool EntryMatchesSourcePortExtensions(IArchiveEntry entry, ISourcePortData sourcePortData)
-        {
-            string[] extensions = sourcePortData.SupportedExtensions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            return !string.IsNullOrEmpty(entry.Name) && entry.Name.Contains('.')
-                        && extensions.Any(y => y.Equals(Path.GetExtension(entry.Name), StringComparison.OrdinalIgnoreCase));
+            return GameFilesLaunchFeature.GetRelevantEntries(reader, sourcePortData, Util.SplitString(specificFiles)).FirstOrDefault();
         }
     }
 }
