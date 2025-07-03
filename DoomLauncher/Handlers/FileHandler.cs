@@ -1,7 +1,9 @@
 ﻿using DoomLauncher.Config;
+using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace DoomLauncher.Handlers
 {
@@ -19,11 +21,8 @@ namespace DoomLauncher.Handlers
 
         public IFileData InsertFileFromMemory(IGameFile gameFile, FileType fileType, MemoryStream fileStream, string extension, ISourcePortData sourcePort = null)
         {
-            if (gameFile == null)
-                throw new ArgumentNullException("GameFile can't be null");
-
-            if (!gameFile.GameFileID.HasValue)
-                throw new ArgumentException("GameFile must be persistent");
+            if (gameFile == null || !gameFile.GameFileID.HasValue)
+                return null;
 
             string fileName = GetUniqueFileName(extension);
             string path = m_config.GetFileDirectory(fileType).GetFullPath(fileName);
@@ -36,7 +35,7 @@ namespace DoomLauncher.Handlers
 
                 createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, sourcePort);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 createdFile = null;
                 File.Delete(path);
@@ -59,7 +58,6 @@ namespace DoomLauncher.Handlers
             };
 
             m_database.InsertFile(fileData);
-            m_database.IncrementFileOrder(gameFile, FileType.Screenshot);
 
             return fileData;
         }
@@ -78,9 +76,29 @@ namespace DoomLauncher.Handlers
             return null;
         }
 
-        public bool DeleteFile(IFileData file)
+        public void DeleteFile(IFileData file)
         {
-            return false;
+            string path = m_config.GetFileDirectory(file.FileTypeID).GetFullPath(file.FileName);
+            try
+            {
+                FileInfo fi = new FileInfo(path);
+
+                if (fi.Exists)
+                    fi.Delete();
+            }
+            catch (IOException)
+            {
+                // File is in use, insert to delete on next startup
+                m_database.InsertCleanupFile(new CleanupFile() { FileName = path });
+            }
+
+            m_database.DeleteFile(file);
+        }
+
+        public void DeleteAttachedFiles(IGameFile gameFile, FileType fileType)
+        {
+            var filesToDelete = m_database.GetFiles(gameFile, fileType).ToList();
+            filesToDelete.ForEach(DeleteFile);
         }
     }
 

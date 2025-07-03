@@ -118,7 +118,8 @@
     <Compile Include="Tests\TestLaunchParameters.cs" />
     <Compile Include="Tests\TestGameLauncher.cs" />
     <Compile Include="Tests\TestMapLumps.cs" />
-    <Compile Include="Tests\TestScreenshotHandler.cs" />
+    <Compile Include="Tests\TestFileHandler.cs" />
+    <Compile Include="Tests\TestTitlePicHandler.cs" />
     <Compile Include="Tests\TestSourcePort.cs" />
     <Compile Include="Tests\TestSpecificFiles.cs" />
     <Compile Include="Tests\TestAutomaticSteamCheck.cs" />

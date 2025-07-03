@@ -38,14 +38,15 @@ namespace DoomLauncher
         public static void UpdateThumbnail(IGameFile gameFile)
         {
             bool delete = false;
-            var screenshot = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
+            var titlePic = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
             var thumbnail = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Thumbnail).FirstOrDefault();
 
             // All screenshots for this game file were deleted
-            if (thumbnail != null && screenshot == null)
+            if (thumbnail != null && titlePic == null)
                 delete = true;
+
             // The first screenshot was changed
-            if (thumbnail != null && screenshot != null && thumbnail.SourcePortID != screenshot.FileID)
+            if (thumbnail != null && titlePic != null && thumbnail.SourcePortID != titlePic.FileID)
                 delete = true;
 
             if (delete)
@@ -82,7 +83,12 @@ namespace DoomLauncher
                 return thumbnail;
 
             if (screenshots == null)
-                screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
+            {
+                var combined = new List<IFileData>();
+                combined.AddRange(DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.TitlePic));
+                combined.AddRange(DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot));
+                screenshots = combined;
+            }
 
             var screenshot = screenshots.FirstOrDefault(x => x.GameFileID == gameFile.GameFileID.Value);
             if (screenshot != null)
@@ -129,7 +135,7 @@ namespace DoomLauncher
             try
             {
                 var config = DataCache.Instance.AppConfiguration;
-                string file = Path.Combine(config.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
+                string file = Path.Combine(config.TitlePicDirectory.GetFullPath(), screenshot.FileName);
                 if (!File.Exists(file))
                     return false;
 

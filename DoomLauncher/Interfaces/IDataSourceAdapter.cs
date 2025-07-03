@@ -21,8 +21,6 @@ namespace DoomLauncher.Interfaces
         IEnumerable<IFileData> GetFiles(IGameFile gameFile);
         IEnumerable<IFileData> GetFiles(IGameFile gameFile, FileType fileTypeID);
         IEnumerable<IFileData> GetFiles(FileType fileTypeID);
-        void IncrementFileOrder(IGameFile gameFile, FileType fileTypeID);
-
 
         void UpdateFile(IFileData file);
         void UpdateFiles(int sourcePortID_Where, int? sourcePortID_Set);

@@ -220,6 +220,7 @@ namespace DoomLauncher
             DemoDirectory = SetChildDirectory(gameFileDir, "Demos");
             SaveGameDirectory = SetChildDirectory(gameFileDir, "SaveGames");
             ThumbnailDirectory = SetChildDirectory(gameFileDir, "Thumbnails");
+            TitlePicDirectory = SetChildDirectory(gameFileDir, "TitlePics");
         }
 
         private static LauncherPath GetGameFileDir(string gameFileDir)
@@ -272,6 +273,7 @@ namespace DoomLauncher
             VerifyPath(DemoDirectory, throwErrors);
             VerifyPath(SaveGameDirectory, throwErrors);
             VerifyPath(ThumbnailDirectory, throwErrors);
+            VerifyPath(TitlePicDirectory, throwErrors);
         }
 
         private void VerifyPath(LauncherPath path, bool throwErrors)

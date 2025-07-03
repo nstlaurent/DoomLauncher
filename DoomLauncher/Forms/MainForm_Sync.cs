@@ -150,6 +150,9 @@ namespace DoomLauncher
 
         private void SyncTitlePics(SyncResult syncResult)
         {
+            var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
+            var titlePicHandler = new TitlePicHandler(fileHandler);
+
             foreach (IGameFile gameFile in syncResult.AddedOrUpdatedFiles)
             {
                 // Get the titlepic as a bitmap in memory from a lump in the wad
@@ -159,19 +162,12 @@ namespace DoomLauncher
                 // Force the image to the right aspect ratio
                 image = image.ScaleDoomImage();
 
-                // Look in the database for screenshots
-                var screenshots = DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
+                if (ScreenshotHandler.FindScreenshotThatIsReallyATitlePic(gameFile, image, out var titlePicScreenshot))
+                {
+                    fileHandler.DeleteFile(titlePicScreenshot);
+                }
 
-                // Skip if we already have a "screenshot" that is really a titlepic
-                if (ScreenshotHandler.FindScreenshot(screenshots, image, out MemoryStream imageStream))
-                    continue;
-
-                if (imageStream == null)
-                    continue;
-
-                // Insert the titlepic as a screenshot
-                new ScreenshotHandler(new FileHandler(DataSourceAdapter, AppConfiguration)).InsertScreenshot(gameFile, imageStream, out _);
-                imageStream?.Dispose();
+                titlePicHandler.InsertTitlePic(gameFile, image);
             }
         }
 
