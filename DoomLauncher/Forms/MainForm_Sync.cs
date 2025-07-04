@@ -152,6 +152,7 @@ namespace DoomLauncher
         {
             var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
             var titlePicHandler = new TitlePicHandler(fileHandler);
+            var screenshotHandler = new ScreenshotHandler(DataSourceAdapter, AppConfiguration);
 
             foreach (IGameFile gameFile in syncResult.AddedOrUpdatedFiles)
             {
@@ -162,7 +163,8 @@ namespace DoomLauncher
                 // Force the image to the right aspect ratio
                 image = image.ScaleDoomImage();
 
-                if (ScreenshotHandler.FindScreenshotThatIsReallyATitlePic(gameFile, image, out var titlePicScreenshot))
+                // Migrate from storing titlepics as screenshots, to storing titlepics separately
+                if (screenshotHandler.FindScreenshotThatIsReallyATitlePic(gameFile, image, out var titlePicScreenshot))
                 {
                     fileHandler.DeleteFile(titlePicScreenshot);
                 }

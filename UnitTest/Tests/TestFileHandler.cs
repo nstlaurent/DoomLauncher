@@ -69,7 +69,43 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void InsertFileFromMemory_CreatesFileAndDatabaseEntry()
+        public void InsertFileFromMemory_CreatesFile()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "Zoo.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("Zoo.zip");
+            var imageStream = GetImageStream(@"Resources\happy.png");
+
+            var fileData = fileHandler.InsertFileFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
+
+            Assert.IsTrue(File.Exists(config.ScreenshotDirectory.GetFullPath(fileData.FileName)));
+        }
+
+        [TestMethod]
+        public void InsertFileFromMemory_CreatesDatabaseEntry()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "Groo.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("Groo.zip");
+
+            var imageStream = GetImageStream(@"Resources\happy.png");
+
+            var fileData = fileHandler.InsertFileFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
+
+            Assert.IsNotNull(fileData);
+            Assert.IsNotNull(fileDataFromDB);
+            Assert.AreEqual(fileData.FileName, fileDataFromDB.FileName);
+        }
+
+        [TestMethod]
+        public void DeleteFile_DeletesFileOnDisk()
         {
             var fileHandler = new FileHandler(database, config);
 
@@ -83,10 +119,38 @@ namespace UnitTest.Tests
             var fileData = fileHandler.InsertFileFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
-            Assert.IsNotNull(fileData);
-            Assert.IsNotNull(fileDataFromDB);
-            Assert.AreEqual(fileData.FileName, fileDataFromDB.FileName);
+            // We definitely inserted it
             Assert.IsTrue(File.Exists(config.ScreenshotDirectory.GetFullPath(fileData.FileName)));
+
+            fileHandler.DeleteFile(fileDataFromDB);
+
+            // We definitely deleted it
+            Assert.IsFalse(File.Exists(config.ScreenshotDirectory.GetFullPath(fileData.FileName)));
+        }
+
+        [TestMethod]
+        public void DeleteFile_DeletesDatabaseEntry()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "Boo.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("Boo.zip");
+
+            var imageStream = GetImageStream(@"Resources\happy.png");
+
+            var fileData = fileHandler.InsertFileFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
+
+            // We definitely inserted it
+            Assert.IsNotNull(fileDataFromDB);
+
+            fileHandler.DeleteFile(fileDataFromDB);
+            var deletedFileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
+
+            // We definitely deleted it
+            Assert.IsNull(deletedFileDataFromDB);
         }
 
         private static MemoryStream GetImageStream(string fileName)

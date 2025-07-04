@@ -71,7 +71,7 @@ namespace DoomLauncher.Handlers
 
         }
 
-        public IFileData InsertAndMove(IGameFile gameFile, FileType fileType, string[] files, ISourcePortData sourcePort = null)
+        public IFileData InsertAndMove(IGameFile gameFile, FileType fileType, string files, ISourcePortData sourcePort = null)
         {
             return null;
         }
@@ -101,8 +101,4 @@ namespace DoomLauncher.Handlers
             filesToDelete.ForEach(DeleteFile);
         }
     }
-
-    public interface IFileException { }
-
-    public class IFileInsertException : IFileException { }
 }

@@ -86,5 +86,30 @@ namespace UnitTest.Tests
             Assert.AreEqual(fileData.FileName, fileDataFromDB.FileName);
             Assert.IsTrue(File.Exists(config.TitlePicDirectory.GetFullPath(fileData.FileName)));
         }
+
+        [TestMethod]
+        public void InsertTitlePic_AlwaysDeletesThePreviousOne()
+        {
+            var titlePicHandler = new TitlePicHandler(new FileHandler(database, config));
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "Blah.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("Blah.zip");
+
+            var image = Image.FromFile(@"Resources\happy.png");
+
+            var fileData1 = titlePicHandler.InsertTitlePic(gameFile, image);
+            var fileData2 = titlePicHandler.InsertTitlePic(gameFile, image);
+            var filesFromDB = database.GetFiles(gameFile, FileType.TitlePic).ToList();
+            
+            Assert.IsNotNull(fileData1);
+            Assert.IsNotNull(fileData2);
+            Assert.AreNotEqual(fileData1.FileName, fileData2.FileName);
+            Assert.AreEqual(1, filesFromDB.Count);
+            Assert.AreEqual(fileData2.FileName, filesFromDB.FirstOrDefault()?.FileName);
+            Assert.IsTrue(File.Exists(config.TitlePicDirectory.GetFullPath(fileData2.FileName)));
+            Assert.IsFalse(File.Exists(config.TitlePicDirectory.GetFullPath(fileData1.FileName)));
+        }
     }
 }

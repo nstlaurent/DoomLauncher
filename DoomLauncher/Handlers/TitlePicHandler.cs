@@ -20,19 +20,18 @@ namespace DoomLauncher
             if (gameFile == null || !gameFile.GameFileID.HasValue)
                 return null;
 
+            // There can only be one TitlePic
             m_fileHandler.DeleteAttachedFiles(gameFile, FileType.TitlePic);
 
             using (var imageStream = new MemoryStream())
             {
-
                 image.Save(imageStream, ImageFormat.Png);
 
                 var fileData = m_fileHandler.InsertFileFromMemory(gameFile, FileType.TitlePic, imageStream, "png");
 
                 if (fileData != null)
-                {
                     ThumbnailManager.UpdateThumbnail(gameFile);
-                }
+
                 return fileData;
             }
         }
