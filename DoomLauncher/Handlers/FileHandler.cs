@@ -3,7 +3,9 @@ using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using System;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
+using System.Windows.Shapes;
 
 namespace DoomLauncher.Handlers
 {
@@ -43,32 +45,26 @@ namespace DoomLauncher.Handlers
             return createdFile;
         }
 
-        private string GetUniqueFileName(string extension) => 
-            $"{Guid.NewGuid()}.{extension}";
-
-        private IFileData InsertDatabaseRecord(IGameFile gameFile, FileType fileType, string fileName, ISourcePortData sourcePort)
-        {
-            IFileData fileData = new FileData
-            {
-                FileName = fileName,
-                GameFileID = gameFile.GameFileID.Value,
-                SourcePortID = sourcePort?.SourcePortID ?? -1,
-                FileTypeID = fileType,
-                FileOrder = 0
-            };
-
-            m_database.InsertFile(fileData);
-
-            return fileData;
-        }
 
         public IFileData InsertAndCopy(IGameFile gameFile, FileType fileType, string file, ISourcePortData sourcePort = null)
         {
-            //FileInfo fi = new FileInfo(file);
-            //string fileName = Guid.NewGuid().ToString() + fi.Extension;
-            //fi.CopyTo(Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), fileName));
-            return null;
+            FileInfo fi = new FileInfo(file);
+            string fileName = GetUniqueFileName(fi.Extension);
+            string path = m_config.GetFileDirectory(fileType).GetFullPath(fileName);
+            
 
+            IFileData createdFile;
+            try
+            {
+                fi.CopyTo(path);
+                createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, sourcePort);
+            }
+            catch (Exception)
+            {
+                createdFile = null;
+                File.Delete(path);
+            }
+            return createdFile;
         }
 
         public IFileData InsertAndMove(IGameFile gameFile, FileType fileType, string files, ISourcePortData sourcePort = null)
@@ -99,6 +95,26 @@ namespace DoomLauncher.Handlers
         {
             var filesToDelete = m_database.GetFiles(gameFile, fileType).ToList();
             filesToDelete.ForEach(DeleteFile);
+        }
+
+
+        private string GetUniqueFileName(string extension) =>
+            $"{Guid.NewGuid()}.{extension}";
+
+        private IFileData InsertDatabaseRecord(IGameFile gameFile, FileType fileType, string fileName, ISourcePortData sourcePort)
+        {
+            IFileData fileData = new FileData
+            {
+                FileName = fileName,
+                GameFileID = gameFile.GameFileID.Value,
+                SourcePortID = sourcePort?.SourcePortID ?? -1,
+                FileTypeID = fileType,
+                FileOrder = 0
+            };
+
+            m_database.InsertFile(fileData);
+
+            return fileData;
         }
     }
 }
