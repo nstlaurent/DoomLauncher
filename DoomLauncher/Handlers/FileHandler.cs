@@ -2,10 +2,9 @@
 using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Windows.Shapes;
 
 namespace DoomLauncher.Handlers
 {
@@ -21,7 +20,17 @@ namespace DoomLauncher.Handlers
             m_config = config;
         }
 
-        public IFileData InsertFileFromMemory(IGameFile gameFile, FileType fileType, MemoryStream fileStream, string extension, ISourcePortData sourcePort = null)
+        public List<IFileData> GetFiles(IGameFile gameFile, FileType fileType)
+        {
+            return m_database.GetFiles(gameFile, fileType).ToList();
+        }
+
+        public FileInfo GetFileInfo(FileType fileType, string fileName)
+        {
+            return new FileInfo(m_config.GetFileDirectory(fileType).GetFullPath(fileName));
+        }
+
+        public IFileData InsertFromMemory(IGameFile gameFile, FileType fileType, MemoryStream fileStream, string extension, ISourcePortData sourcePort = null)
         {
             if (gameFile == null || !gameFile.GameFileID.HasValue)
                 return null;
@@ -68,9 +77,25 @@ namespace DoomLauncher.Handlers
             return createdFile;
         }
 
-        public IFileData InsertAndMove(IGameFile gameFile, FileType fileType, string files, ISourcePortData sourcePort = null)
+        public IFileData InsertAndMove(IGameFile gameFile, FileType fileType, string file, ISourcePortData sourcePort = null)
         {
-            return null;
+            FileInfo fi = new FileInfo(file);
+            string fileName = GetUniqueFileName(fi.Extension);
+            string path = m_config.GetFileDirectory(fileType).GetFullPath(fileName);
+
+            IFileData createdFile;
+            try
+            {
+                fi.MoveTo(path);
+                createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, sourcePort);
+            }
+            catch (Exception)
+            {
+                createdFile = null;
+                if (File.Exists(path) && File.Exists(file))
+                    File.Delete(path);
+            }
+            return createdFile;
         }
 
         public void DeleteFile(IFileData file)
@@ -97,7 +122,6 @@ namespace DoomLauncher.Handlers
             var filesToDelete = m_database.GetFiles(gameFile, fileType).ToList();
             filesToDelete.ForEach(DeleteFile);
         }
-
 
         private string GetUniqueFileName(string extension) =>
             $"{Guid.NewGuid()}.{extension}";

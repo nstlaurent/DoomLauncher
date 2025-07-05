@@ -152,7 +152,7 @@ namespace DoomLauncher
         {
             var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
             var titlePicHandler = new TitlePicHandler(fileHandler);
-            var screenshotHandler = new ScreenshotHandler(DataSourceAdapter, AppConfiguration);
+            var screenshotHandler = new ScreenshotHandler(fileHandler, AppConfiguration.DeleteScreenshotsAfterImport);
 
             foreach (IGameFile gameFile in syncResult.AddedOrUpdatedFiles)
             {

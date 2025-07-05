@@ -2,6 +2,7 @@
 using DoomLauncher.Adapters.Launch;
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
+using DoomLauncher.Handlers;
 using DoomLauncher.Handlers.Sync;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
@@ -629,7 +630,8 @@ namespace DoomLauncher
 
         private void HandleDetectorFiles(ISourcePortData sourcePort, IGameFile gameFile)
         {
-            var screenShotHandler = new ScreenshotHandler(DataSourceAdapter, AppConfiguration);
+            var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
+            var screenShotHandler = new ScreenshotHandler(fileHandler, AppConfiguration.DeleteScreenshotsAfterImport);
             screenShotHandler.HandleNewScreenshots(sourcePort, gameFile, GetNewScreenshots());
             SaveGameHandler savegameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
 

@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Config;
+using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,15 +12,13 @@ namespace DoomLauncher
 {
     public class ScreenshotHandler
     {
-        private readonly IDataSourceAdapter m_database;
+        private readonly IFileHandler m_fileHandler;
         private readonly bool m_deleteScreenshotsAfterImport;
-        private readonly LauncherPath m_screenshotDirectory;
 
-        public ScreenshotHandler(IDataSourceAdapter database, AppConfiguration config)
+        public ScreenshotHandler(IFileHandler fileHandler, bool deleteScreenshotsAfterImport)
         {
-            m_database = database;
-            m_deleteScreenshotsAfterImport = config.DeleteScreenshotsAfterImport;
-            m_screenshotDirectory = config.ScreenshotDirectory;
+            m_fileHandler = fileHandler;
+            m_deleteScreenshotsAfterImport = deleteScreenshotsAfterImport;
         }
 
         // Invoked when screenshots taken in-game are found in the source port
@@ -31,31 +30,16 @@ namespace DoomLauncher
 
             foreach (string file in files)
             {
-                try
+                IFileData fileData;
+                if (m_deleteScreenshotsAfterImport)
                 {
-                    FileInfo fi = new FileInfo(file);
-                    string fileName = Guid.NewGuid().ToString() + fi.Extension;
-                    fi.CopyTo(m_screenshotDirectory.GetFullPath(fileName));
-
-                    FileData fileData = new FileData
-                    {
-                        FileName = fileName,
-                        GameFileID = gameFile.GameFileID.Value,
-                        SourcePortID = sourcePort.SourcePortID,
-                        FileTypeID = FileType.Screenshot,
-                        FileOrder = short.MaxValue,
-                    };
-
-                    m_database.InsertFile(fileData);
-                    ret.Add(fileData);
-
-                    if (m_deleteScreenshotsAfterImport)
-                        File.Delete(file);
+                    fileData = m_fileHandler.InsertAndMove(gameFile, FileType.Screenshot, file, sourcePort);
                 }
-                catch
+                else
                 {
-                    //failed, nothing to do
+                    fileData = m_fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, file, sourcePort);
                 }
+                ret.Add(fileData);
             }
 
             return ret;
@@ -65,7 +49,7 @@ namespace DoomLauncher
         {
             titlePicScreenshot = null;
 
-            var screenshots = m_database.GetFiles(gameFile, FileType.Screenshot);
+            var screenshots = m_fileHandler.GetFiles(gameFile, FileType.Screenshot);
 
             if (!screenshots.Any())
                 return false;
@@ -88,7 +72,7 @@ namespace DoomLauncher
             {
                 try
                 {
-                    FileInfo fi = new FileInfo(m_screenshotDirectory.GetFullPath(screenshot.FileName));
+                    FileInfo fi = m_fileHandler.GetFileInfo(FileType.Screenshot, screenshot.FileName);
                     if (fi.Length == fileSize)
                     {
                         titlePicScreenshot = screenshot;

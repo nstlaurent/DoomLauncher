@@ -47,6 +47,9 @@ namespace UnitTest.Tests
             if (Directory.Exists("TitlePics"))
                 Directory.Delete("TitlePics", true);
 
+            if (File.Exists(@"Resources\happy_DELETE_ME.png"))
+                File.Delete(@"Resources\happy_DELETE_ME.png");
+
             var dataAccess = ((DbDataSourceAdapter)database).DataAccess;
             dataAccess.ExecuteNonQuery("delete from GameFiles");
             dataAccess.ExecuteNonQuery("delete from Files");
@@ -58,7 +61,7 @@ namespace UnitTest.Tests
             var fileHandler = new FileHandler(database, config);
             var imageStream = GetImageStream(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFileFromMemory(null, FileType.Thumbnail, imageStream, "png");
+            var fileData = fileHandler.InsertFromMemory(null, FileType.Thumbnail, imageStream, "png");
 
             Assert.IsNull(fileData);
         }
@@ -75,7 +78,7 @@ namespace UnitTest.Tests
             };
 
             var imageStream = GetImageStream(@"Resources\happy.png");
-            var fileData = fileHandler.InsertFileFromMemory(null, FileType.Screenshot, imageStream, "png");
+            var fileData = fileHandler.InsertFromMemory(null, FileType.Screenshot, imageStream, "png");
 
             Assert.IsNull(fileData);
         }
@@ -91,7 +94,7 @@ namespace UnitTest.Tests
             gameFile = database.GetGameFile("Zoo.zip");
             var imageStream = GetImageStream(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFileFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
+            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
 
             Assert.IsTrue(File.Exists(config.ScreenshotDirectory.GetFullPath(fileData.FileName)));
         }
@@ -108,7 +111,7 @@ namespace UnitTest.Tests
 
             var imageStream = GetImageStream(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFileFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
+            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
             Assert.IsNotNull(fileData);
@@ -128,7 +131,7 @@ namespace UnitTest.Tests
 
             var imageStream = GetImageStream(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFileFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
+            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
             // We definitely inserted it
@@ -152,7 +155,7 @@ namespace UnitTest.Tests
 
             var imageStream = GetImageStream(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFileFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
+            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
             // We definitely inserted it
@@ -202,8 +205,61 @@ namespace UnitTest.Tests
             // Tada!
             existingTitlePics = Directory.EnumerateFiles(config.TitlePicDirectory.GetFullPath());
             Assert.AreEqual(1, existingTitlePics.Count());
-
             Assert.IsTrue(File.Exists(config.TitlePicDirectory.GetFullPath(fileData.FileName)));
+
+            // Source image is still around
+            Assert.IsTrue(File.Exists(@"Resources\happy.png"));
+        }
+
+        [TestMethod]
+        public void InsertAndMove_InsertsDatabaseEntry()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "blaah.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("blaah.zip");
+
+            // We don't want to lose our normal copy!
+            File.Copy(@"Resources\happy.png", @"Resources\happy_DELETE_ME.png");
+            Assert.IsTrue(File.Exists(@"Resources\happy_DELETE_ME.png"));
+
+            var fileData = fileHandler.InsertAndMove(gameFile, FileType.TitlePic, @"Resources\happy_DELETE_ME.png");
+            var filesInDB = database.GetFiles(gameFile).ToList();
+
+            Assert.AreEqual(1, filesInDB.Count());
+            Assert.AreEqual(fileData.FileName, filesInDB[0].FileName);
+        }
+
+        [TestMethod]
+        public void InsertAndMove_InsertsFileOnDiskAndDeletesOldFile()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            // Nothing up my sleeve
+            var existingTitlePics = Directory.EnumerateFiles(config.TitlePicDirectory.GetFullPath());
+            Assert.IsFalse(existingTitlePics.Any());
+
+            // We don't want to lose our normal copy!
+            File.Copy(@"Resources\happy.png", @"Resources\happy_DELETE_ME.png");
+            Assert.IsTrue(File.Exists(@"Resources\happy_DELETE_ME.png"));
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "blaah.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("blaah.zip");
+
+            // Insert a file as a TitlePic
+            var fileData = fileHandler.InsertAndMove(gameFile, FileType.TitlePic, @"Resources\happy_DELETE_ME.png");
+
+            // Tada!
+            existingTitlePics = Directory.EnumerateFiles(config.TitlePicDirectory.GetFullPath());
+            Assert.AreEqual(1, existingTitlePics.Count());
+            Assert.IsTrue(File.Exists(config.TitlePicDirectory.GetFullPath(fileData.FileName)));
+
+            // Source image is gone now
+            Assert.IsFalse(File.Exists(@"Resources\happy_DELETE_ME.png"));
         }
 
         [TestMethod]
@@ -237,6 +293,25 @@ namespace UnitTest.Tests
 
             Assert.AreEqual(1, thumbnails.Count());
             Assert.AreEqual(0, screenshots.Count());
+        }
+
+        [TestMethod]
+        public void GetFiles_ReturnsFilesFromTheDatabase()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "Gah.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("Gah.zip");
+
+            // 1 thumbnail, 2 screenshots
+            var wrong = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png");
+            var right1 = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+            var right2 = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+
+            var fileDataList = fileHandler.GetFiles(gameFile, FileType.Screenshot);
+            Assert.AreEqual(2, fileDataList.Count());
         }
 
         private static MemoryStream GetImageStream(string fileName)
