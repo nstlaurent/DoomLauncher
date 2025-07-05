@@ -17,9 +17,9 @@ namespace DoomLauncher
 
         public ScreenshotHandler(IDataSourceAdapter database, AppConfiguration config)
         {
-            this.m_database = database;
-            this.m_deleteScreenshotsAfterImport = config.DeleteScreenshotsAfterImport;
-            this.m_screenshotDirectory = config.ScreenshotDirectory;
+            m_database = database;
+            m_deleteScreenshotsAfterImport = config.DeleteScreenshotsAfterImport;
+            m_screenshotDirectory = config.ScreenshotDirectory;
         }
 
         // Invoked when screenshots taken in-game are found in the source port

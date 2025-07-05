@@ -21,7 +21,7 @@ namespace DoomLauncher
                 return null;
 
             // There can only be one TitlePic
-            m_fileHandler.DeleteAttachedFiles(gameFile, FileType.TitlePic);
+            m_fileHandler.DeleteFiles(gameFile, FileType.TitlePic);
 
             using (var imageStream = new MemoryStream())
             {

@@ -10,6 +10,6 @@ namespace DoomLauncher.Handlers
         
         void DeleteFile(IFileData file);
 
-        void DeleteAttachedFiles(IGameFile gameFile, FileType fileType);
+        void DeleteFiles(IGameFile gameFile, FileType fileType);
     }
 }

@@ -62,7 +62,8 @@ namespace DoomLauncher.Handlers
             catch (Exception)
             {
                 createdFile = null;
-                File.Delete(path);
+                if (File.Exists(path))
+                    File.Delete(path);
             }
             return createdFile;
         }
@@ -91,7 +92,7 @@ namespace DoomLauncher.Handlers
             m_database.DeleteFile(file);
         }
 
-        public void DeleteAttachedFiles(IGameFile gameFile, FileType fileType)
+        public void DeleteFiles(IGameFile gameFile, FileType fileType)
         {
             var filesToDelete = m_database.GetFiles(gameFile, fileType).ToList();
             filesToDelete.ForEach(DeleteFile);
