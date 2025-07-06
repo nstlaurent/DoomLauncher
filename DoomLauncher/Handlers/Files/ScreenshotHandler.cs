@@ -33,11 +33,17 @@ namespace DoomLauncher
                 IFileData fileData;
                 if (m_deleteScreenshotsAfterImport)
                 {
-                    fileData = m_fileHandler.InsertAndMove(gameFile, FileType.Screenshot, file, sourcePort);
+                    fileData = m_fileHandler.InsertAndMove(gameFile, FileType.Screenshot, file, x => 
+                    { 
+                        x.SourcePortID = sourcePort.SourcePortID; 
+                    });
                 }
                 else
                 {
-                    fileData = m_fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, file, sourcePort);
+                    fileData = m_fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, file, x => 
+                    { 
+                        x.SourcePortID = sourcePort.SourcePortID; 
+                    });
                 }
                 ret.Add(fileData);
             }

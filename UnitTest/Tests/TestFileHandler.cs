@@ -24,6 +24,7 @@ namespace UnitTest.Tests
             ScreenshotDirectory = new LauncherPath("Screenshots"),
             ThumbnailDirectory = new LauncherPath("Thumbnails"),
             TitlePicDirectory = new LauncherPath("TitlePics"),
+            DemoDirectory = new LauncherPath("Demos"),
         };
 
         [TestInitialize]
@@ -33,6 +34,7 @@ namespace UnitTest.Tests
             Directory.CreateDirectory("Screenshots");
             Directory.CreateDirectory("Thumbnails");
             Directory.CreateDirectory("TitlePics");
+            Directory.CreateDirectory("Demos");
         }
 
         [TestCleanup]
@@ -46,6 +48,9 @@ namespace UnitTest.Tests
 
             if (Directory.Exists("TitlePics"))
                 Directory.Delete("TitlePics", true);
+
+            if (Directory.Exists("Demos"))
+                Directory.Delete("Demos", true);
 
             if (File.Exists(@"Resources\happy_DELETE_ME.png"))
                 File.Delete(@"Resources\happy_DELETE_ME.png");
@@ -74,11 +79,11 @@ namespace UnitTest.Tests
             var gameFile = new GameFile()
             {
                 GameFileID = null,
-                FileName = "Foo.zip",
+                FileName = "InsertFileFromMemory_NullGameFileIdFails.zip",
             };
 
             var imageStream = GetImageStream(@"Resources\happy.png");
-            var fileData = fileHandler.InsertFromMemory(null, FileType.Screenshot, imageStream, "png");
+            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
 
             Assert.IsNull(fileData);
         }
@@ -87,11 +92,7 @@ namespace UnitTest.Tests
         public void InsertFileFromMemory_CreatesFile()
         {
             var fileHandler = new FileHandler(database, config);
-
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "Zoo.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("Zoo.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_CreatesFile.zip");
             var imageStream = GetImageStream(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
@@ -104,10 +105,7 @@ namespace UnitTest.Tests
         {
             var fileHandler = new FileHandler(database, config);
 
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "Groo.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("Groo.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_CreatesDatabaseEntry.zip");
 
             var imageStream = GetImageStream(@"Resources\happy.png");
 
@@ -120,14 +118,34 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void InsertFileFromMemory_AppliesEdits()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_AppliesEdits.zip");
+
+            var imageStream = GetImageStream(@"Resources\happy.png");
+
+            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png", x =>
+            {
+                x.Description = "Hello";
+                x.SourcePortID = 444;
+            });
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
+
+
+            Assert.AreEqual("Hello", fileData.Description);
+            Assert.AreEqual(444, fileData.SourcePortID);
+            Assert.AreEqual("Hello", fileDataFromDB.Description);
+            Assert.AreEqual(444, fileDataFromDB.SourcePortID);
+        }
+
+        [TestMethod]
         public void DeleteFile_DeletesFileOnDisk()
         {
             var fileHandler = new FileHandler(database, config);
 
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "Boo.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("Boo.zip");
+            IGameFile gameFile = CreateSavedGameFile("DeleteFile_DeletesFileOnDisk.zip");
 
             var imageStream = GetImageStream(@"Resources\happy.png");
 
@@ -148,10 +166,7 @@ namespace UnitTest.Tests
         {
             var fileHandler = new FileHandler(database, config);
 
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "Boo.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("Boo.zip");
+            IGameFile gameFile = CreateSavedGameFile("DeleteFile_DeletesDatabaseEntry.zip");
 
             var imageStream = GetImageStream(@"Resources\happy.png");
 
@@ -173,10 +188,7 @@ namespace UnitTest.Tests
         {
             var fileHandler = new FileHandler(database, config);
 
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "blaah.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("blaah.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertAndCopy_InsertsDatabaseEntry.zip");
 
             var fileData = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
             var filesInDB = database.GetFiles(gameFile).ToList();
@@ -194,10 +206,7 @@ namespace UnitTest.Tests
             var existingTitlePics = Directory.EnumerateFiles(config.TitlePicDirectory.GetFullPath());
             Assert.IsFalse(existingTitlePics.Any());
 
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "blaah.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("blaah.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertAndCopy_InsertsFileOnDisk.zip");
 
             // Insert a file as a TitlePic
             var fileData = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
@@ -212,14 +221,69 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void InsertAndMove_InsertsDatabaseEntry()
+        public void InsertAndCopy_NullGameFileFails()
+        {
+            var fileHandler = new FileHandler(database, config);
+            var fileData = fileHandler.InsertAndCopy(null, FileType.TitlePic, @"Resources\happy.png");
+
+            Assert.IsNull(fileData);
+        }
+
+        [TestMethod]
+        public void InsertAndCopy_NullGameFileIdFails()
         {
             var fileHandler = new FileHandler(database, config);
 
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "blaah.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("blaah.zip");
+            var gameFile = new GameFile()
+            {
+                GameFileID = null,
+                FileName = "InsertAndCopy_NullGameFileIdFails.zip",
+            };
+
+            var fileData = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
+
+            Assert.IsNull(fileData);
+        }
+
+        [TestMethod]
+        public void InsertAndCopy_AppliesEdits()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndCopy_AppliesEdits.zip");
+
+            var fileData = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png", x =>
+            {
+                x.Description = "Hi";
+                x.SourcePortID = 433;
+            });
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
+
+
+            Assert.AreEqual("Hi", fileData.Description);
+            Assert.AreEqual(433, fileData.SourcePortID);
+            Assert.AreEqual("Hi", fileDataFromDB.Description);
+            Assert.AreEqual(433, fileDataFromDB.SourcePortID);
+        }
+
+        [TestMethod]
+        public void InsertAndCopy_DoesntCopyFileThatIsntThere()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndCopy_DoesntCopyFileThatIsntThere.zip");
+
+            var fileData = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\made-up-file.png");
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
+
+            Assert.IsNull(fileData);
+            Assert.IsNull(fileDataFromDB);
+            Assert.IsFalse(fileHandler.GetFileInfo(FileType.TitlePic, @"Resources\made-up-file.png").Exists);
+        }
+
+        [TestMethod]
+        public void InsertAndMove_InsertsDatabaseEntry()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndMove_InsertsDatabaseEntry.zip");
 
             // We don't want to lose our normal copy!
             File.Copy(@"Resources\happy.png", @"Resources\happy_DELETE_ME.png");
@@ -245,10 +309,7 @@ namespace UnitTest.Tests
             File.Copy(@"Resources\happy.png", @"Resources\happy_DELETE_ME.png");
             Assert.IsTrue(File.Exists(@"Resources\happy_DELETE_ME.png"));
 
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "blaah.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("blaah.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertAndMove_InsertsFileOnDiskAndDeletesOldFile.zip");
 
             // Insert a file as a TitlePic
             var fileData = fileHandler.InsertAndMove(gameFile, FileType.TitlePic, @"Resources\happy_DELETE_ME.png");
@@ -263,14 +324,72 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void DeleteFiles_DeletesAttachedFilesOfTheGivenType()
+        public void InsertAndMove_NullGameFileFails()
+        {
+            var fileHandler = new FileHandler(database, config);
+            File.Copy(@"Resources\happy.png", @"Resources\happy_DELETE_ME.png");
+            var fileData = fileHandler.InsertAndMove(null, FileType.TitlePic, @"Resources\happy_DELETE_ME.png");
+
+            Assert.IsNull(fileData);
+        }
+
+        [TestMethod]
+        public void InsertAndMove_NullGameFileIdFails()
         {
             var fileHandler = new FileHandler(database, config);
 
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "Gah.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("Gah.zip");
+            var gameFile = new GameFile()
+            {
+                GameFileID = null,
+                FileName = "InsertAndMove_NullGameFileIdFails.zip",
+            };
+
+            File.Copy(@"Resources\happy.png", @"Resources\happy_DELETE_ME.png");
+            var fileData = fileHandler.InsertAndMove(gameFile, FileType.TitlePic, @"Resources\happy_DELETE_ME.png");
+
+            Assert.IsNull(fileData);
+        }
+
+        [TestMethod]
+        public void InsertAndMove_AppliesEdits()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndMove_AppliesEdits.zip");
+            File.Copy(@"Resources\happy.png", @"Resources\happy_DELETE_ME.png");
+
+            var fileData = fileHandler.InsertAndMove(gameFile, FileType.TitlePic, @"Resources\happy_DELETE_ME.png", x =>
+            {
+                x.Description = "good";
+                x.SourcePortID = 665;
+            });
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
+
+
+            Assert.AreEqual("good", fileData.Description);
+            Assert.AreEqual(665, fileData.SourcePortID);
+            Assert.AreEqual("good", fileDataFromDB.Description);
+            Assert.AreEqual(665, fileDataFromDB.SourcePortID);
+        }
+
+        [TestMethod]
+        public void InsertAndMove_DoesntMoveFileThatIsntThere()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndMove_DoesntMoveFileThatIsntThere.zip");
+
+            var fileData = fileHandler.InsertAndMove(gameFile, FileType.Demo, @"Resources\made-up-file.demo");
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.Demo).FirstOrDefault();
+
+            Assert.IsNull(fileData);
+            Assert.IsNull(fileDataFromDB);
+            Assert.IsFalse(fileHandler.GetFileInfo(FileType.Demo, @"Resources\made-up-file.demo").Exists);
+        }
+
+        [TestMethod]
+        public void DeleteFiles_DeletesAttachedFilesOfTheGivenType()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("DeleteFiles_DeletesAttachedFilesOfTheGivenType.zip");
 
             // 1 thumbnail, 2 screenshots
             var wrong = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png");
@@ -299,11 +418,7 @@ namespace UnitTest.Tests
         public void GetFiles_ReturnsFilesFromTheDatabase()
         {
             var fileHandler = new FileHandler(database, config);
-
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "Gah.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("Gah.zip");
+            IGameFile gameFile = CreateSavedGameFile("GetFiles_ReturnsFilesFromTheDatabase.zip");
 
             // 1 thumbnail, 2 screenshots
             var wrong = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png");
@@ -312,6 +427,13 @@ namespace UnitTest.Tests
 
             var fileDataList = fileHandler.GetFiles(gameFile, FileType.Screenshot);
             Assert.AreEqual(2, fileDataList.Count());
+        }
+
+        private IGameFile CreateSavedGameFile(string fileName)
+        {
+            IGameFile gameFile = new GameFile() { FileName = fileName };
+            database.InsertGameFile(gameFile);
+            return database.GetGameFile(fileName);
         }
 
         private static MemoryStream GetImageStream(string fileName)
