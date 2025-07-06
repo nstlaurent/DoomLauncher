@@ -274,9 +274,9 @@
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
-    <Compile Include="Handlers\FileHandler.cs" />
-    <Compile Include="Handlers\IFileHandler.cs" />
-    <Compile Include="Handlers\TitlePicHandler.cs" />
+    <Compile Include="Handlers\Files\FileHandler.cs" />
+    <Compile Include="Handlers\Files\IFileHandler.cs" />
+    <Compile Include="Handlers\Files\TitlePicHandler.cs" />
     <Compile Include="Handlers\Sync\StartupImageSyncAction.cs" />
     <Compile Include="Handlers\Sync\Doom64TitlePicSyncAction.cs" />
     <Compile Include="Handlers\Sync\GameConfSyncAction.cs" />
@@ -317,7 +317,7 @@
       <DependentUpon>PagingControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\ToolTipDisplayHandler.cs" />
-    <Compile Include="Handlers\ThumbnailManager.cs" />
+    <Compile Include="Handlers\Files\ThumbnailManager.cs" />
     <Compile Include="Controls\SlideShowPictureBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -613,7 +613,7 @@
     </Compile>
     <Compile Include="Interfaces\IConfigurationData.cs" />
     <Compile Include="Interfaces\IConfigurationDataSourceAdapter.cs" />
-    <Compile Include="Handlers\SaveGameHandler.cs" />
+    <Compile Include="Handlers\Files\SaveGameHandler.cs" />
     <Compile Include="Interfaces\ITabView.cs" />
     <Compile Include="TabViews\OptionsTabViewCtrl.cs">
       <SubType>UserControl</SubType>
@@ -628,7 +628,7 @@
       <DependentUpon>IWadTabViewCtrl.cs</DependentUpon>
     </Compile>
     <Compile Include="Search\GameFileGetOptions.cs" />
-    <Compile Include="Handlers\DemoHandler.cs" />
+    <Compile Include="Handlers\Files\DemoHandler.cs" />
     <Compile Include="Handlers\DownloadHandler.cs" />
     <Compile Include="Forms\GameFileEditForm.cs">
       <SubType>Form</SubType>
@@ -649,7 +649,7 @@
     <Compile Include="Interfaces\IFileData.cs" />
     <Compile Include="Interfaces\INewFileDetector.cs" />
     <Compile Include="Handlers\NewFileDetector.cs" />
-    <Compile Include="Handlers\ScreenshotHandler.cs" />
+    <Compile Include="Handlers\Files\ScreenshotHandler.cs" />
     <Compile Include="Controls\ScreenshotView.cs" />
     <Compile Include="Controls\ScreenshotView.Designer.cs">
       <DependentUpon>ScreenshotView.cs</DependentUpon>
