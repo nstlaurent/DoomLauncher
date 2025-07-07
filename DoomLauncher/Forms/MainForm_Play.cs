@@ -648,7 +648,7 @@ namespace DoomLauncher
 
             if (fi != null && fi.Exists)
             {
-                DemoHandler demoHandler = new DemoHandler(DataSourceAdapter, AppConfiguration.DemoDirectory);
+                DemoHandler demoHandler = new DemoHandler(new FileHandler(DataSourceAdapter, AppConfiguration));
                 demoHandler.HandleNewDemo(gameLaunchInfo.SourcePort, gameFile, fi.FullName,
                     m_currentPlayForm.RecordDescriptionText);
             }

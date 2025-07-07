@@ -22,27 +22,27 @@ namespace DoomLauncher
         }
 
         // Invoked when screenshots taken in-game are found in the source port
-        public IEnumerable<IFileData> HandleNewScreenshots(ISourcePortData sourcePort, IGameFile gameFile, string[] files)
+        public IEnumerable<IFileData> HandleNewScreenshots(ISourcePortData sourcePort, IGameFile gameFile, string[] screenshotFiles)
         {
             List<IFileData> ret = new List<IFileData>();
             if (gameFile == null || !gameFile.GameFileID.HasValue)
                 return ret;
 
-            foreach (string file in files)
+            foreach (string screenshotFile in screenshotFiles)
             {
                 IFileData fileData;
                 if (m_deleteScreenshotsAfterImport)
                 {
-                    fileData = m_fileHandler.InsertAndMove(gameFile, FileType.Screenshot, file, x => 
-                    { 
-                        x.SourcePortID = sourcePort.SourcePortID; 
+                    fileData = m_fileHandler.InsertAndMove(gameFile, FileType.Screenshot, screenshotFile, file => 
+                    {
+                        file.SourcePortID = sourcePort.SourcePortID; 
                     });
                 }
                 else
                 {
-                    fileData = m_fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, file, x => 
-                    { 
-                        x.SourcePortID = sourcePort.SourcePortID; 
+                    fileData = m_fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, screenshotFile, file => 
+                    {
+                        file.SourcePortID = sourcePort.SourcePortID; 
                     });
                 }
                 ret.Add(fileData);
