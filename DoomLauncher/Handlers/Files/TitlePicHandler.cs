@@ -29,9 +29,6 @@ namespace DoomLauncher
 
                 var fileData = m_fileHandler.InsertFromMemory(gameFile, FileType.TitlePic, imageStream, "png");
 
-                if (fileData != null)
-                    ThumbnailManager.UpdateThumbnail(gameFile);
-
                 return fileData;
             }
         }

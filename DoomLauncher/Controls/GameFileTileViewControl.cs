@@ -520,7 +520,7 @@ namespace DoomLauncher
                 return;
             }
 
-            IFileData thumbnail = ThumbnailManager.GetOrCreateThumbnail(gameFile, screenshots, thumbnails);
+            IFileData thumbnail = ThumbnailManager.Instance.GetOrCreateThumbnail(gameFile, screenshots, thumbnails);
             if (thumbnail != null)
             {
                 if (thumbnail.FileTypeID == FileType.TileImage)

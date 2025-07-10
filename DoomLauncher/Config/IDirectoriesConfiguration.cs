@@ -12,6 +12,7 @@ namespace DoomLauncher.Config
         LauncherPath DemoDirectory { get; }
         LauncherPath ThumbnailDirectory { get; }
         LauncherPath TitlePicDirectory { get; }
+        LauncherPath TileImageDirectory { get; }
     }
 
     public static class IDirectoriesConfigurationExtensions

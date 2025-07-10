@@ -1,4 +1,6 @@
-﻿using DoomLauncher.DataSources;
+﻿using DoomLauncher.Config;
+using DoomLauncher.DataSources;
+using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,11 +11,26 @@ using System.Linq;
 
 namespace DoomLauncher
 {
-    public static class ThumbnailManager
+    public class ThumbnailManager
     {
         public static List<IGameFile> IWads = new List<IGameFile>();
         public static readonly Dictionary<int, IFileData> IWadTileImages = new Dictionary<int, IFileData>();
 
+        private readonly IDataSourceAdapter m_database;
+        private readonly IDirectoriesConfiguration m_config;
+        private readonly TileImageHandler m_tileImageHandler;
+
+        public static ThumbnailManager Instance => 
+            new ThumbnailManager(DataCache.Instance.DataSourceAdapter, DataCache.Instance.AppConfiguration);
+
+        public ThumbnailManager(IDataSourceAdapter database, IDirectoriesConfiguration config) 
+        {
+            m_database = database;
+            m_config = config;
+            m_tileImageHandler = new TileImageHandler();
+        }
+
+      
         public static void SetIWads(List<IGameFile> iwads)
         {
             IWads = iwads;
@@ -35,11 +52,12 @@ namespace DoomLauncher
             }
         }
 
-        public static void UpdateThumbnail(IGameFile gameFile)
+        // Should we delete the old one? Followed by GetOrCreateThumbnail
+        public void UpdateThumbnail(IGameFile gameFile)
         {
             bool delete = false;
-            var titlePic = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
-            var thumbnail = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Thumbnail).FirstOrDefault();
+            var titlePic = m_database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
+            var thumbnail = m_database.GetFiles(gameFile, FileType.Thumbnail).FirstOrDefault();
 
             // All screenshots for this game file were deleted
             if (thumbnail != null && titlePic == null)
@@ -51,7 +69,7 @@ namespace DoomLauncher
 
             if (delete)
             {
-                string file = Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName);
+                string file = m_config.ThumbnailDirectory.GetFullPath(thumbnail.FileName);
                 try
                 {
                     if (File.Exists(file))
@@ -60,10 +78,10 @@ namespace DoomLauncher
                 catch (IOException)
                 {
                     // File is in use, insert to delete on next startup
-                    DataCache.Instance.DataSourceAdapter.InsertCleanupFile(new CleanupFile() { FileName = file });
+                    m_database.InsertCleanupFile(new CleanupFile() { FileName = file });
                 }
 
-                DataCache.Instance.DataSourceAdapter.DeleteFile(thumbnail);
+                m_database.DeleteFile(thumbnail);
             }
 
             GetOrCreateThumbnail(gameFile);
@@ -71,28 +89,33 @@ namespace DoomLauncher
 
         // Returns or creates a new thumbnail and inserts into database if it doesn't exist
         // Will search screenshots and thumbnails if provided, otherwise will check from database
-        public static IFileData GetOrCreateThumbnail(IGameFile gameFile, IEnumerable<IFileData> screenshots = null, IEnumerable<IFileData> thumbnails = null,
+        public IFileData GetOrCreateThumbnail(IGameFile gameFile, IEnumerable<IFileData> screenshots = null, IEnumerable<IFileData> thumbnails = null,
             bool checkIWad = true)
         {
+            // Populate thumbnails parameter if not provided
             if (thumbnails == null)
-                thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Thumbnail);
+                thumbnails = m_database.GetFiles(gameFile, FileType.Thumbnail);
 
             var thumbnail = thumbnails.FirstOrDefault(x => x.GameFileID == gameFile.GameFileID.Value);
 
+            // If we've already got one, we're done
             if (thumbnail != null)
                 return thumbnail;
 
+            // Populate screenshots parameter if not provided
             if (screenshots == null)
             {
                 var combined = new List<IFileData>();
-                combined.AddRange(DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.TitlePic));
-                combined.AddRange(DataCache.Instance.DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot));
+                combined.AddRange(m_database.GetFiles(gameFile, FileType.TitlePic));
+                combined.AddRange(m_database.GetFiles(gameFile, FileType.Screenshot));
                 screenshots = combined;
             }
 
+            // If we've got a TitlePic or screenshot, make a thumbnail out of that and save to DB
             var screenshot = screenshots.FirstOrDefault(x => x.GameFileID == gameFile.GameFileID.Value);
             if (screenshot != null)
             {
+                // Make a squishy thumbnail version of the screenshot and save to disk
                 if (!TryCreateThumbnail(screenshot, out var thumbnailFile))
                     return null;
 
@@ -105,16 +128,19 @@ namespace DoomLauncher
                     SourcePortID = screenshot.FileID.Value
                 };
 
-                DataCache.Instance.DataSourceAdapter.InsertFile(fileData);
+                m_database.InsertFile(fileData);
                 return fileData;
             }
 
+            // No titlepic, but check the iwad
             if (checkIWad && gameFile.IWadID.HasValue)
             {
+                // Fail if no iwads
                 var iwad = IWads.FirstOrDefault(x => x.IWadID == gameFile.IWadID.Value);
                 if (iwad == null)
                     return null;
 
+                // If this is the actual IWAD, do the whole thing again without checking for the IWAD
                 if (iwad.GameFileID.HasValue && iwad.GameFileID == gameFile.GameFileID)
                 {                    
                     var iwadThumbnail = GetOrCreateThumbnail(iwad, checkIWad: false);
@@ -122,6 +148,7 @@ namespace DoomLauncher
                         return iwadThumbnail;
                 }
 
+                // This is not an IWAD, so we'll use the iwad's TileImage
                 if (IWadTileImages.TryGetValue(gameFile.IWadID.Value, out var fileData))
                     return fileData;          
             }
@@ -129,13 +156,12 @@ namespace DoomLauncher
             return null;
         }
 
-        private static bool TryCreateThumbnail(IFileData screenshot, out string filename)
+        private bool TryCreateThumbnail(IFileData titlePic, out string filename)
         {
             filename = string.Empty;
             try
             {
-                var config = DataCache.Instance.AppConfiguration;
-                string file = Path.Combine(config.TitlePicDirectory.GetFullPath(), screenshot.FileName);
+                string file = m_config.TitlePicDirectory.GetFullPath(titlePic.FileName);
                 if (!File.Exists(file))
                     return false;
 
@@ -145,7 +171,7 @@ namespace DoomLauncher
                     using (Image thumb = image.FixedSize(ThumbnailSize, GameFileTile.GetImageHeight(ThumbnailSize), Color.Black))
                     {
                         filename = Guid.NewGuid().ToString() + ".png";
-                        thumb.Save(Path.Combine(config.ThumbnailDirectory.GetFullPath(), filename), ImageFormat.Png);
+                        thumb.Save(m_config.ThumbnailDirectory.GetFullPath(filename), ImageFormat.Png);
                         return true;
                     }
                 }

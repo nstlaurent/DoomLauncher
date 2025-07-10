@@ -68,9 +68,9 @@ namespace DoomLauncher
             return Path.Combine(m_fullPath, fileName);
         }
 
-        public string GetPossiblyRelativePath()
+        public string GetPossiblyRelativePath(string fileName = "")
         {
-            return m_path;
+            return Path.Combine(m_path, fileName);
         } 
 
         public static implicit operator string(LauncherPath p)

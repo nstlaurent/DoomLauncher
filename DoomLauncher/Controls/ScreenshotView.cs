@@ -118,7 +118,7 @@ namespace DoomLauncher
         {
             if (base.New())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
                 return true;
             }
 
@@ -138,7 +138,7 @@ namespace DoomLauncher
         {
             if (base.Delete())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
                 return true;
             }
             
@@ -149,7 +149,7 @@ namespace DoomLauncher
         {
             if (base.MoveFileOrderUp())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
                 return true;
             }
 
@@ -160,7 +160,7 @@ namespace DoomLauncher
         {
             if (base.MoveFileOrderDown())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
                 return true;
             }
 
@@ -171,7 +171,7 @@ namespace DoomLauncher
         {
             if (base.SetFileOrderFirst())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
                 return true;
             }
 
@@ -477,7 +477,7 @@ namespace DoomLauncher
                 DataSourceAdapter.UpdateFile(fileUpdate);
 
             if (firstFile.FileOrder != 0)
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                ThumbnailManager.Instance.UpdateThumbnail(GameFile);
 
             return true;
         }

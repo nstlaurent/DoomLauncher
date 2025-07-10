@@ -221,6 +221,7 @@ namespace DoomLauncher
             SaveGameDirectory = SetChildDirectory(gameFileDir, "SaveGames");
             ThumbnailDirectory = SetChildDirectory(gameFileDir, "Thumbnails");
             TitlePicDirectory = SetChildDirectory(gameFileDir, "TitlePics");
+            TileImageDirectory = SetChildDirectory(gameFileDir, @"..\TileImages"); 
         }
 
         private static LauncherPath GetGameFileDir(string gameFileDir)
@@ -274,6 +275,7 @@ namespace DoomLauncher
             VerifyPath(SaveGameDirectory, throwErrors);
             VerifyPath(ThumbnailDirectory, throwErrors);
             VerifyPath(TitlePicDirectory, throwErrors);
+            VerifyPath(TileImageDirectory, throwErrors);
         }
 
         private void VerifyPath(LauncherPath path, bool throwErrors)
@@ -295,6 +297,7 @@ namespace DoomLauncher
         public LauncherPath DemoDirectory { get; private set; }
         public LauncherPath ThumbnailDirectory { get; private set; }
         public LauncherPath TitlePicDirectory { get; private set; }
+        public LauncherPath TileImageDirectory { get; private set; }
         public string IdGamesUrl { get; private set; }
         public string ApiPage { get; private set; }
         public string MirrorUrl { get; private set; }
