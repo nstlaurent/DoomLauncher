@@ -523,13 +523,11 @@ namespace DoomLauncher
             IFileData thumbnail = ThumbnailManager.Instance.GetOrCreateThumbnail(gameFile, screenshots, thumbnails);
             if (thumbnail != null)
             {
-                if (thumbnail.FileTypeID == FileType.TileImage)
-                    tile.SetImageLocation(thumbnail.FileName);
-                else
-                    tile.SetImageLocation(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName));
+                tile.SetImageLocation(ThumbnailManager.Instance.GetThumbnailImagePath(thumbnail));
                 return;
             }
             
+            // TODO ThumbnailManager should choose this too
             tile.SetImage(DataCache.Instance.DefaultImage);
         }
 

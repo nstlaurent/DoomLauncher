@@ -287,7 +287,6 @@
     <Compile Include="Handlers\Sync\KnownWadsSyncAction.cs" />
     <Compile Include="Handlers\Sync\MapInfoUtil.cs" />
     <Compile Include="Handlers\Sync\MapStringSyncAction.cs" />
-    <Compile Include="Handlers\Sync\StartupImageSyncAction.cs" />
     <Compile Include="Handlers\Sync\SyncResult.cs" />
     <Compile Include="Handlers\Sync\Doom64SyncAction.cs" />
     <Compile Include="Handlers\Sync\TextFileSyncAction.cs" />
@@ -302,7 +301,7 @@
     <Compile Include="Handlers\MenuConstants.cs" />
     <Compile Include="Handlers\ArchiveUtil.cs" />
     <Compile Include="Handlers\PathExtensions.cs" />
-    <Compile Include="Handlers\TileImageHandler.cs" />
+    <Compile Include="Handlers\Files\TileImageHandler.cs" />
     <Compile Include="Handlers\ToolTipGroup.cs" />
     <Compile Include="Handlers\VersionUpdateResults.cs" />
     <Compile Include="Interfaces\IGameFileSortableView.cs" />

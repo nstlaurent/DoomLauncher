@@ -26,9 +26,7 @@ namespace DoomLauncher
             using (var imageStream = new MemoryStream())
             {
                 image.Save(imageStream, ImageFormat.Png);
-
                 var fileData = m_fileHandler.InsertFromMemory(gameFile, FileType.TitlePic, imageStream, "png");
-
                 return fileData;
             }
         }

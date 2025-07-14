@@ -1,12 +1,16 @@
 ﻿using DoomLauncher.Config;
 using DoomLauncher.Interfaces;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace DoomLauncher.Handlers
 {
     public class TileImageHandler
     {
         private Dictionary<IWadInfo, IFileData> m_tileImageCache = null;
+        private static readonly string DEFAULT_IMAGE_NAME = "DoomLauncherTile";
+
 
         public TileImageHandler()
         {

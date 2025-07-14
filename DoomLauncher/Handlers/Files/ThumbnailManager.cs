@@ -4,6 +4,7 @@ using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -13,12 +14,13 @@ namespace DoomLauncher
 {
     public class ThumbnailManager
     {
+        private static readonly string DEFAULT_IMAGE_NAME = "doomlaunchertile";
+
         public static List<IGameFile> IWads = new List<IGameFile>();
         public static readonly Dictionary<int, IFileData> IWadTileImages = new Dictionary<int, IFileData>();
 
         private readonly IDataSourceAdapter m_database;
         private readonly IDirectoriesConfiguration m_config;
-        private readonly TileImageHandler m_tileImageHandler;
 
         public static ThumbnailManager Instance => 
             new ThumbnailManager(DataCache.Instance.DataSourceAdapter, DataCache.Instance.AppConfiguration);
@@ -27,10 +29,8 @@ namespace DoomLauncher
         {
             m_database = database;
             m_config = config;
-            m_tileImageHandler = new TileImageHandler();
         }
 
-      
         public static void SetIWads(List<IGameFile> iwads)
         {
             IWads = iwads;
@@ -87,10 +87,29 @@ namespace DoomLauncher
             GetOrCreateThumbnail(gameFile);
         }
 
+        public static bool IsTileImage(IFileData fileData)
+        {
+            if (fileData.FileTypeID == FileType.TileImage)
+                return true;
+
+            var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileData.FileName);
+            return IWadInfo.ALL.Any(info => info.GameName == fileNameWithoutExt) || DEFAULT_IMAGE_NAME == fileNameWithoutExt;
+        }
+
+        public string GetThumbnailImagePath(IFileData thumbnail)
+        {
+            if (IsTileImage(thumbnail))
+                return m_config.TileImageDirectory.GetFullPath(thumbnail.FileName);
+            else
+                return m_config.GetFileDirectory(thumbnail.FileTypeID).GetFullPath(thumbnail.FileName);
+        }
+
         // Returns or creates a new thumbnail and inserts into database if it doesn't exist
         // Will search screenshots and thumbnails if provided, otherwise will check from database
-        public IFileData GetOrCreateThumbnail(IGameFile gameFile, IEnumerable<IFileData> screenshots = null, IEnumerable<IFileData> thumbnails = null,
-            bool checkIWad = true)
+        public IFileData GetOrCreateThumbnail(IGameFile gameFile, 
+            IEnumerable<IFileData> screenshots = null, 
+            IEnumerable<IFileData> thumbnails = null, // These optional parameters are useless, it is always selecting all screenshots/thumbnails from DB just before calling this method
+            bool checkIWad = true) 
         {
             // Populate thumbnails parameter if not provided
             if (thumbnails == null)
@@ -136,17 +155,10 @@ namespace DoomLauncher
             if (checkIWad && gameFile.IWadID.HasValue)
             {
                 // Fail if no iwads
-                var iwad = IWads.FirstOrDefault(x => x.IWadID == gameFile.IWadID.Value);
+                var iwads = m_database.GetIWads();
+                var iwad = iwads.FirstOrDefault(w => w.IWadID == gameFile.IWadID.Value);
                 if (iwad == null)
                     return null;
-
-                // If this is the actual IWAD, do the whole thing again without checking for the IWAD
-                if (iwad.GameFileID.HasValue && iwad.GameFileID == gameFile.GameFileID)
-                {                    
-                    var iwadThumbnail = GetOrCreateThumbnail(iwad, checkIWad: false);
-                    if (iwadThumbnail != null)
-                        return iwadThumbnail;
-                }
 
                 // This is not an IWAD, so we'll use the iwad's TileImage
                 if (IWadTileImages.TryGetValue(gameFile.IWadID.Value, out var fileData))
@@ -156,12 +168,12 @@ namespace DoomLauncher
             return null;
         }
 
-        private bool TryCreateThumbnail(IFileData titlePic, out string filename)
+        private bool TryCreateThumbnail(IFileData titlePicOrScreenshot, out string filename)
         {
             filename = string.Empty;
             try
             {
-                string file = m_config.TitlePicDirectory.GetFullPath(titlePic.FileName);
+                string file = this.GetThumbnailImagePath(titlePicOrScreenshot);
                 if (!File.Exists(file))
                     return false;
 
