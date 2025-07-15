@@ -244,7 +244,7 @@ namespace DoomLauncher
                 m_adapter.DeleteFiles(SelectedItem, fileType);
    
             m_adapter.DeleteStats(SelectedItem);
-            m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1); //Since we didn't delete screenshots unlink them
+            m_adapter.UpdateFiles(SelectedItem.SourcePortID, null); //Since we didn't delete screenshots unlink them
 
             foreach(var file in files)
             {
@@ -263,7 +263,7 @@ namespace DoomLauncher
 
         private void UnlinkFilesFromSourcePort()
         {
-            m_adapter.UpdateFiles(SelectedItem.SourcePortID, -1);
+            m_adapter.UpdateFiles(SelectedItem.SourcePortID, null);
 
             var stats = m_adapter.GetStats().Where(x => x.SourcePortID == SelectedItem.SourcePortID);
             foreach (var stat in stats)

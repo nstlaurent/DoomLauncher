@@ -16,7 +16,7 @@ namespace DoomLauncher
         public string FileName { get; set; }
         public DateTime DateCreated { get; set; }
         public FileType FileTypeID { get; set; }
-        public int SourcePortID { get; set; }
+        public int? SourcePortID { get; set; }
         public string Description { get; set; }
         public string OriginalFileName { get; set; }
         public string OriginalFilePath { get; set; }
@@ -26,6 +26,8 @@ namespace DoomLauncher
         public int FileOrder { get; set; }
 
         public virtual bool IsUrl { get { return false; } }
+
+        public int? DerivedFromFileID { get; set; }
 
         public static string GetTitle(IFileData fileData)
         {

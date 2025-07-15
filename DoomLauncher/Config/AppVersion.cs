@@ -42,5 +42,6 @@
         Version_3_7_4,
         Version_3_7_7,
         Version_3_7_8,
+        Version_3_7_9,
     }
 }

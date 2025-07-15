@@ -46,8 +46,7 @@ namespace DoomLauncher
                 {
                     GameFileID = iwad.GameFileID.Value,
                     FileName = iwadInfo.TileImage,
-                    FileTypeID = FileType.TileImage,
-                    SourcePortID = 0
+                    FileTypeID = FileType.TileImage
                 };  
             }
         }
@@ -64,7 +63,7 @@ namespace DoomLauncher
                 delete = true;
 
             // The first screenshot was changed
-            if (thumbnail != null && titlePic != null && thumbnail.SourcePortID != titlePic.FileID)
+            if (thumbnail != null && titlePic != null && thumbnail.DerivedFromFileID != titlePic.FileID)
                 delete = true;
 
             if (delete)
@@ -138,13 +137,12 @@ namespace DoomLauncher
                 if (!TryCreateThumbnail(screenshot, out var thumbnailFile))
                     return null;
 
-                // Store the FileID of the screenshot in SourcePortID so we can use it to keep track of screenshot re-ordering / deletes
                 FileData fileData = new FileData()
                 {
                     GameFileID = gameFile.GameFileID.Value,
                     FileName = thumbnailFile,
                     FileTypeID = FileType.Thumbnail,
-                    SourcePortID = screenshot.FileID.Value
+                    DerivedFromFileID = screenshot.FileID.Value
                 };
 
                 m_database.InsertFile(fileData);

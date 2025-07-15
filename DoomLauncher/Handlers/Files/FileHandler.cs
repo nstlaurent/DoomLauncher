@@ -142,7 +142,6 @@ namespace DoomLauncher.Handlers
             {
                 FileName = fileName,
                 GameFileID = gameFile.GameFileID.Value,
-                SourcePortID = -1,
                 FileTypeID = fileType,
                 FileOrder = 0
             };

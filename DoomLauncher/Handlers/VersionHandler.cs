@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -96,6 +97,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_7_4, AppVersion.Version_3_7_4);
                 ExecuteUpdate(Pre_Version_3_7_7, AppVersion.Version_3_7_7);
                 ExecuteUpdate(Pre_Version_3_7_8, AppVersion.Version_3_7_8);
+                ExecuteUpdate(Pre_Version_3_7_9, AppVersion.Version_3_7_9);
             }
 
             return new VersionUpdateResults(m_restartRequired);
@@ -920,6 +922,52 @@ namespace DoomLauncher
             {
                 DataAccess.ExecuteNonQuery("alter table GameFiles add column 'IsSyncNeeded' INTEGER NOT NULL DEFAULT 0;");
                 DataAccess.ExecuteNonQuery("update GameFiles set IsSyncNeeded = 1");
+            }
+        }
+
+        private void Pre_Version_3_7_9()
+        {
+            // Check if SourcePortID is already nullable (no NOT NULL constraint)
+            var dt = DataAccess.ExecuteSelect("pragma table_info(Files);").Tables[0];
+            var sourcePortIdRow = dt.Select("name = 'SourcePortID'").FirstOrDefault();
+            if (sourcePortIdRow == null)
+                return; // Column doesn't exist, nothing to do
+
+            // In SQLite, NOT NULL is 1, NULL is 0
+            bool isNotNull = Convert.ToInt32(sourcePortIdRow["notnull"]) == 1;
+            if (!isNotNull)
+                return; // Already nullable, migration not needed
+
+            // Perform migration: create new table with nullable SourcePortID, copy data, swap tables
+            DataAccess.ExecuteNonQuery(@"
+                CREATE TABLE IF NOT EXISTS Files_new (
+                    FileID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    GameFileID INTEGER NOT NULL,
+                    FileName TEXT NOT NULL,
+                    DateCreated TEXT NOT NULL,
+                    FileTypeID INTEGER NOT NULL,
+                    SourcePortID INTEGER, -- now nullable
+                    Description TEXT,
+                    OriginalFileName TEXT,
+                    OriginalFilePath TEXT,
+                    FileOrder int,
+                    UserTitle TEXT,
+                    UserDescription TEXT,
+                    Map TEXT
+                );
+                INSERT INTO Files_new SELECT * FROM Files;
+                DROP TABLE Files;
+                ALTER TABLE Files_new RENAME TO Files;
+                UPDATE Files SET SourcePortID = NULL WHERE SourcePortID = -1;
+                UPDATE Files SET SourcePortID = NULL WHERE SourcePortID = 0;
+            ");
+
+            if (!dt.Select("name = 'DerivedFromFileID'").Any())
+            {
+                DataAccess.ExecuteNonQuery("alter table Files add column 'DerivedFromFileID' INTEGER;");
+                // Thumbnails (FileTypeID = 4) were encoding the FileID they were derived from in SourcePort ID
+                DataAccess.ExecuteNonQuery("update Files set DerivedFromFileID = SourcePortID where FileTypeID = 4");
+                DataAccess.ExecuteNonQuery("update Files set SourcePortID = NULL where FileTypeID = 4");
             }
         }
 

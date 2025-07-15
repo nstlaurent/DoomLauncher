@@ -9,7 +9,7 @@ namespace DoomLauncher.Interfaces
         string FileName { get; set; }
         DateTime DateCreated { get; set; }
         FileType FileTypeID { get; set; }
-        int SourcePortID { get; set; }
+        int? SourcePortID { get; set; }
         string Description { get; set; }
         string OriginalFileName { get; set; }
         string OriginalFilePath { get; set; }
@@ -18,5 +18,7 @@ namespace DoomLauncher.Interfaces
         string Map { get; set; }
         int FileOrder { get; set; }
         bool IsUrl { get; }
+
+        int? DerivedFromFileID { get; set; }
     }
 }
