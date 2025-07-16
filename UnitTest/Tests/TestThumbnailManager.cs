@@ -59,7 +59,6 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile()
             {
-                GameFileID = 111,
                 FileName = "GetOrCreateThumbnail_ReturnsThumbnailThatAlreadyExists.zip"
             };
             database.InsertGameFile(gameFile);
@@ -88,18 +87,20 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile()
             {
-                GameFileID = 234,
                 FileName = "GetOrCreateThumbnail_UsesTitlePicIfThere.zip"
             };
             database.InsertGameFile(gameFile);
             gameFile = database.GetGameFile(gameFile.FileName);
 
-            titlePicHandler.InsertTitlePic(gameFile, Image.FromFile(@"Resources\happy.png")); 
+            var titlePic = titlePicHandler.InsertTitlePic(gameFile, Image.FromFile(@"Resources\happy.png")); 
+            titlePic = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
+
             var thumbnail = thumbnailManager.GetOrCreateThumbnail(gameFile);
 
             Assert.IsNotNull(thumbnail);
             Assert.IsFalse(string.IsNullOrEmpty(thumbnail.FileName));
             Assert.IsFalse(ThumbnailManager.IsTileImage(thumbnail));
+            Assert.AreEqual(titlePic.FileID, thumbnail.DerivedFromFileID);
         }
 
         [TestMethod]
@@ -110,7 +111,6 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile()
             {
-                GameFileID = 747,
                 FileName = "GetOrCreateThumbnail_UsesScreenshotIfThere.zip"
             };
             database.InsertGameFile(gameFile);
@@ -118,12 +118,15 @@ namespace UnitTest.Tests
 
             ISourcePortData sourcePort = new SourcePortData() { SourcePortID = 99 };
 
-            screenshotHandler.HandleNewScreenshots(sourcePort, gameFile, new string[] { @"Resources\happy.png" });
+            var screenshot = screenshotHandler.HandleNewScreenshots(sourcePort, gameFile, new string[] { @"Resources\happy.png" }).FirstOrDefault();
+            screenshot = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
+            
             var thumbnail = thumbnailManager.GetOrCreateThumbnail(gameFile);
 
             Assert.IsNotNull(thumbnail);
             Assert.IsFalse(string.IsNullOrEmpty(thumbnail.FileName));
             Assert.IsFalse(ThumbnailManager.IsTileImage(thumbnail));
+            Assert.AreEqual(screenshot.FileID, thumbnail.DerivedFromFileID); 
         }
 
         [TestMethod]
