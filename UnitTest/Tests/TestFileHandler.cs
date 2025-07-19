@@ -24,6 +24,7 @@ namespace UnitTest.Tests
             ScreenshotDirectory = new LauncherPath("Screenshots"),
             ThumbnailDirectory = new LauncherPath("Thumbnails"),
             TitlePicDirectory = new LauncherPath("TitlePics"),
+            TileImageDirectory = new LauncherPath("TileImagesTest"),
             DemoDirectory = new LauncherPath("Demos"),
         };
 
@@ -34,6 +35,7 @@ namespace UnitTest.Tests
             Directory.CreateDirectory("Screenshots");
             Directory.CreateDirectory("Thumbnails");
             Directory.CreateDirectory("TitlePics");
+            Directory.CreateDirectory("TileImagesTest");
             Directory.CreateDirectory("Demos");
         }
 
@@ -51,6 +53,9 @@ namespace UnitTest.Tests
 
             if (Directory.Exists("Demos"))
                 Directory.Delete("Demos", true);
+
+            if (Directory.Exists("TileImagesTest"))
+                Directory.Delete("TileImagesTest", true);
 
             if (File.Exists(@"Resources\happy_DELETE_ME.png"))
                 File.Delete(@"Resources\happy_DELETE_ME.png");
@@ -173,14 +178,45 @@ namespace UnitTest.Tests
             var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
-            // We definitely inserted it
+            // We definitely inserted it in DB and on disk
             Assert.IsNotNull(fileDataFromDB);
+            Assert.IsTrue(File.Exists($@"Screenshots\{fileDataFromDB.FileName}"));
 
             fileHandler.DeleteFile(fileDataFromDB);
             var deletedFileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
-            // We definitely deleted it
+            // We definitely deleted it in DB and on disk
             Assert.IsNull(deletedFileDataFromDB);
+            Assert.IsFalse(File.Exists($@"Screenshots\{fileDataFromDB.FileName}"));
+        }
+
+        [TestMethod]
+        public void DeleteFile_DoesntDeleteFixedContentOnDisk()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            IGameFile gameFile = CreateSavedGameFile("DeleteFile_DoesntDeleteFixedContent.zip");
+
+            var imageStream = GetImageStream(@"Resources\happy.png");
+
+            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.TileImage, imageStream, "png");
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
+
+            // This test doesnt make sense unless TileImages are fixed content
+            Assert.IsTrue(FileType.TileImage.IsFixedContent());
+
+            // We definitely inserted it
+            Assert.IsNotNull(fileDataFromDB);
+            Assert.IsTrue(File.Exists($@"TileImagesTest\{fileDataFromDB.FileName}"));
+
+            fileHandler.DeleteFile(fileDataFromDB);
+            var deletedFileDataFromDB = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
+
+            // We deleted the DB record...
+            Assert.IsNull(deletedFileDataFromDB);
+
+            //... but not the file on disk.
+            Assert.IsTrue(File.Exists($@"TileImagesTest\{fileDataFromDB.FileName}"));
         }
 
         [TestMethod]

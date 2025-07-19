@@ -31,6 +31,8 @@ namespace DoomLauncher.Config
                     return config.ThumbnailDirectory;
                 case FileType.TitlePic:
                     return config.TitlePicDirectory;
+                case FileType.TileImage:
+                    return config.TileImageDirectory;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(fileType), fileType, "Unknown file type");
             }

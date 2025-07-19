@@ -110,18 +110,21 @@ namespace DoomLauncher.Handlers
 
         public void DeleteFile(IFileData file)
         {
-            string path = m_config.GetFileDirectory(file.FileTypeID).GetFullPath(file.FileName);
-            try
+            if (!file.FileTypeID.IsFixedContent())
             {
-                FileInfo fi = new FileInfo(path);
+                string path = m_config.GetFileDirectory(file.FileTypeID).GetFullPath(file.FileName);
+                try
+                {
+                    FileInfo fi = new FileInfo(path);
 
-                if (fi.Exists)
-                    fi.Delete();
-            }
-            catch (IOException)
-            {
-                // File is in use, insert to delete on next startup
-                m_database.InsertCleanupFile(new CleanupFile() { FileName = path });
+                    if (fi.Exists)
+                        fi.Delete();
+                }
+                catch (IOException)
+                {
+                    // File is in use, insert to delete on next startup
+                    m_database.InsertCleanupFile(new CleanupFile() { FileName = path });
+                }
             }
 
             m_database.DeleteFile(file);
