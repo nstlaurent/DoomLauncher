@@ -50,45 +50,5 @@ namespace DoomLauncher
 
             return ret;
         }
-
-        public bool FindScreenshotThatIsReallyATitlePic(IGameFile gameFile, Image image, out IFileData titlePicScreenshot)
-        {
-            titlePicScreenshot = null;
-
-            var screenshots = m_fileHandler.GetFiles(gameFile, FileType.Screenshot);
-
-            if (!screenshots.Any())
-                return false;
-
-            // Create png image in memory and use the size to compare to existing screenshot file sizes.
-            // This method should be accurate enough to determine if an existing screenshot is the titlepic.
-            // This method only works with titlepics pull by Doom Laucher, existing user generated screenshots from source ports will not match.
-            long fileSize = 0;
-            try
-            {
-                using (var imageStream = new MemoryStream())
-                {
-                    image.Save(imageStream, ImageFormat.Png);
-                    fileSize = imageStream.Length;
-                }
-            }
-            catch { }
-
-            foreach (IFileData screenshot in screenshots)
-            {
-                try
-                {
-                    FileInfo fi = m_fileHandler.GetFileInfo(FileType.Screenshot, screenshot.FileName);
-                    if (fi.Length == fileSize)
-                    {
-                        titlePicScreenshot = screenshot;
-                        return true;
-                    }
-                }
-                catch { }
-            }
-
-            return false;
-        }
     }
 }

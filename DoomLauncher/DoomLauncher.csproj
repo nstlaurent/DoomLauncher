@@ -277,6 +277,7 @@
     <Compile Include="Handlers\Files\FileHandler.cs" />
     <Compile Include="Handlers\Files\GameFileImageHandler.cs" />
     <Compile Include="Handlers\Files\IFileHandler.cs" />
+    <Compile Include="Handlers\Files\LegacyTitlePicMigration.cs" />
     <Compile Include="Handlers\Sync\StartupImageSyncAction.cs" />
     <Compile Include="Handlers\Sync\Doom64TitlePicSyncAction.cs" />
     <Compile Include="Handlers\Sync\GameConfSyncAction.cs" />

@@ -152,7 +152,6 @@ namespace DoomLauncher
         {
             var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
             var gameFileImageHandler = new GameFileImageHandler(fileHandler);
-            var screenshotHandler = new ScreenshotHandler(fileHandler, AppConfiguration.DeleteScreenshotsAfterImport);
             var thumbnailManager = new ThumbnailManager(DataSourceAdapter, AppConfiguration);
 
             foreach (IGameFile gameFile in syncResult.AddedOrUpdatedFiles)
@@ -165,7 +164,7 @@ namespace DoomLauncher
                 image = image.ScaleDoomImage();
 
                 // Migrate from storing titlepics as screenshots, to storing titlepics separately
-                if (screenshotHandler.FindScreenshotThatIsReallyATitlePic(gameFile, image, out var titlePicScreenshot))
+                if (LegacyTitlePicMigration.FindScreenshotThatIsReallyATitlePic(fileHandler, gameFile, image, out var titlePicScreenshot))
                 {
                     fileHandler.DeleteFile(titlePicScreenshot);
                 }

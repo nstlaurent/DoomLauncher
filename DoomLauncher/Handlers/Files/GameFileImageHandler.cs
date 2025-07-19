@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 
 
 namespace DoomLauncher.Handlers
@@ -13,10 +14,12 @@ namespace DoomLauncher.Handlers
     {
         private static readonly int THUMBNAIL_SIZE = 300;
         private readonly IFileHandler m_fileHandler;
+        private readonly bool m_deleteScreenshotsAfterImport;
 
-        public GameFileImageHandler(IFileHandler fileHandler)
+        public GameFileImageHandler(IFileHandler fileHandler, bool deleteScreenshotsAfterImport = false)
         {
             m_fileHandler = fileHandler;
+            m_deleteScreenshotsAfterImport = deleteScreenshotsAfterImport;
         }
 
         public string GetMainImageLarge(IGameFile gameFile)
@@ -51,6 +54,35 @@ namespace DoomLauncher.Handlers
             }
 
             return titlePic;
+        }
+
+        public IFileData InsertScreenshot(ISourcePortData sourcePort, IGameFile gameFile, string screenshotFile)
+        {
+            if (gameFile == null || !gameFile.GameFileID.HasValue)
+                return null;
+
+            IFileData screenshot;
+            if (m_deleteScreenshotsAfterImport)
+            {
+                screenshot = m_fileHandler.InsertAndMove(gameFile, FileType.Screenshot, screenshotFile, file =>
+                {
+                    file.SourcePortID = sourcePort.SourcePortID;
+                });
+            }
+            else
+            {
+                screenshot = m_fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, screenshotFile, file =>
+                {
+                    file.SourcePortID = sourcePort.SourcePortID;
+                });
+            }
+
+            if (screenshot != null) // && no thumbnails exist for that gameFile
+            {
+                CreateAndInsertThumbnail(gameFile, screenshot);
+            }
+
+            return screenshot;
         }
 
         private IFileData CreateAndInsertThumbnail(IGameFile gameFile, IFileData parent)
