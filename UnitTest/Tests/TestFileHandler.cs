@@ -109,9 +109,7 @@ namespace UnitTest.Tests
         public void InsertFileFromMemory_CreatesDatabaseEntry()
         {
             var fileHandler = new FileHandler(database, config);
-
             IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_CreatesDatabaseEntry.zip");
-
             var imageStream = GetImageStream(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
@@ -126,9 +124,7 @@ namespace UnitTest.Tests
         public void InsertFileFromMemory_AppliesEdits()
         {
             var fileHandler = new FileHandler(database, config);
-
             IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_AppliesEdits.zip");
-
             var imageStream = GetImageStream(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png", x =>
@@ -149,9 +145,7 @@ namespace UnitTest.Tests
         public void DeleteFile_DeletesFileOnDisk()
         {
             var fileHandler = new FileHandler(database, config);
-
             IGameFile gameFile = CreateSavedGameFile("DeleteFile_DeletesFileOnDisk.zip");
-
             var imageStream = GetImageStream(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
@@ -170,9 +164,7 @@ namespace UnitTest.Tests
         public void DeleteFile_DeletesDatabaseEntry()
         {
             var fileHandler = new FileHandler(database, config);
-
             IGameFile gameFile = CreateSavedGameFile("DeleteFile_DeletesDatabaseEntry.zip");
-
             var imageStream = GetImageStream(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
@@ -194,9 +186,7 @@ namespace UnitTest.Tests
         public void DeleteFile_DoesntDeleteFixedContentOnDisk()
         {
             var fileHandler = new FileHandler(database, config);
-
             IGameFile gameFile = CreateSavedGameFile("DeleteFile_DoesntDeleteFixedContent.zip");
-
             var imageStream = GetImageStream(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertFromMemory(gameFile, FileType.TileImage, imageStream, "png");
@@ -220,10 +210,43 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void DeleteFile_DeletesDerivedFilesToo()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("DeleteFile_DeletesDerivedFilesToo.zip");
+            var imageStream = GetImageStream(@"Resources\happy.png");
+
+            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, imageStream, "png");
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
+
+            var derivedFileData = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png", file => 
+                {
+                    file.DerivedFromFileID = fileDataFromDB.FileID;
+                });
+            var derivedFileDataFromDB = database.GetFiles(gameFile, FileType.Thumbnail).FirstOrDefault();
+
+            // We definitely inserted both in DB and on disk
+            Assert.IsNotNull(fileDataFromDB);
+            Assert.IsTrue(File.Exists($@"Screenshots\{fileDataFromDB.FileName}"));
+            Assert.IsNotNull(derivedFileData);
+            Assert.IsTrue(File.Exists($@"Thumbnails\{derivedFileDataFromDB.FileName}"));
+
+            // Delete only the first one
+            fileHandler.DeleteFile(fileDataFromDB);
+            var deletedFileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
+            var derivedDeletedFileDataFromDB = database.GetFiles(gameFile, FileType.Thumbnail).FirstOrDefault();
+
+            // We definitely deleted both in DB and on disk
+            Assert.IsNull(deletedFileDataFromDB);
+            Assert.IsFalse(File.Exists($@"Screenshots\{fileDataFromDB.FileName}"));
+            Assert.IsNull(derivedDeletedFileDataFromDB);
+            Assert.IsFalse(File.Exists($@"Thumbnails\{derivedFileDataFromDB.FileName}"));
+        }
+
+        [TestMethod]
         public void InsertAndCopy_InsertsDatabaseEntry()
         {
             var fileHandler = new FileHandler(database, config);
-
             IGameFile gameFile = CreateSavedGameFile("InsertAndCopy_InsertsDatabaseEntry.zip");
 
             var fileData = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");

@@ -17,10 +17,12 @@ namespace DoomLauncher.Interfaces
         void UpdateSourcePort(ISourcePortData sourcePort);
         void DeleteSourcePort(ISourcePortData sourcePort);
 
+        
         IEnumerable<IFileData> GetFiles();
         IEnumerable<IFileData> GetFiles(IGameFile gameFile);
         IEnumerable<IFileData> GetFiles(IGameFile gameFile, FileType fileTypeID);
         IEnumerable<IFileData> GetFiles(FileType fileTypeID);
+        IEnumerable<IFileData> GetDerivedFiles(IFileData file);
 
         void UpdateFile(IFileData file);
         void UpdateFiles(int sourcePortID_Where, int? sourcePortID_Set);

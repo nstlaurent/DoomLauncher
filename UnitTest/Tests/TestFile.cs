@@ -219,6 +219,62 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void GetDerivedFiles_ReturnsDerivedFiles()
+        {
+            var gameFile = new GameFile()
+            {
+                GameFileID = 530
+            };
+
+            IFileData parentFile =
+                new FileData
+                {
+                    FileName = "parent.txt",
+                    FileTypeID = FileType.TitlePic,
+                    GameFileID = 530,
+                };
+
+            database.InsertFile(parentFile);
+            parentFile = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
+            Assert.IsNotNull(parentFile);
+
+            var childFile1 =
+                new FileData
+                {
+                    FileName = "child1.txt",
+                    FileTypeID = FileType.Thumbnail,
+                    DerivedFromFileID = parentFile.FileID
+                };
+            database.InsertFile(childFile1);
+
+            var childFile2 =
+                new FileData
+                {
+                    FileName = "child2.txt",
+                    FileTypeID = FileType.Screenshot,
+                    DerivedFromFileID = parentFile.FileID
+                };
+            database.InsertFile(childFile2);
+
+            var notChildFile =
+                new FileData
+                {
+                    FileName = "not-a-child.txt",
+                    FileTypeID = FileType.Demo,
+                    DerivedFromFileID = 88
+                };
+            database.InsertFile(notChildFile);
+
+            var childFilesFromDB = database.GetDerivedFiles(parentFile);
+
+            Assert.AreEqual(2, childFilesFromDB.Count());
+
+            Assert.IsNotNull(childFilesFromDB.Where(x => x.FileName.Equals(childFile1.FileName)).FirstOrDefault());
+            Assert.IsNotNull(childFilesFromDB.Where(x => x.FileName.Equals(childFile2.FileName)).FirstOrDefault());
+            Assert.IsNull(childFilesFromDB.Where(x => x.FileName.Equals(notChildFile.FileName)).FirstOrDefault());
+        }
+
+        [TestMethod]
         public void GetFiles_FileType_ReturnsMatchingFiles()
         {
             var file1 =

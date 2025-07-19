@@ -452,6 +452,16 @@ namespace DoomLauncher
             DataAccess.ExecuteNonQuery(string.Format("delete from IWads where IWadID = {0}", iwad.IWadID));
         }
 
+        public IEnumerable<IFileData> GetDerivedFiles(IFileData file)
+        {
+            List<DbParameter> parameters = new List<DbParameter>
+            {
+                DataAccess.DbAdapter.CreateParameter("DerivedFromFileID", file.FileID)
+            };
+            DataTable dt = DataAccess.ExecuteSelect("select * from Files where DerivedFromFileID = @DerivedFromFileID", parameters).Tables[0];
+            return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
+        }
+
         public IEnumerable<IFileData> GetFiles()
         {
             DataTable dt = DataAccess.ExecuteSelect("select * from Files").Tables[0];

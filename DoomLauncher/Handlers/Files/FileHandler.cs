@@ -128,6 +128,9 @@ namespace DoomLauncher.Handlers
             }
 
             m_database.DeleteFile(file);
+
+            var derivedFiles = m_database.GetDerivedFiles(file).ToList();
+            derivedFiles.ForEach(DeleteFile);
         }
 
         public void DeleteFiles(IGameFile gameFile, FileType fileType)
