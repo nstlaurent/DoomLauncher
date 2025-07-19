@@ -151,7 +151,7 @@ namespace DoomLauncher
         private void SyncTitlePics(SyncResult syncResult)
         {
             var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
-            var titlePicHandler = new TitlePicHandler(fileHandler);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler);
             var screenshotHandler = new ScreenshotHandler(fileHandler, AppConfiguration.DeleteScreenshotsAfterImport);
             var thumbnailManager = new ThumbnailManager(DataSourceAdapter, AppConfiguration);
 
@@ -170,7 +170,7 @@ namespace DoomLauncher
                     fileHandler.DeleteFile(titlePicScreenshot);
                 }
 
-                var titlePicSucceeded = titlePicHandler.InsertTitlePic(gameFile, image) != null;
+                var titlePicSucceeded = gameFileImageHandler.InsertTitlePic(gameFile, image) != null;
 
                 if (titlePicSucceeded)
                     thumbnailManager.UpdateThumbnail(gameFile);

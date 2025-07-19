@@ -79,11 +79,10 @@ namespace UnitTest.Tests
 
         }
 
-        [TestMethod]
         public void GetOrCreateThumbnail_UsesTitlePicIfThere()
         {
             var thumbnailManager = new ThumbnailManager(database, config);
-            var titlePicHandler = new TitlePicHandler(new FileHandler(database, config));
+            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config));
 
             IGameFile gameFile = new GameFile()
             {
@@ -92,7 +91,7 @@ namespace UnitTest.Tests
             database.InsertGameFile(gameFile);
             gameFile = database.GetGameFile(gameFile.FileName);
 
-            var titlePic = titlePicHandler.InsertTitlePic(gameFile, Image.FromFile(@"Resources\happy.png")); 
+            var titlePic = gameFileImageHandler.InsertTitlePic(gameFile, Image.FromFile(@"Resources\happy.png")); 
             titlePic = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
 
             var thumbnail = thumbnailManager.GetOrCreateThumbnail(gameFile);

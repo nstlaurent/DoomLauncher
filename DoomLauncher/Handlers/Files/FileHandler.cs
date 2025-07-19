@@ -3,6 +3,8 @@ using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 
@@ -30,7 +32,7 @@ namespace DoomLauncher.Handlers
             return new FileInfo(m_config.GetFileDirectory(fileType).GetFullPath(fileName));
         }
 
-        public IFileData InsertFromMemory(IGameFile gameFile, FileType fileType, MemoryStream fileStream, string extension, Action<IFileData> editBeforeSave)
+        public IFileData InsertFromMemory(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave)
         {
             if (gameFile == null || !gameFile.GameFileID.HasValue)
                 return null;
@@ -41,8 +43,13 @@ namespace DoomLauncher.Handlers
             IFileData createdFile;
             try
             {
-                using (FileStream fs = new FileStream(path, FileMode.Create))
-                    fileStream.WriteTo(fs);
+                using (var imageStream = new MemoryStream())
+                {
+                    image.Save(imageStream, ImageFormat.Png);
+
+                    using (FileStream fs = new FileStream(path, FileMode.Create))
+                        imageStream.WriteTo(fs);
+                }
 
                 createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, editBeforeSave);
             }
@@ -104,6 +111,24 @@ namespace DoomLauncher.Handlers
                     if (File.Exists(path) && File.Exists(file))
                         File.Delete(path);
                 }
+            }
+            return createdFile;
+        }
+
+        public IFileData InsertAndRefer(IGameFile gameFile, FileType fileType, string file, Action<IFileData> editBeforeSave)
+        {
+            if (gameFile == null || !gameFile.GameFileID.HasValue)
+                return null;
+
+            FileInfo fi = new FileInfo(file);
+            string fileName = Path.GetFileName(file);
+
+            IFileData createdFile = null;
+            
+            // While we're not doing anything to the file, it needs to exist in the place we expect it.
+            if (fi.Exists && GetFileInfo(fileType, fileName).Exists)
+            {
+                createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, editBeforeSave);
             }
             return createdFile;
         }
