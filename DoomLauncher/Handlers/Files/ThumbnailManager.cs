@@ -16,8 +16,8 @@ namespace DoomLauncher
     {
         private static readonly string DEFAULT_IMAGE_NAME = "doomlaunchertile";
 
-        public static List<IGameFile> IWads = new List<IGameFile>();
-        public static readonly Dictionary<int, IFileData> IWadTileImages = new Dictionary<int, IFileData>();
+        private static List<IGameFile> IWads = new List<IGameFile>();
+        private static readonly Dictionary<int, IFileData> IWadTileImages = new Dictionary<int, IFileData>();
 
         private readonly IDataSourceAdapter m_database;
         private readonly IDirectoriesConfiguration m_config;
@@ -29,26 +29,6 @@ namespace DoomLauncher
         {
             m_database = database;
             m_config = config;
-        }
-
-        public static void SetIWads(List<IGameFile> iwads)
-        {
-            IWads = iwads;
-            IWadTileImages.Clear();
-
-            foreach (var iwad in iwads)
-            {
-                if (!iwad.IWadID.HasValue || !IWadInfo.TryGetIWadInfo(iwad.FileName, out var iwadInfo) || 
-                    string.IsNullOrEmpty(iwadInfo.TileImage) || !File.Exists(iwadInfo.TileImage))
-                    continue;
-
-                IWadTileImages[iwad.IWadID.Value] = new FileData()
-                {
-                    GameFileID = iwad.GameFileID.Value,
-                    FileName = iwadInfo.TileImage,
-                    FileTypeID = FileType.TileImage
-                };  
-            }
         }
 
         // Should we delete the old one? Followed by GetOrCreateThumbnail
@@ -158,9 +138,16 @@ namespace DoomLauncher
                 if (iwad == null)
                     return null;
 
-                // This is not an IWAD, so we'll use the iwad's TileImage
-                if (IWadTileImages.TryGetValue(gameFile.IWadID.Value, out var fileData))
-                    return fileData;          
+                var info = iwad.Info;
+                if (iwad.Info != null)
+                {
+                    return new FileData()
+                    {
+                        FileTypeID = FileType.TileImage,
+                        FileName = info.TileImage,
+                        GameFileID = gameFile.GameFileID.Value
+                    };
+                }
             }
 
             return null;

@@ -13,6 +13,8 @@ namespace DoomLauncher
 
         public int? GameFileID { get; set; }
 
+        public IWadInfo Info => IWadInfo.FromFileName(FileName);
+
         public override bool Equals(object obj)
         {
             IIWadData iwad = obj as IIWadData;

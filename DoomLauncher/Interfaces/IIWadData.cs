@@ -9,5 +9,7 @@
         string FileNameBase { get; }
 
         int? GameFileID { get; set; }
+
+        IWadInfo Info { get; }
     }
 }

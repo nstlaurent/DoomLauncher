@@ -144,7 +144,6 @@ namespace UnitTest.Tests
 
             ISourcePortData sourcePort = new SourcePortData() { SourcePortID = 99 };
 
-            ThumbnailManager.SetIWads(database.GetGameFileIWads().ToList());
             var thumbnail = thumbnailManager.GetOrCreateThumbnail(gameFile);
 
             Assert.IsNotNull(thumbnail);

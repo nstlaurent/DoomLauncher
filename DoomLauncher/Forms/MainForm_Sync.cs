@@ -262,8 +262,6 @@ namespace DoomLauncher
                 
             }
 
-            ThumbnailManager.SetIWads(DataSourceAdapter.GetGameFileIWads().ToList());
-
             UpdateLocal();
             HandleTabSelectionChange();
         }

@@ -817,6 +817,7 @@ namespace DoomLauncher
             {
                 SetGameFileImages(item, imagePaths);
 
+                /* TODO fix
                 if (imagePaths.Count == 0 && item.IWadID.HasValue)
                 {
                     var iwad = ThumbnailManager.IWads.FirstOrDefault(x => x.IWadID == item.IWadID.Value);
@@ -829,7 +830,7 @@ namespace DoomLauncher
                         if (imagePaths.Count == 0 && ThumbnailManager.IWadTileImages.TryGetValue(item.IWadID.Value, out var fileData))
                             imagePaths.Add(new PreviewImage(fileData.FileName, string.Empty));
                     }
-                }
+                }*/
             }
 
             if (imagePaths.Count > 0)
@@ -840,9 +841,18 @@ namespace DoomLauncher
 
         private void SetGameFileImages(IGameFile item, List<PreviewImage> imagePaths)
         {
+            var titlePic = DataSourceAdapter.GetFiles(item, FileType.TitlePic).FirstOrDefault();
+            if (titlePic != null)
+            {
+                string path = DataCache.Instance.AppConfiguration.TitlePicDirectory.GetFullPath(titlePic.FileName);
+                imagePaths.Add(new PreviewImage(path, FileData.GetTitle(titlePic)));
+            }
+
+            var screenshots = DataSourceAdapter.GetFiles(item, FileType.Screenshot);
+
             foreach (var screenshot in DataSourceAdapter.GetFiles(item, FileType.Screenshot))
             {
-                string path = Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
+                string path = DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(screenshot.FileName);
                 imagePaths.Add(new PreviewImage(path, FileData.GetTitle(screenshot)));
             }
         }

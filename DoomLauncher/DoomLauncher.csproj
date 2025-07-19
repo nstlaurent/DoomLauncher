@@ -275,6 +275,7 @@
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
     <Compile Include="Handlers\Files\FileHandler.cs" />
+    <Compile Include="Handlers\Files\GameFileImageHandler.cs" />
     <Compile Include="Handlers\Files\IFileHandler.cs" />
     <Compile Include="Handlers\Files\TitlePicHandler.cs" />
     <Compile Include="Handlers\Sync\StartupImageSyncAction.cs" />
