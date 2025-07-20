@@ -189,7 +189,8 @@ namespace DoomLauncher
         public void InsertGameFile(IGameFile gameFile)
         {
             string insert = InsertStatement("GameFiles", gameFile, new string[] { "GameFileID", "FileSizeBytes", "GameProfileID", "Name", "FullFileName" }, out List<DbParameter> parameters);
-            DataAccess.ExecuteNonQuery(insert, parameters);
+            int newId = DataAccess.ExecuteInsertionNonQuery(insert, parameters);
+            gameFile.GameFileID = newId;
         }
 
         public void UpdateGameFile(IGameFile gameFile)
@@ -517,8 +518,8 @@ namespace DoomLauncher
         public void InsertFile(IFileData file)
         {
             string insert = InsertStatement("Files", file, new string[] { "FileID" }, out List<DbParameter> parameters);
-
-            DataAccess.ExecuteNonQuery(insert, parameters);
+            var newId = DataAccess.ExecuteInsertionNonQuery(insert, parameters);
+            file.FileID = newId;
         }
 
         public void DeleteFile(IFileData file)

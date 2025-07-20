@@ -78,10 +78,17 @@ namespace DoomLauncher.Handlers
                     file.SourcePortID = sourcePort.SourcePortID;
                 });
             }
-
-            if (screenshot != null) // && no thumbnails exist for that gameFile
+            
+            if (screenshot != null )
             {
-                CreateAndInsertThumbnail(gameFile, screenshot);
+                // We have a proper screenshot image, no need for stock images
+                m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
+
+                // Screenshots are lower priority than TitlePics and earlier screenshots, so only 
+                // create a thumbnail if it's missing.
+                var existingThumbnails = m_fileHandler.GetFiles(gameFile, FileType.Thumbnail);
+                if (existingThumbnails.Count == 0)
+                    CreateAndInsertThumbnail(gameFile, screenshot);
             }
 
             return screenshot;

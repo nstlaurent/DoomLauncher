@@ -139,7 +139,6 @@ namespace UnitTest.Tests
             // Save a game file
             IGameFile gameFile = new GameFile() { FileName = "Flahg.zip" };
             database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("Flahg.zip");
 
             // No Thumbnails exist yet
             var thumbnailFromDB = database.GetFiles(gameFile, FileType.Thumbnail).FirstOrDefault();
@@ -148,11 +147,11 @@ namespace UnitTest.Tests
             var image = Image.FromFile(@"Resources\happy.png");
 
             var titlePic = gameFileImageHandler.InsertTitlePic(gameFile, image);
-            var titlePicFromDB = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
-            Assert.IsNotNull(titlePicFromDB);
+            Assert.IsNotNull(titlePic);
 
             thumbnailFromDB = database.GetFiles(gameFile, FileType.Thumbnail).FirstOrDefault();
-            Assert.IsNotNull(titlePicFromDB);
+            Assert.IsNotNull(titlePic);
+            Assert.AreEqual(titlePic.FileID, thumbnailFromDB.DerivedFromFileID);
         }
 
         
@@ -184,7 +183,6 @@ namespace UnitTest.Tests
             tileImage = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
             Assert.IsNull(tileImage);
         }
-
 
         [TestMethod]
         public void InsertScreenshot_CopiesFiletoDiskPreservingSource()
@@ -266,6 +264,93 @@ namespace UnitTest.Tests
             Assert.IsNotNull(fileData);
             Assert.IsTrue(File.Exists(config.ScreenshotDirectory.GetFullPath(fileData.FileName)));
             Assert.IsFalse(File.Exists(@"Resources\happy_DELETE_ME.png"));
+        }
+
+        [TestMethod]
+        public void InsertScreenshot_InsertsThumbnailIfNoneExists()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+
+            var sourcePort = new SourcePortData()
+            {
+                SourcePortID = 536
+            };
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "derp.zip" };
+            database.InsertGameFile(gameFile);
+
+            // Prove we are starting with no thumbnails
+            var thumbnailsInDB = database.GetFiles(gameFile, FileType.Thumbnail).ToList();
+            Assert.AreEqual(0, thumbnailsInDB.Count());
+
+            var fileData = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
+            Assert.IsNotNull(fileData);
+
+            thumbnailsInDB = database.GetFiles(gameFile, FileType.Thumbnail).ToList();
+            Assert.AreEqual(1, thumbnailsInDB.Count());
+            Assert.AreEqual(fileData.FileID, thumbnailsInDB[0].DerivedFromFileID);
+        }
+
+        [TestMethod]
+        public void InsertScreenshot_DoesntInsertThumbnailIfOneAlreadyExists()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+
+            var sourcePort = new SourcePortData() { SourcePortID = 222 };
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "derp.zip" };
+            database.InsertGameFile(gameFile);
+
+            var existingThumbnail = new FileData()
+            {
+                FileTypeID = FileType.Thumbnail,
+                GameFileID = gameFile.GameFileID.Value,
+                FileName = "blah.txt"
+            };
+            database.InsertFile(existingThumbnail);
+
+            // Prove we are starting with a thumbnail
+            var thumbnailsInDB = database.GetFiles(gameFile, FileType.Thumbnail).ToList();
+            Assert.AreEqual(1, thumbnailsInDB.Count());
+
+            var fileData = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
+            Assert.IsNotNull(fileData);
+
+            thumbnailsInDB = database.GetFiles(gameFile, FileType.Thumbnail).ToList();
+            Assert.AreEqual(1, thumbnailsInDB.Count());
+
+            // Check it's definitely the original one
+            Assert.IsNull(thumbnailsInDB[0].DerivedFromFileID);
+            Assert.AreEqual(existingThumbnail.FileID, thumbnailsInDB[0].FileID);
+        }
+
+        [TestMethod]
+        public void InsertScreenshot_DeletesTileImagesIfSuccessful()
+        {
+            var fileHandler = new FileHandler(database, config);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler);
+            var sourcePort = new SourcePortData() { SourcePortID = 123 };
+
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "Grah.zip" };
+            database.InsertGameFile(gameFile);
+
+            // Successfully create a TileImage
+            var theRightLocation = config.TileImageDirectory.GetFullPath("happy.png");
+            File.Copy(@"Resources\happy.png", theRightLocation);
+            Assert.IsTrue(File.Exists(theRightLocation));
+            var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, theRightLocation);
+            Assert.IsNotNull(tileImage);
+
+            var screenshot = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
+            Assert.IsNotNull(screenshot);
+
+            // TileImage no longer exists
+            tileImage = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
+            Assert.IsNull(tileImage);
         }
     }
 }

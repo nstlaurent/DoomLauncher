@@ -178,7 +178,6 @@ namespace DoomLauncher.Handlers
             };
 
             editBeforeSave(fileData);
-
             m_database.InsertFile(fileData);
 
             return fileData;
