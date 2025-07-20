@@ -163,15 +163,9 @@ namespace DoomLauncher
                 image = image.ScaleDoomImage();
 
                 // Migrate from storing titlepics as screenshots, to storing titlepics separately
-                if (LegacyTitlePicMigration.FindScreenshotThatIsReallyATitlePic(fileHandler, gameFile, image, out var titlePicScreenshot))
-                {
-                    fileHandler.DeleteFile(titlePicScreenshot);
-                }
+                LegacyTitlePicMigration.DeleteScreenshotThatIsReallyATitlePic(fileHandler, gameFile, image);
 
-                var titlePicSucceeded = gameFileImageHandler.InsertTitlePic(gameFile, image) != null;
-
-                if (titlePicSucceeded)
-                    thumbnailManager.UpdateThumbnail(gameFile);
+                gameFileImageHandler.InsertTitlePic(gameFile, image);
             }
         }
 

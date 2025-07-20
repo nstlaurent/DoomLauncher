@@ -12,10 +12,8 @@ namespace DoomLauncher.Handlers
 {
     public static class LegacyTitlePicMigration
     {
-        public static bool FindScreenshotThatIsReallyATitlePic(IFileHandler fileHandler, IGameFile gameFile, Image image, out IFileData titlePicScreenshot)
+        public static bool DeleteScreenshotThatIsReallyATitlePic(IFileHandler fileHandler, IGameFile gameFile, Image image)
         {
-            titlePicScreenshot = null;
-
             var screenshots = fileHandler.GetFiles(gameFile, FileType.Screenshot);
 
             if (!screenshots.Any())
@@ -42,7 +40,7 @@ namespace DoomLauncher.Handlers
                     FileInfo fi = fileHandler.GetFileInfo(FileType.Screenshot, screenshot.FileName);
                     if (fi.Length == fileSize)
                     {
-                        titlePicScreenshot = screenshot;
+                        fileHandler.DeleteFile(screenshot);
                         return true;
                     }
                 }
