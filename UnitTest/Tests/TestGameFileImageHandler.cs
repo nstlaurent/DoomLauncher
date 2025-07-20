@@ -20,6 +20,7 @@ namespace UnitTest.Tests
         {
             TitlePicDirectory = new LauncherPath("TitlePics"),
             ThumbnailDirectory = new LauncherPath("Thumbnails"),
+            ScreenshotDirectory = new LauncherPath("Screenshots"),
             TileImageDirectory = new LauncherPath("TileImagesTest")
         };
 
@@ -29,6 +30,7 @@ namespace UnitTest.Tests
             database = TestUtil.CreateAdapter();
             Directory.CreateDirectory("TitlePics");
             Directory.CreateDirectory("Thumbnails");
+            Directory.CreateDirectory("Screenshots");
             Directory.CreateDirectory("TileImagesTest");
         }
 
@@ -41,8 +43,14 @@ namespace UnitTest.Tests
             if (Directory.Exists("Thumbnails"))
                 Directory.Delete("Thumbnails", true);
 
+            if (Directory.Exists("Screenshots"))
+                Directory.Delete("Screenshots", true);
+
             if (Directory.Exists("TileImagesTest"))
                 Directory.Delete("TileImagesTest", true);
+
+            if (File.Exists(@"Resources\happy_DELETE_ME.png"))
+                File.Delete(@"Resources\happy_DELETE_ME.png");
 
             var dataAccess = ((DbDataSourceAdapter)database).DataAccess;
             dataAccess.ExecuteNonQuery("delete from GameFiles");
@@ -175,6 +183,89 @@ namespace UnitTest.Tests
             // TileImage no longer exists
             tileImage = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
             Assert.IsNull(tileImage);
+        }
+
+
+        [TestMethod]
+        public void InsertScreenshot_CopiesFiletoDiskPreservingSource()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+
+            var sourcePort = new SourcePortData()
+            {
+                SourcePortID = 731
+            };
+
+            // Nothing up my sleeve
+            var existingScreenshots = Directory.EnumerateFiles(config.ScreenshotDirectory.GetFullPath());
+            Assert.IsFalse(existingScreenshots.Any());
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "glaah.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("glaah.zip");
+
+            // Insert a file as a screenshot
+            var fileData = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
+            Assert.IsNotNull(fileData);
+
+            // Tada!
+            existingScreenshots = Directory.EnumerateFiles(config.ScreenshotDirectory.GetFullPath());
+            Assert.AreEqual(1, existingScreenshots.Count());
+            Assert.IsTrue(File.Exists(config.ScreenshotDirectory.GetFullPath(fileData.FileName)));
+
+            // Source image is still around
+            Assert.IsTrue(File.Exists(@"Resources\happy.png"));
+        }
+
+        [TestMethod]
+        public void InsertScreenshot_InsertsDatabaseEntry()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+
+            var sourcePort = new SourcePortData()
+            {
+                SourcePortID = 536
+            };
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "blaah.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("blaah.zip");
+
+            var fileData = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
+            var filesInDB = database.GetFiles(gameFile, FileType.Screenshot).ToList();
+
+            Assert.IsNotNull(fileData);
+            Assert.AreEqual(1, filesInDB.Count());
+            Assert.AreEqual(536, fileData.SourcePortID);
+            Assert.AreEqual(fileData.FileName, filesInDB[0].FileName);
+        }
+
+        [TestMethod]
+        public void InsertScreenshot_DeletesOldScreenshotIfConfigTellsItTo()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), true);
+
+            var sourcePort = new SourcePortData()
+            {
+                SourcePortID = 335
+            };
+
+            // We don't want to lose our normal copy!
+            File.Copy(@"Resources\happy.png", @"Resources\happy_DELETE_ME.png");
+            Assert.IsTrue(File.Exists(@"Resources\happy_DELETE_ME.png"));
+
+            // Save a game file
+            IGameFile gameFile = new GameFile() { FileName = "hoo.zip" };
+            database.InsertGameFile(gameFile);
+            gameFile = database.GetGameFile("hoo.zip");
+
+            var fileData = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy_DELETE_ME.png");
+
+            Assert.IsNotNull(fileData);
+            Assert.IsTrue(File.Exists(config.ScreenshotDirectory.GetFullPath(fileData.FileName)));
+            Assert.IsFalse(File.Exists(@"Resources\happy_DELETE_ME.png"));
         }
     }
 }

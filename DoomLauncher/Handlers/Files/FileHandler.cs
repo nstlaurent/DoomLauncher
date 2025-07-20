@@ -32,7 +32,7 @@ namespace DoomLauncher.Handlers
             return new FileInfo(m_config.GetFileDirectory(fileType).GetFullPath(fileName));
         }
 
-        public IFileData InsertFromMemory(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave)
+        public IFileData InsertAndSave(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave)
         {
             if (gameFile == null || !gameFile.GameFileID.HasValue)
                 return null;

@@ -70,7 +70,7 @@ namespace UnitTest.Tests
         {
             var fileHandler = new FileHandler(database, config);
             var image = Image.FromFile(@"Resources\happy.png");
-            var fileData = fileHandler.InsertFromMemory(null, FileType.Thumbnail, image, "png");
+            var fileData = fileHandler.InsertAndSave(null, FileType.Thumbnail, image, "png");
 
             Assert.IsNull(fileData);
         }
@@ -87,7 +87,7 @@ namespace UnitTest.Tests
             };
 
             var image = Image.FromFile(@"Resources\happy.png");
-            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, image, "png");
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
 
             Assert.IsNull(fileData);
         }
@@ -99,7 +99,7 @@ namespace UnitTest.Tests
             IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_CreatesFile.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, image, "png");
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
 
             Assert.IsTrue(File.Exists(config.ScreenshotDirectory.GetFullPath(fileData.FileName)));
         }
@@ -111,7 +111,7 @@ namespace UnitTest.Tests
             IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_CreatesDatabaseEntry.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, image, "png");
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
             Assert.IsNotNull(fileData);
@@ -126,7 +126,7 @@ namespace UnitTest.Tests
             IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_AppliesEdits.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, image, "png", x =>
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png", x =>
             {
                 x.Description = "Hello";
                 x.SourcePortID = 444;
@@ -147,7 +147,7 @@ namespace UnitTest.Tests
             IGameFile gameFile = CreateSavedGameFile("DeleteFile_DeletesFileOnDisk.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, image, "png");
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
             // We definitely inserted it
@@ -166,7 +166,7 @@ namespace UnitTest.Tests
             IGameFile gameFile = CreateSavedGameFile("DeleteFile_DeletesDatabaseEntry.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, image, "png");
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
             // We definitely inserted it in DB and on disk
@@ -188,7 +188,7 @@ namespace UnitTest.Tests
             IGameFile gameFile = CreateSavedGameFile("DeleteFile_DoesntDeleteFixedContent.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.TileImage, image, "png");
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.TileImage, image, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
 
             // This test doesnt make sense unless TileImages are fixed content
@@ -215,7 +215,7 @@ namespace UnitTest.Tests
             IGameFile gameFile = CreateSavedGameFile("DeleteFile_DeletesDerivedFilesToo.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
-            var fileData = fileHandler.InsertFromMemory(gameFile, FileType.Screenshot, image, "png");
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
             var fileDataFromDB = database.GetFiles(gameFile, FileType.Screenshot).FirstOrDefault();
 
             var derivedFileData = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png", file => 

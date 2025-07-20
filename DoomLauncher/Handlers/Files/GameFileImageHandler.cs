@@ -1,11 +1,6 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
-using System;
+﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 
 
 namespace DoomLauncher.Handlers
@@ -37,6 +32,11 @@ namespace DoomLauncher.Handlers
             return null;
         }
 
+        public List<string> GetScreenshots(IGameFile gameFile)
+        {
+            return null;
+        }
+
         public IFileData InsertTitlePic(IGameFile gameFile, Image image)
         {
             if (gameFile == null || !gameFile.GameFileID.HasValue)
@@ -45,11 +45,13 @@ namespace DoomLauncher.Handlers
             // There can only be one TitlePic
             m_fileHandler.DeleteFiles(gameFile, FileType.TitlePic);
 
-            var titlePic = m_fileHandler.InsertFromMemory(gameFile, FileType.TitlePic, image, "png");
+            var titlePic = m_fileHandler.InsertAndSave(gameFile, FileType.TitlePic, image, "png");
 
             if (titlePic != null)
             {
                 CreateAndInsertThumbnail(gameFile, titlePic);
+
+                // We have a proper titlepic/thumbnail, no need for stock images
                 m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
             }
 
@@ -92,7 +94,7 @@ namespace DoomLauncher.Handlers
             {
                 using (Image thumb = image.FixedSize(THUMBNAIL_SIZE, GameFileTile.GetImageHeight(THUMBNAIL_SIZE), Color.Black))
                 {
-                    return m_fileHandler.InsertFromMemory(gameFile, FileType.Thumbnail, thumb, "png", file =>
+                    return m_fileHandler.InsertAndSave(gameFile, FileType.Thumbnail, thumb, "png", file =>
                     {
                         file.DerivedFromFileID = parent.FileID;
                     });

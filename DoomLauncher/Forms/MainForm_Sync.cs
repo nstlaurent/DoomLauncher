@@ -122,7 +122,6 @@ namespace DoomLauncher
                     new IWadTitlesSyncAction(),
                     new KnownWadsSyncAction(DataSourceAdapter),
                     new GameConfSyncAction(),
-                    new IntendedIwadSyncAction(DataSourceAdapter)
                 };
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 

@@ -119,9 +119,7 @@
     <Compile Include="Tests\TestGameLauncher.cs" />
     <Compile Include="Tests\TestMapLumps.cs" />
     <Compile Include="Tests\TestFileHandler.cs" />
-    <Compile Include="Tests\TestScreenshotHandler.cs" />
     <Compile Include="Tests\TestThumbnailManager.cs" />
-    <Compile Include="Tests\TestTileImageHandler.cs" />
     <Compile Include="Tests\TestGameFileImageHandler.cs" />
     <Compile Include="Tests\TestSourcePort.cs" />
     <Compile Include="Tests\TestSpecificFiles.cs" />

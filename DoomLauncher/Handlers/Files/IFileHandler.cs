@@ -13,7 +13,7 @@ namespace DoomLauncher.Handlers
 
         FileInfo GetFileInfo(FileType fileType, string fileName);
 
-        IFileData InsertFromMemory(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave);
+        IFileData InsertAndSave(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave);
 
         IFileData InsertAndCopy(IGameFile gameFile, FileType fileType, string file, Action<IFileData> editBeforeSave);
 
@@ -28,8 +28,8 @@ namespace DoomLauncher.Handlers
 
     public static class IFileHandlerExtensions
     {
-        public static IFileData InsertFromMemory(this IFileHandler fileHandler, IGameFile gameFile, FileType fileType, Image image, string extension) =>
-            fileHandler.InsertFromMemory(gameFile, fileType, image, extension, x => { });
+        public static IFileData InsertAndSave(this IFileHandler fileHandler, IGameFile gameFile, FileType fileType, Image image, string extension) =>
+            fileHandler.InsertAndSave(gameFile, fileType, image, extension, x => { });
 
         public static IFileData InsertAndCopy(this IFileHandler fileHandler, IGameFile gameFile, FileType fileType, string file) =>
             fileHandler.InsertAndCopy(gameFile, fileType, file, x => { });
