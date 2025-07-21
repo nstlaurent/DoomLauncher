@@ -4,6 +4,7 @@ using DoomLauncher.DataSources;
 using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -121,7 +122,7 @@ namespace UnitTest.Tests
             var fileData1 = gameFileImageHandler.InsertTitlePic(gameFile, image);
             var fileData2 = gameFileImageHandler.InsertTitlePic(gameFile, image);
             var filesFromDB = database.GetFiles(gameFile, FileType.TitlePic).ToList();
-            
+
             Assert.IsNotNull(fileData1);
             Assert.IsNotNull(fileData2);
             Assert.AreNotEqual(fileData1.FileName, fileData2.FileName);
@@ -154,7 +155,7 @@ namespace UnitTest.Tests
             Assert.AreEqual(titlePic.FileID, thumbnailFromDB.DerivedFromFileID);
         }
 
-        
+
         [TestMethod]
         public void InsertTitlePic_DeletesTileImagesIfSuccessful()
         {
@@ -333,7 +334,6 @@ namespace UnitTest.Tests
             var gameFileImageHandler = new GameFileImageHandler(fileHandler);
             var sourcePort = new SourcePortData() { SourcePortID = 123 };
 
-
             // Save a game file
             IGameFile gameFile = new GameFile() { FileName = "Grah.zip" };
             database.InsertGameFile(gameFile);
@@ -351,6 +351,26 @@ namespace UnitTest.Tests
             // TileImage no longer exists
             tileImage = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
             Assert.IsNull(tileImage);
+        }
+
+        [TestMethod]
+        public void GetScreenshots_ReturnsTheScreenshots()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+            IGameFile gameFile = new GameFile() { FileName = "BBB.zip" };
+            database.InsertGameFile(gameFile);
+            var sourcePort = new SourcePortData() { SourcePortID = 516 };
+
+            var screenshot1 = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
+            var screenshot2 = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
+            var screenshot3 = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
+
+            List<string> screenshots = gameFileImageHandler.GetScreenshots(gameFile);
+
+            Assert.AreEqual(3, screenshots.Count);
+            Assert.IsTrue(screenshots.Exists(s => s.Contains(screenshot1.FileName)));
+            Assert.IsTrue(screenshots.Exists(s => s.Contains(screenshot2.FileName)));
+            Assert.IsTrue(screenshots.Exists(s => s.Contains(screenshot3.FileName)));
         }
     }
 }

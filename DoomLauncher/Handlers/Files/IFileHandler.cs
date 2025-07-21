@@ -9,7 +9,7 @@ namespace DoomLauncher.Handlers
 {
     public interface IFileHandler
     {
-        List<IFileData> GetFiles(IGameFile gameFile, FileType fileType);
+        List<IFileData> GetFiles(IGameFile gameFile, params FileType[] fileTypes);
 
         FileInfo GetFileInfo(FileType fileType, string fileName);
 

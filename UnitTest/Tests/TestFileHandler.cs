@@ -595,6 +595,24 @@ namespace UnitTest.Tests
             Assert.AreEqual(2, fileDataList.Count());
         }
 
+        [TestMethod]
+        public void GetFiles_ReturnsFilesWithMultiplesTypesFromTheDatabaseInOrder()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("GetFiles_ReturnsFilesFromTheDatabase.zip");
+
+            var wrong = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png");
+            var screenshot = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+            var demo = fileHandler.InsertAndCopy(gameFile, FileType.Demo, @"Resources\happy.png");
+            var titlePic = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
+
+            var fileDataList = fileHandler.GetFiles(gameFile, FileType.Demo, FileType.TitlePic, FileType.Screenshot);
+            Assert.AreEqual(3, fileDataList.Count());
+            Assert.AreEqual(demo.FileID, fileDataList[0].FileID);
+            Assert.AreEqual(titlePic.FileID, fileDataList[1].FileID);
+            Assert.AreEqual(screenshot.FileID, fileDataList[2].FileID);
+        }
+
         private IGameFile CreateSavedGameFile(string fileName)
         {
             IGameFile gameFile = new GameFile() { FileName = fileName };

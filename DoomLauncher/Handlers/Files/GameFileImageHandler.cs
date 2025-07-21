@@ -1,6 +1,8 @@
 ﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Drawing;
+using System.Linq;
 
 
 namespace DoomLauncher.Handlers
@@ -9,33 +11,56 @@ namespace DoomLauncher.Handlers
     {
         private static readonly int THUMBNAIL_SIZE = 300;
         private readonly IFileHandler m_fileHandler;
+        private readonly IDataSourceAdapter m_database;
         private readonly bool m_deleteScreenshotsAfterImport;
 
-        public GameFileImageHandler(IFileHandler fileHandler, bool deleteScreenshotsAfterImport = false)
+        public GameFileImageHandler(IFileHandler fileHandler, IDataSourceAdapter database = null, bool deleteScreenshotsAfterImport = false)
         {
             m_fileHandler = fileHandler;
+            m_database = database;
             m_deleteScreenshotsAfterImport = deleteScreenshotsAfterImport;
         }
 
         public string GetMainImageLarge(IGameFile gameFile)
         {
-            return null;
+            IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot, FileType.TileImage).FirstOrDefault();
+
+            if (bestImage == null)
+                bestImage = CreateAndInsertTileImage(gameFile);
+
+            return GetFullFileName(bestImage);
         }
 
         public string GetMainImageSmall(IGameFile gameFile)
         {
-            return null;
+            IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.Thumbnail, FileType.TileImage).FirstOrDefault();
+
+            if (bestImage == null)
+                bestImage = CreateAndInsertTileImage(gameFile);
+
+            return GetFullFileName(bestImage);
         }
 
         public List<string> GetMainImageAndScreenshots(IGameFile gameFile)
         {
-            return null;
+            List<string> returnValue = new List<string>();
+            var mainImage = GetMainImageLarge(gameFile);
+            var screenshots = GetScreenshots(gameFile).Where(scr => scr != mainImage);
+            var list = new List<string>() { mainImage };
+            list.AddRange(screenshots);
+            return list;
         }
 
         public List<string> GetScreenshots(IGameFile gameFile)
         {
-            return null;
+            return m_fileHandler
+                .GetFiles(gameFile, FileType.Screenshot)
+                .Select(GetFullFileName)
+                .ToList();
         }
+
+        private string GetFullFileName(IFileData file) =>
+            m_fileHandler.GetFileInfo(file.FileTypeID, file.FileName).FullName;
 
         public IFileData InsertTitlePic(IGameFile gameFile, Image image)
         {
@@ -108,5 +133,21 @@ namespace DoomLauncher.Handlers
                 }
             }
         }
+
+        private IFileData CreateAndInsertTileImage(IGameFile gameFile)
+        {
+            // Can only have one tile image
+            m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
+
+            string fileName = null;
+            if (gameFile.IWadID != null)
+                fileName = m_database.GetIWad(gameFile.IWadID.Value).Info?.FileName;
+
+            if (fileName == null)
+                fileName = gameFile.IntendedGame?.FileName ?? "DoomLauncherTile.png";
+
+            return m_fileHandler.InsertAndRefer(gameFile, FileType.TileImage, fileName);
+        }
+
     }
 }

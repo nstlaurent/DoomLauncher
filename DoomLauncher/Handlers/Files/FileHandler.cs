@@ -22,9 +22,15 @@ namespace DoomLauncher.Handlers
             m_config = config;
         }
 
-        public List<IFileData> GetFiles(IGameFile gameFile, FileType fileType)
+        public List<IFileData> GetFiles(IGameFile gameFile, params FileType[] fileTypes)
         {
-            return m_database.GetFiles(gameFile, fileType).ToList();
+            // TODO this could be one database query
+            List<IFileData> files = new List<IFileData>();
+            foreach (var fileType in fileTypes)
+            {
+                files.AddRange(m_database.GetFiles(gameFile, fileType));
+            }
+            return files;
         }
 
         public FileInfo GetFileInfo(FileType fileType, string fileName)
@@ -164,8 +170,13 @@ namespace DoomLauncher.Handlers
             filesToDelete.ForEach(DeleteFile);
         }
 
-        private string GetUniqueFileName(string extension) =>
-            $"{Guid.NewGuid()}.{extension}";
+        private string GetUniqueFileName(string extension)
+        {
+            if (!extension.StartsWith("."))
+                extension = $".{extension}";
+
+            return $"{Guid.NewGuid()}{extension}";
+        }
 
         private IFileData InsertDatabaseRecord(IGameFile gameFile, FileType fileType, string fileName, Action<IFileData> editBeforeSave)
         {
