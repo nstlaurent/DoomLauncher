@@ -16,6 +16,7 @@ namespace UnitTest.Tests
     public class TestGameFileImageHandler
     {
         private IDataSourceAdapter database;
+        private IFileHandler fileHandler;
 
         private readonly IDirectoriesConfiguration config = new DirectoriesConfiguration()
         {
@@ -29,6 +30,7 @@ namespace UnitTest.Tests
         public void Initialize()
         {
             database = TestUtil.CreateAdapter();
+            fileHandler = new FileHandler(database, config);
             Directory.CreateDirectory("TitlePics");
             Directory.CreateDirectory("Thumbnails");
             Directory.CreateDirectory("Screenshots");
@@ -56,12 +58,285 @@ namespace UnitTest.Tests
             var dataAccess = ((DbDataSourceAdapter)database).DataAccess;
             dataAccess.ExecuteNonQuery("delete from GameFiles");
             dataAccess.ExecuteNonQuery("delete from Files");
+            dataAccess.ExecuteNonQuery("delete from IWads");
+        }
+
+        [TestMethod]
+        public void GetMainImageLarge_PrefersTitlePics()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile() { FileName = "GetMainImageLarge_PrefersTitlePics.zip" };
+            database.InsertGameFile(gameFile);
+
+            var screenshot = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+            var titlePic = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
+            var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, @"Resources\happy.png");
+
+            string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains(titlePic.FileName));
+        }
+
+        [TestMethod]
+        public void GetMainImageLarge_PrefersScreenshotsOverTileImages()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile() { FileName = "GetMainImageLarge_PrefersScreenshotsOverTileImages.zip" };
+            database.InsertGameFile(gameFile);
+
+            var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, @"Resources\happy.png");
+            var screenshot = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+
+            string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains(screenshot.FileName));
+        }
+
+        [TestMethod]
+        public void GetMainImageLarge_WillTakeExistingTileImage()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile() { FileName = "GetMainImageLarge_WillTakeExistingTileImage.zip" };
+            database.InsertGameFile(gameFile);
+
+            var doomTileImagePath = config.TileImageDirectory.GetFullPath("doom.png");
+            File.Copy(@"Resources\happy.png", doomTileImagePath);
+            Assert.IsTrue(File.Exists(doomTileImagePath));
+            var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, doomTileImagePath);
+
+            string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.AreEqual(doomTileImagePath, mainImage);
+        }
+
+        [TestMethod]
+        public void GetMainImageLarge_NewTileImageRespectsSelectedIWadOverIntendedGame()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            // Heretic IWAD
+            IIWadData hereticIWad = new IWadData() { FileName = "heretic.zip" };
+            database.InsertIWad(hereticIWad);
+
+            IGameFile gameFile = new GameFile() 
+            { 
+                FileName = "GetMainImageLarge_NewTileImageRespectsSelectedIWadOverIntendedGame.zip",
+                IWadID = hereticIWad.IWadID,
+                IntendedGame = IWadInfo.PLUTONIA
+            };
+            database.InsertGameFile(gameFile);
+
+            // Heretic IWAD tile image
+            var hereticTileImagePath = config.TileImageDirectory.GetFullPath("heretic.png");
+            File.Copy(@"Resources\happy.png", hereticTileImagePath);
+            Assert.IsTrue(File.Exists(hereticTileImagePath));
+
+            string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains("heretic.png"));
+        }
+
+        [TestMethod]
+        public void GetMainImageLarge_NewTileImageRespectsIntendedGame()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile()
+            {
+                FileName = "GetMainImageLarge_NewTileImageRespectsIntendedGame.zip",
+                IntendedGame = IWadInfo.HEXEN
+            };
+            database.InsertGameFile(gameFile);
+
+            var hexenTileImagePath = config.TileImageDirectory.GetFullPath("hexen.png");
+            File.Copy(@"Resources\happy.png", hexenTileImagePath);
+            Assert.IsTrue(File.Exists(hexenTileImagePath));
+
+            string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains("hexen.png"));
+        }
+
+        [TestMethod]
+        public void GetMainImageLarge_NewTileImagePicksDefaultImageIfAllElseFails()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile()
+            {
+                FileName = "GetMainImageLarge_NewTileImagePicksDefaultImageIfAllElseFails.zip",
+            };
+            database.InsertGameFile(gameFile);
+
+            var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
+            File.Copy(@"Resources\happy.png", defaultImagePath);
+            Assert.IsTrue(File.Exists(defaultImagePath));
+
+            string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains(defaultImagePath));
+        }
+
+        [TestMethod]
+        public void GetMainImageSmall_PrefersThumbnails()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile() { FileName = "GetMainImageSmall_PrefersThumbnails.zip" };
+            database.InsertGameFile(gameFile);
+
+            var titlePic = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
+            var screenshot = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+            var thumbnail = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png");
+            var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, @"Resources\happy.png");
+
+            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains(thumbnail.FileName));
+        }
+
+        [TestMethod]
+        public void GetMainImageSmall_NewTileImageRespectsSelectedIWadOverIntendedGame()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            // TNT IWAD
+            IIWadData tntIWad = new IWadData() { FileName = "tnt.zip" };
+            database.InsertIWad(tntIWad);
+
+            IGameFile gameFile = new GameFile()
+            {
+                FileName = "GetMainImageSmall_NewTileImageRespectsSelectedIWadOverIntendedGame.zip",
+                IWadID = tntIWad.IWadID,
+                IntendedGame = IWadInfo.DOOM64
+            };
+            database.InsertGameFile(gameFile);
+
+            // TNT IWAD tile image
+            var tntTileImagePath = config.TileImageDirectory.GetFullPath("tnt.png");
+            File.Copy(@"Resources\happy.png", tntTileImagePath);
+            Assert.IsTrue(File.Exists(tntTileImagePath));
+
+            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains("tnt.png"));
+        }
+
+
+        [TestMethod]
+        public void GetMainImageSmall_NewTileImageRespectsIntendedGame()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile()
+            {
+                FileName = "GetMainImageSmall_NewTileImageRespectsIntendedGame.zip",
+                IntendedGame = IWadInfo.STRIFE1
+            };
+            database.InsertGameFile(gameFile);
+
+            var strifeTileImagePath = config.TileImageDirectory.GetFullPath("strife.png");
+            File.Copy(@"Resources\happy.png", strifeTileImagePath);
+            Assert.IsTrue(File.Exists(strifeTileImagePath));
+
+            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains("strife.png"));
+        }
+
+        [TestMethod]
+        public void GetMainImageSmall_NewTileImagePicksDefaultImageIfAllElseFails()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile()
+            {
+                FileName = "GetMainImageSmall_NewTileImagePicksDefaultImageIfAllElseFails.zip",
+            };
+            database.InsertGameFile(gameFile);
+
+            var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
+            File.Copy(@"Resources\happy.png", defaultImagePath);
+            Assert.IsTrue(File.Exists(defaultImagePath));
+
+            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile);
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains(defaultImagePath));
+        }
+
+        [TestMethod]
+        public void GetMainImageAndScreenshots_IncludesTitlePicAndScreenshotsInOrder()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile() { FileName = "GetMainImageAndScreenshots_IncludesTitlePicAndScreenshots.zip" };
+            database.InsertGameFile(gameFile);
+
+            var screenshot1 = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+            var titlePic = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
+            var screenshot2 = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+
+            var list = gameFileImageHandler.GetMainImageAndScreenshots(gameFile);
+            Assert.AreEqual(3, list.Count);
+            Assert.IsTrue(list[0].Contains(titlePic.FileName));
+            Assert.IsTrue(list[1].Contains(screenshot1.FileName));
+            Assert.IsTrue(list[2].Contains(screenshot2.FileName));
+        }
+
+        [TestMethod]
+        public void GetMainImageAndScreenshots_DoesntDoubleUpScreenshots()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile() { FileName = "GetMainImageAndScreenshots_DoesntDoubleUpScreenshots.zip" };
+            database.InsertGameFile(gameFile);
+
+            var screenshot1 = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+            var screenshot2 = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+
+            // Confirm the main image is the first screenshot
+            Assert.IsTrue(gameFileImageHandler.GetMainImageLarge(gameFile).Contains(screenshot1.FileName));
+
+            var list = gameFileImageHandler.GetMainImageAndScreenshots(gameFile);
+            Assert.AreEqual(2, list.Count);
+            Assert.IsTrue(list[0].Contains(screenshot1.FileName));
+            Assert.IsTrue(list[1].Contains(screenshot2.FileName));
+        }
+
+        [TestMethod]
+        public void GetMainImageAndScreenshots_ReturnsTileImageIfNoTitlePicOrScreenshots()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile() { FileName = "GetMainImageAndScreenshots_ReturnsTileImageIfNoTitlePicOrScreenshots.zip" };
+            database.InsertGameFile(gameFile);
+
+            var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
+            File.Copy(@"Resources\happy.png", defaultImagePath);
+            Assert.IsTrue(File.Exists(defaultImagePath));
+
+            var list = gameFileImageHandler.GetMainImageAndScreenshots(gameFile);
+            Assert.AreEqual(1, list.Count);
+            Assert.IsTrue(list[0].Contains(GameFileImageHandler.DEFAULT_TILE_IMAGE));
         }
 
         [TestMethod]
         public void InsertTitlePic_NullGameFileFails()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config));
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
             var image = Image.FromFile(@"Resources\happy.png");
 
             var fileData = gameFileImageHandler.InsertTitlePic(null, image);
@@ -72,7 +347,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertTitlePic_NullGameFileIdFails()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config));
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
 
             var gameFile = new GameFile()
             {
@@ -89,12 +364,11 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertTitlePic_CreatesFileAndDatabaseEntry()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config));
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
 
             // Save a game file
             IGameFile gameFile = new GameFile() { FileName = "Boo.zip" };
             database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("Boo.zip");
 
             var image = Image.FromFile(@"Resources\happy.png");
 
@@ -110,7 +384,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertTitlePic_AlwaysDeletesThePreviousOne()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config));
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
 
             // Save a game file
             IGameFile gameFile = new GameFile() { FileName = "Blah.zip" };
@@ -135,7 +409,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertTitlePic_InsertsThumbnailIfSuccessful()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config));
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
 
             // Save a game file
             IGameFile gameFile = new GameFile() { FileName = "Flahg.zip" };
@@ -160,7 +434,7 @@ namespace UnitTest.Tests
         public void InsertTitlePic_DeletesTileImagesIfSuccessful()
         {
             var fileHandler = new FileHandler(database, config);
-            var gameFileImageHandler = new GameFileImageHandler(fileHandler);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
 
             // Save a game file
             IGameFile gameFile = new GameFile() { FileName = "Grah.zip" };
@@ -188,7 +462,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertScreenshot_CopiesFiletoDiskPreservingSource()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
 
             var sourcePort = new SourcePortData()
             {
@@ -220,7 +494,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertScreenshot_InsertsDatabaseEntry()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
 
             var sourcePort = new SourcePortData()
             {
@@ -244,7 +518,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertScreenshot_DeletesOldScreenshotIfConfigTellsItTo()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), true);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, true);
 
             var sourcePort = new SourcePortData()
             {
@@ -270,7 +544,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertScreenshot_InsertsThumbnailIfNoneExists()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
 
             var sourcePort = new SourcePortData()
             {
@@ -296,7 +570,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void InsertScreenshot_DoesntInsertThumbnailIfOneAlreadyExists()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
 
             var sourcePort = new SourcePortData() { SourcePortID = 222 };
 
@@ -331,7 +605,7 @@ namespace UnitTest.Tests
         public void InsertScreenshot_DeletesTileImagesIfSuccessful()
         {
             var fileHandler = new FileHandler(database, config);
-            var gameFileImageHandler = new GameFileImageHandler(fileHandler);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
             var sourcePort = new SourcePortData() { SourcePortID = 123 };
 
             // Save a game file
@@ -356,7 +630,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void GetScreenshots_ReturnsTheScreenshots()
         {
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), false);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
             IGameFile gameFile = new GameFile() { FileName = "BBB.zip" };
             database.InsertGameFile(gameFile);
             var sourcePort = new SourcePortData() { SourcePortID = 516 };

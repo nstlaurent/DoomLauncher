@@ -123,7 +123,7 @@ namespace DoomLauncher.Handlers
 
         public IFileData InsertAndRefer(IGameFile gameFile, FileType fileType, string file, Action<IFileData> editBeforeSave)
         {
-            if (gameFile == null || !gameFile.GameFileID.HasValue)
+            if (gameFile == null || !gameFile.GameFileID.HasValue || !fileType.IsFixedContent())
                 return null;
 
             FileInfo fi = new FileInfo(file);
@@ -131,7 +131,7 @@ namespace DoomLauncher.Handlers
 
             IFileData createdFile = null;
             
-            // While we're not doing anything to the file, it needs to exist in the place we expect it.
+            // Although we're not doing anything to the file, it needs to exist in the place we expect it.
             if (fi.Exists && GetFileInfo(fileType, fileName).Exists)
             {
                 createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, editBeforeSave);

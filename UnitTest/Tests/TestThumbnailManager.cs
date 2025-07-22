@@ -82,7 +82,7 @@ namespace UnitTest.Tests
         public void GetOrCreateThumbnail_UsesTitlePicIfThere()
         {
             var thumbnailManager = new ThumbnailManager(database, config);
-            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config));
+            var gameFileImageHandler = new GameFileImageHandler(new FileHandler(database, config), database.GetIWad);
 
             IGameFile gameFile = new GameFile()
             {

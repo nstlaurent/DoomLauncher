@@ -118,8 +118,6 @@ namespace DoomLauncher
             // This method works. But the real solution is for the "Delete IWad" function
             // to properly clean up the dead references in the database.
 
-            var iwadId = gameFile.IWadID;
-
             // Could be a bogus ID if the IWAD was deleted
             var actualIWad = DataSourceAdapter.GetIWads().FirstOrDefault(x => x.IWadID == gameFile.IWadID);
 
@@ -631,7 +629,7 @@ namespace DoomLauncher
         private void HandleDetectorFiles(ISourcePortData sourcePort, IGameFile gameFile)
         {
             var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
-            var gameFileImageHandler = new GameFileImageHandler(fileHandler, AppConfiguration.DeleteScreenshotsAfterImport);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, DataSourceAdapter.GetIWadByIWadID, AppConfiguration.DeleteScreenshotsAfterImport);
             var newScreenshots = GetNewScreenshots().ToList();
             newScreenshots.ForEach(file => gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, file));
             SaveGameHandler savegameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);

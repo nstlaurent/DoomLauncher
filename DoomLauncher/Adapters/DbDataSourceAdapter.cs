@@ -428,10 +428,17 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(IWadData)).Cast<IWadData>().FirstOrDefault();
         }
 
+        public IIWadData GetIWadByIWadID(int iwadID)
+        {
+            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from IWads where IWadID = {0} order by Name collate nocase", iwadID)).Tables[0];
+            return Util.TableToStructure(dt, typeof(IWadData)).Cast<IWadData>().FirstOrDefault();
+        }
+
         public void InsertIWad(IIWadData iwad)
         {
             string insert = InsertStatement("IWads", iwad, new string[] { "IWadID" }, out List<DbParameter> parameters);
-            DataAccess.ExecuteNonQuery(insert, parameters);
+            int newId = DataAccess.ExecuteInsertionNonQuery(insert, parameters);
+            iwad.IWadID = newId;
         }
 
         public void UpdateIWad(IIWadData iwad)

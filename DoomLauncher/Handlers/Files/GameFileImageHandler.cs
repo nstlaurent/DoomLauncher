@@ -1,23 +1,26 @@
 ﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 
 
 namespace DoomLauncher.Handlers
 {
+    public delegate IIWadData GetIWad(int iwadID);
+
     public class GameFileImageHandler
     {
+        public static readonly string DEFAULT_TILE_IMAGE = "DoomLauncherTile.png";
         private static readonly int THUMBNAIL_SIZE = 300;
+
         private readonly IFileHandler m_fileHandler;
-        private readonly IDataSourceAdapter m_database;
+        private readonly GetIWad m_getIWad;
         private readonly bool m_deleteScreenshotsAfterImport;
 
-        public GameFileImageHandler(IFileHandler fileHandler, IDataSourceAdapter database = null, bool deleteScreenshotsAfterImport = false)
+        public GameFileImageHandler(IFileHandler fileHandler, GetIWad getIwad, bool deleteScreenshotsAfterImport = false)
         {
             m_fileHandler = fileHandler;
-            m_database = database;
+            m_getIWad = getIwad;
             m_deleteScreenshotsAfterImport = deleteScreenshotsAfterImport;
         }
 
@@ -58,9 +61,6 @@ namespace DoomLauncher.Handlers
                 .Select(GetFullFileName)
                 .ToList();
         }
-
-        private string GetFullFileName(IFileData file) =>
-            m_fileHandler.GetFileInfo(file.FileTypeID, file.FileName).FullName;
 
         public IFileData InsertTitlePic(IGameFile gameFile, Image image)
         {
@@ -119,6 +119,9 @@ namespace DoomLauncher.Handlers
             return screenshot;
         }
 
+        private string GetFullFileName(IFileData file) =>
+            m_fileHandler.GetFileInfo(file.FileTypeID, file.FileName).FullName;
+
         private IFileData CreateAndInsertThumbnail(IGameFile gameFile, IFileData parent)
         {
             var parentFile = m_fileHandler.GetFileInfo(parent.FileTypeID, parent.FileName);
@@ -139,15 +142,18 @@ namespace DoomLauncher.Handlers
             // Can only have one tile image
             m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
 
-            string fileName = null;
+            string fileNameNoPath = null;
             if (gameFile.IWadID != null)
-                fileName = m_database.GetIWad(gameFile.IWadID.Value).Info?.FileName;
+            {
+                var iwad = m_getIWad(gameFile.IWadID.Value);
+                fileNameNoPath = iwad.Info?.TileImage;
+            }
 
-            if (fileName == null)
-                fileName = gameFile.IntendedGame?.FileName ?? "DoomLauncherTile.png";
+            if (fileNameNoPath == null)
+                fileNameNoPath = gameFile.IntendedGame?.TileImage ?? DEFAULT_TILE_IMAGE;
 
+            string fileName = m_fileHandler.GetFileInfo(FileType.TileImage, fileNameNoPath).FullName;
             return m_fileHandler.InsertAndRefer(gameFile, FileType.TileImage, fileName);
         }
-
     }
 }

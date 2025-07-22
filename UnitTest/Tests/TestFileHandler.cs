@@ -337,25 +337,35 @@ namespace UnitTest.Tests
             Assert.IsFalse(fileHandler.GetFileInfo(FileType.TitlePic, @"Resources\made-up-file.png").Exists);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-
-
         [TestMethod]
         public void InsertAndRefer_InsertsDatabaseEntry()
         {
             var fileHandler = new FileHandler(database, config);
             IGameFile gameFile = CreateSavedGameFile("InsertAndRefer_InsertsDatabaseEntry.zip");
 
+            var theRightLocation = config.TileImageDirectory.GetFullPath("happy.png");
+            File.Copy(@"Resources\happy.png", theRightLocation);
+            Assert.IsTrue(File.Exists(theRightLocation));
+
+            var fileData = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, theRightLocation);
+
+            Assert.IsNotNull(fileData);
+        }
+
+        [TestMethod]
+        public void InsertAndRefer_FailsIfNotFixedContent()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndRefer_FailsIfNotFixedContent.zip");
+
             var theRightLocation = config.TitlePicDirectory.GetFullPath("happy.png");
             File.Copy(@"Resources\happy.png", theRightLocation);
             Assert.IsTrue(File.Exists(theRightLocation));
 
             var fileData = fileHandler.InsertAndRefer(gameFile, FileType.TitlePic, theRightLocation);
-            var fileDataInDB = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
 
-            Assert.IsNotNull(fileDataInDB);
+            Assert.IsFalse(FileType.TitlePic.IsFixedContent());
+            Assert.IsNull(fileData);
         }
 
         [TestMethod]
@@ -409,7 +419,7 @@ namespace UnitTest.Tests
             var gameFile = new GameFile()
             {
                 GameFileID = null,
-                FileName = "InsertAndCopy_NullGameFileIdFails.zip",
+                FileName = "InsertAndRefer_NullGameFileIdFails.zip",
             };
 
             var theRightLocation = config.TitlePicDirectory.GetFullPath("happy.png");
@@ -425,18 +435,18 @@ namespace UnitTest.Tests
         public void InsertAndRefer_AppliesEdits()
         {
             var fileHandler = new FileHandler(database, config);
-            IGameFile gameFile = CreateSavedGameFile("InsertAndCopy_AppliesEdits.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertAndRefer_AppliesEdits.zip");
 
-            var theRightLocation = config.TitlePicDirectory.GetFullPath("happy.png");
+            var theRightLocation = config.TileImageDirectory.GetFullPath("happy.png");
             File.Copy(@"Resources\happy.png", theRightLocation);
             Assert.IsTrue(File.Exists(theRightLocation));
 
-            var fileData = fileHandler.InsertAndRefer(gameFile, FileType.TitlePic, theRightLocation, x =>
+            var fileData = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, theRightLocation, x =>
             {
                 x.Description = "Hi";
                 x.SourcePortID = 433;
             });
-            var fileDataFromDB = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
+            var fileDataFromDB = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
 
 
             Assert.AreEqual("Hi", fileData.Description);
