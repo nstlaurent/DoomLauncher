@@ -524,7 +524,7 @@ namespace DoomLauncher
 
         public void InsertFile(IFileData file)
         {
-            string insert = InsertStatement("Files", file, new string[] { "FileID" }, out List<DbParameter> parameters);
+            string insert = InsertStatement("Files", file, new string[] { "FileID", "FullFileName", "Title" }, out List<DbParameter> parameters);
             var newId = DataAccess.ExecuteInsertionNonQuery(insert, parameters);
             file.FileID = newId;
         }

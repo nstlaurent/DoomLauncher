@@ -334,7 +334,7 @@ namespace DoomLauncher
             if (pb == null || !m_lookup.TryGetValue(pb, out var fileData))
                 return;
 
-            string title = FileData.GetTitle(fileData);
+            string title = fileData.Title;
             if (string.IsNullOrEmpty(title))
                 return;
 

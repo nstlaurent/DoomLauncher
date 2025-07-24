@@ -37,7 +37,7 @@ namespace DoomLauncher.Handlers
             {
                 try
                 {
-                    FileInfo fi = fileHandler.GetFileInfo(FileType.Screenshot, screenshot.FileName);
+                    FileInfo fi = new FileInfo(fileHandler.GetFullFileName(FileType.Screenshot, screenshot.FileName));
                     if (fi.Length == fileSize)
                     {
                         fileHandler.DeleteFile(screenshot);

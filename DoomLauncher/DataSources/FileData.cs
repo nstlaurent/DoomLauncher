@@ -14,6 +14,7 @@ namespace DoomLauncher
         public int? FileID { get; set; }
         public int GameFileID { get; set; }
         public string FileName { get; set; }
+        public string FullFileName { get; set; }
         public DateTime DateCreated { get; set; }
         public FileType FileTypeID { get; set; }
         public int? SourcePortID { get; set; }
@@ -29,21 +30,24 @@ namespace DoomLauncher
 
         public int? DerivedFromFileID { get; set; }
 
-        public static string GetTitle(IFileData fileData)
+        public string Title
         {
-            if (!string.IsNullOrEmpty(fileData.Map))
+            get 
             {
-                string title = fileData.Map;
-                if (string.IsNullOrEmpty(fileData.UserTitle))
-                    return title;
+                if (!string.IsNullOrEmpty(Map))
+                {
+                    string title = Map;
+                    if (string.IsNullOrEmpty(UserTitle))
+                        return title;
 
-                return $"{title} {fileData.UserTitle}";
+                    return $"{title} {UserTitle}";
+                }
+
+                if (!string.IsNullOrEmpty(UserTitle))
+                    return UserTitle;
+
+                return string.Empty;
             }
-
-            if (!string.IsNullOrEmpty(fileData.UserTitle))
-                return fileData.UserTitle;
-
-            return string.Empty;
         }
 
         public override bool Equals(object obj)

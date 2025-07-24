@@ -11,7 +11,7 @@ namespace DoomLauncher.Handlers
     {
         List<IFileData> GetFiles(IGameFile gameFile, params FileType[] fileTypes);
 
-        FileInfo GetFileInfo(FileType fileType, string fileName);
+        string GetFullFileName(FileType fileType, string fileNameNoPath);
 
         IFileData InsertAndSave(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave);
 

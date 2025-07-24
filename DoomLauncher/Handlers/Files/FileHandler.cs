@@ -30,13 +30,17 @@ namespace DoomLauncher.Handlers
             {
                 files.AddRange(m_database.GetFiles(gameFile, fileType));
             }
+
+            // FullFileName is a derived field that needs to be set after retrieval
+            files.ForEach(file => 
+                file.FullFileName = GetFullFileName(file.FileTypeID, file.FileName));
+
             return files;
         }
 
-        public FileInfo GetFileInfo(FileType fileType, string fileName)
-        {
-            return new FileInfo(m_config.GetFileDirectory(fileType).GetFullPath(fileName));
-        }
+        public string GetFullFileName(FileType fileType, string fileNameNoPath) => 
+            m_config.GetFileDirectory(fileType).GetFullPath(fileNameNoPath);
+        
 
         public IFileData InsertAndSave(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave)
         {
@@ -132,7 +136,7 @@ namespace DoomLauncher.Handlers
             IFileData createdFile = null;
             
             // Although we're not doing anything to the file, it needs to exist in the place we expect it.
-            if (fi.Exists && GetFileInfo(fileType, fileName).Exists)
+            if (fi.Exists && File.Exists(GetFullFileName(fileType, fileName)))
             {
                 createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, editBeforeSave);
             }
@@ -183,6 +187,7 @@ namespace DoomLauncher.Handlers
             IFileData fileData = new FileData
             {
                 FileName = fileName,
+                FullFileName = GetFullFileName(fileType, fileName), // Not stored, this is for the return value
                 GameFileID = gameFile.GameFileID.Value,
                 FileTypeID = fileType,
                 FileOrder = 0

@@ -120,6 +120,19 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void InsertFile_AddsFullFileNameToFileData()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertFile_AddsFullFileNameToFileData.zip");
+            var image = Image.FromFile(@"Resources\happy.png");
+
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
+            var expectedFullName = config.ScreenshotDirectory.GetFullPath(fileData.FileName);
+
+            Assert.AreEqual(expectedFullName, fileData.FullFileName);
+        }
+
+        [TestMethod]
         public void InsertFileFromMemory_AppliesEdits()
         {
             var fileHandler = new FileHandler(database, config);
@@ -334,7 +347,7 @@ namespace UnitTest.Tests
 
             Assert.IsNull(fileData);
             Assert.IsNull(fileDataFromDB);
-            Assert.IsFalse(fileHandler.GetFileInfo(FileType.TitlePic, @"Resources\made-up-file.png").Exists);
+            Assert.IsFalse(File.Exists(fileHandler.GetFullFileName(FileType.TitlePic, @"Resources\made-up-file.png")));
         }
 
         [TestMethod]
@@ -558,7 +571,7 @@ namespace UnitTest.Tests
 
             Assert.IsNull(fileData);
             Assert.IsNull(fileDataFromDB);
-            Assert.IsFalse(fileHandler.GetFileInfo(FileType.Demo, @"Resources\made-up-file.demo").Exists);
+            Assert.IsFalse(File.Exists(fileHandler.GetFullFileName(FileType.Demo, @"Resources\made-up-file.demo")));
         }
 
         [TestMethod]

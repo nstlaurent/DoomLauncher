@@ -7,6 +7,7 @@ namespace DoomLauncher.Interfaces
         int? FileID { get; set; }
         int GameFileID { get; set; }
         string FileName { get; set; }
+        string FullFileName { get; set; }
         DateTime DateCreated { get; set; }
         FileType FileTypeID { get; set; }
         int? SourcePortID { get; set; }
@@ -20,5 +21,6 @@ namespace DoomLauncher.Interfaces
         bool IsUrl { get; }
 
         int? DerivedFromFileID { get; set; }
+        string Title { get; }
     }
 }
