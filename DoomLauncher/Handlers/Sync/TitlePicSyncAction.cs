@@ -1,39 +1,53 @@
 ﻿using DoomLauncher.Interfaces;
+using System;
+using System.Drawing;
+using System.IO;
 using System.Text.RegularExpressions;
 using WadReader;
-using System.Drawing;
-using System;
-using System.IO;
 
 namespace DoomLauncher.Handlers.Sync
 {
     public class TitlePicSyncAction : ISyncAction
     {
-        private const string DefaultTitlepicName = "TITLEPIC";
-        private const string AltTitlepicName = "TITLE";
+        private const string DoomTitlepicName = "TITLEPIC";
+        private const string HereticHexenTitlepicName = "TITLE";
         private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");
-        private readonly Palette m_palette;
-        private readonly Palette m_altPalette;
+        private readonly Palette m_doomPalette;
+        private readonly Palette m_hexenPalette;
+        private readonly Palette m_hereticPalette;
 
-        public TitlePicSyncAction(Palette doomPalette, Palette hexenPalette)
+        public TitlePicSyncAction(Palette doomPalette, Palette hexenPalette, Palette hereticPalette)
         {
-            m_palette = doomPalette;
-            m_altPalette = hexenPalette;
+            m_doomPalette = doomPalette;
+            m_hexenPalette = hexenPalette;
+            m_hereticPalette = hereticPalette;
         }
 
         public SyncResult ApplyToGameFile(IGameFile file, IArchiveReader reader, string[] mapInfoData)
         {
-            string titlepicName = DefaultTitlepicName;
+            string titlepicName = DoomTitlepicName;
+
             if (GetTitlepicNameFromMapInfo(mapInfoData, out string newTitlepicName))
                 titlepicName = newTitlepicName;
 
+            Palette palette = null;
             if (!TitlePicUtil.GetEntry(reader, titlepicName, out IArchiveEntry entry))
             {
-                if (!TitlePicUtil.GetEntry(reader, AltTitlepicName, out entry))
+                if (TitlePicUtil.GetEntry(reader, HereticHexenTitlepicName, out entry))
+                {
+                    if (Path.GetFileNameWithoutExtension(file.FileNameNoPath).Equals("hexdd", StringComparison.OrdinalIgnoreCase))
+                        palette = m_hexenPalette;
+                    else
+                        palette = m_hereticPalette;
+                }
+                else
+                {
                     return SyncResult.EMPTY;
+                }
             }
 
-            Palette palette = GetPaletteOrDefault(file, reader);
+            palette = palette ?? GetPaletteOrDefault(file, reader);
+
             if (!TitlePicUtil.ConvertToImage(entry.ReadEntry(), palette, out Image image))
             {
                 return SyncResult.FailedTitlePicFile(file);
@@ -63,17 +77,14 @@ namespace DoomLauncher.Handlers.Sync
         {
             if (!TitlePicUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
             {
-                if (Path.GetFileNameWithoutExtension(gameFile.FileNameNoPath).Equals("hexdd", StringComparison.OrdinalIgnoreCase))
-                    return m_altPalette;
-
-                return m_palette;
+                return m_doomPalette;
             }
 
             Palette palette = Palette.From(paletteEntry.ReadEntry());
             if (palette != null)
                 return palette;
 
-            return m_palette;
+            return m_doomPalette;
         }
     }
 }
