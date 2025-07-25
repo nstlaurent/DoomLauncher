@@ -105,9 +105,6 @@ namespace DoomLauncher.Handlers
             return screenshot;
         }
 
-        private string GetFullFileName(IFileData file) =>
-            m_fileHandler.GetFullFileName(file.FileTypeID, file.FileName);
-
         private IFileData CreateAndInsertThumbnail(IGameFile gameFile, IFileData parent)
         {
             var parentFile = m_fileHandler.GetFullFileName(parent.FileTypeID, parent.FileName);
