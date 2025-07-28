@@ -995,6 +995,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\HereticPalette.pal" />
     <None Include="Resources\HexenPalette.pal" />
     <None Include="Resources\PLAYPAL.LMP" />
     <None Include="Resources\th.png" />

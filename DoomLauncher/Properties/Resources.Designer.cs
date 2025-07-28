@@ -183,6 +183,16 @@ namespace DoomLauncher.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] HereticPalette {
+            get {
+                object obj = ResourceManager.GetObject("HereticPalette", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] HexenPalette {
             get {
                 object obj = ResourceManager.GetObject("HexenPalette", resourceCulture);

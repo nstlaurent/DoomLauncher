@@ -25,6 +25,7 @@ namespace DoomLauncher
         public Image DefaultImage { get; private set; }
         public Palette DefaultPalette { get; private set; }
         public Palette HexenPalette { get; private set; }
+        public Palette HereticPalette { get; private set; }
 
         public void Init(IDataSourceAdapter adapter)
         {
@@ -34,6 +35,7 @@ namespace DoomLauncher
             DefaultImage = ImageExtensions.FromFileOrDefault(Path.Combine(LauncherPath.GetDataDirectory(), "TileImages", "DoomLauncherTile.png"));
             DefaultPalette = Palette.From(Properties.Resources.DoomPalette);
             HexenPalette = Palette.From(Properties.Resources.HexenPalette);
+            HereticPalette = Palette.From(Properties.Resources.HereticPalette);
             ThumbnailManager.SetIWads(DataSourceAdapter.GetGameFileIWads().ToList());
 
             switch (AppConfiguration.ColorTheme)
