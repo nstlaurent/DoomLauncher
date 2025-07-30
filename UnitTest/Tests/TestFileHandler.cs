@@ -574,6 +574,34 @@ namespace UnitTest.Tests
             Assert.IsFalse(File.Exists(fileHandler.GetFullFileName(FileType.Demo, @"Resources\made-up-file.demo")));
         }
 
+        class UrlFileData : FileData
+        {
+            public override bool IsUrl { get { return true; } }
+        }
+
+        [TestMethod]
+        public void DeleteFiles_DoesNothingIfFileIsUrl()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("DeleteFiles_DoesNothingIfFileIsUrl.zip");
+
+            var file = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png");
+
+            var urlFileData = new UrlFileData()
+            {
+                FileID = file.FileID,
+                GameFileID = file.GameFileID,
+                FileName = file.FileName,
+                FileTypeID = file.FileTypeID,
+                SourcePortID = file.SourcePortID
+            };
+
+            fileHandler.DeleteFile(urlFileData);
+
+            var thumbnails = database.GetFiles(gameFile, FileType.Thumbnail);
+            Assert.AreEqual(1, thumbnails.Count());
+        }
+
         [TestMethod]
         public void DeleteFiles_DeletesAttachedFilesOfTheGivenType()
         {
@@ -640,15 +668,7 @@ namespace UnitTest.Tests
         {
             IGameFile gameFile = new GameFile() { FileName = fileName };
             database.InsertGameFile(gameFile);
-            return database.GetGameFile(fileName);
-        }
-
-        private static MemoryStream GetImageStream(string fileName)
-        {
-            var imageStream = new MemoryStream();
-            var image = Image.FromFile(fileName);
-            image.Save(imageStream, ImageFormat.Png);
-            return imageStream;
+            return gameFile;
         }
     }
 }

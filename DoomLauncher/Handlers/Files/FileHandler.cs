@@ -145,6 +145,10 @@ namespace DoomLauncher.Handlers
 
         public void DeleteFile(IFileData file)
         {
+            // Can't delete a remote file...
+            if (file.IsUrl)
+                return;
+
             if (!file.FileTypeID.IsFixedContent())
             {
                 string path = m_config.GetFileDirectory(file.FileTypeID).GetFullPath(file.FileName);
