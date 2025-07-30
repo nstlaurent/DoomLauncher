@@ -818,11 +818,7 @@ namespace DoomLauncher
                 var mainImageAndScreenshots = gameFileImageHandler.GetMainImageAndScreenshots(item);
                 imagePaths = mainImageAndScreenshots.Select(file => new PreviewImage(file.FullFileName, file.Title)).ToList();
             }
-
-            if (imagePaths.Count > 0)
-                SetPreviewImages(imagePaths);
-            else
-                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
+            SetPreviewImages(imagePaths);
         }
 
         private void ClearSummary()

@@ -151,7 +151,6 @@ namespace DoomLauncher
         {
             var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
             var gameFileImageHandler = new GameFileImageHandler(fileHandler, DataSourceAdapter.GetIWadByIWadID);
-            var thumbnailManager = new ThumbnailManager(DataSourceAdapter, AppConfiguration);
 
             foreach (IGameFile gameFile in syncResult.AddedOrUpdatedFiles)
             {

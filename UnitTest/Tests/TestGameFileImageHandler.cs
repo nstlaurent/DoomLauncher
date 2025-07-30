@@ -187,6 +187,26 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void GetMainImageLarge_PicksDefaultImageIfGameFileIsNotInDB()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile()
+            {
+                FileName = "not_in_db.zip",
+            };
+
+            var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
+            File.Copy(@"Resources\happy.png", defaultImagePath);
+            Assert.IsTrue(File.Exists(defaultImagePath));
+
+            string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile).FullFileName;
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains(defaultImagePath));
+        }
+
+        [TestMethod]
         public void GetMainImageSmall_PrefersThumbnails()
         {
             var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
@@ -266,6 +286,26 @@ namespace UnitTest.Tests
                 FileName = "GetMainImageSmall_NewTileImagePicksDefaultImageIfAllElseFails.zip",
             };
             database.InsertGameFile(gameFile);
+
+            var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
+            File.Copy(@"Resources\happy.png", defaultImagePath);
+            Assert.IsTrue(File.Exists(defaultImagePath));
+
+            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile).FullFileName;
+
+            Assert.IsNotNull(mainImage);
+            Assert.IsTrue(mainImage.Contains(defaultImagePath));
+        }
+
+        [TestMethod]
+        public void GetMainImageSmall_PicksDefaultImageIfGameFileIsNotInDB()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
+
+            IGameFile gameFile = new GameFile()
+            {
+                FileName = "not_in_db.zip",
+            };
 
             var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
             File.Copy(@"Resources\happy.png", defaultImagePath);
@@ -645,6 +685,66 @@ namespace UnitTest.Tests
             Assert.IsTrue(screenshots.Exists(s => s.Contains(screenshot1.FileName)));
             Assert.IsTrue(screenshots.Exists(s => s.Contains(screenshot2.FileName)));
             Assert.IsTrue(screenshots.Exists(s => s.Contains(screenshot3.FileName)));
+        }
+
+        [TestMethod]
+        public void UpdateImages_RecreatesThumbnailForExistingTitlepic()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
+
+            IGameFile gameFile = new GameFile() { FileName = "Yellow.zip" };
+            database.InsertGameFile(gameFile);
+
+            gameFileImageHandler.InsertTitlePic(gameFile, Image.FromFile(@"Resources\happy.png"));
+
+            var existingThumbnail = fileHandler.GetFiles(gameFile, FileType.Thumbnail).FirstOrDefault();
+            gameFileImageHandler.UpdateImages(gameFile);
+
+            var newThumbnails = fileHandler.GetFiles(gameFile, FileType.Thumbnail);
+            Assert.AreEqual(1, newThumbnails.Count);
+            Assert.AreNotEqual(existingThumbnail.FileID, newThumbnails[0].FileID);
+        }
+
+        [TestMethod]
+        public void UpdateImages_RecreatesThumbnailForExistingScreenshot()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
+
+            IGameFile gameFile = new GameFile() { FileName = "Yellow.zip" };
+            database.InsertGameFile(gameFile);
+            var sourcePort = new SourcePortData() { SourcePortID = 947 };
+            gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
+            var existingThumbnail = fileHandler.GetFiles(gameFile, FileType.Thumbnail).FirstOrDefault();
+
+            gameFileImageHandler.UpdateImages(gameFile);
+
+            var newThumbnails = fileHandler.GetFiles(gameFile, FileType.Thumbnail);
+            Assert.AreEqual(1, newThumbnails.Count);
+            Assert.AreNotEqual(existingThumbnail.FileID, newThumbnails[0].FileID);
+        }
+
+        [TestMethod]
+        public void UpdateImages_DeletesOldTileImage()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
+
+            IGameFile gameFile = new GameFile() { FileName = "Blue.zip" };
+            database.InsertGameFile(gameFile);
+
+            // Successfully create a TileImage
+            var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
+            File.Copy(@"Resources\happy.png", defaultImagePath);
+            Assert.IsTrue(File.Exists(defaultImagePath));
+
+            var existingTileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, defaultImagePath);
+            Assert.IsNotNull(existingTileImage);
+
+            fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
+
+            gameFileImageHandler.UpdateImages(gameFile);
+
+            var newTileImages = fileHandler.GetFiles(gameFile, FileType.TileImage);
+            Assert.AreEqual(0, newTileImages.Count);
         }
     }
 }

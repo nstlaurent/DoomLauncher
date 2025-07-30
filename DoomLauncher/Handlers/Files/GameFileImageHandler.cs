@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-
 namespace DoomLauncher.Handlers
 {
     public delegate IIWadData GetIWad(int iwadID);
@@ -26,14 +25,28 @@ namespace DoomLauncher.Handlers
 
         public IFileData GetMainImageLarge(IGameFile gameFile)
         {
-            IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot, FileType.TileImage).FirstOrDefault();
-            return bestImage ?? CreateAndInsertTileImage(gameFile);
+            if (gameFile.GameFileID.HasValue)
+            {
+                IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot, FileType.TileImage).FirstOrDefault();
+                return bestImage ?? CreateAndInsertTileImage(gameFile);
+            }
+            else
+            {
+                return GetInMemoryDefaultImage();
+            }
         }
 
         public IFileData GetMainImageSmall(IGameFile gameFile)
         {
-            IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.Thumbnail, FileType.TileImage).FirstOrDefault();
-            return bestImage ?? CreateAndInsertTileImage(gameFile);
+            if (gameFile.GameFileID.HasValue)
+            {
+                IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.Thumbnail, FileType.TileImage).FirstOrDefault();
+                return bestImage ?? CreateAndInsertTileImage(gameFile);
+            }
+            else
+            {
+                return GetInMemoryDefaultImage();
+            }
         }
 
         public List<IFileData> GetMainImageAndScreenshots(IGameFile gameFile)
@@ -105,6 +118,21 @@ namespace DoomLauncher.Handlers
             return screenshot;
         }
 
+        public void UpdateImages(IGameFile gameFile)
+        {
+            var mainImage = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot).FirstOrDefault();
+            if (mainImage != null)
+            {
+                m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
+                m_fileHandler.DeleteFiles(gameFile, FileType.Thumbnail);
+                CreateAndInsertThumbnail(gameFile, mainImage);
+            }
+            else
+            {
+                CreateAndInsertTileImage(gameFile);
+            }
+        }
+
         private IFileData CreateAndInsertThumbnail(IGameFile gameFile, IFileData parent)
         {
             var parentFile = m_fileHandler.GetFullFileName(parent.FileTypeID, parent.FileName);
@@ -119,6 +147,13 @@ namespace DoomLauncher.Handlers
                 }
             }
         }
+
+        private IFileData GetInMemoryDefaultImage() =>
+            new FileData()
+            {
+                FileName = DEFAULT_TILE_IMAGE,
+                FullFileName = m_fileHandler.GetFullFileName(FileType.TileImage, DEFAULT_TILE_IMAGE)
+            };
 
         private IFileData CreateAndInsertTileImage(IGameFile gameFile)
         {

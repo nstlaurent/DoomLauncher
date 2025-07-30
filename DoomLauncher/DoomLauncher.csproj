@@ -317,7 +317,6 @@
       <DependentUpon>PagingControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\ToolTipDisplayHandler.cs" />
-    <Compile Include="Handlers\Files\ThumbnailManager.cs" />
     <Compile Include="Controls\SlideShowPictureBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -649,7 +648,6 @@
     <Compile Include="Interfaces\IFileData.cs" />
     <Compile Include="Interfaces\INewFileDetector.cs" />
     <Compile Include="Handlers\NewFileDetector.cs" />
-    <Compile Include="Handlers\Files\ScreenshotHandler.cs" />
     <Compile Include="Controls\ScreenshotView.cs" />
     <Compile Include="Controls\ScreenshotView.Designer.cs">
       <DependentUpon>ScreenshotView.cs</DependentUpon>
