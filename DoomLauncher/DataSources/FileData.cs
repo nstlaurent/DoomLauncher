@@ -20,7 +20,6 @@ namespace DoomLauncher
         public int? SourcePortID { get; set; }
         public string Description { get; set; }
         public string OriginalFileName { get; set; }
-        public string OriginalFilePath { get; set; }
         public string UserTitle { get; set; }
         public string UserDescription { get; set; }
         public string Map { get; set; }

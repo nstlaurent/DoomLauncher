@@ -120,6 +120,7 @@
     <Compile Include="Tests\TestMapLumps.cs" />
     <Compile Include="Tests\TestFileHandler.cs" />
     <Compile Include="Tests\TestGameFileImageHandler.cs" />
+    <Compile Include="Tests\TestSaveGameHandler.cs" />
     <Compile Include="Tests\TestSourcePort.cs" />
     <Compile Include="Tests\TestSpecificFiles.cs" />
     <Compile Include="Tests\TestAutomaticSteamCheck.cs" />

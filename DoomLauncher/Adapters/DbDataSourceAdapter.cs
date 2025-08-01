@@ -377,7 +377,8 @@ namespace DoomLauncher
             string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption,ExtraParameters,AltSaveDirectory,Archived) 
                 values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption,@ExtraParameters,@AltSaveDirectory,@Archived)";
 
-            DataAccess.ExecuteNonQuery(insert, GetSourcePortParams(sourcePort));
+            int newId = DataAccess.ExecuteInsertionNonQuery(insert, GetSourcePortParams(sourcePort));
+            sourcePort.SourcePortID = newId;
         }
 
         public void UpdateSourcePort(ISourcePortData sourcePort)

@@ -348,7 +348,7 @@ namespace DoomLauncher
         private void HandleCopySaveGames(IGameFile gameFile, ISourcePortData sourcePort)
         {
             m_saveGames = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
-            SaveGameHandler saveGameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
+            SaveGameHandler saveGameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration);
             saveGameHandler.CopySaveGamesToSourcePort(sourcePort, m_saveGames);
         }
 
@@ -632,10 +632,13 @@ namespace DoomLauncher
             var gameFileImageHandler = new GameFileImageHandler(fileHandler, DataSourceAdapter.GetIWadByIWadID, AppConfiguration.DeleteScreenshotsAfterImport);
             var newScreenshots = GetNewScreenshots().ToList();
             newScreenshots.ForEach(file => gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, file));
-            SaveGameHandler savegameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
+            SaveGameHandler savegameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration);
 
-            savegameHandler.HandleNewSaveGames(sourcePort, gameFile, GetNewSaveGames(m_saveFileDetectors, m_saveGames));
-            savegameHandler.HandleUpdateSaveGames(sourcePort, gameFile, m_saveGames);
+            var newSaveGames = GetNewSaveGames(m_saveFileDetectors, m_saveGames).ToList();
+            newSaveGames.ForEach(file => savegameHandler.InsertSaveGame(sourcePort, gameFile, file));
+
+            var updatedSaveGames = m_saveGames.ToList();
+            updatedSaveGames.ForEach(file => savegameHandler.HandleUpdateSaveGames(sourcePort, gameFile, file));
             savegameHandler.HandleDeleteSaveGames(GetDeletedSaveGames(m_saveFileDetectors), m_saveGames);
         }
 

@@ -4,10 +4,7 @@ using DoomLauncher.DataSources;
 using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 
@@ -66,7 +63,7 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void InsertFileFromMemory_NullGameFileFails()
+        public void InsertAndSave_NullGameFileFails()
         {
             var fileHandler = new FileHandler(database, config);
             var image = Image.FromFile(@"Resources\happy.png");
@@ -76,14 +73,14 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void InsertFileFromMemory_NullGameFileIdFails()
+        public void InsertAndSave_NullGameFileIdFails()
         {
             var fileHandler = new FileHandler(database, config);
 
             var gameFile = new GameFile()
             {
                 GameFileID = null,
-                FileName = "InsertFileFromMemory_NullGameFileIdFails.zip",
+                FileName = "InsertAndSave_NullGameFileIdFails.zip",
             };
 
             var image = Image.FromFile(@"Resources\happy.png");
@@ -93,10 +90,10 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void InsertFileFromMemory_CreatesFile()
+        public void InsertAndSave_CreatesFile()
         {
             var fileHandler = new FileHandler(database, config);
-            IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_CreatesFile.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertAndSave_CreatesFile.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
@@ -105,10 +102,10 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void InsertFileFromMemory_CreatesDatabaseEntry()
+        public void InsertAndSave_CreatesDatabaseEntry()
         {
             var fileHandler = new FileHandler(database, config);
-            IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_CreatesDatabaseEntry.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertAndSave_CreatesDatabaseEntry.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
@@ -120,10 +117,10 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void InsertFile_AddsFullFileNameToFileData()
+        public void InsertAndSave_AddsFullFileNameToFileData()
         {
             var fileHandler = new FileHandler(database, config);
-            IGameFile gameFile = CreateSavedGameFile("InsertFile_AddsFullFileNameToFileData.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertAndSave_AddsFullFileNameToFileData.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
@@ -133,10 +130,10 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void InsertFileFromMemory_AppliesEdits()
+        public void InsertAndSave_AppliesEdits()
         {
             var fileHandler = new FileHandler(database, config);
-            IGameFile gameFile = CreateSavedGameFile("InsertFileFromMemory_AppliesEdits.zip");
+            IGameFile gameFile = CreateSavedGameFile("InsertAndSave_AppliesEdits.zip");
             var image = Image.FromFile(@"Resources\happy.png");
 
             var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png", x =>
@@ -151,6 +148,18 @@ namespace UnitTest.Tests
             Assert.AreEqual(444, fileData.SourcePortID);
             Assert.AreEqual("Hello", fileDataFromDB.Description);
             Assert.AreEqual(444, fileDataFromDB.SourcePortID);
+        }
+
+        [TestMethod]
+        public void InsertAndSave_HasNullOriginalFile()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndSave_AppliesEdits.zip");
+            var image = Image.FromFile(@"Resources\happy.png");
+
+            var fileData = fileHandler.InsertAndSave(gameFile, FileType.Screenshot, image, "png");
+
+            Assert.IsNull(fileData.OriginalFileName);
         }
 
         [TestMethod]
@@ -351,6 +360,18 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void InsertAndCopy_RemembersOriginalFile()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndCopy_RemembersOriginalFile.zip");
+
+            var fileData = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
+
+            Assert.IsNotNull(fileData);
+            Assert.AreEqual("happy.png", fileData.OriginalFileName);
+        }
+
+        [TestMethod]
         public void InsertAndRefer_InsertsDatabaseEntry()
         {
             var fileHandler = new FileHandler(database, config);
@@ -469,6 +490,22 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void InsertAndRefer_RemembersOriginalFile()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndRefer_AppliesEdits.zip");
+
+            var theRightLocation = config.TileImageDirectory.GetFullPath("happy.png");
+            File.Copy(@"Resources\happy.png", theRightLocation);
+            Assert.IsTrue(File.Exists(theRightLocation));
+
+            var fileData = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, theRightLocation);
+
+            Assert.IsNotNull(fileData);
+            Assert.AreEqual("happy.png", fileData.OriginalFileName);
+        }
+
+        [TestMethod]
         public void InsertAndMove_InsertsDatabaseEntry()
         {
             var fileHandler = new FileHandler(database, config);
@@ -572,6 +609,19 @@ namespace UnitTest.Tests
             Assert.IsNull(fileData);
             Assert.IsNull(fileDataFromDB);
             Assert.IsFalse(File.Exists(fileHandler.GetFullFileName(FileType.Demo, @"Resources\made-up-file.demo")));
+        }
+
+        [TestMethod]
+        public void InsertAndMove_RemembersOriginalFile()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("InsertAndMove_RemembersOriginalFile.zip");
+            File.Copy(@"Resources\happy.png", @"Resources\happy_DELETE_ME.png");
+
+            var fileData = fileHandler.InsertAndMove(gameFile, FileType.TitlePic, @"Resources\happy_DELETE_ME.png");
+
+            Assert.IsNotNull(fileData);
+            Assert.AreEqual("happy_DELETE_ME.png", fileData.OriginalFileName);
         }
 
         class UrlFileData : FileData

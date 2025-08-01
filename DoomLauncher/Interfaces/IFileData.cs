@@ -13,7 +13,6 @@ namespace DoomLauncher.Interfaces
         int? SourcePortID { get; set; }
         string Description { get; set; }
         string OriginalFileName { get; set; }
-        string OriginalFilePath { get; set; }
         string UserTitle { get; set; }
         string UserDescription { get; set; }
         string Map { get; set; }

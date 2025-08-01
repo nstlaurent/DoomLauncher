@@ -61,7 +61,7 @@ namespace DoomLauncher.Handlers
                         imageStream.WriteTo(fs);
                 }
 
-                createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, editBeforeSave);
+                createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, null, editBeforeSave);
             }
             catch (Exception)
             {
@@ -87,7 +87,7 @@ namespace DoomLauncher.Handlers
                 try
                 {
                     fi.CopyTo(path);
-                    createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, editBeforeSave);
+                    createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, file, editBeforeSave);
                 }
                 catch (Exception)
                 {
@@ -114,7 +114,7 @@ namespace DoomLauncher.Handlers
                 try
                 {
                     fi.MoveTo(path);
-                    createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, editBeforeSave);
+                    createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, file, editBeforeSave);
                 }
                 catch (Exception)
                 {
@@ -138,7 +138,7 @@ namespace DoomLauncher.Handlers
             // Although we're not doing anything to the file, it needs to exist in the place we expect it.
             if (fi.Exists && File.Exists(GetFullFileName(fileType, fileName)))
             {
-                createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, editBeforeSave);
+                createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, file, editBeforeSave);
             }
             return createdFile;
         }
@@ -186,12 +186,14 @@ namespace DoomLauncher.Handlers
             return $"{Guid.NewGuid()}{extension}";
         }
 
-        private IFileData InsertDatabaseRecord(IGameFile gameFile, FileType fileType, string fileName, Action<IFileData> editBeforeSave)
+        private IFileData InsertDatabaseRecord(IGameFile gameFile, FileType fileType, string fileName, string originalFile, Action<IFileData> editBeforeSave)
         {
+            var originalFileInfo = originalFile != null ? new FileInfo(originalFile) : null;
             IFileData fileData = new FileData
             {
                 FileName = fileName,
                 FullFileName = GetFullFileName(fileType, fileName), // Not stored, this is for the return value
+                OriginalFileName = originalFileInfo?.Name,
                 GameFileID = gameFile.GameFileID.Value,
                 FileTypeID = fileType,
                 FileOrder = 0
