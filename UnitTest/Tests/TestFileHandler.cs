@@ -4,6 +4,7 @@ using DoomLauncher.DataSources;
 using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace UnitTest.Tests
             Directory.CreateDirectory("TitlePics");
             Directory.CreateDirectory("TileImagesTest");
             Directory.CreateDirectory("Demos");
+            Directory.CreateDirectory("OriginalDir");
         }
 
         [TestCleanup]
@@ -53,6 +55,9 @@ namespace UnitTest.Tests
 
             if (Directory.Exists("TileImagesTest"))
                 Directory.Delete("TileImagesTest", true);
+
+            if (Directory.Exists("OriginalDir"))
+                Directory.Delete("OriginalDir", true);
 
             if (File.Exists(@"Resources\happy_DELETE_ME.png"))
                 File.Delete(@"Resources\happy_DELETE_ME.png");
@@ -622,6 +627,136 @@ namespace UnitTest.Tests
 
             Assert.IsNotNull(fileData);
             Assert.AreEqual("happy_DELETE_ME.png", fileData.OriginalFileName);
+        }
+
+        [TestMethod]
+        public void UpdateFromOriginal_DoesNothingIfOriginalFileDoesntExist()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            // Set up original file
+            File.Copy(@"Resources\happy.png", @"OriginalDir\happy.png");
+            var originalFileInfo = new FileInfo(@"OriginalDir\happy.png");
+            Assert.IsTrue(originalFileInfo.Exists);
+
+            // Insert a copy
+            IGameFile gameFile = CreateSavedGameFile("UpdateFromOriginal_DoesNothingIfOriginalFileDoesntExist.zip");
+            var file = fileHandler.InsertAndCopy(gameFile, FileType.Demo, @"OriginalDir\happy.png");
+            var localWriteTime = new FileInfo(file.FullFileName).LastWriteTime;
+
+            // Touch the original file so we know if it was copied or not
+            originalFileInfo.LastWriteTime = DateTime.Now;
+
+            // Delete original file
+            originalFileInfo.Delete();
+
+            fileHandler.UpdateFromOriginal("OriginalDir", file, f =>
+            {
+                f.Description = "shouldn't happen";
+            });
+
+            // Local file should the same write date as before
+            var newLocalTime = new FileInfo(file.FullFileName).LastWriteTime;
+            Assert.AreEqual(localWriteTime, newLocalTime);
+            Assert.IsNull(file.Description);
+        }
+
+        [TestMethod]
+        public void UpdateFromOriginal_DoesNothingIfOriginalFileIsOlderThanLocal()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            // Set up original file
+            File.Copy(@"Resources\happy.png", @"OriginalDir\happy.png");
+            var originalFileInfo = new FileInfo(@"OriginalDir\happy.png");
+            Assert.IsTrue(originalFileInfo.Exists);
+
+            // Insert a copy
+            IGameFile gameFile = CreateSavedGameFile("UpdateFromOriginal_DoesNothingIfOriginalFileIsOlderThanLocal.zip");
+            var file = fileHandler.InsertAndCopy(gameFile, FileType.Demo, @"OriginalDir\happy.png");
+            var localWriteTime = new FileInfo(file.FullFileName).LastWriteTime;
+
+            // Touch the original file so we know if it was copied or not
+            originalFileInfo.LastWriteTime = DateTime.Now;
+
+            // Make the local file look like it's more up to date than the original
+            file.DateCreated = file.DateCreated.AddDays(3);
+            fileHandler.UpdateFromOriginal("OriginalDir", file);
+
+            // Local file should the same write date as before
+            var newLocalTime = new FileInfo(file.FullFileName).LastWriteTime;
+            Assert.AreEqual(localWriteTime, newLocalTime);
+        }
+
+        [TestMethod]
+        public void UpdateFromOriginal_CopiesOriginalFileToLocal()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            // Set up original file
+            File.Copy(@"Resources\happy.png", @"OriginalDir\happy.png");
+            var originalFileInfo = new FileInfo(@"OriginalDir\happy.png");
+            Assert.IsTrue(originalFileInfo.Exists);
+
+            // Insert a copy
+            IGameFile gameFile = CreateSavedGameFile("UpdateFromOriginal_CopiesOriginalFileToLocal.zip");
+            var file = fileHandler.InsertAndCopy(gameFile, FileType.Demo, @"OriginalDir\happy.png");
+            var localWriteTime = new FileInfo(file.FullFileName).LastWriteTime;
+
+            // Touch the original file so we know if it was copied or not
+            originalFileInfo.LastWriteTime = DateTime.Now;
+
+            fileHandler.UpdateFromOriginal("OriginalDir", file);
+
+            // Local file should have a newer write date now
+            var newLocalTime = new FileInfo(file.FullFileName).LastWriteTime;
+            Assert.IsTrue(newLocalTime > localWriteTime);
+        }
+
+        [TestMethod]
+        public void UpdateFromOriginal_UpdatesDatabase()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            File.Copy(@"Resources\happy.png", @"OriginalDir\happy.png");
+            var originalFileInfo = new FileInfo(@"OriginalDir\happy.png");
+            Assert.IsTrue(originalFileInfo.Exists);
+
+            IGameFile gameFile = CreateSavedGameFile("UpdateFromOriginal_UpdatesDatabase.zip");
+            var file = fileHandler.InsertAndCopy(gameFile, FileType.Demo, @"OriginalDir\happy.png");
+            var localWriteTime = new FileInfo(file.FullFileName).LastWriteTime;
+
+            // Touch the original file so we know if it was copied or not
+            originalFileInfo.LastWriteTime = DateTime.Now;
+
+            fileHandler.UpdateFromOriginal("OriginalDir", file, f =>
+            {
+                f.Description = "updated detail";
+            });
+
+            var fileFromDB = fileHandler.GetFiles(gameFile, FileType.Demo).First();
+            Assert.AreEqual("updated detail", fileFromDB.Description);
+        }
+
+        [TestMethod]
+        public void UpdateFromOriginal_SetsDateCreatedToOriginalFileLastWrite()
+        {
+            var fileHandler = new FileHandler(database, config);
+
+            File.Copy(@"Resources\happy.png", @"OriginalDir\happy.png");
+            var originalFileInfo = new FileInfo(@"OriginalDir\happy.png");
+            Assert.IsTrue(originalFileInfo.Exists);
+
+            IGameFile gameFile = CreateSavedGameFile("UpdateFromOriginal_SetsDateCreatedToOriginalFileLastWrite.zip");
+            var file = fileHandler.InsertAndCopy(gameFile, FileType.Demo, @"OriginalDir\happy.png");
+            var localWriteTime = new FileInfo(file.FullFileName).LastWriteTime;
+
+            // Touch the original file so we know if it was copied or not
+            originalFileInfo.LastWriteTime = DateTime.Now;
+
+            fileHandler.UpdateFromOriginal("OriginalDir", file);
+
+            Assert.AreEqual(originalFileInfo.LastWriteTime, file.DateCreated);
         }
 
         class UrlFileData : FileData

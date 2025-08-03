@@ -71,23 +71,22 @@ namespace DoomLauncher.Handlers
             return createdFile;
         }
 
-
-        public IFileData InsertAndCopy(IGameFile gameFile, FileType fileType, string file, Action<IFileData> editBeforeSave)
+        public IFileData InsertAndCopy(IGameFile gameFile, FileType fileType, string originalFile, Action<IFileData> editBeforeSave)
         {
             if (gameFile == null || !gameFile.GameFileID.HasValue)
                 return null;
 
-            FileInfo fi = new FileInfo(file);
-            string fileName = GetUniqueFileName(fi.Extension);
+            FileInfo originalFileInfo = new FileInfo(originalFile);
+            string fileName = GetUniqueFileName(originalFileInfo.Extension);
             string path = m_config.GetFileDirectory(fileType).GetFullPath(fileName);
             
             IFileData createdFile = null;
-            if (fi.Exists)
+            if (originalFileInfo.Exists)
             {
                 try
                 {
-                    fi.CopyTo(path);
-                    createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, file, editBeforeSave);
+                    originalFileInfo.CopyTo(path);
+                    createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, originalFile, editBeforeSave);
                 }
                 catch (Exception)
                 {
@@ -99,48 +98,67 @@ namespace DoomLauncher.Handlers
             return createdFile;
         }
 
-        public IFileData InsertAndMove(IGameFile gameFile, FileType fileType, string file, Action<IFileData> editBeforeSave)
+        public IFileData InsertAndMove(IGameFile gameFile, FileType fileType, string originalFile, Action<IFileData> editBeforeSave)
         {
             if (gameFile == null || !gameFile.GameFileID.HasValue)
                 return null;
 
-            FileInfo fi = new FileInfo(file);
-            string fileName = GetUniqueFileName(fi.Extension);
+            FileInfo originalFileInfo = new FileInfo(originalFile);
+            string fileName = GetUniqueFileName(originalFileInfo.Extension);
             string path = m_config.GetFileDirectory(fileType).GetFullPath(fileName);
 
             IFileData createdFile = null;
-            if (fi.Exists)
+            if (originalFileInfo.Exists)
             {
                 try
                 {
-                    fi.MoveTo(path);
-                    createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, file, editBeforeSave);
+                    originalFileInfo.MoveTo(path);
+                    createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, originalFile, editBeforeSave);
                 }
                 catch (Exception)
                 {
-                    if (File.Exists(path) && File.Exists(file))
+                    if (File.Exists(path) && File.Exists(originalFile))
                         File.Delete(path);
                 }
             }
             return createdFile;
         }
 
-        public IFileData InsertAndRefer(IGameFile gameFile, FileType fileType, string file, Action<IFileData> editBeforeSave)
+        public IFileData InsertAndRefer(IGameFile gameFile, FileType fileType, string originalFile, Action<IFileData> editBeforeSave)
         {
             if (gameFile == null || !gameFile.GameFileID.HasValue || !fileType.IsFixedContent())
                 return null;
 
-            FileInfo fi = new FileInfo(file);
-            string fileName = Path.GetFileName(file);
+            FileInfo originalFileInfo = new FileInfo(originalFile);
+            string fileName = Path.GetFileName(originalFile);
 
             IFileData createdFile = null;
             
             // Although we're not doing anything to the file, it needs to exist in the place we expect it.
-            if (fi.Exists && File.Exists(GetFullFileName(fileType, fileName)))
+            if (originalFileInfo.Exists && File.Exists(GetFullFileName(fileType, fileName)))
             {
-                createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, file, editBeforeSave);
+                createdFile = InsertDatabaseRecord(gameFile, fileType, fileName, originalFile, editBeforeSave);
             }
             return createdFile;
+        }
+
+        public void UpdateFromOriginal(string originalDir, IFileData localFile, Action<IFileData> editBeforeSave)
+        {
+            var originalFileInfo = new FileInfo(Path.Combine(originalDir, localFile.OriginalFileName));
+            if (originalFileInfo.Exists && localFile.DateCreated < originalFileInfo.LastWriteTime)
+            {
+                try
+                {
+                    originalFileInfo.CopyTo(m_config.GetFileDirectory(localFile.FileTypeID).GetFullPath(localFile.FileName), true);
+                }
+                catch
+                {
+                    // failed, nothing to do
+                }
+                localFile.DateCreated = originalFileInfo.LastWriteTime;
+                editBeforeSave(localFile);
+                m_database.UpdateFile(localFile);
+            }
         }
 
         public void DeleteFile(IFileData file)
@@ -196,7 +214,8 @@ namespace DoomLauncher.Handlers
                 OriginalFileName = originalFileInfo?.Name,
                 GameFileID = gameFile.GameFileID.Value,
                 FileTypeID = fileType,
-                FileOrder = 0
+                FileOrder = 0,
+                DateCreated = DateTime.Now
             };
 
             editBeforeSave(fileData);

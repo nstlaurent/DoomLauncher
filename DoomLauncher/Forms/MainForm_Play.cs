@@ -638,8 +638,10 @@ namespace DoomLauncher
             newSaveGames.ForEach(file => savegameHandler.InsertSaveGame(sourcePort, gameFile, file));
 
             var updatedSaveGames = m_saveGames.ToList();
-            updatedSaveGames.ForEach(file => savegameHandler.HandleUpdateSaveGames(sourcePort, gameFile, file));
-            savegameHandler.HandleDeleteSaveGames(GetDeletedSaveGames(m_saveFileDetectors), m_saveGames);
+            updatedSaveGames.ForEach(file => savegameHandler.UpdateSaveGameFromSourcePort(sourcePort, file));
+
+            var deletedSaveGames = GetDeletedSaveGames(m_saveFileDetectors).ToList();
+            deletedSaveGames.ForEach(file => savegameHandler.HandleDeleteSaveGames(file, m_saveGames));
         }
 
         private void HandleRecordedDemo(GameLaunchInfo gameLaunchInfo, IGameFile gameFile)

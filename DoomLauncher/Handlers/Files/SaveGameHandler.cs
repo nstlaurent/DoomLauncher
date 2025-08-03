@@ -41,15 +41,15 @@ namespace DoomLauncher
                 return fileInfo.Name;
         }
 
-        public void HandleUpdateSaveGames(ISourcePortData sourcePort, IGameFile gameFile, IFileData file)
+        public void UpdateSaveGameFromSourcePort(ISourcePortData sourcePort, IFileData file)
         {
-            FileInfo fi = new FileInfo(sourcePort.GetReadSavePath().GetFullPath(file.OriginalFileName));
+            FileInfo originalFileInfo = new FileInfo(sourcePort.GetReadSavePath().GetFullPath(file.OriginalFileName));
 
-            if (fi.Exists && file.DateCreated != fi.LastWriteTime)
+            if (originalFileInfo.Exists && file.DateCreated != originalFileInfo.LastWriteTime)
             {
                 try
                 {
-                    fi.CopyTo(SaveGameDirectory.GetFullPath(file.FileName), true);
+                    originalFileInfo.CopyTo(SaveGameDirectory.GetFullPath(file.FileName), true);
                 }
                 catch
                 {
@@ -57,24 +57,18 @@ namespace DoomLauncher
                 }
 
                 //check to see if the save name changed
-                string saveName = GetSaveGameName(sourcePort, fi.FullName);
-                if (saveName != file.Description)
-                    file.Description = saveName;
-
-                file.DateCreated = fi.LastWriteTime;
+                file.Description = GetSaveGameName(sourcePort, originalFileInfo.FullName);
+                file.DateCreated = originalFileInfo.LastWriteTime;
                 DataSourceAdapter.UpdateFile(file);
             }
         }
 
-        public void HandleDeleteSaveGames(string[] deletedFiles, IFileData[] previousFiles)
+        public void HandleDeleteSaveGames(string deletedSourceFile, IFileData[] previousFiles)
         {
-            foreach (var file in deletedFiles)
-            {
-                FileInfo fi = new FileInfo(file);
-                IFileData saveFile = previousFiles.FirstOrDefault(x => x.OriginalFileName == fi.Name);
-                if (saveFile != null)
-                    DataSourceAdapter.DeleteFile(saveFile);
-            }
+            FileInfo deletedFileInfo = new FileInfo(deletedSourceFile);
+            IFileData saveFile = previousFiles.FirstOrDefault(x => x.OriginalFileName == deletedFileInfo.Name);
+            if (saveFile != null)
+                DataSourceAdapter.DeleteFile(saveFile);
         }
 
         public void CopySaveGamesToSourcePort(ISourcePortData sourcePort, IFileData[] files)
@@ -82,8 +76,8 @@ namespace DoomLauncher
             foreach (IFileData file in files)
             {
                 string savePath = sourcePort.GetReadSavePath().GetFullPath();
-                string fileName = Path.Combine(sourcePort.GetReadSavePath().GetFullPath(), file.OriginalFileName);
-                FileInfo fiFrom = new FileInfo(Path.Combine(SaveGameDirectory.GetFullPath(), file.FileName));
+                string fileNameInSavePath = sourcePort.GetReadSavePath().GetFullPath(file.OriginalFileName);
+                FileInfo fiFrom = new FileInfo(SaveGameDirectory.GetFullPath(file.FileName));
 
                 try
                 {
@@ -94,7 +88,7 @@ namespace DoomLauncher
                         if (!di.Exists)
                             di.Create();
 
-                        fiFrom.CopyTo(fileName, true);
+                        fiFrom.CopyTo(fileNameInSavePath, true);
                     }
                 }
                 catch
