@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Security.Cryptography;
 
 #pragma warning disable CA2100 //sql injection warning, these all use db parameters anyway
 
