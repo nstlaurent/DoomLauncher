@@ -451,7 +451,7 @@
     <Compile Include="DataSources\StatsData.cs" />
     <Compile Include="DataSources\TagData.cs" />
     <Compile Include="DataSources\TagMapping.cs" />
-    <Compile Include="DataSources\FileType.cs" />
+    <Compile Include="Handlers\Files\FileType.cs" />
     <Compile Include="Forms\FileDetailsEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
