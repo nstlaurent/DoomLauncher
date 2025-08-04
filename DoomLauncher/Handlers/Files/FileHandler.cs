@@ -24,7 +24,7 @@ namespace DoomLauncher.Handlers
 
         public List<IFileData> GetFiles(IGameFile gameFile, params FileType[] fileTypes)
         {
-            // TODO this could be one database query
+            // TODO this could be one database query, maybe
             List<IFileData> files = new List<IFileData>();
             foreach (var fileType in fileTypes)
             {

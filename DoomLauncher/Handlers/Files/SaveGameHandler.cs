@@ -14,8 +14,6 @@ namespace DoomLauncher
         public SaveGameHandler(IDataSourceAdapter database, IDirectoriesConfiguration config)
         {
             m_fileHandler = new FileHandler(database, config);
-            DataSourceAdapter = database;
-            SaveGameDirectory = config.SaveGameDirectory;
         }
 
         public IFileData InsertSaveGame(ISourcePortData sourcePort, IGameFile gameFile, string file)
@@ -30,6 +28,47 @@ namespace DoomLauncher
             });
         }
 
+        public void UpdateSaveGameFromSourcePort(ISourcePortData sourcePort, IFileData saveGame)
+        {
+            string sourcePortSavePath = sourcePort.GetReadSavePath().GetFullPath();
+
+            m_fileHandler.UpdateFromOriginal(sourcePortSavePath, saveGame, f =>
+            {
+                f.Description = GetSaveGameName(sourcePort, f.FullFileName);
+            });
+        }
+
+        public void DeleteSaveGame(string originalFile, IFileData[] localFiles)
+        {
+            FileInfo originalFileInfo = new FileInfo(originalFile);
+            IFileData matchingLocalFile = localFiles.FirstOrDefault(x => x.OriginalFileName == originalFileInfo.Name);
+            if (matchingLocalFile != null)
+                m_fileHandler.DeleteFile(matchingLocalFile);
+        }
+
+        public void CopySaveGameToSourcePort(ISourcePortData sourcePort, IFileData localFile)
+        {
+            LauncherPath sourcePortReadPath = sourcePort.GetReadSavePath();
+            string originalFileName = sourcePortReadPath.GetFullPath(localFile.OriginalFileName);
+            FileInfo localFileInfo = new FileInfo(localFile.FullFileName);
+
+            try
+            {
+                if (localFileInfo.Exists)
+                {
+                    DirectoryInfo di = new DirectoryInfo(sourcePortReadPath.GetFullPath());
+                    if (!di.Exists)
+                        di.Create();
+
+                    localFileInfo.CopyTo(originalFileName, true);
+                }
+            }
+            catch
+            {
+                //failed, nothing to do
+            }
+        }
+
         private static string GetSaveGameName(ISourcePortData sourcePort, string file)
         {
             FileInfo fileInfo = new FileInfo(file);
@@ -37,68 +76,8 @@ namespace DoomLauncher
 
             if (reader != null)
                 return reader.GetName();
-            else 
+            else
                 return fileInfo.Name;
         }
-
-        public void UpdateSaveGameFromSourcePort(ISourcePortData sourcePort, IFileData file)
-        {
-            FileInfo originalFileInfo = new FileInfo(sourcePort.GetReadSavePath().GetFullPath(file.OriginalFileName));
-
-            if (originalFileInfo.Exists && file.DateCreated != originalFileInfo.LastWriteTime)
-            {
-                try
-                {
-                    originalFileInfo.CopyTo(SaveGameDirectory.GetFullPath(file.FileName), true);
-                }
-                catch
-                {
-                    //failed, nothing to do
-                }
-
-                //check to see if the save name changed
-                file.Description = GetSaveGameName(sourcePort, originalFileInfo.FullName);
-                file.DateCreated = originalFileInfo.LastWriteTime;
-                DataSourceAdapter.UpdateFile(file);
-            }
-        }
-
-        public void HandleDeleteSaveGames(string deletedSourceFile, IFileData[] previousFiles)
-        {
-            FileInfo deletedFileInfo = new FileInfo(deletedSourceFile);
-            IFileData saveFile = previousFiles.FirstOrDefault(x => x.OriginalFileName == deletedFileInfo.Name);
-            if (saveFile != null)
-                DataSourceAdapter.DeleteFile(saveFile);
-        }
-
-        public void CopySaveGamesToSourcePort(ISourcePortData sourcePort, IFileData[] files)
-        {
-            foreach (IFileData file in files)
-            {
-                string savePath = sourcePort.GetReadSavePath().GetFullPath();
-                string fileNameInSavePath = sourcePort.GetReadSavePath().GetFullPath(file.OriginalFileName);
-                FileInfo fiFrom = new FileInfo(SaveGameDirectory.GetFullPath(file.FileName));
-
-                try
-                {
-                    if (fiFrom.Exists)
-                    {
-                        DirectoryInfo di = new DirectoryInfo(savePath);
-
-                        if (!di.Exists)
-                            di.Create();
-
-                        fiFrom.CopyTo(fileNameInSavePath, true);
-                    }
-                }
-                catch
-                {
-                    //failed, nothing to do
-                }
-            }
-        }
-
-        public LauncherPath SaveGameDirectory { get; set; }
-        public IDataSourceAdapter DataSourceAdapter { get; set; }
     }
 }

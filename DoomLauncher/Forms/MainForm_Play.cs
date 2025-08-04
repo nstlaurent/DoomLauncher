@@ -349,7 +349,7 @@ namespace DoomLauncher
         {
             m_saveGames = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
             SaveGameHandler saveGameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration);
-            saveGameHandler.CopySaveGamesToSourcePort(sourcePort, m_saveGames);
+            m_saveGames.ToList().ForEach(file => saveGameHandler.CopySaveGameToSourcePort(sourcePort, file));
         }
 
         private void ShowLaunchParameters(GameLauncher launcher, IGameFile gameFile, IEnumerable<IGameFile> addFiles, ISourcePortData sourcePort)
@@ -641,7 +641,7 @@ namespace DoomLauncher
             updatedSaveGames.ForEach(file => savegameHandler.UpdateSaveGameFromSourcePort(sourcePort, file));
 
             var deletedSaveGames = GetDeletedSaveGames(m_saveFileDetectors).ToList();
-            deletedSaveGames.ForEach(file => savegameHandler.HandleDeleteSaveGames(file, m_saveGames));
+            deletedSaveGames.ForEach(file => savegameHandler.DeleteSaveGame(file, m_saveGames));
         }
 
         private void HandleRecordedDemo(GameLaunchInfo gameLaunchInfo, IGameFile gameFile)
@@ -653,7 +653,7 @@ namespace DoomLauncher
             if (fi != null && fi.Exists)
             {
                 DemoHandler demoHandler = new DemoHandler(new FileHandler(DataSourceAdapter, AppConfiguration));
-                demoHandler.HandleNewDemo(gameLaunchInfo.SourcePort, gameFile, fi.FullName,
+                demoHandler.InsertNewDemo(gameLaunchInfo.SourcePort, gameFile, fi.FullName,
                     m_currentPlayForm.RecordDescriptionText);
             }
             else

@@ -1,7 +1,5 @@
 ﻿using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
-using System.Collections.Generic;
-using System.IO;
 
 namespace DoomLauncher
 {
@@ -14,7 +12,7 @@ namespace DoomLauncher
             m_fileHandler = fileHandler;
         }
 
-        public IFileData HandleNewDemo(ISourcePortData sourcePort, IGameFile gameFile, string demoFile, string descriptionText)
+        public IFileData InsertNewDemo(ISourcePortData sourcePort, IGameFile gameFile, string demoFile, string descriptionText)
         {
             return m_fileHandler.InsertAndCopy(gameFile, FileType.Demo, demoFile, file => 
             {
