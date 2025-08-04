@@ -347,7 +347,8 @@ namespace DoomLauncher
 
         private void HandleCopySaveGames(IGameFile gameFile, ISourcePortData sourcePort)
         {
-            m_saveGames = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
+            var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
+            m_saveGames = fileHandler.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
             SaveGameHandler saveGameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration);
             m_saveGames.ToList().ForEach(file => saveGameHandler.CopySaveGameToSourcePort(sourcePort, file));
         }
