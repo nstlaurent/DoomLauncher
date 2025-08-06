@@ -56,7 +56,7 @@ namespace UnitTest.Tests
                 FileName = "InsertNewDemo_NullGameFileIdFails.zip"
             };
 
-            var fileData = demoHandler.InsertNewDemo(sourcePort, gameFile, "zandemo.cld", "Great description");
+            var fileData = demoHandler.InsertNewDemo(sourcePort, gameFile, @"Resources\zandemo.cld", "Great description");
 
             Assert.IsNull(fileData);
         }
@@ -104,7 +104,7 @@ namespace UnitTest.Tests
             var existingDemos = Directory.EnumerateFiles(config.DemoDirectory.GetFullPath());
             Assert.IsFalse(existingDemos.Any());
 
-            var fileData = demoHandler.InsertNewDemo(sourcePort, gameFile, "zandemo.cld", "Copy it");
+            var fileData = demoHandler.InsertNewDemo(sourcePort, gameFile, @"Resources\zandemo.cld", "Copy it");
 
             existingDemos = Directory.EnumerateFiles(config.DemoDirectory.GetFullPath());
 
@@ -136,7 +136,7 @@ namespace UnitTest.Tests
             var existingDemos = database.GetFiles(gameFile, FileType.Demo).ToList();
             Assert.IsFalse(existingDemos.Any());
 
-            var fileData = demoHandler.InsertNewDemo(sourcePort, gameFile, "zandemo.cld", "Save to DB!!");
+            var fileData = demoHandler.InsertNewDemo(sourcePort, gameFile, @"Resources\zandemo.cld", "Save to DB!!");
 
             Assert.IsNotNull(fileData);
             existingDemos = database.GetFiles(gameFile, FileType.Demo).ToList();

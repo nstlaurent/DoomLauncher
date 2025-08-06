@@ -182,7 +182,7 @@ namespace UnitTest.Tests
             var saveGame = saveGameHandler.InsertSaveGame(sourcePort, gameFile, @"SourcePortSaveGames\chocosave1.dsg");
 
             // Touch the save so we know that it has been copied
-            var originalFileInfo = TouchFile(@"SourcePortSaveGames\chocosave1.dsg");
+            var originalFileInfo = TestUtil.TouchFile(@"SourcePortSaveGames\chocosave1.dsg");
 
             saveGameHandler.UpdateSaveGameFromSourcePort(sourcePort, saveGame);
 
@@ -216,7 +216,7 @@ namespace UnitTest.Tests
             Assert.IsNull(saveGame.Description);
 
             // Touch the original file so we know if it was copied or not
-            var originalFileInfo = TouchFile(@"SourcePortSaveGames\chocosave1.dsg");
+            var originalFileInfo = TestUtil.TouchFile(@"SourcePortSaveGames\chocosave1.dsg");
 
             saveGameHandler.UpdateSaveGameFromSourcePort(sourcePort, saveGame);
 
@@ -272,17 +272,6 @@ namespace UnitTest.Tests
             saveGameHandler.CopySaveGameToSourcePort(sourcePort, saveGame);
 
             Assert.IsTrue(File.Exists(@"SourcePortSaveGames\chocosave1.dsg"));
-        }
-
-        private static FileInfo TouchFile(string fileName)
-        {
-            // Github runs the tests much faster, need to put a bit of distance
-            // between the times
-            Thread.Sleep(1);
-            var fileInfo = new FileInfo(fileName);
-            fileInfo.LastWriteTime = DateTime.Now;
-            Thread.Sleep(1);
-            return fileInfo;
         }
     }
 }
