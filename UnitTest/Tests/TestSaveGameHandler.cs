@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace UnitTest.Tests
 {
@@ -181,8 +182,7 @@ namespace UnitTest.Tests
             var saveGame = saveGameHandler.InsertSaveGame(sourcePort, gameFile, @"SourcePortSaveGames\chocosave1.dsg");
 
             // Touch the save so we know that it has been copied
-            var originalFileInfo = new FileInfo(@"SourcePortSaveGames\chocosave1.dsg");
-            originalFileInfo.LastWriteTime = DateTime.Now;
+            var originalFileInfo = TouchFile(@"SourcePortSaveGames\chocosave1.dsg");
 
             saveGameHandler.UpdateSaveGameFromSourcePort(sourcePort, saveGame);
 
@@ -204,8 +204,7 @@ namespace UnitTest.Tests
 
             // Put the original file in the sourceport directory
             File.Copy(@"Resources\chocosave1.dsg", @"SourcePortSaveGames\chocosave1.dsg");
-            var originalFileInfo = new FileInfo(@"SourcePortSaveGames\chocosave1.dsg");
-            Assert.IsTrue(originalFileInfo.Exists);
+            Assert.IsTrue(File.Exists(@"SourcePortSaveGames\chocosave1.dsg"));
 
             var gameFile = new GameFile() { FileName = "shotgun.zip" };
             database.InsertGameFile(gameFile);
@@ -217,7 +216,7 @@ namespace UnitTest.Tests
             Assert.IsNull(saveGame.Description);
 
             // Touch the original file so we know if it was copied or not
-            originalFileInfo.LastWriteTime = DateTime.Now;
+            var originalFileInfo = TouchFile(@"SourcePortSaveGames\chocosave1.dsg");
 
             saveGameHandler.UpdateSaveGameFromSourcePort(sourcePort, saveGame);
 
@@ -273,6 +272,17 @@ namespace UnitTest.Tests
             saveGameHandler.CopySaveGameToSourcePort(sourcePort, saveGame);
 
             Assert.IsTrue(File.Exists(@"SourcePortSaveGames\chocosave1.dsg"));
+        }
+
+        private static FileInfo TouchFile(string fileName)
+        {
+            // Github runs the tests much faster, need to put a bit of distance
+            // between the times
+            Thread.Sleep(1);
+            var fileInfo = new FileInfo(fileName);
+            fileInfo.LastWriteTime = DateTime.Now;
+            Thread.Sleep(1);
+            return fileInfo;
         }
     }
 }
