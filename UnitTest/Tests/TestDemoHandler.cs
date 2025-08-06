@@ -16,7 +16,7 @@ namespace UnitTest.Tests
 
         private readonly IDirectoriesConfiguration config = new DirectoriesConfiguration()
         {
-            DemoDirectory = new LauncherPath("DemosDir"),
+            DemoDirectory = new LauncherPath("Demos"),
         };
 
         private IFileHandler fileHandler;
@@ -25,15 +25,15 @@ namespace UnitTest.Tests
         public void Initialize()
         {
             database = TestUtil.CreateAdapter();
-            Directory.CreateDirectory("DemosDir");
+            Directory.CreateDirectory("Demos");
             fileHandler = new FileHandler(database, config);
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            if (Directory.Exists("DemosDir"))
-                Directory.Delete("DemosDir", true);
+            if (Directory.Exists("Demos"))
+                Directory.Delete("Demos", true);
 
             var dataAccess = ((DbDataSourceAdapter)database).DataAccess;
             dataAccess.ExecuteNonQuery("delete from GameFiles");
@@ -76,6 +76,7 @@ namespace UnitTest.Tests
                 GameFileID = 36,
                 FileName = "InsertNewDemo_NonExistingFileFails.zip"
             };
+            database.InsertGameFile(gameFile);
 
             var fileData = demoHandler.InsertNewDemo(sourcePort, gameFile, "MADE_UP_DEMO.cld", "Doesn't exist");
 
@@ -97,6 +98,7 @@ namespace UnitTest.Tests
                 GameFileID = 36,
                 FileName = "InsertNewDemo_InsertsFileOnDisk.zip"
             };
+            database.InsertGameFile(gameFile);
 
             // Nothing up my sleeve
             var existingDemos = Directory.EnumerateFiles(config.DemoDirectory.GetFullPath());
@@ -129,7 +131,6 @@ namespace UnitTest.Tests
                 FileName = "InsertNewDemo_InsertsFileToDatabase.zip"
             };
             database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile(gameFile.FileName);
 
             // Nothing up my sleeve
             var existingDemos = database.GetFiles(gameFile, FileType.Demo).ToList();
