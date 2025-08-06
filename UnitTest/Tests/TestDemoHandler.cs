@@ -16,7 +16,7 @@ namespace UnitTest.Tests
 
         private readonly IDirectoriesConfiguration config = new DirectoriesConfiguration()
         {
-            DemoDirectory = new LauncherPath("Demos"),
+            DemoDirectory = new LauncherPath("DemosDir"),
         };
 
         private IFileHandler fileHandler;
@@ -25,15 +25,15 @@ namespace UnitTest.Tests
         public void Initialize()
         {
             database = TestUtil.CreateAdapter();
-            Directory.CreateDirectory("Demos");
+            Directory.CreateDirectory("DemosDir");
             fileHandler = new FileHandler(database, config);
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            if (Directory.Exists("Demos"))
-                Directory.Delete("Demos", true);
+            if (Directory.Exists("DemosDir"))
+                Directory.Delete("DemosDir", true);
 
             var dataAccess = ((DbDataSourceAdapter)database).DataAccess;
             dataAccess.ExecuteNonQuery("delete from GameFiles");
