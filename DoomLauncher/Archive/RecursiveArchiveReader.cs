@@ -5,7 +5,7 @@ namespace DoomLauncher.Archive
 {
     public class RecursiveArchiveReader : IArchiveReader
     {
-        private readonly IArchiveReader m_root;
+        public IArchiveReader Root { get; }
         private readonly Func<IArchiveEntry, IArchiveReader> m_getChildReader; // null return value means no children
 
         private delegate void DisposeMethod();
@@ -13,7 +13,7 @@ namespace DoomLauncher.Archive
 
         public RecursiveArchiveReader(IArchiveReader root, Func<IArchiveEntry, IArchiveReader> getChildReader) 
         {
-            m_root = root;
+            Root = root;
             m_getChildReader = getChildReader;
         }
 
@@ -24,7 +24,7 @@ namespace DoomLauncher.Archive
         {
             // Recursive enumerable, adapted from https://stackoverflow.com/a/30441479
             var stack = new Stack<IEnumerator<IArchiveEntry>>();
-            IEnumerator<IArchiveEntry> enumerator = m_root.Entries.GetEnumerator();
+            IEnumerator<IArchiveEntry> enumerator = Root.Entries.GetEnumerator();
 
             try
             {
@@ -69,11 +69,11 @@ namespace DoomLauncher.Archive
             }
         }
 
-        public bool EntriesHaveExtensions => m_root.EntriesHaveExtensions;
+        public bool EntriesHaveExtensions => Root.EntriesHaveExtensions;
 
         public void Dispose()
         {
-            m_root.Dispose();
+            Root.Dispose();
             Disposing?.Invoke();
         }
     }
