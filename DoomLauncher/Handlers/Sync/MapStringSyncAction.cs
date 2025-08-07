@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using DoomLauncher.Archive;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -96,23 +97,24 @@ namespace DoomLauncher.Handlers.Sync
             return matches.Cast<Match>().Select(x => x.Value.Trim().Substring(3).Trim()).ToList();
         }
 
-        private List<string> MapStringFromGameFileWads(IArchiveReader reader)
+        private List<string> MapStringFromGameFileWads(IArchiveReader reader) =>
+            GetIWadFilenames(reader).SelectMany(Util.GetMapStringFromWad).ToList();
+
+        private List<string> GetIWadFilenames(IArchiveReader reader)
         {
-            List<string> maps = new List<string>();
             if (reader is WadArchiveReader wadArchive)
             {
-                maps.AddRange(Util.GetMapStringFromWad(wadArchive.Filename));
+                return new List<string>() { wadArchive.Filename };
+            }
+            else if (reader is RecursiveArchiveReader recursiveReader && recursiveReader.Root is WadArchiveReader wadArchive2)
+            {
+                return new List<string>() { wadArchive2.Filename };
             }
             else
             {
                 IEnumerable<IArchiveEntry> wadEntries = GetEntriesByExtension(reader, ".wad");
-                foreach (IArchiveEntry entry in wadEntries)
-                {
-                    string extractFile = Util.ExtractTempFile(m_tempDirectory.GetFullPath(), entry);
-                    maps.AddRange(Util.GetMapStringFromWad(extractFile));
-                }
+                return wadEntries.Select(entry => Util.ExtractTempFile(m_tempDirectory.GetFullPath(), entry)).ToList();
             }
-            return maps;
         }
 
         private static string[] GetArchiveEntryData(params IArchiveEntry[] entries)

@@ -6,3 +6,4 @@
 
 ## Bug Fixes:
 - Fixed broken thumbnail rendering for hexen.wad
+- Map string was not being generated for WADs directly dragged into DoomLauncher on Unmanaged mode
