@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WadReader;
 
 namespace DoomLauncher
 {
@@ -96,12 +95,13 @@ namespace DoomLauncher
                     new MapStringSyncAction(AppConfiguration.TempDirectory),
                     new GameInfoSyncAction(),
                     new StartupImageSyncAction(),
-                    new TitlePicSyncAction(DataCache.Instance.DefaultPalette, 
-                                            DataCache.Instance.HexenPalette, 
+                    new TitlePicSyncAction(DataCache.Instance.DefaultPalette,
+                                            DataCache.Instance.HexenPalette,
                                             DataCache.Instance.HereticPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
                     new Doom64TitlePicSyncAction(),
                     new IWadTitlesSyncAction(),
-                    new GameConfSyncAction(DataSourceAdapter)
+                    new GameConfSyncAction(DataSourceAdapter),
+                    new KnownTitlesSyncAction()
                 };
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 
