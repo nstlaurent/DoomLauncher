@@ -14,7 +14,7 @@ namespace DoomLauncher.Handlers.Sync
     {
         private const string DoomTitlepicName = "TITLEPIC";
         private const string HereticHexenTitlepicName = "TITLE";
-        private readonly List<string> KnownHexenWads = new List<string>() { "hexdd", "hexen" };
+        private readonly HashSet<string> KnownHexenWads = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "hexdd", "hexen" };
         private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");
         private readonly Palette m_doomPalette;
         private readonly Palette m_hexenPalette;
@@ -39,7 +39,7 @@ namespace DoomLauncher.Handlers.Sync
             {
                 if (TitlePicUtil.GetEntry(reader, HereticHexenTitlepicName, out entry))
                 {
-                    var baseName = Path.GetFileNameWithoutExtension(file.FileNameNoPath).ToLower();
+                    var baseName = Path.GetFileNameWithoutExtension(file.FileNameNoPath);
                     if (KnownHexenWads.Contains(baseName))
                         palette = m_hexenPalette;
                     else
