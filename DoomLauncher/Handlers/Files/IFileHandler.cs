@@ -23,7 +23,7 @@ namespace DoomLauncher.Handlers
 
         void DeleteFile(IFileData localFile);
 
-        void DeleteFiles(IGameFile gameFile, FileType fileType);
+        void DeleteFiles(IGameFile gameFile, FileType? fileType = null);
     }
 
     public static class IFileHandlerExtensions

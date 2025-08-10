@@ -190,10 +190,10 @@ namespace DoomLauncher.Handlers
             derivedFiles.ForEach(DeleteFile);
         }
 
-        public void DeleteFiles(IGameFile gameFile, FileType fileType)
+        public void DeleteFiles(IGameFile gameFile, FileType? fileType = null)
         {
-            var filesToDelete = m_database.GetFiles(gameFile, fileType).ToList();
-            filesToDelete.ForEach(DeleteFile);
+            var filesToDelete = fileType.HasValue ? m_database.GetFiles(gameFile, fileType.Value) : m_database.GetFiles(gameFile);
+            filesToDelete.ToList().ForEach(DeleteFile);
         }
 
         private string GetUniqueFileName(string extension)

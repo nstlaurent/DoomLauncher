@@ -24,6 +24,7 @@ namespace UnitTest.Tests
             TitlePicDirectory = new LauncherPath("TitlePics"),
             TileImageDirectory = new LauncherPath("TileImagesTest"),
             DemoDirectory = new LauncherPath("Demos"),
+            SaveGameDirectory = new LauncherPath("SaveGames"),
         };
 
         [TestInitialize]
@@ -35,6 +36,7 @@ namespace UnitTest.Tests
             Directory.CreateDirectory("TitlePics");
             Directory.CreateDirectory("TileImagesTest");
             Directory.CreateDirectory("Demos");
+            Directory.CreateDirectory("SaveGames");
             Directory.CreateDirectory("OriginalDir");
         }
 
@@ -52,6 +54,9 @@ namespace UnitTest.Tests
 
             if (Directory.Exists("Demos"))
                 Directory.Delete("Demos", true);
+
+            if (Directory.Exists("SaveGames"))
+                Directory.Delete("SaveGames", true);
 
             if (Directory.Exists("TileImagesTest"))
                 Directory.Delete("TileImagesTest", true);
@@ -760,10 +765,10 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void DeleteFiles_DoesNothingIfFileIsUrl()
+        public void DeleteFile_DoesNothingIfFileIsUrl()
         {
             var fileHandler = new FileHandler(database, config);
-            IGameFile gameFile = CreateSavedGameFile("DeleteFiles_DoesNothingIfFileIsUrl.zip");
+            IGameFile gameFile = CreateSavedGameFile("DeleteFile_DoesNothingIfFileIsUrl.zip");
 
             var file = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png");
 
@@ -809,6 +814,31 @@ namespace UnitTest.Tests
 
             Assert.AreEqual(1, thumbnails.Count());
             Assert.AreEqual(0, screenshots.Count());
+        }
+
+        [TestMethod]
+        public void DeleteFiles_DeletesAllAttachedFilesIfNoFileTypeGiven()
+        {
+            var fileHandler = new FileHandler(database, config);
+            IGameFile gameFile = CreateSavedGameFile("DeleteFiles_DeletesAllAttachedFilesIfNoFileTypeGiven.zip");
+
+            var file1 = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png");
+            var file2 = fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
+            var file3 = fileHandler.InsertAndCopy(gameFile, FileType.Screenshot, @"Resources\happy.png");
+            var file4 = fileHandler.InsertAndCopy(gameFile, FileType.Demo, @"Resources\happy.png");
+            var file5 = fileHandler.InsertAndCopy(gameFile, FileType.SaveGame, @"Resources\happy.png");
+
+            // Yep they're here
+            var allFiles = database.GetFiles(gameFile);
+            Assert.AreEqual(5, allFiles.Count());
+
+            // Delete all
+            fileHandler.DeleteFiles(gameFile);
+
+            // Thumbnail is still here, screenshots are gone now
+            allFiles = database.GetFiles(gameFile);
+
+            Assert.AreEqual(0, allFiles.Count());
         }
 
         [TestMethod]

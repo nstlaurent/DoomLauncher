@@ -681,7 +681,8 @@ namespace DoomLauncher
 
         private void DeleteGameFileAndAssociations(IGameFile gameFile)
         {
-            DeleteLocalFileAssociations(gameFile);
+            var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
+            fileHandler.DeleteFiles(gameFile);
 
             IIWadData iwadFind = DataSourceAdapter.GetIWad(gameFile.GameFileID.Value);
             if (iwadFind != null)
@@ -707,39 +708,6 @@ namespace DoomLauncher
             profiles.ToList().ForEach(x => DataSourceAdapter.DeleteGameProfile(x.GameProfileID));
 
             DataCache.Instance.TagMapLookup.RemoveGameFile(gameFile);
-        }
-
-        private void DeleteLocalFileAssociations(IGameFile gameFIle)
-        {
-            IEnumerable<IFileData> files = DataSourceAdapter.GetFiles(gameFIle);
-
-            foreach (IFileData file in files)
-            {
-                string path = DirectoryForFileType(file.FileTypeID).GetFullPath();
-                FileInfo fi = new FileInfo(Path.Combine(path, file.FileName));
-
-                if (fi.Exists)
-                    fi.Delete();
-
-                DataSourceAdapter.DeleteFile(file);
-            }
-        }
-
-        private LauncherPath DirectoryForFileType(FileType fileTypeID)
-        {
-            switch (fileTypeID)
-            {
-                case FileType.Screenshot:
-                    return AppConfiguration.ScreenshotDirectory;
-                case FileType.Demo:
-                    return AppConfiguration.DemoDirectory;
-                case FileType.SaveGame:
-                    return AppConfiguration.SaveGameDirectory;
-                case FileType.Thumbnail:
-                    return AppConfiguration.ThumbnailDirectory;
-                default:
-                    throw new NotImplementedException();
-            }
         }
 
         private void HandleSelectionChange(object sender, bool forceChange)
