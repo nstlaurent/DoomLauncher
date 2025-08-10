@@ -178,6 +178,21 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void UnmanagedWadGetsMapString()
+        {
+            string file = "simple.wad";
+            string fullPathFile = Path.Combine(Directory.GetCurrentDirectory(), s_filedir, file);
+
+            SyncLibraryHandler handler = CreateSyncLibraryHandler(false, FileManagement.Unmanaged);
+            File.Copy(Path.Combine("Resources", file), Path.Combine(s_filedir, file));
+
+            var syncResult = handler.SyncManyFiles(new string[] { fullPathFile });
+            Assert.AreEqual(1, syncResult.AddedGameFiles.Count);
+
+            Assert.AreEqual("MAP01", syncResult.AddedGameFiles[0].Map);
+        }
+
+        [TestMethod]
         public void TestSyncUpdate()
         {
             SyncLibraryHandler handler = CreateSyncLibraryHandler();
