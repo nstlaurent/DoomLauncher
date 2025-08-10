@@ -77,8 +77,8 @@ namespace DoomLauncher
                 return;
 
             ConfirmIWad(launchData.GameFile);
-
             SetupPlayForm(launchData.GameFile);
+
             if (sourcePort != null) 
                 m_currentPlayForm.SelectedSourcePort = sourcePort;
             if (map != null)
@@ -127,6 +127,7 @@ namespace DoomLauncher
                 new IntendedIwadSyncAction(DataSourceAdapter).ApplyIntendedGame(gameFile);
                 DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.IWadID });
             }
+
         }
 
         private LaunchData GetLaunchFiles(IEnumerable<IGameFile> gameFiles, bool checkActiveSessions)
@@ -225,6 +226,11 @@ namespace DoomLauncher
                 GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
                 GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave, 
                     GameFileFieldType.SettingsExtraParamsOnly });
+
+                // Selection of IWad could have invalidated the TileImage
+                var gameFileImageHandler = new GameFileImageHandler(new FileHandler(DataSourceAdapter, AppConfiguration), DataSourceAdapter.GetIWadByIWadID);
+                gameFileImageHandler.UpdateImages(gameFile);
+
                 return;
             }
             
