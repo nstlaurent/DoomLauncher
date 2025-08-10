@@ -11,6 +11,11 @@ namespace DoomLauncher.GameStores
                                @"rerelease\sigil2.wad" },
             null);
 
+        public readonly static StoreGame HERETIC_PLUS_HEXEN = new StoreGame(3286930, 1572667751, "Heretic + Hexen",
+            new List<string> { @"base\heretic\heretic.wad", @"base\hexen\hexen.wad" },
+            new List<string> { @"base\hexendk\hexdd.wad" }, 
+            null);
+
         public readonly static StoreGame DOOM2 = new StoreGame(2300, null, "DOOM II", 
             new List<string> { "base\\doom2.wad" }, 
             new List<string>(), 
@@ -43,7 +48,7 @@ namespace DoomLauncher.GameStores
 
         public static readonly List<StoreGame> GAMES_IN_PRIORITY_ORDER = new List<StoreGame>() 
         { 
-            ULTIMATE_DOOM, DOOM2, FINAL_DOOM, HERETIC, HEXEN, STRIFE, DOOM64
+            ULTIMATE_DOOM, DOOM2, FINAL_DOOM, HERETIC_PLUS_HEXEN, HERETIC, HEXEN, STRIFE, DOOM64
         };
 
         public int SteamId { get; }
