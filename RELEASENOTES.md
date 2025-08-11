@@ -3,6 +3,7 @@
 ## Features:
 - We can now properly render Heretic title images
 - Hexen: Deathkings of the Dark Citadel now has the correct title
+- Autoloader will pick up Heretic + Hexen original wads with Hexen: Deathkings of the Dark Citadel
 
 ## Bug Fixes:
 - Fixed broken thumbnail rendering for hexen.wad
