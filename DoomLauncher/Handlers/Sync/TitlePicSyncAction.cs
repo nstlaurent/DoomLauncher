@@ -41,7 +41,7 @@ namespace DoomLauncher.Handlers.Sync
                 {
                     var iwadFileName = m_database.GetIWads().FirstOrDefault(iw => iw.IWadID == file.IWadID)?.FileNameBase;
 
-                    if (iwadFileName != null && iwadFileName.Equals("hexen", StringComparison.OrdinalIgnoreCase))
+                    if (file.IntendedGame.Equals(IWadInfo.HEXEN) || iwadFileName != null && iwadFileName.Equals("hexen", StringComparison.OrdinalIgnoreCase))
                         palette = m_hexenPalette;
                     else
                         palette = m_hereticPalette;
@@ -81,15 +81,13 @@ namespace DoomLauncher.Handlers.Sync
 
         private Palette GetPaletteOrDefault(IGameFile gameFile, IArchiveReader reader)
         {
-            if (!TitlePicUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
+            if (TitlePicUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
             {
-                return m_doomPalette;
+                Palette palette = Palette.From(paletteEntry.ReadEntry());
+                if (palette != null)
+                    return palette;
             }
-
-            Palette palette = Palette.From(paletteEntry.ReadEntry());
-            if (palette != null)
-                return palette;
-
+            
             return m_doomPalette;
         }
     }
