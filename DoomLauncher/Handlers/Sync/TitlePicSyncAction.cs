@@ -39,9 +39,7 @@ namespace DoomLauncher.Handlers.Sync
             {
                 if (TitlePicUtil.GetEntry(reader, HereticHexenTitlepicName, out entry))
                 {
-                    var iwadFileName = m_database.GetIWads().FirstOrDefault(iw => iw.IWadID == file.IWadID)?.FileNameBase;
-
-                    if (file.IntendedGame.Equals(IWadInfo.HEXEN) || iwadFileName != null && iwadFileName.Equals("hexen", StringComparison.OrdinalIgnoreCase))
+                    if (IWadInfo.HEXEN.Equals(file.IntendedGame) || "hexen".Equals(GetIWadFileNameBase(file.IWadID), StringComparison.OrdinalIgnoreCase))
                         palette = m_hexenPalette;
                     else
                         palette = m_hereticPalette;
@@ -61,6 +59,9 @@ namespace DoomLauncher.Handlers.Sync
 
             return SyncResult.TitlePic(file, image);
         }
+
+        private string GetIWadFileNameBase(int? iwadID) =>
+            m_database.GetIWads().FirstOrDefault(iw => iw.IWadID == iwadID)?.FileNameBase;
 
         private bool GetTitlepicNameFromMapInfo(string[] mapInfoData, out string newTitlepicName)
         {
