@@ -15,7 +15,8 @@ namespace DoomLauncher
     {
         private async Task<SyncResult> SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
         {
-            ProgressBarStart(ProgressBarType.Sync);
+            var pg = ProgressBarStart(ProgressBarType.Sync);
+            pg.Text = $"Syncing {fileNames.Count()} files...";
             SyncResult syncResult =  await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
             ProgressBarEnd(ProgressBarType.Sync);
             SyncLocalDatabaseComplete(syncResult, updateViews);
