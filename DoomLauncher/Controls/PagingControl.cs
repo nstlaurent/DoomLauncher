@@ -16,7 +16,7 @@ namespace DoomLauncher
             Stylizer.StylizeControl(this, DesignMode);
         }
 
-        public void Init(int records, int recordsPerPage)
+        public void Init(int records, int recordsPerPage, int initialPage)
         {
             Pages = records / recordsPerPage;
             if (records % recordsPerPage != 0)
@@ -28,12 +28,16 @@ namespace DoomLauncher
             tblMain.ColumnStyles[3].Width = size.Width;
             tblMain.ColumnStyles[5].Width = size.Width;
 
-            PageIndex = 0;
             if (Pages > 0)
-                SetPageIndex(0);
+                SetPageIndex(initialPage, false);
+            else
+                PageIndex = 0;
         }
 
-        public bool SetPageIndex(int index)
+        public bool SetPageIndex(int index) => 
+            SetPageIndex(index, false);
+
+        private bool SetPageIndex(int index, bool publishEvent)
         {
             if (index < 0)
                 index = 0;
@@ -47,28 +51,30 @@ namespace DoomLauncher
 
             PageIndex = index;
 
-            PageIndexChanged?.Invoke(this, EventArgs.Empty);
+            if (publishEvent)
+                PageIndexChanged?.Invoke(this, EventArgs.Empty);
+
             return true;
         }
 
         private void BtnNext_Click(object sender, EventArgs e)
         {
-            SetPageIndex(PageIndex + 1);
+            SetPageIndex(PageIndex + 1, true);
         }
 
         private void BtnPrev_Click(object sender, EventArgs e)
         {
-            SetPageIndex(PageIndex - 1);
+            SetPageIndex(PageIndex - 1, true);
         }
 
         private void BtnFirst_Click(object sender, EventArgs e)
         {
-            SetPageIndex(0);
+            SetPageIndex(0, true);
         }
 
         private void BtnLast_Click(object sender, EventArgs e)
         {
-            SetPageIndex(Pages - 1);
+            SetPageIndex(Pages - 1, true);
         }
     }
 }
