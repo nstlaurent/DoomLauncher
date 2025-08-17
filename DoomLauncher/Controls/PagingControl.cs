@@ -34,10 +34,7 @@ namespace DoomLauncher
                 PageIndex = 0;
         }
 
-        public bool SetPageIndex(int index) => 
-            SetPageIndex(index, false);
-
-        private bool SetPageIndex(int index, bool publishEvent)
+        private void SetPageIndex(int index, bool publishEvent)
         {
             if (index < 0)
                 index = 0;
@@ -47,14 +44,12 @@ namespace DoomLauncher
             lblPage.Text = (index + 1).ToString();
 
             if (PageIndex == index)
-                return false;
+                return;
 
             PageIndex = index;
 
             if (publishEvent)
                 PageIndexChanged?.Invoke(this, EventArgs.Empty);
-
-            return true;
         }
 
         private void BtnNext_Click(object sender, EventArgs e)
