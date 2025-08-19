@@ -6,6 +6,7 @@ namespace DoomLauncher.Interfaces
     {
         int? GameFileID { get; set; }
         string FileName { get; set; }
+        string FileNameBase { get; }
         string FileNameNoPath { get; }
         string LastDirectory { get; }
         string Title { get; set; }

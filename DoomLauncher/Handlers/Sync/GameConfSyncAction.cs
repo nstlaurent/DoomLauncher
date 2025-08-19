@@ -53,7 +53,7 @@ namespace DoomLauncher.Handlers.Sync
                             gameFile.IWadID = iwadFile.IWadID;
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
 
                 }
