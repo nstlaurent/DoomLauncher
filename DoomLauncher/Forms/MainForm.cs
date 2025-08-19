@@ -76,7 +76,7 @@ namespace DoomLauncher
             copyProgressBar.Cancelled += m_progressBarFormCopy_Cancelled;
 
             m_progressBars[ProgressBarType.Copy] = copyProgressBar;
-            m_progressBars[ProgressBarType.Sync] = CreateProgressBar("Syncing...", ProgressBarStyle.Marquee, false);
+            m_progressBars[ProgressBarType.Sync] = CreateProgressBar("Syncing...", ProgressBarStyle.Continuous, false);
             m_progressBars[ProgressBarType.Update] = CreateProgressBar("Updating...", ProgressBarStyle.Marquee, false);
             m_progressBars[ProgressBarType.Delete] = CreateProgressBar("Deleting...", ProgressBarStyle.Marquee, false);
             m_progressBars[ProgressBarType.Search] = CreateProgressBar("Searching...", ProgressBarStyle.Marquee, false);

@@ -208,7 +208,7 @@ namespace DoomLauncher
         private void Instance_TilesRecreated(object sender, EventArgs e)
         {
             m_tilesRecreated = true;
-            pagingControl.Init(m_gameFiles.Count, GameFileTileManager.Instance.MaxItems);
+            pagingControl.Init(m_gameFiles.Count, GameFileTileManager.Instance.MaxItems, 0);
 
             SetItemsPerPage(GameFileTileManager.Instance.MaxItems);
 
@@ -424,7 +424,6 @@ namespace DoomLauncher
             ClearHover();
             ClearDisplayLabel();
 
-            bool update = false;
             int saveIndex = pagingControl.PageIndex;
 
             if (gameFiles == null)
@@ -433,28 +432,16 @@ namespace DoomLauncher
             }
             else
             {
-                var diff = m_gameFiles.Except(gameFiles);
-                // Basically a hack for when deleting a single item to keep the current page
-                update = diff.Count() == 1;
                 m_gameFiles = gameFiles.ToList();
             }
 
-            pagingControl.Init(m_gameFiles.Count, GameFileTileManager.Instance.MaxItems);
+            pagingControl.Init(m_gameFiles.Count, GameFileTileManager.Instance.MaxItems, saveIndex);
 
             if (!m_visible)
                 return;
 
-            if (update)
-            {
-                if (!pagingControl.SetPageIndex(saveIndex))
-                    SetPageData(saveIndex, false);
-                SetDefaultSelection();
-            }
-            else
-            {
-                SetPageData(0, true);
-                SetDefaultSelection();
-            }
+            SetPageData(saveIndex, false);
+            SetDefaultSelection();
         }
 
         private void ClearDisplayLabel()
