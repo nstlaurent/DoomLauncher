@@ -13,7 +13,6 @@ namespace DoomLauncher.Handlers.Sync
     {
         private const string DoomTitlepicName = "TITLEPIC";
         private const string HereticHexenTitlepicName = "TITLE";
-        private readonly HashSet<string> KnownHexenWads = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "hexdd", "hexen" };
         private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");
         private readonly Palette m_doomPalette;
         private readonly Palette m_hexenPalette;
