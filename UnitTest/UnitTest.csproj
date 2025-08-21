@@ -95,6 +95,7 @@
     <Compile Include="Tests\TestGameConfSyncAction.cs" />
     <Compile Include="Tests\TestGameInfoSyncAction.cs" />
     <Compile Include="Tests\TestIWadTitlesSyncAction.cs" />
+    <Compile Include="Tests\TestKnownWadsSyncAction.cs" />
     <Compile Include="Tests\TestMapStringSyncAction.cs" />
     <Compile Include="Tests\TestRecursiveArchiveReader.cs" />
     <Compile Include="Tests\TestGameStoreFiles.cs" />
