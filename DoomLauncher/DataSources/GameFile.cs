@@ -24,6 +24,7 @@ namespace DoomLauncher.DataSources
         public int? GameFileID { get; set; }
         public string FullFileName { get; set; }
         public virtual string FileName { get; set; }
+        public string FileNameBase => Path.GetFileNameWithoutExtension(FileName);
         public string FileNameNoPath => Path.GetFileName(FileName);
         public virtual string LastDirectory => GetLastDirectory(FileName);
         public virtual string Title { get; set; }

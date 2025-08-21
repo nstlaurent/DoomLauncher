@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Documents;
 using WadReader;
 
 namespace DoomLauncher.Handlers.Sync
@@ -14,17 +13,18 @@ namespace DoomLauncher.Handlers.Sync
     {
         private const string DoomTitlepicName = "TITLEPIC";
         private const string HereticHexenTitlepicName = "TITLE";
-        private readonly HashSet<string> KnownHexenWads = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "hexdd", "hexen" };
         private static readonly Regex TitlePageRegex = new Regex(@"titlepage\s*=\s*""([^""]*)""");
         private readonly Palette m_doomPalette;
         private readonly Palette m_hexenPalette;
         private readonly Palette m_hereticPalette;
+        private readonly IDataSourceAdapter m_database;
 
-        public TitlePicSyncAction(Palette doomPalette, Palette hexenPalette, Palette hereticPalette)
+        public TitlePicSyncAction(IDataSourceAdapter database, Palette doomPalette, Palette hexenPalette, Palette hereticPalette)
         {
             m_doomPalette = doomPalette;
             m_hexenPalette = hexenPalette;
             m_hereticPalette = hereticPalette;
+            m_database = database;
         }
 
         public SyncResult ApplyToGameFile(IGameFile file, IArchiveReader reader, string[] mapInfoData)
@@ -39,8 +39,9 @@ namespace DoomLauncher.Handlers.Sync
             {
                 if (TitlePicUtil.GetEntry(reader, HereticHexenTitlepicName, out entry))
                 {
-                    var baseName = Path.GetFileNameWithoutExtension(file.FileNameNoPath);
-                    if (KnownHexenWads.Contains(baseName))
+                    var iwadFileName = m_database.GetIWads().FirstOrDefault(iw => iw.IWadID == file.IWadID)?.FileNameBase;
+
+                    if (iwadFileName != null && iwadFileName.Equals("hexen", StringComparison.OrdinalIgnoreCase))
                         palette = m_hexenPalette;
                     else
                         palette = m_hereticPalette;

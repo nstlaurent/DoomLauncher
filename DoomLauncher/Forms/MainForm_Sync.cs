@@ -15,7 +15,8 @@ namespace DoomLauncher
     {
         private async Task<SyncResult> SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
         {
-            ProgressBarStart(ProgressBarType.Sync);
+            var pg = ProgressBarStart(ProgressBarType.Sync);
+            pg.Text = $"Syncing {fileNames.Count()} files...";
             SyncResult syncResult =  await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
             ProgressBarEnd(ProgressBarType.Sync);
             SyncLocalDatabaseComplete(syncResult, updateViews);
@@ -95,13 +96,14 @@ namespace DoomLauncher
                     new MapStringSyncAction(AppConfiguration.TempDirectory),
                     new GameInfoSyncAction(),
                     new StartupImageSyncAction(),
-                    new TitlePicSyncAction(DataCache.Instance.DefaultPalette,
+                    new TitlePicSyncAction(DataSourceAdapter, 
+                                            DataCache.Instance.DefaultPalette,
                                             DataCache.Instance.HexenPalette,
                                             DataCache.Instance.HereticPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
                     new Doom64TitlePicSyncAction(),
                     new IWadTitlesSyncAction(),
                     new GameConfSyncAction(DataSourceAdapter),
-                    new KnownTitlesSyncAction()
+                    new KnownWadsSyncAction(DataSourceAdapter)
                 };
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 

@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using System.IO;
 
 namespace DoomLauncher
 {
@@ -7,6 +8,9 @@ namespace DoomLauncher
         public int IWadID { get; set; }
         public string Name { get; set; }
         public string FileName { get; set; }
+
+        public string FileNameBase => Path.GetFileNameWithoutExtension(FileName);
+
         public int? GameFileID { get; set; }
 
         public override bool Equals(object obj)

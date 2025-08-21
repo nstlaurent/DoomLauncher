@@ -434,7 +434,7 @@ namespace UnitTest.Tests
             };
 
             if (pullTitlepic)
-                syncActions.Add(new TitlePicSyncAction(DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette, DataCache.Instance.HereticPalette));
+                syncActions.Add(new TitlePicSyncAction(database, DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette, DataCache.Instance.HereticPalette));
 
             return new SyncLibraryHandler(database, CreateDirectoryAdapater(), directories, fileManagement, syncActions);
         }
