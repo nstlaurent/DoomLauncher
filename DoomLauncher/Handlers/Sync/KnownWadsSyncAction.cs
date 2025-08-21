@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using System;
 using System.Linq;
 
 namespace DoomLauncher.Handlers.Sync
@@ -20,7 +21,7 @@ namespace DoomLauncher.Handlers.Sync
             {
                 case "hexdd":
                     file.Title = "Hexen: Deathkings of the Dark Citadel";
-                    file.IWadID = m_database.GetIWads().FirstOrDefault(iwad => iwad.FileNameBase.Equals("hexen"))?.IWadID;
+                    file.IWadID = m_database.GetIWads().FirstOrDefault(iwad => iwad.FileNameBase.Equals("hexen", StringComparison.OrdinalIgnoreCase))?.IWadID;
                     break;
             };
             return SyncResult.EMPTY;

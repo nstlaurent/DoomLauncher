@@ -42,7 +42,7 @@ namespace DoomLauncher.Handlers.Sync
                 {
                     var iwadFileName = m_database.GetIWads().FirstOrDefault(iw => iw.IWadID == file.IWadID)?.FileNameBase;
 
-                    if (iwadFileName != null && iwadFileName.ToLower().Equals("hexen"))
+                    if (iwadFileName != null && iwadFileName.Equals("hexen", StringComparison.OrdinalIgnoreCase))
                         palette = m_hexenPalette;
                     else
                         palette = m_hereticPalette;
