@@ -10,3 +10,4 @@
 - Fixed broken thumbnail rendering for hexen.wad and other Hexen wads
 - Map string was not being generated for WADs directly dragged into DoomLauncher on Unmanaged mode
 - Resyncing keeps the current selection and page, instead of jumping back to the first file on page 1
+- Fix crash when launching doomsday

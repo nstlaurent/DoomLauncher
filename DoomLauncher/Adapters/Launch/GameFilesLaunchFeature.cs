@@ -11,20 +11,20 @@ namespace DoomLauncher.Adapters.Launch
 {
     public class GameFilesLaunchFeature : ILaunchFeature
     {
-        private List<IGameFile> _gameFiles;
-        private List<string> _specificFiles;
-        private bool _extractFiles;
+        private readonly List<IGameFile> m_gameFiles;
+        private readonly List<string> m_specificFiles;
+        private readonly bool m_extractFiles;
 
         public GameFilesLaunchFeature(List<IGameFile> gameFiles, List<string> specificFiles, bool extractFiles = true)
         {
-            _gameFiles = (gameFiles != null) ? new List<IGameFile>(gameFiles) : new List<IGameFile>();
-            _specificFiles = (specificFiles != null) ? new List<string>(specificFiles) : new List<string>();
-            _extractFiles = extractFiles;
+            m_gameFiles = (gameFiles != null) ? new List<IGameFile>(gameFiles) : new List<IGameFile>();
+            m_specificFiles = (specificFiles != null) ? new List<string>(specificFiles) : new List<string>();
+            m_extractFiles = extractFiles;
         }
 
-        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
+        public LaunchParameters CreateParameter(IGameFile gameFile, IEnumerable<IGameFile> addFiles, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
-            var filesToUse = new List<IGameFile>(_gameFiles);
+            var filesToUse = new List<IGameFile>(m_gameFiles);
 
             if (isGameFileIwad)
                 filesToUse.Remove(gameFile);
@@ -91,14 +91,14 @@ namespace DoomLauncher.Adapters.Launch
             {
                 using (IArchiveReader reader = gameFile.OpenGameFile(directories.GameFileDirectory))
                 {
-                    IEnumerable<IArchiveEntry> relevantEntries = GetRelevantEntries(reader, sourcePortData, _specificFiles);
+                    IEnumerable<IArchiveEntry> relevantEntries = GetRelevantEntries(reader, sourcePortData, m_specificFiles);
 
                     foreach (IArchiveEntry entry in relevantEntries)
                     {
                         if (entry.ExtractRequired)
                         {
                             string extractFile = Path.Combine(directories.TempDirectory.GetFullPath(), entry.Name);
-                            if (_extractFiles)
+                            if (m_extractFiles)
                                 entry.ExtractToFileForceOverwrite(extractFile);
                             launchFiles.Add(extractFile);
                         }

@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.Config;
 using DoomLauncher.Interfaces;
+using System.Collections.Generic;
 
 namespace DoomLauncher.Adapters.Launch
 {
@@ -14,7 +15,7 @@ namespace DoomLauncher.Adapters.Launch
             _extraParametersOnly = extraParametersOnly;
         }
 
-        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
+        public LaunchParameters CreateParameter(IGameFile gameFile, IEnumerable<IGameFile> addFiles, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
             if (_extraParametersOnly)
                 return LaunchParameters.ExclusiveParam(_extraParameters);

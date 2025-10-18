@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.DataSources;
+using DoomLauncher.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,11 +7,13 @@ namespace DoomLauncher.SourcePort
 {
     public class SpData
     {
-        public SpData() { }
+        private static readonly GameFile EmptyGameFile = new GameFile();
 
-        public SpData(string value)
+        public SpData()
         {
-            Value = value;
+            Value = string.Empty;
+            GameFile = EmptyGameFile;
+            AdditionalFiles = new List<IGameFile>();
         }
 
         public SpData(string value, IGameFile gameFile, IEnumerable<IGameFile> addFiles)
