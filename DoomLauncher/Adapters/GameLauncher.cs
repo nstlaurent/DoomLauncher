@@ -42,7 +42,7 @@ namespace DoomLauncher
             return updatedFeatures;
         }
 
-        public LaunchResult Launch(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad)
+        public LaunchResult Launch(IGameFile gameFile, IEnumerable<IGameFile> addFiles, ISourcePortData sourcePort, bool isGameFileIwad)
         {
             if (!Directory.Exists(sourcePort.Directory.GetFullPath()))
             {
@@ -51,7 +51,7 @@ namespace DoomLauncher
                 return LaunchResult.Failure(errorMessage);
             }
 
-            LaunchParameters launchParameters = GetLaunchParameters(gameFile, sourcePort, isGameFileIwad);
+            LaunchParameters launchParameters = GetLaunchParameters(gameFile, addFiles, sourcePort, isGameFileIwad);
             if (launchParameters.Failed)
             {
                 return LaunchResult.Failure($"Failed to create launch parameters: {launchParameters.ErrorMessage}");
@@ -74,9 +74,9 @@ namespace DoomLauncher
             return LaunchResult.Success(gameLaunchInfo);            
         }
 
-        public LaunchParameters GetLaunchParameters(IGameFile gameFile, ISourcePortData sourcePortData, bool isGameFileIwad)
+        public LaunchParameters GetLaunchParameters(IGameFile gameFile, IEnumerable<IGameFile> addFiles, ISourcePortData sourcePortData, bool isGameFileIwad)
         {
-            var paramList = _features.Select(f => f.CreateParameter(gameFile, sourcePortData, isGameFileIwad, _directories));
+            var paramList = _features.Select(f => f.CreateParameter(gameFile, addFiles, sourcePortData, isGameFileIwad, _directories));
             var combinedParams = paramList.Aggregate(LaunchParameters.EMPTY, (a, b) => a.Combine(b));
             return combinedParams.WithVariableReplacement("filename", gameFile.FileNameNoPath);
         }

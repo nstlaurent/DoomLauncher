@@ -2,6 +2,7 @@
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace DoomLauncher.Adapters.Launch
             _extractFiles = extractFiles;
         }
 
-        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
+        public LaunchParameters CreateParameter(IGameFile gameFile, IEnumerable<IGameFile> addFiles, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
             if (!gameFile.ArchiveExists(directories.GameFileDirectory))
             {
@@ -50,7 +51,7 @@ namespace DoomLauncher.Adapters.Launch
                     "View the IWAD and click 'Select Individual Files...' to ensure the IWAD file is selected.");
             }
 
-            var paramString = sourcePort.GetFlavor().IwadParameter(new SpData(extractedFileName));
+            var paramString = sourcePort.GetFlavor().IwadParameter(new SpData(extractedFileName, gameFile, addFiles));
 
             return LaunchParameters.Param(paramString).WithVariableReplacement("iwad", Path.GetFileNameWithoutExtension(_iwad.FileNameNoPath));
         }

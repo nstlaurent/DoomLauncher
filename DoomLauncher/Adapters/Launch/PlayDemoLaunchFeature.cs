@@ -2,6 +2,7 @@
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace DoomLauncher.Adapters.Launch
@@ -15,7 +16,7 @@ namespace DoomLauncher.Adapters.Launch
             _playDemoFile = playDemoFile;
         }
 
-        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
+        public LaunchParameters CreateParameter(IGameFile gameFile, IEnumerable<IGameFile> addFiles, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
             FileInfo fi = new FileInfo(_playDemoFile);
 
@@ -25,7 +26,7 @@ namespace DoomLauncher.Adapters.Launch
             }
             else
             {
-                var paramString = sourcePort.GetFlavor().PlayDemoParameter(new SpData(_playDemoFile));
+                var paramString = sourcePort.GetFlavor().PlayDemoParameter(new SpData(_playDemoFile, gameFile, addFiles));
                 return LaunchParameters.Param(paramString);
             }
         }

@@ -18,7 +18,7 @@ namespace DoomLauncher.Adapters.Launch
             _pathFiles = new List<SpecificFilesForm.SpecificFilePath>(pathFiles);
         }
 
-        public LaunchParameters CreateParameter(IGameFile gameFile, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
+        public LaunchParameters CreateParameter(IGameFile gameFile, IEnumerable<IGameFile> addFiles, ISourcePortData sourcePort, bool isGameFileIwad, IDirectoriesConfiguration directories)
         {
             ISourcePortFlavor sourcePortFlavor = new GenericSourcePortFlavor(sourcePort);
             StringBuilder sb = new StringBuilder();

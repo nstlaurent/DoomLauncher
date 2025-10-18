@@ -37,26 +37,26 @@ namespace DoomLauncher.SourcePort
         {
             string filename = Path.GetFileNameWithoutExtension(data.Value);
 
-            if (filename.Equals("DOOM1", StringComparison.InvariantCultureIgnoreCase))
+            if (filename.Equals("DOOM1", StringComparison.OrdinalIgnoreCase))
                 return "doom1-share";
-            if (filename.Equals("DOOM", StringComparison.InvariantCultureIgnoreCase))
+            if (filename.Equals("DOOM", StringComparison.OrdinalIgnoreCase))
             {
                 if (data.GameFile.Map.Contains("E4M1"))
                     return "doom1-ultimate";
                 else
                     return "doom1";
             }
-            if (filename.Equals("DOOM2", StringComparison.InvariantCultureIgnoreCase))
+            if (filename.Equals("DOOM2", StringComparison.OrdinalIgnoreCase))
                 return "doom2";
-            if (filename.Equals("PLUTONIA", StringComparison.InvariantCultureIgnoreCase))
+            if (filename.Equals("PLUTONIA", StringComparison.OrdinalIgnoreCase))
                 return "doom2-plut";
-            if (filename.Equals("TNT", StringComparison.InvariantCultureIgnoreCase))
+            if (filename.Equals("TNT", StringComparison.OrdinalIgnoreCase))
                 return "doom2-tnt";
-            if (filename.Equals("CHEX", StringComparison.InvariantCultureIgnoreCase))
+            if (filename.Equals("CHEX", StringComparison.OrdinalIgnoreCase))
                 return "chex";
-            if (filename.Equals("HACX", StringComparison.InvariantCultureIgnoreCase))
+            if (filename.Equals("HACX", StringComparison.OrdinalIgnoreCase))
                 return "hacx";
-            if (filename.Equals("HERETIC", StringComparison.InvariantCultureIgnoreCase))
+            if (filename.Equals("HERETIC", StringComparison.OrdinalIgnoreCase))
             {
                 if (!data.GameFile.Map.Contains("E2M1"))
                     return "heretic-share";
@@ -65,9 +65,9 @@ namespace DoomLauncher.SourcePort
                 else
                     return "heretic";
             }
-            if (filename.Equals("HEXEN", StringComparison.InvariantCultureIgnoreCase))
+            if (filename.Equals("HEXEN", StringComparison.OrdinalIgnoreCase) || filename.Equals("HEXDD", StringComparison.OrdinalIgnoreCase))
             {
-                if (data.AdditionalFiles.Any(x => Path.GetFileNameWithoutExtension(x.FileName).Equals("HEXDD", StringComparison.InvariantCultureIgnoreCase)))
+                if (data.AdditionalFiles.Any(x => Path.GetFileNameWithoutExtension(x.FileName).Equals("HEXDD", StringComparison.OrdinalIgnoreCase)))
                     return "hexen-dk";
                 if(data.GameFile.Map.Contains("MAP41")) //not sure why doomsday cares about this but v10 has unfinished maze map MAP41, v11 does not
                     return "hexen-v10";

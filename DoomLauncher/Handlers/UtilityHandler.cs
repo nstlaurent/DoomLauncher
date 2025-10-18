@@ -2,6 +2,7 @@
 using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -45,7 +46,7 @@ namespace DoomLauncher
             };
 
             GameLauncher launcher = new GameLauncher(m_config, features);
-            var launchParameters = launcher.GetLaunchParameters(gameFile, m_utility, false);
+            var launchParameters = launcher.GetLaunchParameters(gameFile, Array.Empty<IGameFile>(), m_utility, false);
 
             if (launchParameters.Failed)
                 return false;
