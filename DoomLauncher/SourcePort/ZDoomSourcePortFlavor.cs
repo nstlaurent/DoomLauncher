@@ -8,7 +8,7 @@ namespace DoomLauncher.SourcePort
 {
     public class ZDoomSourcePortFlavor : GenericSourcePortFlavor
     {
-        private static readonly string[] DirectoryNames = new string[] { "GZDoom", "VKDoom" };
+        private static readonly string[] DirectoryNames = new string[] { "GZDoom", "UZDoom", "VKDoom" };
 
         private static string UserDirectoryBase => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
