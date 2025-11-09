@@ -5,6 +5,7 @@
 - Hexen: Deathkings of the Dark Citadel now has the correct title
 - Autoloader will pick up Heretic + Hexen original wads with Hexen: Deathkings of the Dark Citadel
 - Resync progress bar now shows progress
+- Add UZDoom directory to parse savegames for statistics
 
 ## Bug Fixes:
 - Fixed broken thumbnail rendering for hexen.wad and other Hexen wads
