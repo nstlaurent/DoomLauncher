@@ -24,6 +24,9 @@ namespace DoomLauncher.Archive.Rar
 
         public override void ExtractToFile(string file, bool overwrite = false)
         {
+            if (!IsValid(m_entry))
+                return;
+
             if (!overwrite && File.Exists(file))
                 return;
 
@@ -50,5 +53,11 @@ namespace DoomLauncher.Archive.Rar
         }
 
         public override string GetNameWithoutExtension() => Path.GetFileNameWithoutExtension(Name);
+
+        public static bool IsValid(SharpCompress.Archives.Rar.RarArchiveEntry entry)
+        {
+            // Addresses vulnerability https://github.com/nstlaurent/DoomLauncher/issues/369
+            return !entry.Key.Contains("../") && !entry.Key.Contains("..\\");
+        }
     }
 }
