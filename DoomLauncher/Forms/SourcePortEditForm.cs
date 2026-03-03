@@ -33,11 +33,14 @@ namespace DoomLauncher
 
             sourcePortEdit1.ShowOptions(type == SourcePortLaunchType.Utility);
 
-            if (type == SourcePortLaunchType.Utility && tblMain.RowStyles[2].Height > 0)
+            if (type == SourcePortLaunchType.Utility)
             {
                 grpAdditionalFiles.Visible = false;
+                flpInfo.Visible = false;
                 tblMain.RowStyles[2].Height = 0;
-                Height -= grpAdditionalFiles.Height;
+                tblMain.RowStyles[3].Height = 0;
+                var dpiScale = new DpiScale(CreateGraphics());
+                Height = (int)(tblMain.RowStyles[0].Height + tblMain.RowStyles[1].Height + tblMain.RowStyles[4].Height) + dpiScale.ScaleIntY(48);
             }
 
             IEnumerable<string> extensions = GetSourcePortExtensions(type);
