@@ -1,6 +1,5 @@
-﻿using SevenZip;
-using SharpCompress.Archives;
-using SharpCompress.Archives.Rar;
+﻿using DoomLauncher.Archive.Rar;
+using SevenZip;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -56,21 +55,30 @@ namespace DoomLauncher
 
         private static FileInfo CreateZipFromRar(FileInfo fi, string tempDirectory)
         {
-            using (RarArchive archive = RarArchive.Open(fi.FullName))
+            using (RarArchiveReader archive = new RarArchiveReader(fi.FullName))
             {
                 DirectoryInfo dir = Directory.CreateDirectory(Path.Combine(tempDirectory, Guid.NewGuid().ToString()));
 
-                var directoryEntires = archive.Entries.Where(entry => entry.IsDirectory);
-                foreach (var dirEntry in directoryEntires)
-                    Directory.CreateDirectory(Path.Combine(dir.FullName, dirEntry.Key));
+                var directoryEntries = archive.Entries.Where(entry => entry.IsDirectory);
+                foreach (var dirEntry in directoryEntries)
+                    Directory.CreateDirectory(Path.Combine(dir.FullName, dirEntry.FullName));
 
                 foreach (var entry in archive.Entries)
                 {
-                    string path = dir.FullName;
-                    if (entry.Key.Contains(Path.DirectorySeparatorChar) || entry.Key.Contains(Path.AltDirectorySeparatorChar))
-                        path = Path.Combine(dir.FullName, GetSubDirectoryPath(entry));
+                    if (entry.IsDirectory)
+                        continue;
 
-                    entry.WriteToDirectory(path);
+                    try
+                    { 
+                        string path = dir.FullName;
+                        if (entry.FullName.Contains(Path.DirectorySeparatorChar) || entry.FullName.Contains(Path.AltDirectorySeparatorChar))
+                            path = Path.Combine(dir.FullName, GetSubDirectoryPath(entry));
+
+                        entry.ExtractToFile(Path.Combine(path, entry.Name), true);
+                    }
+                    catch
+                    {
+                    }
                 }
 
                 string zipFile = Path.Combine(tempDirectory, fi.Name.Replace(fi.Extension, ".zip"));
@@ -83,18 +91,18 @@ namespace DoomLauncher
             }
         }
 
-        private static string GetSubDirectoryPath(RarArchiveEntry entry)
+        private static string GetSubDirectoryPath(IArchiveEntry entry)
         {
             int index;
-            if (entry.Key.Contains(Path.DirectorySeparatorChar))
-                index = entry.Key.LastIndexOf(Path.DirectorySeparatorChar);
+            if (entry.FullName.Contains(Path.DirectorySeparatorChar))
+                index = entry.FullName.LastIndexOf(Path.DirectorySeparatorChar);
             else
-                index = entry.Key.LastIndexOf(Path.AltDirectorySeparatorChar);
+                index = entry.FullName.LastIndexOf(Path.AltDirectorySeparatorChar);
 
             if (index == -1)
                 return string.Empty;
             
-            return entry.Key.Substring(0, index);
+            return entry.FullName.Substring(0, index);
         }
     }
 }
