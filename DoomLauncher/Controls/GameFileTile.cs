@@ -60,7 +60,7 @@ namespace DoomLauncher
             Paint += GameFileTile_Paint;
         }
 
-        public static int GetImageHeight(int imageWidth) => (int)(imageWidth / (16.0 / 9.0));
+        public static int GetImageHeight(int imageWidth) => (int)(imageWidth / (4.0 / 3.0));
 
         public int GetStandardHeight(DpiScale dpiScale)
         {
