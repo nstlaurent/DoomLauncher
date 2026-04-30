@@ -128,7 +128,7 @@ namespace UnitTest.Tests
             { 
                 FileName = "GetMainImageLarge_NewTileImageRespectsSelectedIWadOverIntendedGame.zip",
                 IWadID = hereticIWad.IWadID,
-                IntendedGame = IWadInfo.PLUTONIA
+                IntendedGame = IWadInfo.Plutonia
             };
             database.InsertGameFile(gameFile);
 
@@ -151,7 +151,7 @@ namespace UnitTest.Tests
             IGameFile gameFile = new GameFile()
             {
                 FileName = "GetMainImageLarge_NewTileImageRespectsIntendedGame.zip",
-                IntendedGame = IWadInfo.HEXEN
+                IntendedGame = IWadInfo.Hexen
             };
             database.InsertGameFile(gameFile);
 
@@ -238,7 +238,7 @@ namespace UnitTest.Tests
             {
                 FileName = "GetMainImageSmall_NewTileImageRespectsSelectedIWadOverIntendedGame.zip",
                 IWadID = tntIWad.IWadID,
-                IntendedGame = IWadInfo.DOOM64
+                IntendedGame = IWadInfo.Doom64
             };
             database.InsertGameFile(gameFile);
 
@@ -262,7 +262,7 @@ namespace UnitTest.Tests
             IGameFile gameFile = new GameFile()
             {
                 FileName = "GetMainImageSmall_NewTileImageRespectsIntendedGame.zip",
-                IntendedGame = IWadInfo.STRIFE1
+                IntendedGame = IWadInfo.Strife1
             };
             database.InsertGameFile(gameFile);
 
