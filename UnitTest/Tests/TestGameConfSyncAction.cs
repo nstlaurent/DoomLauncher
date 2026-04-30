@@ -82,7 +82,7 @@ namespace UnitTest.Tests
 
             action.ApplyToGameFile(gameFile, reader, new string[0]);
 
-            Assert.AreEqual(IWadInfo.DOOM2, gameFile.IntendedGame);
+            Assert.AreEqual(IWadInfo.Doom2, gameFile.IntendedGame);
         }
 
         [TestMethod]

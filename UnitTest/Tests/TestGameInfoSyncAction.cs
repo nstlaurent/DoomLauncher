@@ -41,7 +41,7 @@ namespace UnitTest.Tests
 
             var result = syncAction.ApplyToGameFile(gameFile, reader, new string[0]);
 
-            Assert.AreEqual(IWadInfo.HERETIC, gameFile.IntendedGame);
+            Assert.AreEqual(IWadInfo.Heretic, gameFile.IntendedGame);
         }
 
         [TestMethod]

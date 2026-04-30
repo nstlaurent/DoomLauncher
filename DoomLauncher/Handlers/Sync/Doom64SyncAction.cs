@@ -19,7 +19,7 @@ namespace DoomLauncher.Handlers.Sync {
 
             if (isDoom64)
             {
-                file.IntendedGame = IWadInfo.DOOM64;
+                file.IntendedGame = IWadInfo.Doom64;
                 var doom64Iwad = m_database.GetGameFile("doom64.zip");
                 if (doom64Iwad != null)
                 {

@@ -80,7 +80,7 @@ namespace UnitTest.Tests
 
             syncAction.ApplyToGameFile(file, null, mapInfoData);
 
-            Assert.AreEqual(IWadInfo.DOOM64, file.IntendedGame);
+            Assert.AreEqual(IWadInfo.Doom64, file.IntendedGame);
         }
     }
 }

@@ -62,7 +62,7 @@ namespace DoomLauncher.DataSources
         public int MinutesPlayed { get; set; }
         public virtual int FileSizeBytes { get; set; }
 
-        public bool IsDoom64 => IWadInfo.DOOM64.Equals(IntendedGame);
+        public bool IsDoom64 => IWadInfo.Doom64.Equals(IntendedGame);
 
         public IWadInfo IntendedGame { get; set; }
 

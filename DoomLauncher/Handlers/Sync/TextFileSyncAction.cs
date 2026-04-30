@@ -58,11 +58,11 @@ namespace DoomLauncher.Handlers.Sync
         {
             string name = gameName.ToUpper();
             if (name == "ULTIMATEDOOM")
-                return IWadInfo.DOOM;
+                return IWadInfo.Doom;
             else if (gameName.StartsWith("DOOM64"))
-                return IWadInfo.DOOM64;
+                return IWadInfo.Doom64;
             else if (gameName.StartsWith("DOOM2"))
-                return IWadInfo.DOOM2;
+                return IWadInfo.Doom2;
             else
                 return IWadInfo.FromGameName(gameName);
         }

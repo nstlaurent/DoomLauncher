@@ -45,7 +45,7 @@ namespace UnitTest.Tests
                 SettingsSkill = "the settings skill" + salt,
                 SettingsSpecificFiles = "the settings specific files" + salt,
                 SettingsGameProfileID = 567 + salt,
-                IntendedGame = IWadInfo.DOOM2,
+                IntendedGame = IWadInfo.Doom2,
                 IsSyncNeeded = false
             };
 
@@ -92,7 +92,7 @@ namespace UnitTest.Tests
                 SettingsSkill = "settings skill",
                 SettingsSpecificFiles = "ssf",
                 SettingsGameProfileID = 44,
-                IntendedGame = IWadInfo.DOOM2,
+                IntendedGame = IWadInfo.Doom2,
                 IsSyncNeeded = true
             };
             database.InsertGameFile(gameFile1);
@@ -120,7 +120,7 @@ namespace UnitTest.Tests
                 SettingsSkill = "fff",
                 SettingsSpecificFiles = "ggg",
                 SettingsGameProfileID = null,
-                IntendedGame = IWadInfo.DOOM,
+                IntendedGame = IWadInfo.Doom,
                 IsSyncNeeded = false
             };
             database.InsertGameFile(gameFile2);

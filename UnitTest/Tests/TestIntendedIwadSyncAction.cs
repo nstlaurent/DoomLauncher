@@ -32,10 +32,10 @@ namespace UnitTest.Tests
             var gameFile = new GameFile()
             {
                 FileName = "blah.wad",
-                IntendedGame = IWadInfo.HERETIC
+                IntendedGame = IWadInfo.Heretic
             };
 
-            var expectedIwad = CreateIWad(IWadInfo.HERETIC);
+            var expectedIwad = CreateIWad(IWadInfo.Heretic);
 
             var syncAction = new IntendedIwadSyncAction(database);
 
@@ -53,10 +53,10 @@ namespace UnitTest.Tests
             var gameFile = new GameFile()
             {
                 FileName = "diamond.wad",
-                IntendedGame = IWadInfo.DOOM2
+                IntendedGame = IWadInfo.Doom2
             };
 
-            var backupIWad = CreateIWad(IWadInfo.FREEDOOM2);
+            var backupIWad = CreateIWad(IWadInfo.FreeDoom2);
 
             var syncAction = new IntendedIwadSyncAction(database);
 

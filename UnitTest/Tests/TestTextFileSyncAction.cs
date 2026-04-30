@@ -39,7 +39,7 @@ namespace UnitTest.Tests
             Assert.AreEqual("Child Mod", gameFile.Title);
             Assert.AreEqual("Radley Bobbikins", gameFile.Author);
             Assert.AreEqual(DateTime.Parse("4/3/2025"), gameFile.ReleaseDate);
-            Assert.AreEqual(IWadInfo.DOOM2, gameFile.IntendedGame);
+            Assert.AreEqual(IWadInfo.Doom2, gameFile.IntendedGame);
 
             // Falls through to Child2 where missing from Child1
             Assert.AreEqual("A fine mod.", gameFile.Description);
@@ -106,7 +106,7 @@ namespace UnitTest.Tests
             Assert.AreEqual("Wadinfo title", gameFile.Title);
             Assert.AreEqual("Wadinfo author", gameFile.Author);
             Assert.AreEqual("WadInfo description", gameFile.Description);
-            Assert.AreEqual(IWadInfo.HERETIC, gameFile.IntendedGame);
+            Assert.AreEqual(IWadInfo.Heretic, gameFile.IntendedGame);
         }
 
         [TestMethod]
@@ -119,7 +119,7 @@ namespace UnitTest.Tests
                 Title = "Too Many Imps",
                 ReleaseDate = DateTime.Parse("1/7/2021"),
                 Description = "A wad with too many imps",
-                IntendedGame = IWadInfo.HACX
+                IntendedGame = IWadInfo.Hacx
             };
             Tree files = new Tree("root", new Tree("empty.txt"));
 
@@ -132,7 +132,7 @@ namespace UnitTest.Tests
             Assert.AreEqual("Fredericus", gameFile.Author);
             Assert.AreEqual(DateTime.Parse("1/7/2021"), gameFile.ReleaseDate);
             Assert.AreEqual("A wad with too many imps", gameFile.Description);
-            Assert.AreEqual(IWadInfo.HACX, gameFile.IntendedGame);
+            Assert.AreEqual(IWadInfo.Hacx, gameFile.IntendedGame);
         }
     }
 }

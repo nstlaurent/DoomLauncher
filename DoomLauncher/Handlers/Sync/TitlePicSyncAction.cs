@@ -39,7 +39,7 @@ namespace DoomLauncher.Handlers.Sync
             {
                 if (TitlePicUtil.GetEntry(reader, HereticHexenTitlepicName, out entry))
                 {
-                    if (IWadInfo.HEXEN.Equals(file.IntendedGame) || "hexen".Equals(GetIWadFileNameBase(file.IWadID), StringComparison.OrdinalIgnoreCase))
+                    if (IWadInfo.Hexen.Equals(file.IntendedGame) || "hexen".Equals(GetIWadFileNameBase(file.IWadID), StringComparison.OrdinalIgnoreCase))
                         palette = m_hexenPalette;
                     else
                         palette = m_hereticPalette;
