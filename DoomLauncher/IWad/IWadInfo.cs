@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 
 namespace DoomLauncher
@@ -25,7 +26,7 @@ namespace DoomLauncher
 
         private static readonly IWadInfo[] ALL = new IWadInfo[]
         {
-            Doom1, Doom,Doom2, Plutonia, TNT, FreeDoom1, FreeDoom2, FreeDM, Chex, 
+            Doom1, Doom,Doom2, Plutonia, TNT, FreeDoom1, FreeDoom2, FreeDM, Chex,
             Chex3, Hacx, Heretic1, Heretic, Hexen, Strife0, Strife1, Doom64
         };
 
@@ -61,7 +62,7 @@ namespace DoomLauncher
         public static IWadInfo FromFileName(string fileName) =>
             FromGameName(GetGameName(fileName));
 
-        private static string GetGameName(string fileName) => 
+        private static string GetGameName(string fileName) =>
             Path.GetFileNameWithoutExtension(fileName).ToUpper();
 
         public override string ToString() =>
@@ -70,7 +71,12 @@ namespace DoomLauncher
         public override int GetHashCode() =>
             GameName.GetHashCode();
 
-        public override bool Equals(object o) => 
-            GameName.Equals((o as IWadInfo)?.GameName);
+        public override bool Equals(object o)
+        {
+            if (!(o is IWadInfo other))
+                return false;
+
+            return string.Equals(GameName, other.GameName, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }
