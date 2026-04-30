@@ -14,12 +14,12 @@ namespace DoomLauncher
 {
     public partial class MainForm
     {
-        private readonly System.Threading.SemaphoreSlim _syncSemaphore = new System.Threading.SemaphoreSlim(1, 1);
+        private readonly System.Threading.SemaphoreSlim m_syncSemaphore = new System.Threading.SemaphoreSlim(1, 1);
 
         private async Task<SyncResult> SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
         {
             // Try to enter the semaphore without waiting
-            if (!await _syncSemaphore.WaitAsync(0))
+            if (!await m_syncSemaphore.WaitAsync(0))
             {
                 // Another sync is already running, ignore this request
                 return SyncResult.EMPTY;
@@ -36,7 +36,7 @@ namespace DoomLauncher
             }
             finally
             {
-                _syncSemaphore.Release();
+                m_syncSemaphore.Release();
             }
         }
 
