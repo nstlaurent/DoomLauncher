@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Handlers;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -39,6 +40,8 @@ namespace DoomLauncher
 
         private FlowLayoutPanelDB flpMain = new FlowLayoutPanelDB();
 
+        private readonly GameFileImageHandler m_gameFileImageHandler;
+
         public GameFileTileViewControl()
         {
             InitializeComponent();
@@ -61,6 +64,11 @@ namespace DoomLauncher
 
             Stylizer.StylizeControl(this, DesignMode);
             BackColor = ColorTheme.Current.WindowLight;
+
+            var database = DataCache.Instance.DataSourceAdapter;
+            var config = DataCache.Instance.AppConfiguration;
+            var fileHandler = new FileHandler(database, config);
+            m_gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, config.DeleteScreenshotsAfterImport);
         }
 
         private void SetItemsPerPage(int maxItems)
@@ -372,9 +380,7 @@ namespace DoomLauncher
 
                 if (tile.GameFile.Equals(gameFile))
                 {
-                    var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
-                    var thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Thumbnail);
-                    SetTileData(tile, gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), true);
+                    SetTileData(tile, gameFile, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), true);
                 }
             }
         }
@@ -391,15 +397,12 @@ namespace DoomLauncher
                 return;
             }
 
-            var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
-            var thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Thumbnail);
-
             foreach (var tile in GameFileTileManager.Instance.Tiles)
             {
                 if (ShouldSkipTile(tile))
                     break;
 
-                SetTileData(tile, tile.GameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), false);
+                SetTileData(tile, tile.GameFile, DataCache.Instance.TagMapLookup.GetTags(tile.GameFile), false);
             }
         }
 
@@ -467,11 +470,8 @@ namespace DoomLauncher
         {
             GameFileTileManager.Instance.Tiles.ForEach(x => x.SetSelected(false));
 
-            var screenshots = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Screenshot);
-            var thumbnails = DataCache.Instance.DataSourceAdapter.GetFiles(FileType.Thumbnail);
-
             var gameFiles = m_gameFiles.Skip(pageIndex * GameFileTileManager.Instance.MaxItems).Take(GameFileTileManager.Instance.MaxItems).ToList();
-            SetLayout(gameFiles, screenshots, thumbnails);
+            SetLayout(gameFiles);
 
             if (dataChange)
             {
@@ -486,14 +486,14 @@ namespace DoomLauncher
             DisplayingGameFiles?.Invoke(gameFiles);
         }
 
-        private void SetLayout(List<IGameFile> gameFiles, IEnumerable<IFileData> screenshots, IEnumerable<IFileData> thumbnails)
+        private void SetLayout(List<IGameFile> gameFiles)
         {
             flpMain.SuspendLayout();
             int tileIndex = 0;
 
             foreach (var gameFile in gameFiles)
             {
-                SetTileData(GameFileTileManager.Instance.Tiles[tileIndex], gameFile, screenshots, thumbnails, DataCache.Instance.TagMapLookup.GetEnumerableTags(gameFile), false);
+                SetTileData(GameFileTileManager.Instance.Tiles[tileIndex], gameFile, DataCache.Instance.TagMapLookup.GetEnumerableTags(gameFile), false);
                 GameFileTileManager.Instance.Tiles[tileIndex].Visible = true;
                 tileIndex++;
             }
@@ -507,30 +507,19 @@ namespace DoomLauncher
             flpMain.ResumeLayout();
         }
 
-        private static void SetTileData(GameFileTileBase tile, IGameFile gameFile, IEnumerable<IFileData> screenshots, IEnumerable<IFileData> thumbnails, IEnumerable<ITagData> tags, bool forceRefresh)
+        private void SetTileData(GameFileTileBase tile, IGameFile gameFile, IEnumerable<ITagData> tags, bool forceRefresh)
         {
             if (gameFile == null || (!forceRefresh && gameFile.Equals(tile.GameFile)))
                 return;
 
             tile.SetData(gameFile, tags);
 
-            if (!gameFile.GameFileID.HasValue)
-            {
-                tile.SetImage(DataCache.Instance.DefaultImage);
-                return;
-            }
-
-            IFileData thumbnail = ThumbnailManager.GetOrCreateThumbnail(gameFile, screenshots, thumbnails);
+            IFileData thumbnail = m_gameFileImageHandler.GetMainImageSmall(gameFile);
             if (thumbnail != null)
             {
-                if (thumbnail.FileTypeID == FileType.TileImage)
-                    tile.SetImageLocation(thumbnail.FileName);
-                else
-                    tile.SetImageLocation(Path.Combine(DataCache.Instance.AppConfiguration.ThumbnailDirectory.GetFullPath(), thumbnail.FileName));
+                tile.SetImageLocation(thumbnail.FullFileName);
                 return;
             }
-            
-            tile.SetImage(DataCache.Instance.DefaultImage);
         }
 
         private void M_menu_Opened(object sender, EventArgs e)

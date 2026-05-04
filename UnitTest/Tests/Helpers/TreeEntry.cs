@@ -1,7 +1,6 @@
 ﻿using DoomLauncher;
 using System;
 using System.Linq;
-using System.Text;
 
 namespace UnitTest.Tests
 {

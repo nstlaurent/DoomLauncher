@@ -455,11 +455,9 @@ namespace UnitTest.Tests
             {
                 new TextFileSyncAction(new IdGamesTextFileParser(dateParseFormats).Parse),
                 new Doom64SyncAction(database),
-                new MapStringSyncAction(directories.TempDirectory)
+                new MapStringSyncAction(directories.TempDirectory),
+                new TitlePicSyncAction(database, DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette, DataCache.Instance.HereticPalette).OnlyIf(pullTitlepic)
             };
-
-            if (pullTitlepic)
-                syncActions.Add(new TitlePicSyncAction(database, DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette, DataCache.Instance.HereticPalette));
 
             return new SyncLibraryHandler(database, CreateDirectoryAdapater(), directories, fileManagement, syncActions);
         }

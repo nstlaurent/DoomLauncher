@@ -103,6 +103,11 @@ namespace DoomLauncher
             throw new NotSupportedException();
         }
 
+        public IIWadData GetIWadByIWadID(int iwadID)
+        {
+            throw new NotSupportedException();
+        }
+
         public void InsertIWad(IIWadData iwad)
         {
             throw new NotSupportedException();

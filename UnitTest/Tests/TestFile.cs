@@ -3,7 +3,6 @@ using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace UnitTest.Tests
@@ -43,7 +42,6 @@ namespace UnitTest.Tests
                     GameFileID = gameFileId,
                     SourcePortID = 2,
                     OriginalFileName = "Bunnies.txt",
-                    OriginalFilePath = "lagomorphs\\Bunnies.txt",
                     UserTitle = "All about rabbits",
                     UserDescription = "I didn't understand it",
                     Map = "zzz"
@@ -60,7 +58,6 @@ namespace UnitTest.Tests
                     GameFileID = gameFileId,
                     SourcePortID = 8,
                     OriginalFileName = "unrealio_dealio.txt",
-                    OriginalFilePath = "whynot\\unrealio_dealio.txt",
                     UserTitle = "The truth about Unreal Tournament",
                     UserDescription = "A gripping tale",
                     Map = "aaa"
@@ -77,7 +74,6 @@ namespace UnitTest.Tests
                     GameFileID = -1,
                     SourcePortID = 9,
                     OriginalFileName = "wrongity_wrong.txt",
-                    OriginalFilePath = "bad\\wrongity_wrong.txt",
                     UserTitle = "It's wrong",
                     UserDescription = "Don't use this one",
                     Map = "666"
@@ -116,7 +112,6 @@ namespace UnitTest.Tests
                     GameFileID = gameFileId,
                     SourcePortID = 2,
                     OriginalFileName = "hongse.txt",
-                    OriginalFilePath = "colors\\hongse.txt",
                     UserTitle = "It's another color",
                     UserDescription = "Primary color, a bit angry",
                     Map = "yyy"
@@ -133,7 +128,6 @@ namespace UnitTest.Tests
                     GameFileID = 444,
                     SourcePortID = 9,
                     OriginalFileName = "wrongity_wrong.txt",
-                    OriginalFilePath = "bad\\wrongity_wrong.txt",
                     UserTitle = "Wrong game ID",
                     UserDescription = "Don't use this one",
                     Map = "666"
@@ -150,7 +144,6 @@ namespace UnitTest.Tests
                     GameFileID = gameFileId,
                     SourcePortID = 8,
                     OriginalFileName = "this_aint_it.txt",
-                    OriginalFilePath = "incorrect\\this_aint_it.txt",
                     UserTitle = "Wrong file type",
                     UserDescription = "Absolutely not",
                     Map = "667"
@@ -181,7 +174,6 @@ namespace UnitTest.Tests
                     GameFileID = 555,
                     SourcePortID = 2,
                     OriginalFileName = "hippopotamus.txt",
-                    OriginalFilePath = "animals\\hippopotamus.txt",
                     UserTitle = "I like hippos",
                     UserDescription = "They are very hungry",
                     Map = "hjkl"
@@ -198,7 +190,6 @@ namespace UnitTest.Tests
                     GameFileID = 553,
                     SourcePortID = 6,
                     OriginalFileName = "giraffe_pattern.txt",
-                    OriginalFilePath = "animals\\giraffe_pattern.txt",
                     UserTitle = "Long neck giraffe",
                     UserDescription = "Why are their necks so long",
                     Map = "aaa"
@@ -219,6 +210,62 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void GetDerivedFiles_ReturnsDerivedFiles()
+        {
+            var gameFile = new GameFile()
+            {
+                GameFileID = 530
+            };
+
+            IFileData parentFile =
+                new FileData
+                {
+                    FileName = "parent.txt",
+                    FileTypeID = FileType.TitlePic,
+                    GameFileID = 530,
+                };
+
+            database.InsertFile(parentFile);
+            parentFile = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
+            Assert.IsNotNull(parentFile);
+
+            var childFile1 =
+                new FileData
+                {
+                    FileName = "child1.txt",
+                    FileTypeID = FileType.Thumbnail,
+                    DerivedFromFileID = parentFile.FileID
+                };
+            database.InsertFile(childFile1);
+
+            var childFile2 =
+                new FileData
+                {
+                    FileName = "child2.txt",
+                    FileTypeID = FileType.Screenshot,
+                    DerivedFromFileID = parentFile.FileID
+                };
+            database.InsertFile(childFile2);
+
+            var notChildFile =
+                new FileData
+                {
+                    FileName = "not-a-child.txt",
+                    FileTypeID = FileType.Demo,
+                    DerivedFromFileID = 88
+                };
+            database.InsertFile(notChildFile);
+
+            var childFilesFromDB = database.GetDerivedFiles(parentFile);
+
+            Assert.AreEqual(2, childFilesFromDB.Count());
+
+            Assert.IsNotNull(childFilesFromDB.Where(x => x.FileName.Equals(childFile1.FileName)).FirstOrDefault());
+            Assert.IsNotNull(childFilesFromDB.Where(x => x.FileName.Equals(childFile2.FileName)).FirstOrDefault());
+            Assert.IsNull(childFilesFromDB.Where(x => x.FileName.Equals(notChildFile.FileName)).FirstOrDefault());
+        }
+
+        [TestMethod]
         public void GetFiles_FileType_ReturnsMatchingFiles()
         {
             var file1 =
@@ -232,7 +279,6 @@ namespace UnitTest.Tests
                     GameFileID = 236,
                     SourcePortID = 2,
                     OriginalFileName = "caco.txt",
-                    OriginalFilePath = "monsters\\caco.txt",
                     UserTitle = "The fanciest demon",
                     UserDescription = "Three double shotty hits on a good day",
                     Map = "yyy"
@@ -249,7 +295,6 @@ namespace UnitTest.Tests
                     GameFileID = 353,
                     SourcePortID = 8,
                     OriginalFileName = "impy.txt",
-                    OriginalFilePath = "monsters\\impy.txt",
                     UserTitle = "One shotty blast",
                     UserDescription = "Two if you miss",
                     Map = "yyy"
@@ -266,7 +311,6 @@ namespace UnitTest.Tests
                     GameFileID = 222,
                     SourcePortID = 9,
                     OriginalFileName = "whoops.txt",
-                    OriginalFilePath = "ohno\\whoops.txt",
                     UserTitle = "Very much the wrong one",
                     UserDescription = "no way",
                     Map = "www"
@@ -301,7 +345,6 @@ namespace UnitTest.Tests
                     GameFileID = 222,
                     SourcePortID = 2,
                     OriginalFileName = "paine.txt",
-                    OriginalFilePath = "monsters\\paine.txt",
                     UserTitle = "What if a demon shot more demons out of its mouth",
                     UserDescription = "What if a pain elemental shot more pain elementals out of its mouth",
                     Map = "s34"
@@ -318,7 +361,6 @@ namespace UnitTest.Tests
                     GameFileID = 222,
                     SourcePortID = 5,
                     OriginalFileName = "hk.txt",
-                    OriginalFilePath = "monsters\\hk.txt",
                     UserTitle = "Change the color, ship it",
                     UserDescription = "Deadlines are deadlines",
                     Map = "ooo"
@@ -373,7 +415,6 @@ namespace UnitTest.Tests
                     GameFileID = 123,
                     SourcePortID = 9,
                     OriginalFileName = "chaingun_dude.txt",
-                    OriginalFilePath = "monsters\\chaingun_dude.txt",
                     UserTitle = "I hate this guy",
                     UserDescription = "Kill them kill them",
                     Map = "E1M2"
@@ -390,7 +431,6 @@ namespace UnitTest.Tests
                     GameFileID = 123,
                     SourcePortID = 88,
                     OriginalFileName = "nope.txt",
-                    OriginalFilePath = "bad\\nope.txt",
                     UserTitle = "Yeah nah",
                     UserDescription = "Womp womp womp",
                     Map = "555"
@@ -425,7 +465,6 @@ namespace UnitTest.Tests
                     GameFileID = 777,
                     SourcePortID = 9,
                     OriginalFileName = "pinky.txt",
-                    OriginalFilePath = "monsters\\pinky.txt",
                     UserTitle = "Should be called piggy demon am I right",
                     UserDescription = "Use a rocket for the dumbest suicide imaginable",
                     Map = "E1M3"
@@ -442,7 +481,6 @@ namespace UnitTest.Tests
                     GameFileID = 777,
                     SourcePortID = 8,
                     OriginalFileName = "rev.txt",
-                    OriginalFilePath = "monsters\\rev.txt",
                     UserTitle = "Awful horrible demon",
                     UserDescription = "Kill it before it kills you",
                     Map = "E2M4"
@@ -459,7 +497,6 @@ namespace UnitTest.Tests
                     GameFileID = 11,
                     SourcePortID = 60,
                     OriginalFileName = "bah.txt",
-                    OriginalFilePath = "bad\\bah.txt",
                     UserTitle = "bah humbug",
                     UserDescription = "Don't pick me",
                     Map = "MAP04"

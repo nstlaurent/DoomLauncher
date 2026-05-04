@@ -63,14 +63,14 @@ namespace DoomLauncher
 
         public static bool IsInstalled() => !File.Exists(Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.DatabaseFileName)) && !File.Exists(Path.Combine(Directory.GetCurrentDirectory(), DbDataSourceAdapter.InitDatabaseFileName));
 
-        public string GetFullPath()
+        public string GetFullPath(string fileName = "")
         {
-            return m_fullPath;
+            return Path.Combine(m_fullPath, fileName);
         }
 
-        public string GetPossiblyRelativePath()
+        public string GetPossiblyRelativePath(string fileName = "")
         {
-            return m_path;
+            return Path.Combine(m_path, fileName);
         } 
 
         public static implicit operator string(LauncherPath p)

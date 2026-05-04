@@ -2,6 +2,7 @@
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
 using DoomLauncher.Handlers;
+using DoomLauncher.Handlers.Sync;
 using DoomLauncher.Interfaces;
 using DoomLauncher.Stylize;
 using PresentationControls;
@@ -17,7 +18,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DoomLauncher
 {
@@ -681,7 +681,8 @@ namespace DoomLauncher
 
         private void DeleteGameFileAndAssociations(IGameFile gameFile)
         {
-            DeleteLocalFileAssociations(gameFile);
+            var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
+            fileHandler.DeleteFiles(gameFile);
 
             IIWadData iwadFind = DataSourceAdapter.GetIWad(gameFile.GameFileID.Value);
             if (iwadFind != null)
@@ -707,39 +708,6 @@ namespace DoomLauncher
             profiles.ToList().ForEach(x => DataSourceAdapter.DeleteGameProfile(x.GameProfileID));
 
             DataCache.Instance.TagMapLookup.RemoveGameFile(gameFile);
-        }
-
-        private void DeleteLocalFileAssociations(IGameFile gameFIle)
-        {
-            IEnumerable<IFileData> files = DataSourceAdapter.GetFiles(gameFIle);
-
-            foreach (IFileData file in files)
-            {
-                string path = DirectoryForFileType(file.FileTypeID).GetFullPath();
-                FileInfo fi = new FileInfo(Path.Combine(path, file.FileName));
-
-                if (fi.Exists)
-                    fi.Delete();
-
-                DataSourceAdapter.DeleteFile(file);
-            }
-        }
-
-        private LauncherPath DirectoryForFileType(FileType fileTypeID)
-        {
-            switch (fileTypeID)
-            {
-                case FileType.Screenshot:
-                    return AppConfiguration.ScreenshotDirectory;
-                case FileType.Demo:
-                    return AppConfiguration.DemoDirectory;
-                case FileType.SaveGame:
-                    return AppConfiguration.SaveGameDirectory;
-                case FileType.Thumbnail:
-                    return AppConfiguration.ThumbnailDirectory;
-                default:
-                    throw new NotImplementedException();
-            }
         }
 
         private void HandleSelectionChange(object sender, bool forceChange)
@@ -814,36 +782,11 @@ namespace DoomLauncher
             List<PreviewImage> imagePaths = new List<PreviewImage>();
             if (item.GameFileID.HasValue)
             {
-                SetGameFileImages(item, imagePaths);
-
-                if (imagePaths.Count == 0 && item.IWadID.HasValue)
-                {
-                    var iwad = ThumbnailManager.IWads.FirstOrDefault(x => x.IWadID == item.IWadID.Value);
-                    if (iwad != null)
-                    {
-                        // If this is an IWAD attempt to get user set images, otherwise use pre-defined tile image if exists
-                        if (iwad.GameFileID.HasValue && iwad.GameFileID == item.GameFileID)                        
-                            SetGameFileImages(iwad, imagePaths);
-
-                        if (imagePaths.Count == 0 && ThumbnailManager.IWadTileImages.TryGetValue(item.IWadID.Value, out var fileData))
-                            imagePaths.Add(new PreviewImage(fileData.FileName, string.Empty));
-                    }
-                }
+                var gameFileImageHandler = new GameFileImageHandler(new FileHandler(DataSourceAdapter, AppConfiguration), DataSourceAdapter.GetIWadByIWadID);
+                var mainImageAndScreenshots = gameFileImageHandler.GetMainImageAndScreenshots(item);
+                imagePaths = mainImageAndScreenshots.Select(file => new PreviewImage(file.FullFileName, file.Title)).ToList();
             }
-
-            if (imagePaths.Count > 0)
-                SetPreviewImages(imagePaths);
-            else
-                ctrlSummary.SetPreviewImage(DataCache.Instance.DefaultImage);
-        }
-
-        private void SetGameFileImages(IGameFile item, List<PreviewImage> imagePaths)
-        {
-            foreach (var screenshot in DataSourceAdapter.GetFiles(item, FileType.Screenshot))
-            {
-                string path = Path.Combine(DataCache.Instance.AppConfiguration.ScreenshotDirectory.GetFullPath(), screenshot.FileName);
-                imagePaths.Add(new PreviewImage(path, FileData.GetTitle(screenshot)));
-            }
+            SetPreviewImages(imagePaths);
         }
 
         private void ClearSummary()
@@ -1582,7 +1525,9 @@ namespace DoomLauncher
             switch (type)
             {
                 case AddFileType.GameFile:
-                    await SyncLocalDatabase(files, fileManagement, true, tag);
+                    var syncResult = await SyncLocalDatabase(files, fileManagement, true);
+                    if (tag != null)
+                        TagSyncFiles(syncResult, tag);
                     break;
                 case AddFileType.IWad:
                     var handler = await SyncLocalDatabase(files, fileManagement, fileAddResults.ReplacedFiles.Count > 0);
@@ -1600,6 +1545,13 @@ namespace DoomLauncher
                 fileAddResults.Errors.ForEach(x => sb.Append(string.Concat(tab, x.FileName, ": ", x.Error, Environment.NewLine)));
                 MessageBox.Show(this, sb.ToString(), "Failed to Add", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void TagSyncFiles(SyncResult syncResult, ITagData tag)
+        {
+            DataCache.Instance.AddGameFileTag(syncResult.AddedGameFiles, tag, out _);
+            DataCache.Instance.AddGameFileTag(syncResult.UpdatedGameFiles, tag, out _);
+            DataCache.Instance.TagMapLookup.Refresh(new ITagData[] { tag });
         }
 
         private async Task<FileAddResults> CopyFiles(string[] fileNames, FileManagement fileManagement, ProgressBarForm progressBar)

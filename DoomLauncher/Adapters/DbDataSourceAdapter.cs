@@ -189,7 +189,8 @@ namespace DoomLauncher
         public void InsertGameFile(IGameFile gameFile)
         {
             string insert = InsertStatement("GameFiles", gameFile, new string[] { "GameFileID", "FileSizeBytes", "GameProfileID", "Name", "FullFileName" }, out List<DbParameter> parameters);
-            DataAccess.ExecuteNonQuery(insert, parameters);
+            int newId = DataAccess.ExecuteInsertionNonQuery(insert, parameters);
+            gameFile.GameFileID = newId;
         }
 
         public void UpdateGameFile(IGameFile gameFile)
@@ -376,7 +377,8 @@ namespace DoomLauncher
             string insert = @"insert into SourcePorts (Name,Executable,SupportedExtensions,Directory,SettingsFiles,LaunchType,FileOption,ExtraParameters,AltSaveDirectory,Archived) 
                 values(@Name,@Executable,@SupportedExtensions,@Directory,@SettingsFiles,@LaunchType,@FileOption,@ExtraParameters,@AltSaveDirectory,@Archived)";
 
-            DataAccess.ExecuteNonQuery(insert, GetSourcePortParams(sourcePort));
+            int newId = DataAccess.ExecuteInsertionNonQuery(insert, GetSourcePortParams(sourcePort));
+            sourcePort.SourcePortID = newId;
         }
 
         public void UpdateSourcePort(ISourcePortData sourcePort)
@@ -427,10 +429,17 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(IWadData)).Cast<IWadData>().FirstOrDefault();
         }
 
+        public IIWadData GetIWadByIWadID(int iwadID)
+        {
+            DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from IWads where IWadID = {0} order by Name collate nocase", iwadID)).Tables[0];
+            return Util.TableToStructure(dt, typeof(IWadData)).Cast<IWadData>().FirstOrDefault();
+        }
+
         public void InsertIWad(IIWadData iwad)
         {
             string insert = InsertStatement("IWads", iwad, new string[] { "IWadID" }, out List<DbParameter> parameters);
-            DataAccess.ExecuteNonQuery(insert, parameters);
+            int newId = DataAccess.ExecuteInsertionNonQuery(insert, parameters);
+            iwad.IWadID = newId;
         }
 
         public void UpdateIWad(IIWadData iwad)
@@ -450,6 +459,16 @@ namespace DoomLauncher
         public void DeleteIWad(IIWadData iwad)
         {
             DataAccess.ExecuteNonQuery(string.Format("delete from IWads where IWadID = {0}", iwad.IWadID));
+        }
+
+        public IEnumerable<IFileData> GetDerivedFiles(IFileData file)
+        {
+            List<DbParameter> parameters = new List<DbParameter>
+            {
+                DataAccess.DbAdapter.CreateParameter("DerivedFromFileID", file.FileID)
+            };
+            DataTable dt = DataAccess.ExecuteSelect("select * from Files where DerivedFromFileID = @DerivedFromFileID", parameters).Tables[0];
+            return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
         }
 
         public IEnumerable<IFileData> GetFiles()
@@ -506,9 +525,9 @@ namespace DoomLauncher
 
         public void InsertFile(IFileData file)
         {
-            string insert = InsertStatement("Files", file, new string[] { "FileID" }, out List<DbParameter> parameters);
-
-            DataAccess.ExecuteNonQuery(insert, parameters);
+            string insert = InsertStatement("Files", file, new string[] { "FileID", "FullFileName", "Title" }, out List<DbParameter> parameters);
+            var newId = DataAccess.ExecuteInsertionNonQuery(insert, parameters);
+            file.FileID = newId;
         }
 
         public void DeleteFile(IFileData file)

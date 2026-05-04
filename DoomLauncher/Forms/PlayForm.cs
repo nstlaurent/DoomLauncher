@@ -733,7 +733,7 @@ namespace DoomLauncher
             if (demoFiles.Count > 0)
             {
                 PopulateDemos();
-                SelectedSourcePort = m_adapter.GetSourcePort(demoFiles.First().SourcePortID);
+                SelectedSourcePort = m_adapter.GetSourcePort(demoFiles.First().SourcePortID.Value);
                 cmbDemo.SelectedValue = demoFiles.First().FileID;
                 chkDemo.Checked = true; //will trigger HandleDemoChange
             }

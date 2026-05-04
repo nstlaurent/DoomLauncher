@@ -45,8 +45,7 @@ namespace DoomLauncher
         public static readonly IWadInfo Strife1 = new IWadInfo(IWadType.Strife1, "Strife: Quest for the Sigil", "strife.png");
         public static readonly IWadInfo Doom64 = new IWadInfo(IWadType.Doom64, "Doom 64", "doom64.png");
 
-
-        private static readonly IWadInfo[] All = new IWadInfo[]
+        public static readonly IWadInfo[] All = new IWadInfo[]
         {
             Doom1, Doom,Doom2, Plutonia, TNT, FreeDoom1, FreeDoom2, FreeDM, Chex,
             Chex3, Hacx, Heretic1, Heretic, Hexen, Strife0, Strife1, Doom64

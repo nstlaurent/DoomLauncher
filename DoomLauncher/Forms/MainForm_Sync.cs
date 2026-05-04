@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Handlers.Sync;
+﻿using DoomLauncher.Handlers;
+using DoomLauncher.Handlers.Sync;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,12 @@ namespace DoomLauncher
 {
     public partial class MainForm
     {
-        private readonly System.Threading.SemaphoreSlim _syncSemaphore = new System.Threading.SemaphoreSlim(1, 1);
+        private readonly System.Threading.SemaphoreSlim m_syncSemaphore = new System.Threading.SemaphoreSlim(1, 1);
 
         private async Task<SyncResult> SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
         {
             // Try to enter the semaphore without waiting
-            if (!await _syncSemaphore.WaitAsync(0))
+            if (!await m_syncSemaphore.WaitAsync(0))
             {
                 // Another sync is already running, ignore this request
                 return SyncResult.EMPTY;
@@ -28,14 +29,14 @@ namespace DoomLauncher
             {
                 var pg = ProgressBarStart(ProgressBarType.Sync);
                 pg.Text = $"Syncing {fileNames.Count()} files...";
-                SyncResult syncResult = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
+                SyncResult syncResult = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement));
                 ProgressBarEnd(ProgressBarType.Sync);
                 SyncLocalDatabaseComplete(syncResult, updateViews);
                 return syncResult;
             }
             finally
             {
-                _syncSemaphore.Release();
+                m_syncSemaphore.Release();
             }
         }
 
@@ -97,7 +98,7 @@ namespace DoomLauncher
                 sb.ToString(), false);
         }
 
-        private SyncResult ExecuteSyncHandler(string[] files, FileManagement fileManagement, ITagData tag = null)
+        private SyncResult ExecuteSyncHandler(string[] files, FileManagement fileManagement)
         {
             SyncLibraryHandler handler = null;
             SyncResult syncResult = SyncResult.EMPTY;
@@ -112,15 +113,15 @@ namespace DoomLauncher
                     new MapStringSyncAction(AppConfiguration.TempDirectory),
                     new GameInfoSyncAction(),
                     new StartupImageSyncAction(),
-                    new TitlePicSyncAction(DataSourceAdapter,
-                                            DataCache.Instance.DefaultPalette,
-                                            DataCache.Instance.HexenPalette,
-                                            DataCache.Instance.HereticPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
+                    new TitlePicSyncAction(
+                        DataSourceAdapter,
+                        DataCache.Instance.DefaultPalette, 
+                        DataCache.Instance.HexenPalette, 
+                        DataCache.Instance.HereticPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
                     new Doom64TitlePicSyncAction(),
                     new IWadTitlesSyncAction(),
                     new KnownWadsSyncAction(DataSourceAdapter),
                     new GameConfSyncAction(),
-                    new IntendedIwadSyncAction(DataSourceAdapter)
                 };
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 
@@ -137,9 +138,6 @@ namespace DoomLauncher
                     SyncPendingZdlFiles();
                     m_pendingZdlFiles = null;
                 }
-
-                if (tag != null)
-                    TagSyncFiles(syncResult, tag);
             }
             catch (Exception ex)
             {
@@ -151,30 +149,23 @@ namespace DoomLauncher
 
         private void SyncTitlePics(SyncResult syncResult)
         {
+            var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, DataSourceAdapter.GetIWadByIWadID);
+
             foreach (IGameFile gameFile in syncResult.AddedOrUpdatedFiles)
             {
+                // Get the titlepic as a bitmap in memory from a lump in the wad
                 if (!syncResult.GetTitlePic(gameFile, out Image image))
                     continue;
 
+                // Force the image to the right aspect ratio
                 image = image.ScaleDoomImage();
 
-                var screenshots = DataSourceAdapter.GetFiles(gameFile, FileType.Screenshot);
-                if (ScreenshotHandler.FindScreenshot(screenshots, image, out MemoryStream imageStream))
-                    continue;
+                // Migrate from storing titlepics as screenshots, to storing titlepics separately
+                LegacyTitlePicMigration.DeleteScreenshotThatIsReallyATitlePic(fileHandler, gameFile, image);
 
-                if (imageStream == null)
-                    continue;
-
-                ScreenshotHandler.InsertScreenshot(gameFile, imageStream, screenshots, out _);
-                imageStream?.Dispose();
+                gameFileImageHandler.InsertTitlePic(gameFile, image);
             }
-        }
-
-        private void TagSyncFiles(SyncResult syncResult, ITagData tag)
-        {
-            DataCache.Instance.AddGameFileTag(syncResult.AddedGameFiles, tag, out _);
-            DataCache.Instance.AddGameFileTag(syncResult.UpdatedGameFiles, tag, out _);
-            DataCache.Instance.TagMapLookup.Refresh(new ITagData[] { tag });
         }
 
         private void SyncPendingZdlFiles()
@@ -261,8 +252,6 @@ namespace DoomLauncher
                 }
                 
             }
-
-            ThumbnailManager.SetIWads(DataSourceAdapter.GetGameFileIWads().ToList());
 
             UpdateLocal();
             HandleTabSelectionChange();

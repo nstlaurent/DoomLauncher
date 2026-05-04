@@ -167,7 +167,7 @@ namespace DoomLauncher.Forms
 
         private string GetTitle(IFileData fileData)
         {
-            string title = FileData.GetTitle(fileData);
+            string title = fileData.Title;
             return string.IsNullOrEmpty(title) ? "N/A" : fileData.UserTitle;
         }
 

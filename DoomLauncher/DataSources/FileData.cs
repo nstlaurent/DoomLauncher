@@ -14,12 +14,12 @@ namespace DoomLauncher
         public int? FileID { get; set; }
         public int GameFileID { get; set; }
         public string FileName { get; set; }
+        public string FullFileName { get; set; }
         public DateTime DateCreated { get; set; }
         public FileType FileTypeID { get; set; }
-        public int SourcePortID { get; set; }
+        public int? SourcePortID { get; set; }
         public string Description { get; set; }
         public string OriginalFileName { get; set; }
-        public string OriginalFilePath { get; set; }
         public string UserTitle { get; set; }
         public string UserDescription { get; set; }
         public string Map { get; set; }
@@ -27,21 +27,26 @@ namespace DoomLauncher
 
         public virtual bool IsUrl { get { return false; } }
 
-        public static string GetTitle(IFileData fileData)
+        public int? DerivedFromFileID { get; set; }
+
+        public string Title
         {
-            if (!string.IsNullOrEmpty(fileData.Map))
+            get 
             {
-                string title = fileData.Map;
-                if (string.IsNullOrEmpty(fileData.UserTitle))
-                    return title;
+                if (!string.IsNullOrEmpty(Map))
+                {
+                    string title = Map;
+                    if (string.IsNullOrEmpty(UserTitle))
+                        return title;
 
-                return $"{title} {fileData.UserTitle}";
+                    return $"{title} {UserTitle}";
+                }
+
+                if (!string.IsNullOrEmpty(UserTitle))
+                    return UserTitle;
+
+                return string.Empty;
             }
-
-            if (!string.IsNullOrEmpty(fileData.UserTitle))
-                return fileData.UserTitle;
-
-            return string.Empty;
         }
 
         public override bool Equals(object obj)

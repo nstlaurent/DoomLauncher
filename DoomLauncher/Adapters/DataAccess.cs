@@ -1,4 +1,5 @@
 ﻿using DoomLauncher.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -58,33 +59,59 @@ namespace DoomLauncher
 
         public void ExecuteNonQuery(string sql)
         {
-            DbConnection conn = DbAdapter.CreateConnection(ConnectionString);
-            conn.Open();
-
-            DbCommand cmd = conn.CreateCommand();
-            cmd.CommandText = sql;
-
-            cmd.ExecuteNonQuery();
-
-            conn.Close();
+            ExecuteNonQuery(sql, new DbParameter[0], false);
         }
 
-        public void ExecuteNonQuery(string sql, IEnumerable<DbParameter> parameters)
+        public int ExecuteInsertionNonQuery(string sql, IEnumerable<DbParameter> parameters)
+        {
+            return ExecuteNonQuery(sql, parameters, true);
+        }
+
+        public int ExecuteInsertionNonQuery(string sql) => 
+            ExecuteNonQuery(sql, new DbParameter[0], true);
+
+        public void ExecuteNonQuery(string sql, IEnumerable<DbParameter> parameters) => 
+            ExecuteNonQuery(sql, parameters, false);
+
+        private int ExecuteNonQuery(string sql, IEnumerable<DbParameter> parameters, bool returnInsertedId)
         {
             DbConnection conn = DbAdapter.CreateConnection(ConnectionString);
             conn.Open();
 
             DbCommand cmd = conn.CreateCommand();
             cmd.CommandText = sql;
-            
-            foreach(DbParameter dbParam in parameters)
+
+            foreach (DbParameter dbParam in parameters)
             {
                 cmd.Parameters.Add(dbParam);
             }
 
             cmd.ExecuteNonQuery();
 
+            int insertedId = -1;
+            if (returnInsertedId)
+            {
+                insertedId = GetLastInsertedId(conn);
+            }
+
             conn.Close();
+            return insertedId;
+        }
+
+        private int GetLastInsertedId(DbConnection openConnection)
+        {
+            // Retrieve the last inserted FileID
+            var sql = "SELECT last_insert_rowid();";
+
+            DbCommand cmd = openConnection.CreateCommand();
+            cmd.CommandText = sql;
+
+            DataSet ds = new DataSet();
+            DbDataAdapter adapter = DbAdapter.CreateAdapter();
+            adapter.SelectCommand = cmd;
+            adapter.Fill(ds);
+
+            return Convert.ToInt32(ds.Tables[0].Rows[0][0]);
         }
 
         public IDatabaseAdapter DbAdapter { get; private set; }

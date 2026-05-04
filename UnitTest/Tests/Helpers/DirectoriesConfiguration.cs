@@ -16,5 +16,9 @@ namespace UnitTest.Tests
         public LauncherPath DemoDirectory { get; set; }
 
         public LauncherPath ThumbnailDirectory { get; set; }
+
+        public LauncherPath TitlePicDirectory { get; set; }
+
+        public LauncherPath TileImageDirectory { get; set; }
     }
 }

@@ -1,10 +1,11 @@
-﻿using System;
-using DoomLauncher;
+﻿using DoomLauncher;
 using DoomLauncher.Interfaces;
+using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Threading;
 
 namespace UnitTest.Tests
 {
@@ -59,6 +60,17 @@ namespace UnitTest.Tests
             }
 
             return true;
+        }
+
+        public static FileInfo TouchFile(string fileName)
+        {
+            // Github runs the tests much faster, need to put a bit of distance
+            // between the times
+            Thread.Sleep(1);
+            var fileInfo = new FileInfo(fileName);
+            fileInfo.LastWriteTime = DateTime.Now;
+            Thread.Sleep(1);
+            return fileInfo;
         }
 
         private static string GetObjectJson(object obj) =>

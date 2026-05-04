@@ -36,7 +36,6 @@ namespace DoomLauncher
             DefaultPalette = Palette.From(Properties.Resources.DoomPalette);
             HexenPalette = Palette.From(Properties.Resources.HexenPalette);
             HereticPalette = Palette.From(Properties.Resources.HereticPalette);
-            ThumbnailManager.SetIWads(DataSourceAdapter.GetGameFileIWads().ToList());
 
             switch (AppConfiguration.ColorTheme)
             {

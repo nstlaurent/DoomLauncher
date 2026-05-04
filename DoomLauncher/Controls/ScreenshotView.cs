@@ -43,12 +43,17 @@ namespace DoomLauncher
         private bool m_imageWorkerComplete = true;
         private readonly Stopwatch m_clickStopwatch = new Stopwatch();
         private readonly ToolTipGroup m_toolTipGroup = new ToolTipGroup();
+        private readonly GameFileImageHandler m_gameFileImageHandler;
 
         public event EventHandler<RequestScreenshotsEventArgs> RequestScreenshots;
 
         public ScreenshotView()
         {
             InitializeComponent();
+            var database = DataCache.Instance.DataSourceAdapter;
+            var config = DataCache.Instance.AppConfiguration;
+            var fileHandler = new FileHandler(database, config);
+            m_gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, config.DeleteScreenshotsAfterImport);
             flpScreenshots.Click += FlpScreenshots_Click;
         }
 
@@ -118,7 +123,7 @@ namespace DoomLauncher
         {
             if (base.New())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                m_gameFileImageHandler.UpdateImages(GameFile);
                 return true;
             }
 
@@ -138,7 +143,7 @@ namespace DoomLauncher
         {
             if (base.Delete())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                m_gameFileImageHandler.UpdateImages(GameFile);
                 return true;
             }
             
@@ -149,7 +154,7 @@ namespace DoomLauncher
         {
             if (base.MoveFileOrderUp())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                m_gameFileImageHandler.UpdateImages(GameFile);
                 return true;
             }
 
@@ -160,7 +165,7 @@ namespace DoomLauncher
         {
             if (base.MoveFileOrderDown())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                m_gameFileImageHandler.UpdateImages(GameFile);
                 return true;
             }
 
@@ -171,7 +176,7 @@ namespace DoomLauncher
         {
             if (base.SetFileOrderFirst())
             {
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                m_gameFileImageHandler.UpdateImages(GameFile);
                 return true;
             }
 
@@ -334,7 +339,7 @@ namespace DoomLauncher
             if (pb == null || !m_lookup.TryGetValue(pb, out var fileData))
                 return;
 
-            string title = FileData.GetTitle(fileData);
+            string title = fileData.Title;
             if (string.IsNullOrEmpty(title))
                 return;
 
@@ -477,7 +482,7 @@ namespace DoomLauncher
                 DataSourceAdapter.UpdateFile(fileUpdate);
 
             if (firstFile.FileOrder != 0)
-                ThumbnailManager.UpdateThumbnail(GameFile);
+                m_gameFileImageHandler.UpdateImages(GameFile);
 
             return true;
         }

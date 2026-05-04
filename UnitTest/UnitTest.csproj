@@ -91,6 +91,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Tests\TestDemoHandler.cs" />
     <Compile Include="Tests\TestIntendedIwadSyncAction.cs" />
     <Compile Include="Tests\Helpers\DirectoriesConfiguration.cs" />
     <Compile Include="Tests\TestDoom64SyncAction.cs" />
@@ -117,6 +118,9 @@
     <Compile Include="Tests\TestLaunchParameters.cs" />
     <Compile Include="Tests\TestGameLauncher.cs" />
     <Compile Include="Tests\TestMapLumps.cs" />
+    <Compile Include="Tests\TestFileHandler.cs" />
+    <Compile Include="Tests\TestGameFileImageHandler.cs" />
+    <Compile Include="Tests\TestSaveGameHandler.cs" />
     <Compile Include="Tests\TestSourcePort.cs" />
     <Compile Include="Tests\TestSpecificFiles.cs" />
     <Compile Include="Tests\TestAutomaticSteamCheck.cs" />

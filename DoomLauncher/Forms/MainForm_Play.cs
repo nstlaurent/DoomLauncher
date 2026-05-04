@@ -2,6 +2,7 @@
 using DoomLauncher.Adapters.Launch;
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
+using DoomLauncher.Handlers;
 using DoomLauncher.Handlers.Sync;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
@@ -76,8 +77,8 @@ namespace DoomLauncher
                 return;
 
             ConfirmIWad(launchData.GameFile);
-
             SetupPlayForm(launchData.GameFile);
+
             if (sourcePort != null) 
                 m_currentPlayForm.SelectedSourcePort = sourcePort;
             if (map != null)
@@ -117,8 +118,6 @@ namespace DoomLauncher
             // This method works. But the real solution is for the "Delete IWad" function
             // to properly clean up the dead references in the database.
 
-            var iwadId = gameFile.IWadID;
-
             // Could be a bogus ID if the IWAD was deleted
             var actualIWad = DataSourceAdapter.GetIWads().FirstOrDefault(x => x.IWadID == gameFile.IWadID);
 
@@ -128,6 +127,7 @@ namespace DoomLauncher
                 new IntendedIwadSyncAction(DataSourceAdapter).ApplyIntendedGame(gameFile);
                 DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.IWadID });
             }
+
         }
 
         private LaunchData GetLaunchFiles(IEnumerable<IGameFile> gameFiles, bool checkActiveSessions)
@@ -226,6 +226,11 @@ namespace DoomLauncher
                 GameFileFieldType.SettingsSkill, GameFileFieldType.SettingsFiles, GameFileFieldType.SettingsExtraParams, GameFileFieldType.SettingsSpecificFiles, GameFileFieldType.SettingsStat,
                 GameFileFieldType.SettingsFilesIWAD, GameFileFieldType.SettingsFilesSourcePort, GameFileFieldType.SettingsSaved, GameFileFieldType.SettingsLoadLatestSave, 
                     GameFileFieldType.SettingsExtraParamsOnly });
+
+                // Selection of IWad could have invalidated the TileImage
+                var gameFileImageHandler = new GameFileImageHandler(new FileHandler(DataSourceAdapter, AppConfiguration), DataSourceAdapter.GetIWadByIWadID);
+                gameFileImageHandler.UpdateImages(gameFile);
+
                 return;
             }
             
@@ -348,9 +353,10 @@ namespace DoomLauncher
 
         private void HandleCopySaveGames(IGameFile gameFile, ISourcePortData sourcePort)
         {
-            m_saveGames = DataSourceAdapter.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
-            SaveGameHandler saveGameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
-            saveGameHandler.CopySaveGamesToSourcePort(sourcePort, m_saveGames);
+            var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
+            m_saveGames = fileHandler.GetFiles(gameFile, FileType.SaveGame).Where(x => x.SourcePortID == sourcePort.SourcePortID).ToArray();
+            SaveGameHandler saveGameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration);
+            m_saveGames.ToList().ForEach(file => saveGameHandler.CopySaveGameToSourcePort(sourcePort, file));
         }
 
         private void ShowLaunchParameters(GameLauncher launcher, IGameFile gameFile, IEnumerable<IGameFile> addFiles, ISourcePortData sourcePort)
@@ -629,12 +635,20 @@ namespace DoomLauncher
 
         private void HandleDetectorFiles(ISourcePortData sourcePort, IGameFile gameFile)
         {
-            ScreenshotHandler.HandleNewScreenshots(sourcePort, gameFile, GetNewScreenshots());
-            SaveGameHandler savegameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration.SaveGameDirectory);
+            var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, DataSourceAdapter.GetIWadByIWadID, AppConfiguration.DeleteScreenshotsAfterImport);
+            var newScreenshots = GetNewScreenshots().ToList();
+            newScreenshots.ForEach(file => gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, file));
+            SaveGameHandler savegameHandler = new SaveGameHandler(DataSourceAdapter, AppConfiguration);
 
-            savegameHandler.HandleNewSaveGames(sourcePort, gameFile, GetNewSaveGames(m_saveFileDetectors, m_saveGames));
-            savegameHandler.HandleUpdateSaveGames(sourcePort, gameFile, m_saveGames);
-            savegameHandler.HandleDeleteSaveGames(GetDeletedSaveGames(m_saveFileDetectors), m_saveGames);
+            var newSaveGames = GetNewSaveGames(m_saveFileDetectors, m_saveGames).ToList();
+            newSaveGames.ForEach(file => savegameHandler.InsertSaveGame(sourcePort, gameFile, file));
+
+            var updatedSaveGames = m_saveGames.ToList();
+            updatedSaveGames.ForEach(file => savegameHandler.UpdateSaveGameFromSourcePort(sourcePort, file));
+
+            var deletedSaveGames = GetDeletedSaveGames(m_saveFileDetectors).ToList();
+            deletedSaveGames.ForEach(file => savegameHandler.DeleteSaveGame(file, m_saveGames));
         }
 
         private void HandleRecordedDemo(GameLaunchInfo gameLaunchInfo, IGameFile gameFile)
@@ -645,8 +659,8 @@ namespace DoomLauncher
 
             if (fi != null && fi.Exists)
             {
-                DemoHandler demoHandler = new DemoHandler(DataSourceAdapter, AppConfiguration.DemoDirectory);
-                demoHandler.HandleNewDemo(gameLaunchInfo.SourcePort, gameFile, fi.FullName,
+                DemoHandler demoHandler = new DemoHandler(new FileHandler(DataSourceAdapter, AppConfiguration));
+                demoHandler.InsertNewDemo(gameLaunchInfo.SourcePort, gameFile, fi.FullName,
                     m_currentPlayForm.RecordDescriptionText);
             }
             else
