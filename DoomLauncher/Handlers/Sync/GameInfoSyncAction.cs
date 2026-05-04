@@ -1,4 +1,6 @@
 ﻿using DoomLauncher.Interfaces;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,9 +12,6 @@ namespace DoomLauncher.Handlers.Sync
     /// </summary>
     public class GameInfoSyncAction : ISyncAction
     {
-        private static readonly Regex STARTUPTITLE_REGEX = new Regex(@"\s*STARTUPTITLE\s*=\s*"".*"""); //@"\s*{0}\s*:[^=]*";
-        private static readonly Regex SUBTRACT_REGEX = new Regex(@"\s*STARTUPTITLE\s*=\s*");
-
         public SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
         {
             // Normally it's GAMEINFO, but I've seen GAMEINFO.txt in the wild. 
@@ -20,21 +19,47 @@ namespace DoomLauncher.Handlers.Sync
             if (entry != null)
             {
                 var text = entry.ReadString(Encoding.UTF7);
-                Match m = STARTUPTITLE_REGEX.Match(text);
-                if (m.Success)
+                var mapping = ParseGameInfo(text);
+
+                if (mapping.TryGetValue("STARTUPTITLE", out var title) && !string.IsNullOrWhiteSpace(title))
                 {
-                    var fullStatement = m.Value;
-                    var assignment = SUBTRACT_REGEX.Match(fullStatement);
-                    if (assignment.Success)
+                    gameFile.Title = title;
+                }
+
+                if (mapping.TryGetValue("IWAD", out var iwad) && !string.IsNullOrEmpty(iwad))
+                {
+                    IWadInfo iwadInfo = IWadInfo.FromFileName(iwad);
+                    if (iwadInfo != null)
                     {
-                        var title = fullStatement.Substring(assignment.Length + 1, fullStatement.Length - assignment.Length - 2).Trim();
-                        if (!string.IsNullOrEmpty(title))
-                            gameFile.Title = title;
+                        gameFile.IntendedGame = iwadInfo;
                     }
                 }
             }
 
             return SyncResult.EMPTY;
+        }
+
+        private Dictionary<string, string> ParseGameInfo(string gameInfo)
+        {
+            string[] lines = gameInfo.Split(new char[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+            Dictionary<string, string> mapping = new Dictionary<string, string>();
+            foreach (var line in lines)
+            {
+                string[] keyValues = line.Split('=');
+                if (keyValues.Length >= 2)
+                {
+                    string key = keyValues[0].Trim();
+                    string value = keyValues.Skip(1).Aggregate("", (a, b) => a + b).Trim();
+
+                    // This won't work for comma-separated values, as expected for LOAD and STARTUPCOLORS,
+                    // but we don't care about those for the time being.
+                    if (value[0] == '\"' && value[value.Length-1] == '\"')
+                        value = value.Substring(1, value.Length - 2);
+                    mapping[key] = value;
+                }
+            }
+            return mapping;
         }
     }
 }

@@ -39,9 +39,7 @@ namespace DoomLauncher.Handlers.Sync
             {
                 if (TitlePicUtil.GetEntry(reader, HereticHexenTitlepicName, out entry))
                 {
-                    var iwadFileName = m_database.GetIWads().FirstOrDefault(iw => iw.IWadID == file.IWadID)?.FileNameBase;
-
-                    if (iwadFileName != null && iwadFileName.Equals("hexen", StringComparison.OrdinalIgnoreCase))
+                    if (IWadInfo.Hexen.Equals(file.IntendedGame) || "hexen".Equals(GetIWadFileNameBase(file.IWadID), StringComparison.OrdinalIgnoreCase))
                         palette = m_hexenPalette;
                     else
                         palette = m_hereticPalette;
@@ -62,6 +60,9 @@ namespace DoomLauncher.Handlers.Sync
             return SyncResult.TitlePic(file, image);
         }
 
+        private string GetIWadFileNameBase(int? iwadID) =>
+            m_database.GetIWads().FirstOrDefault(iw => iw.IWadID == iwadID)?.FileNameBase;
+
         private bool GetTitlepicNameFromMapInfo(string[] mapInfoData, out string newTitlepicName)
         {
             newTitlepicName = string.Empty;
@@ -81,15 +82,13 @@ namespace DoomLauncher.Handlers.Sync
 
         private Palette GetPaletteOrDefault(IGameFile gameFile, IArchiveReader reader)
         {
-            if (!TitlePicUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
+            if (TitlePicUtil.FindPalette(reader, out IArchiveEntry paletteEntry))
             {
-                return m_doomPalette;
+                Palette palette = Palette.From(paletteEntry.ReadEntry());
+                if (palette != null)
+                    return palette;
             }
-
-            Palette palette = Palette.From(paletteEntry.ReadEntry());
-            if (palette != null)
-                return palette;
-
+            
             return m_doomPalette;
         }
     }

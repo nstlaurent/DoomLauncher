@@ -10,13 +10,6 @@ namespace DoomLauncher.Handlers.Sync
 {
     public class GameConfSyncAction : ISyncAction
     {
-        private readonly IDataSourceAdapter m_database;
-
-        public GameConfSyncAction(IDataSourceAdapter database)
-        {
-            m_database = database;
-        }
-
         public SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
         {
             var entry = reader.Entries.FirstOrDefault(e => e.Name.ToLower().Equals("gameconf"));
@@ -46,11 +39,11 @@ namespace DoomLauncher.Handlers.Sync
 
                     if (!string.IsNullOrEmpty(iwad))
                     {
-                        var gameName = Path.GetFileNameWithoutExtension(iwad.ToLower());
-                        var iwadFile = m_database.GetIWads().FirstOrDefault(x =>
-                            Path.GetFileNameWithoutExtension(x.Name.ToLower()).Equals(gameName));
-                        if (iwadFile != null)
-                            gameFile.IWadID = iwadFile.IWadID;
+                        IWadInfo iwadInfo = IWadInfo.FromFileName(iwad);
+                        if (iwadInfo != null)
+                        {
+                            gameFile.IntendedGame = iwadInfo;
+                        }
                     }
                 }
                 catch

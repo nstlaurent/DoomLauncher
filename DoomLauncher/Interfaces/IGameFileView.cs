@@ -15,9 +15,11 @@ namespace DoomLauncher
     }
 
     public delegate void GameFileEventHandler(object sender, GameFileEventArgs e);
+    public delegate void GameFilesHandler(List<IGameFile> gameFiles);
 
     public interface IGameFileView
     {
+        event GameFilesHandler DisplayingGameFiles;
         event EventHandler ItemClick;
         event EventHandler ItemDoubleClick;
         event EventHandler SelectionChange;

@@ -1525,7 +1525,7 @@ namespace DoomLauncher
 
             foreach (string file in files)
             {
-                IWadInfo info = IWadInfo.GetIWadInfo(file);
+                IWadInfo info = IWadInfo.FromFileName(file);
 
                 if (type == AddFileType.GameFile && info != null)
                     warnFiles.Add(Path.GetFileName(file));
@@ -2566,6 +2566,9 @@ namespace DoomLauncher
                 UseWaitCursor = true;
                 if (!m_progressBars.TryGetValue(type, out var progressBar))
                     return null;
+
+                if (progressBar.Visible)
+                    return progressBar; // Already shown, just return
 
                 progressBar.StartPosition = FormStartPosition.CenterParent;
                 progressBar.Show(this);

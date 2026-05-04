@@ -53,7 +53,22 @@ namespace DoomLauncher
             tabViews.AddRange(CreateTagTabs(GameFileViewFactory.DefaultColumnTextFields, colConfig));
 
             m_tabHandler = new TabHandler(tabControl);
+            m_tabHandler.DisplayingGameFiles += TabHandler_DisplayingGameFiles;
             m_tabHandler.SetTabs(tabViews);
+            
+        }
+
+        private void TabHandler_DisplayingGameFiles(List<IGameFile> gameFiles)
+        {
+            var gameFilesThatNeedSync = gameFiles
+                .Where(f => f.IsSyncNeeded)
+                .Select(f => f.FileName)
+                .ToArray();
+
+            if (gameFilesThatNeedSync.Count() > 0)
+            {
+                _ = SyncLocalDatabase(gameFilesThatNeedSync, AppConfiguration.FileManagement, true);
+            }
         }
 
         private void SetShowTabHeaders()
@@ -668,7 +683,9 @@ namespace DoomLauncher
                     GameFileFieldType.Rating,
                     GameFileFieldType.MapCount,
                     GameFileFieldType.MinutesPlayed,
-                    GameFileFieldType.IWadID
+                    GameFileFieldType.IWadID,
+                    GameFileFieldType.IntendedGame,
+                    GameFileFieldType.IsSyncNeeded
                 };
             }
         }

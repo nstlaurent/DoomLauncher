@@ -10,20 +10,6 @@ namespace UnitTest.Tests
     [TestClass]
     public class TestGameConfSyncAction
     {
-        private DbDataSourceAdapter database;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            database = (DbDataSourceAdapter)TestUtil.CreateAdapter();
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            database.DataAccess.ExecuteNonQuery("delete from IWads");
-        }
-
         [TestMethod]
         public void ApplyToGameFile_SetsTitle()
         {
@@ -36,7 +22,7 @@ namespace UnitTest.Tests
             Tree files = new Tree("root", new Tree("GAMECONF", 
                 "{\"data\": { \"title\": \"Bingo Bongo\" }} "));
             var reader = new TreeReader(files);
-            var action = new GameConfSyncAction(database);
+            var action = new GameConfSyncAction();
 
             action.ApplyToGameFile(gameFile, reader, new string[0]);
 
@@ -55,7 +41,7 @@ namespace UnitTest.Tests
             Tree files = new Tree("root", new Tree("GAMECONF",
                 "{\"data\": { \"author\": \"Bob the Dog\" }} "));
             var reader = new TreeReader(files);
-            var action = new GameConfSyncAction(database);
+            var action = new GameConfSyncAction();
 
             action.ApplyToGameFile(gameFile, reader, new string[0]);
 
@@ -74,7 +60,7 @@ namespace UnitTest.Tests
             Tree files = new Tree("root", new Tree("GAMECONF",
                 "{\"data\": { \"description\": \"A fancy dog.\" }} "));
             var reader = new TreeReader(files);
-            var action = new GameConfSyncAction(database);
+            var action = new GameConfSyncAction();
 
             action.ApplyToGameFile(gameFile, reader, new string[0]);
 
@@ -82,24 +68,21 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void ApplyToGameFile_SetsIwad()
+        public void ApplyToGameFile_SetsIntendedGame()
         {
             GameFile gameFile = new GameFile
             {
                 GameFileID = 1,
             };
 
-            database.InsertIWad(new IWadData { Name = "doom2.zip" });
-            var iwadId = database.GetIWads().FirstOrDefault(x => x.Name == "doom2.zip").IWadID;
-
             Tree files = new Tree("root", new Tree("GAMECONF",
                 "{\"data\": { \"iwad\": \"doom2.wad\" }} "));
             var reader = new TreeReader(files);
-            var action = new GameConfSyncAction(database);
+            var action = new GameConfSyncAction();
 
             action.ApplyToGameFile(gameFile, reader, new string[0]);
 
-            Assert.AreEqual(iwadId, gameFile.IWadID);
+            Assert.AreEqual(IWadInfo.Doom2, gameFile.IntendedGame);
         }
 
         [TestMethod]
@@ -114,7 +97,7 @@ namespace UnitTest.Tests
             Tree files = new Tree("root", new Tree("WADINFO",
                 "{\"data\": { \"title\": \"Eviternity\" }} "));
             var reader = new TreeReader(files);
-            var action = new GameConfSyncAction(database);
+            var action = new GameConfSyncAction();
 
             action.ApplyToGameFile(gameFile, reader, new string[0]);
 

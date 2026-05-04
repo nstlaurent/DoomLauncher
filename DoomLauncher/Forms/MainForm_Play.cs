@@ -2,6 +2,7 @@
 using DoomLauncher.Adapters.Launch;
 using DoomLauncher.DataSources;
 using DoomLauncher.Forms;
+using DoomLauncher.Handlers.Sync;
 using DoomLauncher.Interfaces;
 using DoomLauncher.SourcePort;
 using DoomLauncher.Stylize;
@@ -74,6 +75,8 @@ namespace DoomLauncher
             if (launchData.GameFile == null)
                 return;
 
+            ConfirmIWad(launchData.GameFile);
+
             SetupPlayForm(launchData.GameFile);
             if (sourcePort != null) 
                 m_currentPlayForm.SelectedSourcePort = sourcePort;
@@ -106,6 +109,24 @@ namespace DoomLauncher
             else
             {
                 HandleSelectionChange(GetCurrentViewControl(), true);
+            }
+        }
+
+        private void ConfirmIWad(IGameFile gameFile)
+        {
+            // This method works. But the real solution is for the "Delete IWad" function
+            // to properly clean up the dead references in the database.
+
+            var iwadId = gameFile.IWadID;
+
+            // Could be a bogus ID if the IWAD was deleted
+            var actualIWad = DataSourceAdapter.GetIWads().FirstOrDefault(x => x.IWadID == gameFile.IWadID);
+
+            if (actualIWad == null)
+            {
+                gameFile.IWadID = null;
+                new IntendedIwadSyncAction(DataSourceAdapter).ApplyIntendedGame(gameFile);
+                DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.IWadID });
             }
         }
 

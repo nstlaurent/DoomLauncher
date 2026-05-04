@@ -15,7 +15,6 @@ namespace DoomLauncher.Handlers.Sync
             ReleaseDate = releaseDate;
             Description = description ?? "";
             Game = game ?? "";
-
         }
 
         public int QualityScore 
@@ -54,5 +53,4 @@ namespace DoomLauncher.Handlers.Sync
         public override int GetHashCode() => 
             (Title, Author, ReleaseDate, Description, Game).GetHashCode();
     }
-
 }

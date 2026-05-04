@@ -65,6 +65,11 @@ namespace DoomLauncher
                     convertedObj = true;
                 return true;
             }
+            else if (obj.GetType() == typeof(string) && t == typeof(IWadInfo) && IWadInfo.IsGameName(obj))
+            {
+                convertedObj = IWadInfo.FromGameName(obj);
+                return true;
+            }
             else if (t.BaseType == typeof(Enum))
             {
                 convertedObj = Convert.ToInt32(obj);
@@ -337,7 +342,9 @@ namespace DoomLauncher
                     GameFileFieldType.Rating,
                     GameFileFieldType.Map,
                     GameFileFieldType.MapCount,
-                    GameFileFieldType.IWadID
+                    GameFileFieldType.IWadID,
+                    GameFileFieldType.IntendedGame,
+                    GameFileFieldType.IsSyncNeeded
                 };
             }
         }

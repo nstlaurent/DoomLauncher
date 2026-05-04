@@ -13,6 +13,7 @@ namespace DoomLauncher
 {
     public partial class GameFileViewControl : UserControl, IGameFileColumnView
     {
+        public event GameFilesHandler DisplayingGameFiles;
         public event EventHandler ItemClick;
         public event EventHandler ItemDoubleClick;
         public event EventHandler SelectionChange;
@@ -51,7 +52,10 @@ namespace DoomLauncher
 
         public void SetVisible(bool set)
         {
-            // Not required
+            if (set && m_datasource != null)
+            {
+                DisplayingGameFiles?.Invoke((List<IGameFile>)m_datasource.DataSource);
+            }
         }
 
         public bool MultiSelect

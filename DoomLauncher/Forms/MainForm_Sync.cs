@@ -13,14 +13,30 @@ namespace DoomLauncher
 {
     public partial class MainForm
     {
+        private readonly System.Threading.SemaphoreSlim _syncSemaphore = new System.Threading.SemaphoreSlim(1, 1);
+
         private async Task<SyncResult> SyncLocalDatabase(string[] fileNames, FileManagement fileManagement, bool updateViews, ITagData tag = null)
         {
-            var pg = ProgressBarStart(ProgressBarType.Sync);
-            pg.Text = $"Syncing {fileNames.Count()} files...";
-            SyncResult syncResult =  await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
-            ProgressBarEnd(ProgressBarType.Sync);
-            SyncLocalDatabaseComplete(syncResult, updateViews);
-            return syncResult;
+            // Try to enter the semaphore without waiting
+            if (!await _syncSemaphore.WaitAsync(0))
+            {
+                // Another sync is already running, ignore this request
+                return SyncResult.EMPTY;
+            }
+
+            try
+            {
+                var pg = ProgressBarStart(ProgressBarType.Sync);
+                pg.Text = $"Syncing {fileNames.Count()} files...";
+                SyncResult syncResult = await Task.Run(() => ExecuteSyncHandler(fileNames, fileManagement, tag));
+                ProgressBarEnd(ProgressBarType.Sync);
+                SyncLocalDatabaseComplete(syncResult, updateViews);
+                return syncResult;
+            }
+            finally
+            {
+                _syncSemaphore.Release();
+            }
         }
 
         void SyncLocalDatabaseComplete(SyncResult syncResult, bool updateViews)
@@ -96,14 +112,15 @@ namespace DoomLauncher
                     new MapStringSyncAction(AppConfiguration.TempDirectory),
                     new GameInfoSyncAction(),
                     new StartupImageSyncAction(),
-                    new TitlePicSyncAction(DataSourceAdapter, 
+                    new TitlePicSyncAction(DataSourceAdapter,
                                             DataCache.Instance.DefaultPalette,
                                             DataCache.Instance.HexenPalette,
                                             DataCache.Instance.HereticPalette).OnlyIf(AppConfiguration.AutomaticallyPullTitlpic),
                     new Doom64TitlePicSyncAction(),
                     new IWadTitlesSyncAction(),
-                    new GameConfSyncAction(DataSourceAdapter),
-                    new KnownWadsSyncAction(DataSourceAdapter)
+                    new KnownWadsSyncAction(DataSourceAdapter),
+                    new GameConfSyncAction(),
+                    new IntendedIwadSyncAction(DataSourceAdapter)
                 };
 
                 handler = new SyncLibraryHandler(DataSourceAdapter, DirectoryDataSourceAdapter, AppConfiguration, 
@@ -233,7 +250,7 @@ namespace DoomLauncher
                 DataSourceAdapter.InsertIWad(new IWadData() { GameFileID = gameFile.GameFileID.Value, FileName = gameFile.FileName, Name = gameFile.FileName });
                 var iwad = DataSourceAdapter.GetIWads().OrderBy(x => x.IWadID).LastOrDefault();
 
-                IWadInfo wadInfo = IWadInfo.GetIWadInfo(gameFile.FileName);
+                IWadInfo wadInfo = IWadInfo.FromFileName(gameFile.FileName);
                 gameFile.Title = wadInfo == null ? Path.GetFileNameWithoutExtension(gameFile.FileName).ToUpper() : wadInfo.Title;
                 DataSourceAdapter.UpdateGameFile(gameFile, new GameFileFieldType[] { GameFileFieldType.Title });
 

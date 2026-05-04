@@ -40,7 +40,7 @@ namespace DoomLauncher.SaveGame
             if (entry == null)
                 return null;
 
-            JObject data = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(entry.ReadEntry())) as JObject;
+            JObject data = JsonConvert.DeserializeObject(entry.ReadString(Encoding.UTF8)) as JObject;
             JToken textData = data.GetValue("Text");
             if (textData == null)
                 return null;

@@ -1,71 +1,107 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 
 namespace DoomLauncher
 {
-    class IWadInfo
+    public enum IWadType
     {
+        FreeDoom1,
+        FreeDoom2,
+        Doom1,
+        Doom,
+        Doom2,
+        Plutonia,
+        TNT,
+        FreeDM,
+        Chex,
+        Chex3,
+        Hacx,
+        Heretic1,
+        Heretic,
+        Hexen,
+        Strife0,
+        Strife1,
+        Doom64
+    }
+
+    public class IWadInfo
+    {
+        public static readonly IWadInfo FreeDoom1 = new IWadInfo(IWadType.FreeDoom1, "Freedoom: Phase 1", string.Empty);
+        public static readonly IWadInfo FreeDoom2 = new IWadInfo(IWadType.FreeDoom2, "Freedoom: Phase 2", string.Empty);
+        public static readonly IWadInfo Doom1 = new IWadInfo(IWadType.Doom1, "Doom Shareware", "doom.png", Doom);
+        public static readonly IWadInfo Doom = new IWadInfo(IWadType.Doom, "The Ultimate Doom", "doom.png", FreeDoom1);
+        public static readonly IWadInfo Doom2 = new IWadInfo(IWadType.Doom2, "Doom II: Hell on Earth", "doom2.png", FreeDoom2);
+        public static readonly IWadInfo Plutonia = new IWadInfo(IWadType.Plutonia, "Final Doom: The Plutonia Experiment", "plutonia.png");
+        public static readonly IWadInfo TNT = new IWadInfo(IWadType.TNT, "Final Doom: TNT: Evilution", "tnt.png");
+        public static readonly IWadInfo FreeDM = new IWadInfo(IWadType.FreeDM, "FreeDM", string.Empty);
+        public static readonly IWadInfo Chex = new IWadInfo(IWadType.Chex, "Chex Quest", "chexquest.png");
+        public static readonly IWadInfo Chex3 = new IWadInfo(IWadType.Chex3, "Chex Quest 3", "chexquest3.png");
+        public static readonly IWadInfo Hacx = new IWadInfo(IWadType.Hacx, "Hacx: Twitch 'n Kill", "hacx.png");
+        public static readonly IWadInfo Heretic1 = new IWadInfo(IWadType.Heretic1, "Heretic Shareware", "heretic.png", Heretic);
+        public static readonly IWadInfo Heretic = new IWadInfo(IWadType.Heretic, "Heretic: Shadow of the Serpent Riders", "heretic.png");
+        public static readonly IWadInfo Hexen = new IWadInfo(IWadType.Hexen, "Hexen: Beyond Heretic", "hexen.png");
+        public static readonly IWadInfo Strife0 = new IWadInfo(IWadType.Strife0, "Strife Demo", "strife.png", Strife1);
+        public static readonly IWadInfo Strife1 = new IWadInfo(IWadType.Strife1, "Strife: Quest for the Sigil", "strife.png");
+        public static readonly IWadInfo Doom64 = new IWadInfo(IWadType.Doom64, "Doom 64", "doom64.png");
+
+
+        private static readonly IWadInfo[] All = new IWadInfo[]
+        {
+            Doom1, Doom,Doom2, Plutonia, TNT, FreeDoom1, FreeDoom2, FreeDM, Chex,
+            Chex3, Hacx, Heretic1, Heretic, Hexen, Strife0, Strife1, Doom64
+        };
+
+        public IWadType IWadType { get; }
+
+        public string GameName => IWadType.ToString().ToUpper();
+
         public string Title { get; }
         public string TileImage { get; }
-        public bool HasMetadata { get; }
 
-        public IWadInfo(string title, string tileImage, bool hasMeta = false)
+        public string FileName { get; }
+
+        public IWadInfo BackupGame { get; }
+
+        private IWadInfo(IWadType iWadType, string title, string tileImage, IWadInfo backupGame = null)
         {
+            IWadType = iWadType;
             Title = title;
             TileImage = Path.Combine(LauncherPath.GetDataDirectory(), "TileImages", tileImage);
-            HasMetadata = hasMeta;
+            FileName = $"{GameName.ToLower()}.zip";
+            BackupGame = backupGame;
         }
 
         public static bool TryGetIWadInfo(string fileName, out IWadInfo iwadInfo)
         {
-            iwadInfo = GetIWadInfo(fileName);
+            iwadInfo = FromFileName(fileName);
             return iwadInfo != null;
         }
 
-        public static IWadInfo GetIWadInfo(string fileName)
+        public static bool IsGameName(string gameName) =>
+            All.FirstOrDefault(iwadInfo => iwadInfo.GameName == gameName) != null;
+
+        public static IWadInfo FromGameName(string gameName) =>
+            All.FirstOrDefault(iwadInfo => iwadInfo.GameName.Equals(gameName));
+
+        public static IWadInfo FromFileName(string fileName) =>
+            FromGameName(GetGameName(fileName));
+
+        private static string GetGameName(string fileName) =>
+            Path.GetFileNameWithoutExtension(fileName).ToUpper();
+
+        public override string ToString() =>
+            GameName;
+
+        public override int GetHashCode() =>
+            IWadType.GetHashCode();
+
+        public override bool Equals(object o)
         {
-            string name = Path.GetFileNameWithoutExtension(fileName).ToUpper();
+            if (!(o is IWadInfo other))
+                return false;
 
-            switch (name)
-            {
-                case "DOOM1":
-                    return new IWadInfo("Doom Shareware", "doom.png");
-                case "DOOM":
-                    return new IWadInfo("The Ultimate Doom", "doom.png");
-                case "DOOM2":
-                    return new IWadInfo("Doom II: Hell on Earth", "doom2.png");
-                case "PLUTONIA":
-                    return new IWadInfo("Final Doom: The Plutonia Experiment", "plutonia.png");
-                case "TNT":
-                    return new IWadInfo("Final Doom: TNT: Evilution", "tnt.png");
-                case "FREEDOOM1":
-                    return new IWadInfo("Freedoom: Phase 1", string.Empty);
-                case "FREEDOOM2":
-                    return new IWadInfo("Freedoom: Phase 2", string.Empty);
-                case "FREEDM":
-                    return new IWadInfo("FreeDM", string.Empty);
-                case "CHEX":
-                    return new IWadInfo("Chex Quest", "chexquest.png");
-                case "CHEX3":
-                    return new IWadInfo("Chex Quest 3", "chexquest3.png");
-                case "HACX":
-                    return new IWadInfo("Hacx: Twitch 'n Kill", "hacx.png");
-                case "HERETIC1":
-                    return new IWadInfo("Heretic Shareware", "heretic.png");
-                case "HERETIC":
-                    return new IWadInfo("Heretic: Shadow of the Serpent Riders", "heretic.png");
-                case "HEXEN":
-                    return new IWadInfo("Hexen: Beyond Heretic", "hexen.png");
-                case "STRIFE0":
-                    return new IWadInfo("Strife Demo", "strife.png");
-                case "STRIFE1":
-                    return new IWadInfo("Strife: Quest for the Sigil", "strife.png");
-                case "DOOM64":
-                    return new IWadInfo("Doom 64", "doom64.png");
-                default:
-                    break;
-            }
-
-            return null;
-        }  
+            return IWadType == other.IWadType;
+        }
     }
 }

@@ -39,6 +39,7 @@ namespace UnitTest.Tests
             Assert.AreEqual("Child Mod", gameFile.Title);
             Assert.AreEqual("Radley Bobbikins", gameFile.Author);
             Assert.AreEqual(DateTime.Parse("4/3/2025"), gameFile.ReleaseDate);
+            Assert.AreEqual(IWadInfo.Doom2, gameFile.IntendedGame);
 
             // Falls through to Child2 where missing from Child1
             Assert.AreEqual("A fine mod.", gameFile.Description);
@@ -72,6 +73,7 @@ namespace UnitTest.Tests
             Assert.IsTrue(string.IsNullOrEmpty(gameFile.Author));
             Assert.IsNull(gameFile.ReleaseDate);
             Assert.IsTrue(string.IsNullOrEmpty(gameFile.Description));
+            Assert.IsNull(gameFile.IntendedGame);
 
             // Low quality text file got used
             Assert.AreEqual("Low quality title", gameFile.Title);
@@ -104,6 +106,7 @@ namespace UnitTest.Tests
             Assert.AreEqual("Wadinfo title", gameFile.Title);
             Assert.AreEqual("Wadinfo author", gameFile.Author);
             Assert.AreEqual("WadInfo description", gameFile.Description);
+            Assert.AreEqual(IWadInfo.Heretic, gameFile.IntendedGame);
         }
 
         [TestMethod]
@@ -116,10 +119,11 @@ namespace UnitTest.Tests
                 Title = "Too Many Imps",
                 ReleaseDate = DateTime.Parse("1/7/2021"),
                 Description = "A wad with too many imps",
+                IntendedGame = IWadInfo.Hacx
             };
             Tree files = new Tree("root", new Tree("empty.txt"));
 
-            var syncAction = new TextFileSyncAction(str =>
+            var syncAction = new TextFileSyncAction(str => 
                 new IdGamesTextInfo(null, null, null, null, null));
 
             syncAction.ApplyToGameFile(gameFile, new TreeReader(files), new string[0]);
@@ -128,6 +132,7 @@ namespace UnitTest.Tests
             Assert.AreEqual("Fredericus", gameFile.Author);
             Assert.AreEqual(DateTime.Parse("1/7/2021"), gameFile.ReleaseDate);
             Assert.AreEqual("A wad with too many imps", gameFile.Description);
+            Assert.AreEqual(IWadInfo.Hacx, gameFile.IntendedGame);
         }
     }
 }

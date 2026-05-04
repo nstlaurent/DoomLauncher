@@ -38,6 +38,9 @@ namespace DoomLauncher.Handlers.Sync
             if (!string.IsNullOrEmpty(bestInfo.Description))
                 gameFile.Description = bestInfo.Description;
 
+            if (!string.IsNullOrEmpty(bestInfo.Game))
+                gameFile.IntendedGame = SelectGame(bestInfo.Game);
+
             if (string.IsNullOrWhiteSpace(gameFile.Title))
                 gameFile.Title = GetUserFriendlyFilename(gameFile.FileNameNoPath);
 
@@ -49,6 +52,19 @@ namespace DoomLauncher.Handlers.Sync
             var words = Path.GetFileNameWithoutExtension(filename).Replace("_", " ").Replace("-", " ").Split();
             var capitalisedWords = words.Select(word => string.Concat(word[0].ToString().ToUpper(), word.Substring(1)));
             return string.Join(" ", capitalisedWords.ToArray());
+        }
+
+        private static IWadInfo SelectGame(string gameName)
+        {
+            string name = gameName.ToUpper();
+            if (name == "ULTIMATEDOOM")
+                return IWadInfo.Doom;
+            else if (gameName.StartsWith("DOOM64"))
+                return IWadInfo.Doom64;
+            else if (gameName.StartsWith("DOOM2"))
+                return IWadInfo.Doom2;
+            else
+                return IWadInfo.FromGameName(gameName);
         }
 
         private bool isTxtFile(string filename)
