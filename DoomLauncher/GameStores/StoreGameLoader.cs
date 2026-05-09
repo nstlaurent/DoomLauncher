@@ -3,6 +3,9 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using Gameloop.Vdf;
+using Gameloop.Vdf.JsonConverter;
+using Newtonsoft.Json;
 
 namespace DoomLauncher.GameStores
 {
@@ -19,7 +22,60 @@ namespace DoomLauncher.GameStores
         private static string GetSteamGameFolder(StoreGame game)
         {
             var steamKey = $@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {game.SteamId}";
-            return Registry.GetValue(steamKey, "InstallLocation", null)?.ToString();
+            var gameInstallLocation = Registry.GetValue(steamKey, "InstallLocation", null)?.ToString();
+            
+            if (string.IsNullOrEmpty(gameInstallLocation))
+            {
+                steamKey = @"HKEY_CURRENT_USER\Software\Valve\Steam";
+                var steamPath = Registry.GetValue(steamKey, "SteamPath", null)?.ToString();
+
+                if (!string.IsNullOrEmpty(steamPath))
+                {
+                    var gamePath = GetSteamGamePathFromVdf(steamPath, game.Name);
+                    if (gamePath != null)
+                    {
+                        return gamePath;
+                    }
+                }
+            }
+            return gameInstallLocation;
+        }
+
+        private static string GetSteamGamePathFromVdf(string steamPath, string gameName)
+        {
+            var libraryFolders = LoadLibraryFoldersFromVdf(steamPath);
+            foreach (var libraryPath in libraryFolders.Values.Select(l => l.Path).Where(p => p != null))
+            {
+                var gamePath = Path.Combine(libraryPath, $@"steamapps\common\{gameName}");
+                if (Directory.Exists(gamePath))
+                {
+                    return gamePath;
+                }
+            }
+            return null;
+        }
+
+        private static Dictionary<string, SteamLibraryFolder> LoadLibraryFoldersFromVdf(string steamPath)
+        {
+            // Call GetFullPath() to switch to backslashes
+            var vdfPath = Path.Combine(Path.GetFullPath(steamPath), @"steamapps\libraryfolders.vdf");
+            if (File.Exists(vdfPath))
+            {
+                try
+                {
+                    return VdfConvert
+                        .Deserialize(File.ReadAllText(vdfPath))
+                        .ToJson()
+                        .Value
+                        .ToObject<Dictionary<string, SteamLibraryFolder>>();
+                }
+                catch (Exception ex) 
+                    when (ex is VdfException || ex is JsonSerializationException || ex is JsonReaderException)
+                {
+                    // Invalid .vdf, or not expected structure for libraryfolders.vdf
+                }
+            }
+            return new Dictionary<string, SteamLibraryFolder>();
         }
 
         private static string GetGogGameFolder(StoreGame game)
