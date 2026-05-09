@@ -964,6 +964,9 @@
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="DoomLauncher.sqlite" />
+    <None Include="THIRD-PARTY-NOTICES.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Help.docx" />
     <None Include="Help.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
