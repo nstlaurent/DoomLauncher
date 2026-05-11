@@ -11,12 +11,16 @@ namespace DoomLauncher.Handlers
 
         string GetFullFileName(FileType fileType, string fileNameNoPath);
 
+        // Inserts a FileData under the GameFile, linked to the given in-memory image saved to disk. 
         IFileData InsertAndSave(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave);
 
+        // Inserts a FileData under the GameFile, linked to a managed version of the given file on disk, copied from an arbitrary file.
         IFileData InsertAndCopy(IGameFile gameFile, FileType fileType, string originalFile, Action<IFileData> editBeforeSave);
 
+        // Inserts a FileData under the GameFile, linked to a managed version of the given file on disk, deleting the original.
         IFileData InsertAndMove(IGameFile gameFile, FileType fileType, string originalFile, Action<IFileData> editBeforeSave);
 
+        // Inserts a FileData under the GameFile, linked to an unmanaged external file on disk.
         IFileData InsertAndRefer(IGameFile gameFile, FileType fileType, string originalFile, Action<IFileData> editBeforeSave);
 
         void UpdateFromOriginal(string originalDir, IFileData localFile, Action<IFileData> editBeforeSave);
