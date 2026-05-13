@@ -11,6 +11,10 @@ namespace DoomLauncher.GameStores
 {
     public static class StoreGameLoader
     {
+        // As documented at https://help.steampowered.com/en/faqs/view/3C73-90F9-F600-0266
+        private const string STEAM_REGISTRY_KEY_32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Valve\Steam";
+        private const string STEAM_REGISTRY_KEY_64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Valve\Steam";
+
         public delegate string GameFinder(StoreGame game); // null if not found
 
         public static GameStoreFiles LoadAllStoreGamesFromRegistry()
@@ -21,61 +25,73 @@ namespace DoomLauncher.GameStores
 
         private static string GetSteamGameFolder(StoreGame game)
         {
-            var steamKey = $@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {game.SteamId}";
-            var gameInstallLocation = Registry.GetValue(steamKey, "InstallLocation", null)?.ToString();
-            
-            if (string.IsNullOrEmpty(gameInstallLocation))
+            var steamPath = GetSteamPath();
+            if (Directory.Exists(steamPath))
             {
-                steamKey = @"HKEY_CURRENT_USER\Software\Valve\Steam";
-                var steamPath = Registry.GetValue(steamKey, "SteamPath", null)?.ToString();
-
-                if (!string.IsNullOrEmpty(steamPath))
+                var libraryPaths = GetSteamLibraryPaths(steamPath);
+                foreach (var libraryPath in libraryPaths)
                 {
-                    var gamePath = GetSteamGamePathFromVdf(steamPath, game.Name);
-                    if (gamePath != null)
+                    var gameDirectory = GetSteamGameDirectory(libraryPath, game.SteamId);
+                    if (gameDirectory != null)
                     {
-                        return gamePath;
+                        return Path.Combine(libraryPath, @"steamapps\common", gameDirectory);
                     }
                 }
             }
-            return gameInstallLocation;
-        }
 
-        private static string GetSteamGamePathFromVdf(string steamPath, string gameName)
-        {
-            var libraryFolders = LoadLibraryFoldersFromVdf(steamPath);
-            foreach (var libraryPath in libraryFolders.Values.Select(l => l.Path).Where(p => p != null))
-            {
-                var gamePath = Path.Combine(libraryPath, $@"steamapps\common\{gameName}");
-                if (Directory.Exists(gamePath))
-                {
-                    return gamePath;
-                }
-            }
             return null;
         }
 
-        private static Dictionary<string, SteamLibraryFolder> LoadLibraryFoldersFromVdf(string steamPath)
+        private static string GetSteamPath()
         {
-            // Call GetFullPath() to switch to backslashes
-            var vdfPath = Path.Combine(Path.GetFullPath(steamPath), @"steamapps\libraryfolders.vdf");
-            if (File.Exists(vdfPath))
+            var steamKey = Environment.Is64BitOperatingSystem ? STEAM_REGISTRY_KEY_64 : STEAM_REGISTRY_KEY_32;
+            var installPath = Registry.GetValue(steamKey, "InstallPath", null);
+            return installPath?.ToString();
+        }
+
+        private static List<string> GetSteamLibraryPaths(string steamPath)
+        {
+            var vdfPath = Path.Combine(steamPath, @"config\libraryfolders.vdf");
+            if (TryLoadSteamFileToObject(vdfPath, out Dictionary<string, SteamLibraryFolder> libraryFolders))
+            {
+                return libraryFolders.Select(l => l.Value.Path).ToList();
+            }
+            return new List<string>();
+        }
+
+        private static string GetSteamGameDirectory(string libraryPath, int gameSteamId)
+        {
+            var acfPath = Path.Combine(libraryPath, $@"steamapps\appmanifest_{gameSteamId}.acf");
+            if (TryLoadSteamFileToObject(acfPath, out SteamAppState steamAppState))
+            {
+                return steamAppState.InstallDir;
+            }
+
+            return null;
+        }
+
+        private static bool TryLoadSteamFileToObject<T>(string filePath, out T fileObject)
+        {
+            if (File.Exists(filePath))
             {
                 try
                 {
-                    return VdfConvert
-                        .Deserialize(File.ReadAllText(vdfPath))
+                    fileObject = VdfConvert
+                        .Deserialize(File.ReadAllText(filePath))
                         .ToJson()
                         .Value
-                        .ToObject<Dictionary<string, SteamLibraryFolder>>();
+                        .ToObject<T>();
+                    return true;
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                     when (ex is VdfException || ex is JsonSerializationException || ex is JsonReaderException)
                 {
-                    // Invalid .vdf, or not expected structure for libraryfolders.vdf
+                    // Invalid .vdf/.acf, or not expected structure
                 }
             }
-            return new Dictionary<string, SteamLibraryFolder>();
+
+            fileObject = default;
+            return false;
         }
 
         private static string GetGogGameFolder(StoreGame game)
