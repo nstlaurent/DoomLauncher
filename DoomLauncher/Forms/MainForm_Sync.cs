@@ -156,7 +156,10 @@ namespace DoomLauncher
             {
                 // Get the titlepic as a bitmap in memory from a lump in the wad
                 if (!syncResult.GetTitlePic(gameFile, out Image image))
+                {
+                    gameFileImageHandler.UpdateImages(gameFile);
                     continue;
+                }
 
                 // Force the image to the right aspect ratio
                 image = image.ScaleDoomImage();
