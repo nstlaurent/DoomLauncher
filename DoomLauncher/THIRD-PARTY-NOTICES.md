@@ -1,0 +1,2 @@
+﻿# Third-Party Notices
+Doom Launcher makes use of third-party assets - these may include libraries, images, icons, fonts, and more. The licenses for these assets are reproduced below, alongside any other information deemed to be relevant to the asset. If we have failed to include a license for a third-party asset, please make us aware so that we can add it to this document.
