@@ -96,6 +96,8 @@ namespace DoomLauncher
             throw new NotSupportedException();
         }
 
+        public IEnumerable<IGameFile> GetGameFilesThatNeedSync() => Array.Empty<IGameFile>();
+
         public IEnumerable<string> GetGameFileNames()
         {
             throw new NotImplementedException();

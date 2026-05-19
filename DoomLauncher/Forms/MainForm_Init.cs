@@ -53,22 +53,7 @@ namespace DoomLauncher
             tabViews.AddRange(CreateTagTabs(GameFileViewFactory.DefaultColumnTextFields, colConfig));
 
             m_tabHandler = new TabHandler(tabControl);
-            m_tabHandler.DisplayingGameFiles += TabHandler_DisplayingGameFiles;
             m_tabHandler.SetTabs(tabViews);
-            
-        }
-
-        private void TabHandler_DisplayingGameFiles(List<IGameFile> gameFiles)
-        {
-            var gameFilesThatNeedSync = gameFiles
-                .Where(f => f.IsSyncNeeded)
-                .Select(f => f.FileName)
-                .ToArray();
-
-            if (gameFilesThatNeedSync.Count() > 0)
-            {
-                _ = SyncLocalDatabase(gameFilesThatNeedSync, AppConfiguration.FileManagement, true);
-            }
         }
 
         private void SetShowTabHeaders()
@@ -511,6 +496,18 @@ namespace DoomLauncher
             }
         }
 
+        private void SyncGameFilesThatNeedSync()
+        {
+            var gameFilesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync()
+                .Select(f => f.FileName)
+                .ToArray();
+
+            if (gameFilesThatNeedSync.Count() > 0)
+            {
+                _ = SyncLocalDatabase(gameFilesThatNeedSync, AppConfiguration.FileManagement, true);
+            }
+        }
+
         private async Task CheckFirstInit()
         {
             if (!DataSourceAdapter.GetSourcePorts().Any()) //If no source ports setup then it's the first time setup, display welcome/setup info
@@ -536,6 +533,8 @@ namespace DoomLauncher
             {
                 Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex; });
             }
+
+            SyncGameFilesThatNeedSync();
         }
 
         private void DisplayInitSettings()
