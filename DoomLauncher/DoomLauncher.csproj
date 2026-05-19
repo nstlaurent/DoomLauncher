@@ -278,12 +278,15 @@
     <Compile Include="GameFileView\GameFileViewType.cs" />
     <Compile Include="GameStores\SteamAppState.cs" />
     <Compile Include="GameStores\SteamLibraryFolder.cs" />
+    <Compile Include="GameStores\Steam\SteamFileUtils.cs" />
+    <Compile Include="GameStores\Steam\SteamLoader.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
     <Compile Include="Handlers\Files\FileHandler.cs" />
     <Compile Include="Handlers\Files\GameFileImageHandler.cs" />
     <Compile Include="Handlers\Files\IFileHandler.cs" />
     <Compile Include="Handlers\Files\LegacyTitlePicMigration.cs" />
     <Compile Include="Handlers\Files\ThumbnailImages.cs" />
+    <Compile Include="Handlers\RegistryService.cs" />
     <Compile Include="Handlers\Sync\StartupImageSyncAction.cs" />
     <Compile Include="Handlers\Sync\Doom64TitlePicSyncAction.cs" />
     <Compile Include="Handlers\Sync\GameConfSyncAction.cs" />
