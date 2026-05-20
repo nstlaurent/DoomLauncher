@@ -81,6 +81,31 @@ namespace DoomLauncher
             }
         }
 
+
+        private async Task<SyncResult> SyncGameFilesThatNeedSync()
+        {
+            var gameFilesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync();
+            var fileNamesThatNeedSync = gameFilesThatNeedSync.Select(gf => gf.FileName).ToArray();
+            TimeSpan timeTaken;
+            if (fileNamesThatNeedSync.Count() > 0)
+            {
+                var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
+                var gameFileImageHandler = new GameFileImageHandler(fileHandler, DataSourceAdapter.GetIWadByIWadID);
+                
+                var pg = ProgressBarStart(ProgressBarType.Sync);
+                pg.Text = $"Updating images & data for {fileNamesThatNeedSync.Count()} files...";
+                var startTime = DateTime.Now;
+                SyncResult syncResult = await Task.Run(() => ExecuteSyncHandler(fileNamesThatNeedSync, GetUserSelectedFileManagement()));
+                timeTaken = DateTime.Now - startTime;
+                ProgressBarEnd(ProgressBarType.Sync);
+                SyncLocalDatabaseComplete(syncResult, true);
+            }
+
+            return SyncResult.EMPTY;
+        }
+
+
+
         private void DisplayInvalidFilesError(IEnumerable<InvalidFile> invalidFiles)
         {
             StringBuilder sb = new StringBuilder();

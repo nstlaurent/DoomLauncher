@@ -1,4 +1,5 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Handlers.Files;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -75,6 +76,7 @@ namespace DoomLauncher
                 pb.Image = m_setImage;
                 m_setImage = null;
             }
+            pb.Image = pb.Image.CreateStandardizedThumbnail(pb.Width, pb.Height, GameFile);
         }
 
         private void GameFileTile_Paint(object sender, PaintEventArgs e)
@@ -195,7 +197,7 @@ namespace DoomLauncher
                 m_setImage = image;
 
             m_loadingImage = true;
-            pb.Image = image;
+            pb.Image = image.CreateStandardizedThumbnail(pb.Width, pb.Height, GameFile);
         }
 
         private void CtrlDoubleClick(object sender, EventArgs e)

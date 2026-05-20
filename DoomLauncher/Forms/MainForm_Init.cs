@@ -496,18 +496,6 @@ namespace DoomLauncher
             }
         }
 
-        private void SyncGameFilesThatNeedSync()
-        {
-            var gameFilesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync()
-                .Select(f => f.FileName)
-                .ToArray();
-
-            if (gameFilesThatNeedSync.Count() > 0)
-            {
-                _ = SyncLocalDatabase(gameFilesThatNeedSync, AppConfiguration.FileManagement, true);
-            }
-        }
-
         private async Task CheckFirstInit()
         {
             if (!DataSourceAdapter.GetSourcePorts().Any()) //If no source ports setup then it's the first time setup, display welcome/setup info
@@ -534,7 +522,7 @@ namespace DoomLauncher
                 Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex; });
             }
 
-            SyncGameFilesThatNeedSync();
+            await SyncGameFilesThatNeedSync();
         }
 
         private void DisplayInitSettings()
