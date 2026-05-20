@@ -464,6 +464,28 @@ namespace DoomLauncher
             return mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
         }
 
+        private async Task CheckForSyncNeeded()
+        {
+            var gameFilesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync();
+            if (gameFilesThatNeedSync.Any())
+            {
+                SetSyncRecommended();
+            }
+        }
+
+        private void SetSyncRecommended()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(SetSyncRecommended));
+            }
+            else
+            {
+                btnSyncRecommended.Visible = true;
+                btnSyncRecommended.GlowOnce();
+            }
+        }
+
         private async Task CheckForAppUpdate()
         {
             try
@@ -521,8 +543,6 @@ namespace DoomLauncher
             {
                 Invoke((MethodInvoker)delegate { tabControl.SelectedIndex = AppConfiguration.LastSelectedTabIndex; });
             }
-
-            await SyncGameFilesThatNeedSync();
         }
 
         private void DisplayInitSettings()
