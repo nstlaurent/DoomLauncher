@@ -4,7 +4,7 @@ namespace DoomLauncher.GameStores
 {
     public class StoreGame
     {
-        public readonly static StoreGame ULTIMATE_DOOM = new StoreGame(2280, 1317223010, "Ultimate Doom", 
+        public readonly static StoreGame ULTIMATE_DOOM = new StoreGame(2280, 1317223010, "DOOM + DOOM II", 
             new List<string> { @"rerelease\doom.wad", @"rerelease\doom2.wad", @"rerelease\plutonia.wad", @"rerelease\tnt.wad", 
                                @"base\doom.wad", @"base\doom2\doom2.wad", @"base\plutonia\plutonia.wad", @"base\tnt\tnt.wad" }, 
             new List<string> { @"rerelease\id1.wad", @"rerelease\nerve.wad", @"rerelease\masterlevels.wad", @"rerelease\sigil.wad", 
