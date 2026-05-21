@@ -356,9 +356,9 @@
             this.tblTop.ColumnCount = 5;
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 98.03922F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 1.960784F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 160F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 190F));
-            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 179F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
             this.tblTop.Controls.Add(this.flpSearch, 0, 0);
             this.tblTop.Controls.Add(this.btnDownloads, 4, 0);
             this.tblTop.Controls.Add(this.btnUpdate, 3, 0);
@@ -670,7 +670,7 @@
             this.btnDownloads.Location = new System.Drawing.Point(910, 2);
             this.btnDownloads.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
             this.btnDownloads.Name = "btnDownloads";
-            this.btnDownloads.Size = new System.Drawing.Size(96, 22);
+            this.btnDownloads.Size = new System.Drawing.Size(96, 24);
             this.btnDownloads.TabIndex = 1;
             this.btnDownloads.Text = "Downloads";
             this.btnDownloads.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
@@ -687,7 +687,7 @@
             this.btnUpdate.Location = new System.Drawing.Point(706, 2);
             this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
             this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(120, 22);
+            this.btnUpdate.Size = new System.Drawing.Size(120, 24);
             this.btnUpdate.TabIndex = 2;
             this.btnUpdate.Text = "Update Available";
             this.btnUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
@@ -701,12 +701,14 @@
             this.btnSyncRecommended.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnSyncRecommended.FlatAppearance.BorderSize = 0;
             this.btnSyncRecommended.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSyncRecommended.Image = global::DoomLauncher.Properties.Resources.Sync;
             this.btnSyncRecommended.Location = new System.Drawing.Point(706, 2);
             this.btnSyncRecommended.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
             this.btnSyncRecommended.Name = "btnSyncRecommended";
-            this.btnSyncRecommended.Size = new System.Drawing.Size(200, 22);
+            this.btnSyncRecommended.Size = new System.Drawing.Size(200, 24);
             this.btnSyncRecommended.TabIndex = 1;
             this.btnSyncRecommended.Text = "Resync Recommended";
+            this.btnSyncRecommended.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.btnSyncRecommended.UseVisualStyleBackColor = true;
             this.btnSyncRecommended.Visible = false;
             this.btnSyncRecommended.Click += new System.EventHandler(this.btnSyncRecommended_Click);

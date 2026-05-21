@@ -21,6 +21,7 @@ namespace DoomLauncher
         Save,
         Search,
         StepBack,
+        Sync,
         Video,
         Tags,
         Pin
@@ -45,6 +46,7 @@ namespace DoomLauncher
         public static Image Save => GetIcon(IconImage.Save);
         public static Image Search => GetIcon(IconImage.Search);
         public static Image StepBack => GetIcon(IconImage.StepBack);
+        public static Image Sync => GetIcon(IconImage.Sync);
         public static Image Video => GetIcon(IconImage.Video);
         public static Image Tags => GetIcon(IconImage.Tags);
         public static Image Pin => GetIcon(IconImage.Pin);
@@ -83,6 +85,8 @@ namespace DoomLauncher
                     return Properties.Resources.Search;
                 case IconImage.StepBack:
                     return Properties.Resources.StepBack;
+                case IconImage.Sync:
+                    return Properties.Resources.Sync;
                 case IconImage.Video:
                     return Properties.Resources.Video;
                 case IconImage.Tags:

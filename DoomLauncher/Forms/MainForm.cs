@@ -106,7 +106,8 @@ namespace DoomLauncher
             toolStripDropDownButton1.Image = Icons.Bars;
             btnDownloads.Image = Icons.Download;
             btnTags.Image = Icons.Tags;
-            
+            btnSyncRecommended.Image = Icons.Sync;
+
             var padding = btnMainMenu.Padding;
             padding.Top = ctrlSearch.Location.Y - Icons.DpiScale.ScaleIntY(2);
             btnMainMenu.Margin = padding;

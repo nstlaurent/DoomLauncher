@@ -93,7 +93,7 @@ namespace DoomLauncher
                 var gameFileImageHandler = new GameFileImageHandler(fileHandler, DataSourceAdapter.GetIWadByIWadID);
                 
                 var pg = ProgressBarStart(ProgressBarType.Sync);
-                pg.Text = $"Updating images & data for {fileNamesThatNeedSync.Count()} files...";
+                pg.Text = $"Resyncing images & data for {fileNamesThatNeedSync.Count()} files...";
                 SyncResult syncResult = await Task.Run(() => ExecuteSyncHandler(fileNamesThatNeedSync, GetUserSelectedFileManagement()));
                 ProgressBarEnd(ProgressBarType.Sync);
                 SyncLocalDatabaseComplete(syncResult, true);
