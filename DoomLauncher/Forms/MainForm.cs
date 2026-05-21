@@ -106,7 +106,8 @@ namespace DoomLauncher
             toolStripDropDownButton1.Image = Icons.Bars;
             btnDownloads.Image = Icons.Download;
             btnTags.Image = Icons.Tags;
-            
+            btnSyncRecommended.Image = Icons.Sync;
+
             var padding = btnMainMenu.Padding;
             padding.Top = ctrlSearch.Location.Y - Icons.DpiScale.ScaleIntY(2);
             btnMainMenu.Margin = padding;
@@ -126,6 +127,7 @@ namespace DoomLauncher
             HandleTabSelectionChange();
             InvokeHideSplashScreen();
 
+            _ = Task.Run(() => CheckForSyncNeeded());
             _ = Task.Run(() => CheckForAppUpdate());
         }
 
@@ -1182,6 +1184,12 @@ namespace DoomLauncher
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             DisplayUpdate();
+        }
+
+        private async void btnSyncRecommended_Click(object sender, EventArgs e)
+        {
+            await SyncGameFilesThatNeedSync();
+            btnSyncRecommended.Visible = false;
         }
 
         private void HandleEditSourcePorts(bool initSetup)

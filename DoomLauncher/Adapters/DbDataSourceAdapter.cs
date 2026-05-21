@@ -186,6 +186,12 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(GameFile)).Cast<GameFile>();
         }
 
+        public IEnumerable<IGameFile> GetGameFilesThatNeedSync()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("select * from GameFiles where IsSyncNeeded = 1").Tables[0];
+            return Util.TableToStructure(dt, typeof(GameFile)).Cast<IGameFile>();
+        }
+
         public void InsertGameFile(IGameFile gameFile)
         {
             string insert = InsertStatement("GameFiles", gameFile, new string[] { "GameFileID", "FileSizeBytes", "GameProfileID", "Name", "FullFileName" }, out List<DbParameter> parameters);

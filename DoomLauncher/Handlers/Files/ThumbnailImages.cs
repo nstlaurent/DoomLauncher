@@ -1,12 +1,8 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Windows.Documents;
-using System.Windows.Navigation;
 
 namespace DoomLauncher.Handlers.Files
 {

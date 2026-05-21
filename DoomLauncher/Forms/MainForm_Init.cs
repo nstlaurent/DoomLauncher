@@ -53,22 +53,7 @@ namespace DoomLauncher
             tabViews.AddRange(CreateTagTabs(GameFileViewFactory.DefaultColumnTextFields, colConfig));
 
             m_tabHandler = new TabHandler(tabControl);
-            m_tabHandler.DisplayingGameFiles += TabHandler_DisplayingGameFiles;
             m_tabHandler.SetTabs(tabViews);
-            
-        }
-
-        private void TabHandler_DisplayingGameFiles(List<IGameFile> gameFiles)
-        {
-            var gameFilesThatNeedSync = gameFiles
-                .Where(f => f.IsSyncNeeded)
-                .Select(f => f.FileName)
-                .ToArray();
-
-            if (gameFilesThatNeedSync.Count() > 0)
-            {
-                _ = SyncLocalDatabase(gameFilesThatNeedSync, AppConfiguration.FileManagement, true);
-            }
         }
 
         private void SetShowTabHeaders()
@@ -477,6 +462,28 @@ namespace DoomLauncher
         private ToolStripMenuItem GetSortByToolStrip()
         {
             return mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
+        }
+
+        private async Task CheckForSyncNeeded()
+        {
+            var gameFilesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync();
+            if (gameFilesThatNeedSync.Any())
+            {
+                SetSyncRecommended();
+            }
+        }
+
+        private void SetSyncRecommended()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(SetSyncRecommended));
+            }
+            else
+            {
+                btnSyncRecommended.Visible = true;
+                btnSyncRecommended.GlowOnce();
+            }
         }
 
         private async Task CheckForAppUpdate()
