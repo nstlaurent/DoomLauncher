@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace DoomLauncher.GameStores.Steam
 {
@@ -27,9 +26,9 @@ namespace DoomLauncher.GameStores.Steam
         private static List<string> GetLibraryPaths(string steamPath)
         {
             var vdfPath = Path.Combine(steamPath, @"config\libraryfolders.vdf");
-            if (SteamFileUtils.TryLoadToObject(vdfPath, out Dictionary<string, SteamLibraryFolder> libraryFolders))
+            if (SteamFileUtils.TryGetLibraryPaths(vdfPath, out var libraryPaths))
             {
-                return libraryFolders.Select(l => l.Value.Path).ToList();
+                return libraryPaths;
             }
             return new List<string>();
         }
@@ -37,9 +36,9 @@ namespace DoomLauncher.GameStores.Steam
         private static string GetGameDirectory(string libraryPath, int gameSteamId)
         {
             var acfPath = Path.Combine(libraryPath, $@"steamapps\appmanifest_{gameSteamId}.acf");
-            if (SteamFileUtils.TryLoadToObject(acfPath, out SteamAppState steamAppState))
+            if (SteamFileUtils.TryGetInstallDir(acfPath, out var installDir))
             {
-                return steamAppState.InstallDir;
+                return installDir;
             }
 
             return null;
