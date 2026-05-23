@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pb = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pb)).BeginInit();
+            this.pb = new DoomLauncher.Controls.CPictureBox();
+            //((System.ComponentModel.ISupportInitialize)(this.pb)).BeginInit();
             this.SuspendLayout();
             // 
             // pb
@@ -46,12 +46,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pb);
             this.Name = "GameFileTile";
-            ((System.ComponentModel.ISupportInitialize)(this.pb)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.pb)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox pb;
+        private DoomLauncher.Controls.CPictureBox pb;
     }
 }

@@ -1,5 +1,4 @@
-﻿using DoomLauncher.Handlers.Files;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,7 +10,6 @@ namespace DoomLauncher.Handlers
     public class GameFileImageHandler
     {
         public static readonly string DEFAULT_TILE_IMAGE = "DoomLauncherTile.png";
-        private static readonly int THUMBNAIL_SIZE = 300;
 
         private readonly IFileHandler m_fileHandler;
         private readonly GetIWad m_getIWad;
@@ -139,7 +137,8 @@ namespace DoomLauncher.Handlers
             var parentFile = m_fileHandler.GetFullFileName(parent.FileTypeID, parent.FileName);
             using (Image image = Image.FromFile(parentFile))
             {
-                using (Image thumb = image.CreateStandardizedThumbnail(THUMBNAIL_SIZE, GameFileTile.GetImageHeight(THUMBNAIL_SIZE), gameFile))
+                const int Width = 300;
+                using (Image thumb = image.FixedSize(Width, (int)(Width / (16.0 / 9.0)), Color.Black))
                 {
                     return m_fileHandler.InsertAndSave(gameFile, FileType.Thumbnail, thumb, "png", file =>
                     {

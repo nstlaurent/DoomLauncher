@@ -1,9 +1,9 @@
-﻿using DoomLauncher.Handlers.Files;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace DoomLauncher
@@ -28,8 +28,8 @@ namespace DoomLauncher
 
         private Color m_titleColor = ColorTheme.Current.Text;
         private bool m_new;
-        private bool m_loadingImage;
         private Image m_setImage;
+        private CancellationTokenSource m_cancelToken;
 
         public GameFileTile()
         {
@@ -45,11 +45,8 @@ namespace DoomLauncher
             Height = GetStandardHeight(dpiScale);
 
             pb.Width = Width;
-            pb.Height = Height - labelHeight;
+            pb.Height = ImageHeight;
             pb.BackColor = Color.Black;
-            pb.SizeMode = PictureBoxSizeMode.Zoom;
-            pb.WaitOnLoad = false;
-            pb.LoadCompleted += Pb_LoadCompleted;
 
             MouseClick += CtrlMouseClick;
             pb.MouseClick += CtrlMouseClick;
@@ -61,22 +58,11 @@ namespace DoomLauncher
             Paint += GameFileTile_Paint;
         }
 
-        public static int GetImageHeight(int imageWidth) => (int)(imageWidth / (4.0 / 3.0));
+        public static int GetImageHeight(int imageWidth) => (int)(imageWidth / DataCache.Instance.AppConfiguration.TileImageAspectRatio);
 
         public int GetStandardHeight(DpiScale dpiScale)
         {
             return ImageHeight + dpiScale.ScaleIntY(LabelHeight);
-        }
-
-        private void Pb_LoadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-        {
-            m_loadingImage = false;
-            if (m_setImage != null)
-            {
-                pb.Image = m_setImage;
-                m_setImage = null;
-            }
-            pb.Image = pb.Image.CreateStandardizedThumbnail(pb.Width, pb.Height, GameFile);
         }
 
         private void GameFileTile_Paint(object sender, PaintEventArgs e)
@@ -165,39 +151,33 @@ namespace DoomLauncher
         {
             m_setImage = null;
 
-            pb.CancelAsync();
+            m_cancelToken?.Cancel();
 
             if (pb.Image != null)
                 pb.Image = null;
 
-            if (!string.IsNullOrEmpty(pb.ImageLocation))
-                pb.ImageLocation = string.Empty;
+            if (!string.IsNullOrEmpty(pb.FileLocation))
+                pb.FileLocation = string.Empty;
         }
 
         public override void SetImageLocation(string file)
         {
-            if (file.Equals(pb.ImageLocation))
+            if (file.Equals(pb.FileLocation))
                 return;
 
             ClearImage();
 
             if (!string.IsNullOrEmpty(file))
             {
-                m_loadingImage = true;
-                pb.LoadAsync(file);
+                m_cancelToken = new CancellationTokenSource();
+                _ = pb.LoadAsync(file, m_cancelToken.Token);
             }
         }
 
         public override void SetImage(Image image)
         {
             ClearImage();
-
-            // CancelAsync doesn't really work, to get around this set m_setImage set to pb.Image when Pb_LoadCompleted fires 
-            if (m_loadingImage)
-                m_setImage = image;
-
-            m_loadingImage = true;
-            pb.Image = image.CreateStandardizedThumbnail(pb.Width, pb.Height, GameFile);
+            pb.Image = image;
         }
 
         private void CtrlDoubleClick(object sender, EventArgs e)

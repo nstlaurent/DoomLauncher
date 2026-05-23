@@ -42,10 +42,6 @@ namespace DoomLauncher
             int sourceY = 0;
             int destX = 0;
             int destY = 0;
-            int blurredSourceWidth = sourceWidth;
-            int blurredSourceHeight = sourceHeight;
-            int blurredSourceX = sourceX;
-            int blurredSourceY = sourceY;
 
             float nPercent;
             float nPercentW = width / (float)sourceWidth;
@@ -55,16 +51,11 @@ namespace DoomLauncher
             {
                 nPercent = nPercentH;
                 destX = Convert.ToInt16((width - (sourceWidth * nPercent)) / 2);
-                blurredSourceHeight = Convert.ToInt16(sourceHeight * nPercent);
-                blurredSourceY = sourceHeight / 2 - blurredSourceHeight / 2;
             }
             else
             {
                 nPercent = nPercentW;
                 destY = Convert.ToInt16((height - (sourceHeight * nPercent)) / 2);
-                blurredSourceWidth = Convert.ToInt16(sourceWidth * nPercent);
-                blurredSourceX = sourceWidth / 2 - blurredSourceWidth / 2;
-
             }
 
             int destWidth = (int)(sourceWidth * nPercent);
@@ -77,10 +68,9 @@ namespace DoomLauncher
             grPhoto.Clear(backColor);
             grPhoto.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-            // The real one
             grPhoto.DrawImage(imgPhoto,
-                destRect: new Rectangle(destX, destY, destWidth, destHeight),
-                srcRect: new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
+                new Rectangle(destX, destY, destWidth, destHeight),
+                new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
                 GraphicsUnit.Pixel);
 
             grPhoto.Dispose();
