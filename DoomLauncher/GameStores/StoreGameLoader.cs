@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using DoomLauncher.GameStores.Steam;
-using DoomLauncher.Handlers;
 
 namespace DoomLauncher.GameStores
 {
@@ -19,7 +18,7 @@ namespace DoomLauncher.GameStores
 
         private static string GetSteamGameFolder(StoreGame game)
         {
-            return SteamLoader.GetGameFolder(RegistryService.GetSteamPath(), game);
+            return SteamLoader.GetGameFolder(SteamRegistry.GetSteamPath(), game);
         }
 
         private static string GetGogGameFolder(StoreGame game)
