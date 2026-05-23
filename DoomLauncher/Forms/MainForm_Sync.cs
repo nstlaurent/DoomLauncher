@@ -89,9 +89,6 @@ namespace DoomLauncher
 
             if (fileNamesThatNeedSync.Count() > 0)
             {
-                var fileHandler = new FileHandler(DataSourceAdapter, AppConfiguration);
-                var gameFileImageHandler = new GameFileImageHandler(fileHandler, DataSourceAdapter.GetIWadByIWadID);
-                
                 var pg = ProgressBarStart(ProgressBarType.Sync);
                 pg.Text = $"Resyncing images & data for {fileNamesThatNeedSync.Count()} files...";
                 SyncResult syncResult = await Task.Run(() => ExecuteSyncHandler(fileNamesThatNeedSync, GetUserSelectedFileManagement()));
@@ -167,7 +164,6 @@ namespace DoomLauncher
             {
                 Util.DisplayUnexpectedException(this, ex);
             }
-
             return syncResult;
         }
 
