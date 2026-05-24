@@ -125,7 +125,9 @@
     <Compile Include="Tests\TestSpecificFiles.cs" />
     <Compile Include="Tests\TestAutomaticSteamCheck.cs" />
     <Compile Include="Tests\TestStartupImageSyncAction.cs" />
+    <Compile Include="Tests\TestSteamFileUtils.cs" />
     <Compile Include="Tests\TestSteamLoader.cs" />
+    <Compile Include="Tests\TestStoreGameLoader.cs" />
     <Compile Include="Tests\TestTextFileSyncAction.cs" />
     <Compile Include="Tests\TestUtil.cs" />
     <Compile Include="Tests\TestFile.cs" />
