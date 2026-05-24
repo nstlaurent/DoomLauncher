@@ -8,6 +8,7 @@ namespace DoomLauncher.Handlers
     public interface IFileHandler
     {
         List<IFileData> GetFiles(IGameFile gameFile, params FileType[] fileTypes);
+        List<IFileData> GetFilesTrimmed(IEnumerable<IGameFile> gameFiles, params FileType[] fileTypes);
 
         string GetFullFileName(FileType fileType, string fileNameNoPath);
 

@@ -495,6 +495,18 @@ namespace DoomLauncher
             return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
         }
 
+        public IEnumerable<IFileData> GetFilesTrimmed(IEnumerable<IGameFile> gameFiles, params FileType[] fileTypes)
+        {
+            if (!gameFiles.Any() || fileTypes.Length == 0)
+                return Enumerable.Empty<IFileData>();
+
+            string ids = string.Join(",", gameFiles.Where(x => x.GameFileID.HasValue).Select(x => x.GameFileID.Value));
+            string files = string.Join(",", fileTypes.Select(x => (int)x));
+            string query = string.Format("select FileID, GameFileID, FileName, FileTypeID from Files where GameFileID in ({0}) and FileTypeID in ({1}) order by GameFileId, FileOrder, FileID", ids, files);
+            DataTable dt = DataAccess.ExecuteSelect(query).Tables[0];
+            return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
+        }
+
         public IEnumerable<IFileData> GetFiles(FileType fileTypeID)
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from Files where FileTypeID = {0} order by GameFileID, FileOrder desc", (int)fileTypeID)).Tables[0];

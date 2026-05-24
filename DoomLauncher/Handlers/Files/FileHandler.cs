@@ -38,9 +38,16 @@ namespace DoomLauncher.Handlers
             return files;
         }
 
+        public List<IFileData> GetFilesTrimmed(IEnumerable<IGameFile> gameFiles, params FileType[] fileTypes)
+        {
+            var files = m_database.GetFilesTrimmed(gameFiles, fileTypes).ToList();
+            foreach (var file in files)
+                file.FullFileName = GetFullFileName(file.FileTypeID, file.FileName);
+            return files;
+        }
+
         public string GetFullFileName(FileType fileType, string fileNameNoPath) => 
             m_config.GetFileDirectory(fileType).GetFullPath(fileNameNoPath);
-        
 
         public IFileData InsertAndSave(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave)
         {
