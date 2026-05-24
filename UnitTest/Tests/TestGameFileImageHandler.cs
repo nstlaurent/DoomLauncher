@@ -105,7 +105,7 @@ namespace UnitTest.Tests
             database.InsertGameFile(gameFile);
 
             var doomTileImagePath = config.TileImageDirectory.GetFullPath("doom.png");
-            File.Copy(@"Resources\happy.png", doomTileImagePath);
+            File.Copy(@"Resources\happy.png", doomTileImagePath, true);
             Assert.IsTrue(File.Exists(doomTileImagePath));
             var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, doomTileImagePath);
 
@@ -124,8 +124,9 @@ namespace UnitTest.Tests
             IIWadData hereticIWad = new IWadData() { FileName = "heretic.zip" };
             database.InsertIWad(hereticIWad);
 
-            IGameFile gameFile = new GameFile() 
-            { 
+            IGameFile gameFile = new GameFile()
+            {
+                GameFileID = 1,
                 FileName = "GetMainImageLarge_NewTileImageRespectsSelectedIWadOverIntendedGame.zip",
                 IWadID = hereticIWad.IWadID,
                 IntendedGame = IWadInfo.Plutonia
@@ -134,7 +135,7 @@ namespace UnitTest.Tests
 
             // Heretic IWAD tile image
             var hereticTileImagePath = config.TileImageDirectory.GetFullPath("heretic.png");
-            File.Copy(@"Resources\happy.png", hereticTileImagePath);
+            File.Copy(@"Resources\happy.png", hereticTileImagePath, true);
             Assert.IsTrue(File.Exists(hereticTileImagePath));
 
             string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile).FullFileName;
@@ -150,13 +151,14 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile()
             {
+                GameFileID = 1,
                 FileName = "GetMainImageLarge_NewTileImageRespectsIntendedGame.zip",
                 IntendedGame = IWadInfo.Hexen
             };
             database.InsertGameFile(gameFile);
 
             var hexenTileImagePath = config.TileImageDirectory.GetFullPath("hexen.png");
-            File.Copy(@"Resources\happy.png", hexenTileImagePath);
+            File.Copy(@"Resources\happy.png", hexenTileImagePath, true);
             Assert.IsTrue(File.Exists(hexenTileImagePath));
 
             string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile).FullFileName;
@@ -177,7 +179,7 @@ namespace UnitTest.Tests
             database.InsertGameFile(gameFile);
 
             var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
-            File.Copy(@"Resources\happy.png", defaultImagePath);
+            File.Copy(@"Resources\happy.png", defaultImagePath, true);
             Assert.IsTrue(File.Exists(defaultImagePath));
 
             string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile).FullFileName;
@@ -193,11 +195,12 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile()
             {
+                GameFileID = 1,
                 FileName = "not_in_db.zip",
             };
 
             var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
-            File.Copy(@"Resources\happy.png", defaultImagePath);
+            File.Copy(@"Resources\happy.png", defaultImagePath, true);
             Assert.IsTrue(File.Exists(defaultImagePath));
 
             string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
@@ -236,6 +239,7 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile()
             {
+                GameFileID = 1,
                 FileName = "GetMainImageSmall_NewTileImageRespectsSelectedIWadOverIntendedGame.zip",
                 IWadID = tntIWad.IWadID,
                 IntendedGame = IWadInfo.Doom64
@@ -244,7 +248,7 @@ namespace UnitTest.Tests
 
             // TNT IWAD tile image
             var tntTileImagePath = config.TileImageDirectory.GetFullPath("tnt.png");
-            File.Copy(@"Resources\happy.png", tntTileImagePath);
+            File.Copy(@"Resources\happy.png", tntTileImagePath, true);
             Assert.IsTrue(File.Exists(tntTileImagePath));
 
             string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
@@ -261,13 +265,14 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile()
             {
+                GameFileID = 1,
                 FileName = "GetMainImageSmall_NewTileImageRespectsIntendedGame.zip",
                 IntendedGame = IWadInfo.Strife1
             };
             database.InsertGameFile(gameFile);
 
             var strifeTileImagePath = config.TileImageDirectory.GetFullPath("strife.png");
-            File.Copy(@"Resources\happy.png", strifeTileImagePath);
+            File.Copy(@"Resources\happy.png", strifeTileImagePath, true);
             Assert.IsTrue(File.Exists(strifeTileImagePath));
 
             string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
@@ -279,7 +284,7 @@ namespace UnitTest.Tests
         private string GetMainImageSmall(GameFileImageHandler handler, IGameFile gameFile)
         {
             var files = handler.GetImageFiles(new IGameFile[] { gameFile });
-            return files.FirstOrDefault()?.FullFileName;
+            return files[gameFile.GameFileID.Value].FirstOrDefault()?.FullFileName;
         }
 
         [TestMethod]
@@ -289,12 +294,13 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile()
             {
+                GameFileID = 1,
                 FileName = "GetMainImageSmall_NewTileImagePicksDefaultImageIfAllElseFails.zip",
             };
             database.InsertGameFile(gameFile);
 
             var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
-            File.Copy(@"Resources\happy.png", defaultImagePath);
+            File.Copy(@"Resources\happy.png", defaultImagePath, true);
             Assert.IsTrue(File.Exists(defaultImagePath));
 
             string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
@@ -314,7 +320,7 @@ namespace UnitTest.Tests
             };
 
             var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
-            File.Copy(@"Resources\happy.png", defaultImagePath);
+            File.Copy(@"Resources\happy.png", defaultImagePath, true);
             Assert.IsTrue(File.Exists(defaultImagePath));
 
             string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
@@ -371,7 +377,7 @@ namespace UnitTest.Tests
             database.InsertGameFile(gameFile);
 
             var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
-            File.Copy(@"Resources\happy.png", defaultImagePath);
+            File.Copy(@"Resources\happy.png", defaultImagePath, true);
             Assert.IsTrue(File.Exists(defaultImagePath));
 
             var list = gameFileImageHandler.GetMainImageAndScreenshots(gameFile);
@@ -489,7 +495,7 @@ namespace UnitTest.Tests
 
             // Successfully create a TileImage
             var theRightLocation = config.TileImageDirectory.GetFullPath("happy.png");
-            File.Copy(@"Resources\happy.png", theRightLocation);
+            File.Copy(@"Resources\happy.png", theRightLocation, true);
             Assert.IsTrue(File.Exists(theRightLocation));
             fileHandler.InsertAndRefer(gameFile, FileType.TileImage, theRightLocation);
             var tileImage = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
@@ -660,7 +666,7 @@ namespace UnitTest.Tests
 
             // Successfully create a TileImage
             var theRightLocation = config.TileImageDirectory.GetFullPath("happy.png");
-            File.Copy(@"Resources\happy.png", theRightLocation);
+            File.Copy(@"Resources\happy.png", theRightLocation, true);
             Assert.IsTrue(File.Exists(theRightLocation));
             var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, theRightLocation);
             Assert.IsNotNull(tileImage);
@@ -739,7 +745,7 @@ namespace UnitTest.Tests
 
             // Successfully create a TileImage
             var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
-            File.Copy(@"Resources\happy.png", defaultImagePath);
+            File.Copy(@"Resources\happy.png", defaultImagePath, true);
             Assert.IsTrue(File.Exists(defaultImagePath));
 
             var existingTileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, defaultImagePath);

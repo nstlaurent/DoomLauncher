@@ -27,7 +27,7 @@ namespace DoomLauncher.Handlers
             if (gameFile.GameFileID.HasValue)
             {
                 IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot, FileType.TileImage).FirstOrDefault();
-                return bestImage ?? CreateAndInsertTileImage(gameFile);
+                return bestImage ?? CreateTileImage(gameFile);
             }
             else
             {
@@ -35,9 +35,21 @@ namespace DoomLauncher.Handlers
             }
         }
 
-        public List<IFileData> GetImageFiles(IEnumerable<IGameFile> gameFiles)
+        public Dictionary<int, List<IFileData>> GetImageFiles(IEnumerable<IGameFile> gameFiles)
         {
-            return m_fileHandler.GetFilesTrimmed(gameFiles, FileType.Thumbnail, FileType.TileImage);
+            var lookup = m_fileHandler.GetFilesTrimmed(gameFiles, FileType.Thumbnail, FileType.TileImage).GroupBy(x => x.GameFileID).ToDictionary(g => g.Key, g => g.ToList());
+            foreach (var gameFile in gameFiles)
+            {
+                if (!gameFile.GameFileID.HasValue)
+                    continue;
+
+                if (lookup.ContainsKey(gameFile.GameFileID.Value))
+                    continue;
+
+                lookup[gameFile.GameFileID.Value] = new List<IFileData>() { CreateTileImage(gameFile) };
+            }
+
+            return lookup;
         }
 
         public List<IFileData> GetMainImageAndScreenshots(IGameFile gameFile)
@@ -182,6 +194,27 @@ namespace DoomLauncher.Handlers
 
             string fileName = m_fileHandler.GetFullFileName(FileType.TileImage, fileNameNoPath);
             return m_fileHandler.InsertAndRefer(gameFile, FileType.TileImage, fileName);
+        }
+
+        private IFileData CreateTileImage(IGameFile gameFile)
+        {
+            string fileNameNoPath = null;
+            if (gameFile.IWadID != null)
+            {
+                var iwad = m_getIWad(gameFile.IWadID.Value);
+                fileNameNoPath = iwad?.Info?.TileImage;
+            }
+
+            if (fileNameNoPath == null)
+                fileNameNoPath = gameFile.IntendedGame?.TileImage ?? DEFAULT_TILE_IMAGE;
+
+            string fullFileName = m_fileHandler.GetFullFileName(FileType.TileImage, fileNameNoPath);
+            return new FileData()
+            {
+                FileID = (int)FileType.TileImage,
+                FileName = fileNameNoPath,
+                FullFileName = fullFileName,
+            };
         }
     }
 }

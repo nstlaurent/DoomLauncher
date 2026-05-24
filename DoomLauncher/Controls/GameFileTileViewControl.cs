@@ -518,7 +518,7 @@ namespace DoomLauncher
 
         private Dictionary<int, List<IFileData>> GetFileDataLookup(List<IGameFile> gameFiles)
         {
-            return m_gameFileImageHandler.GetImageFiles(gameFiles).GroupBy(x => x.GameFileID).ToDictionary(g => g.Key, g => g.ToList());
+            return m_gameFileImageHandler.GetImageFiles(gameFiles);
         }
 
         private void SetTileData(GameFileTileBase tile, IGameFile gameFile, IEnumerable<ITagData> tags, bool forceRefresh, Dictionary<int, List<IFileData>> fileDataLookup)
