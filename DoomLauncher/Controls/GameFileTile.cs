@@ -1,10 +1,12 @@
-﻿using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Controls;
+using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Navigation;
 
 namespace DoomLauncher
 {
@@ -28,8 +30,8 @@ namespace DoomLauncher
 
         private Color m_titleColor = ColorTheme.Current.Text;
         private bool m_new;
-        private Image m_setImage;
         private CancellationTokenSource m_cancelToken;
+        private bool m_isTitlepic;
 
         public GameFileTile()
         {
@@ -56,6 +58,41 @@ namespace DoomLauncher
 
             pb.Paint += Screenshot_Paint;
             Paint += GameFileTile_Paint;
+
+            pb.LoadCompleted += Pb_LoadCompleted;
+        }
+
+        private void Pb_LoadCompleted(object sender, EventArgs e)
+        {
+            var img = pb.Image;
+            if (img == null)
+                return;
+
+            pb.ScaleMode = CalcImageScaleMode(img);
+        }
+
+        private ImageScaleMode CalcImageScaleMode(Image img)
+        {
+            if (m_isTitlepic)
+                return ImageScaleMode.FitHeight;
+
+            var imageAspect = img.Width / (double)img.Height;
+            var tileAspect = pb.Width / (double)pb.Height;
+
+            var match = Math.Abs(imageAspect - tileAspect) < 0.01;
+
+            if (match)
+            {
+                return  ImageScaleMode.Stretch;
+            }
+            else
+            {
+                var testSquare = Math.Abs(imageAspect - 1);
+                if (testSquare < 0.1)
+                    return ImageScaleMode.Zoom;
+                else
+                    return  ImageScaleMode.CropToFill;
+            }
         }
 
         public static int GetImageHeight(int imageWidth) => (int)(imageWidth / DataCache.Instance.AppConfiguration.TileImageAspectRatio);
@@ -149,8 +186,7 @@ namespace DoomLauncher
 
         private void ClearImage()
         {
-            m_setImage = null;
-
+            m_isTitlepic = false;
             m_cancelToken?.Cancel();
 
             if (pb.Image != null)
@@ -160,12 +196,14 @@ namespace DoomLauncher
                 pb.FileLocation = string.Empty;
         }
 
-        public override void SetImageLocation(string file)
+        // TODO: setting the mode is an override for using FitHeight on titlepics. Maybe not the greatest way but it works for now.
+        public override void SetImageLocation(string file, bool titlepic = false)
         {
             if (file.Equals(pb.FileLocation))
                 return;
 
             ClearImage();
+            m_isTitlepic = titlepic;
 
             if (!string.IsNullOrEmpty(file))
             {

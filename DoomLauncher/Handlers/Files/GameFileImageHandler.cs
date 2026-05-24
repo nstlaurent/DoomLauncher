@@ -124,14 +124,27 @@ namespace DoomLauncher.Handlers
             }
         }
 
-        public string GetFullFileName(FileType fileType, string fileName) => m_fileHandler.GetFullFileName(fileType, fileName);
-
         private IFileData CreateAndInsertThumbnail(IGameFile gameFile, IFileData parent)
         {
             var parentFile = m_fileHandler.GetFullFileName(parent.FileTypeID, parent.FileName);
             using (Image image = Image.FromFile(parentFile))
             {
                 const int Width = 300;
+
+                if (parent.FileTypeID == FileType.TitlePic)
+                {
+                    var aspect = image.Width / (double)image.Height;
+                    var newAspect = aspect / 1.2;
+
+                    using (Image thumb = image.StretchTo(Width, (int)(Width / newAspect)))
+                    {
+                        return m_fileHandler.InsertAndSave(gameFile, FileType.Thumbnail, thumb, "png", file =>
+                        {
+                            file.DerivedFromFileID = parent.FileID;
+                        });
+                    }
+                }
+
                 using (Image thumb = image.FixedSize(Width, (int)(Width / (16.0 / 9.0)), Color.Black))
                 {
                     return m_fileHandler.InsertAndSave(gameFile, FileType.Thumbnail, thumb, "png", file =>

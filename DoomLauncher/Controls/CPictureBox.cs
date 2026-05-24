@@ -13,7 +13,8 @@ namespace DoomLauncher.Controls
         Zoom,
         Stretch,
         CropToFill,
-        Center
+        Center,
+        FitHeight
     }
 
     public enum ImageAlignment
@@ -83,24 +84,6 @@ namespace DoomLauncher.Controls
                 return;
             }
 
-            var imageAspect = img.Width / (double)img.Height;
-            var tileAspect = Width / (double)Height;
-
-            var match = Math.Abs(imageAspect - tileAspect) < 0.01;
-
-            if (match)
-            {
-                ScaleMode = ImageScaleMode.Stretch;
-            }
-            else
-            {
-                var testSquare = Math.Abs(imageAspect - 1);
-                if (testSquare < 0.1)
-                    ScaleMode = ImageScaleMode.Zoom;
-                else
-                    ScaleMode = ImageScaleMode.CropToFill;
-            }
-            
             Image = img;
             LoadCompleted?.Invoke(this, EventArgs.Empty);
         }
@@ -151,6 +134,10 @@ namespace DoomLauncher.Controls
 
                 case ImageScaleMode.CropToFill:
                     rect = GetCropRect(imgW, imgH, boxW, boxH);
+                    break;
+
+                case ImageScaleMode.FitHeight:
+                    rect = GetFitHeightRect(imgW, imgH, boxW, boxH);
                     break;
             }
 
@@ -203,6 +190,15 @@ namespace DoomLauncher.Controls
                 float offsetY = (boxH - scaledHeight) / 2f;
                 return new RectangleF(0, offsetY, boxW, scaledHeight);
             }
+        }
+
+        private RectangleF GetFitHeightRect(float imgW, float imgH, float boxW, float boxH)
+        {
+            float scale = boxH / imgH;
+            float scaledWidth = imgW * scale;
+            float scaledHeight = boxH;
+            float x = (boxW - scaledWidth) / 2f;
+            return new RectangleF(x, 0f, scaledWidth, scaledHeight);
         }
     }
 }

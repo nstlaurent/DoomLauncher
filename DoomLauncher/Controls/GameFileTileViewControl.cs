@@ -1,4 +1,5 @@
-﻿using DoomLauncher.DataSources;
+﻿using DoomLauncher.Controls;
+using DoomLauncher.DataSources;
 using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
@@ -528,7 +529,7 @@ namespace DoomLauncher
             tile.SetData(gameFile, tags);
 
             if (fileDataLookup.TryGetValue(gameFile.GameFileID.Value, out var files) && files.Count > 0)
-                tile.SetImageLocation(files[0].FullFileName);
+                tile.SetImageLocation(files[0].FullFileName, files[0].DerivedFileType == FileType.TitlePic);
         }
 
         private void M_menu_Opened(object sender, EventArgs e)

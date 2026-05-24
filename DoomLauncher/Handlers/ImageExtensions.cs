@@ -34,6 +34,26 @@ namespace DoomLauncher
             return new Bitmap(1, 1, PixelFormat.Format32bppRgb);
         }
 
+        public static Image StretchTo(this Image imgPhoto, int width, int height)
+        {
+            var dest = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
+            dest.SetResolution(imgPhoto.HorizontalResolution, imgPhoto.VerticalResolution);
+
+            using (var g = Graphics.FromImage(dest))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.SmoothingMode = SmoothingMode.HighQuality;
+
+                g.DrawImage(imgPhoto,
+                    new Rectangle(0, 0, width, height),
+                    new Rectangle(0, 0, imgPhoto.Width, imgPhoto.Height),
+                    GraphicsUnit.Pixel);
+            }
+
+            return dest;
+        }
+
         public static Image FixedSize(this Image imgPhoto, int width, int height, Color backColor)
         {
             int sourceWidth = imgPhoto.Width;
@@ -139,16 +159,6 @@ namespace DoomLauncher
             }
 
             return destImage;
-        }
-
-        public static Image ScaleDoomImage(this Image image)
-        {
-            // Check for Doom's aspect ratio and force to 1.33 like the original so the image doesn't look distored.
-            if (image.Width / (float)image.Height != 1.6f)
-                return image;
-
-            int multiplier = image.Width / 320;
-            return image.Resize(640 * multiplier, 480 * multiplier, InterpolationMode.NearestNeighbor);
         }
 
         private static void GetPointBounds(PointF[] points,

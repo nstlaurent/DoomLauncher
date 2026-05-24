@@ -24,6 +24,7 @@ namespace DoomLauncher
         public string UserDescription { get; set; }
         public string Map { get; set; }
         public int FileOrder { get; set; }
+        public FileType DerivedFileType { get; set; }
 
         public virtual bool IsUrl { get { return false; } }
 

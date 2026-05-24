@@ -502,7 +502,11 @@ namespace DoomLauncher
 
             string ids = string.Join(",", gameFiles.Where(x => x.GameFileID.HasValue).Select(x => x.GameFileID.Value));
             string files = string.Join(",", fileTypes.Select(x => (int)x));
-            string query = string.Format("select FileID, GameFileID, FileName, FileTypeID from Files where GameFileID in ({0}) and FileTypeID in ({1}) order by GameFileId, FileOrder, FileID", ids, files);
+            string query = string.Format(
+                @"select f1.FileID, f1.GameFileID, f1.FileName, f1.FileTypeID, coalesce(f2.FileTypeID, 5) as DerivedFileType from Files f1
+                left join Files f2 on f2.FileID = f1.DerivedFromFileID
+                where f1.GameFileID in ({0}) and f1.FileTypeID in ({1}) order by f1.GameFileId, f1.FileOrder, f1.FileID",
+                ids, files);
             DataTable dt = DataAccess.ExecuteSelect(query).Tables[0];
             return Util.TableToStructure(dt, typeof(FileData)).Cast<FileData>().ToList();
         }
@@ -543,7 +547,7 @@ namespace DoomLauncher
 
         public void InsertFile(IFileData file)
         {
-            string insert = InsertStatement("Files", file, new string[] { "FileID", "FullFileName", "Title" }, out List<DbParameter> parameters);
+            string insert = InsertStatement("Files", file, new string[] { "FileID", "FullFileName", "Title", "DerivedFileType" }, out List<DbParameter> parameters);
             var newId = DataAccess.ExecuteInsertionNonQuery(insert, parameters);
             file.FileID = newId;
         }
