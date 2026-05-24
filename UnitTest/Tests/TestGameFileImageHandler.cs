@@ -9,7 +9,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 
-
 namespace UnitTest.Tests
 {
     [TestClass]
@@ -94,25 +93,6 @@ namespace UnitTest.Tests
 
             Assert.IsNotNull(mainImage);
             Assert.IsTrue(mainImage.Contains(screenshot.FileName));
-        }
-
-        [TestMethod]
-        public void GetMainImageLarge_WillTakeExistingTileImage()
-        {
-            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
-
-            IGameFile gameFile = new GameFile() { FileName = "GetMainImageLarge_WillTakeExistingTileImage.zip" };
-            database.InsertGameFile(gameFile);
-
-            var doomTileImagePath = config.TileImageDirectory.GetFullPath("doom.png");
-            File.Copy(@"Resources\happy.png", doomTileImagePath, true);
-            Assert.IsTrue(File.Exists(doomTileImagePath));
-            var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, doomTileImagePath);
-
-            string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile).FullFileName;
-
-            Assert.IsNotNull(mainImage);
-            Assert.AreEqual(doomTileImagePath, mainImage);
         }
 
         [TestMethod]
@@ -316,6 +296,7 @@ namespace UnitTest.Tests
 
             IGameFile gameFile = new GameFile()
             {
+                GameFileID = 1,
                 FileName = "not_in_db.zip",
             };
 

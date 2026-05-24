@@ -181,9 +181,6 @@ namespace DoomLauncher
                     continue;
                 }
 
-                // Force the image to the right aspect ratio
-                //image = image.ScaleDoomImage();
-
                 // Migrate from storing titlepics as screenshots, to storing titlepics separately
                 LegacyTitlePicMigration.DeleteScreenshotThatIsReallyATitlePic(fileHandler, gameFile, image);
 

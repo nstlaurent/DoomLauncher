@@ -1,14 +1,10 @@
-﻿using DoomLauncher.Controls;
-using DoomLauncher.DataSources;
-using DoomLauncher.Handlers;
+﻿using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Shell;
 
 namespace DoomLauncher
 {
@@ -45,7 +41,7 @@ namespace DoomLauncher
 
         private readonly GameFileImageHandler m_gameFileImageHandler;
 
-        public GameFileTileViewControl()
+        public GameFileTileViewControl(GameFileImageHandler gameFileImageHandler)
         {
             InitializeComponent();
 
@@ -68,10 +64,7 @@ namespace DoomLauncher
             Stylizer.StylizeControl(this, DesignMode);
             BackColor = ColorTheme.Current.WindowLight;
 
-            var database = DataCache.Instance.DataSourceAdapter;
-            var config = DataCache.Instance.AppConfiguration;
-            var fileHandler = new FileHandler(database, config);
-            m_gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, config.DeleteScreenshotsAfterImport);
+            m_gameFileImageHandler = gameFileImageHandler;
         }
 
         private void SetItemsPerPage(int maxItems)
