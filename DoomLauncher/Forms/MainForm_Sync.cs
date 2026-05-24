@@ -81,6 +81,27 @@ namespace DoomLauncher
             }
         }
 
+
+        private async Task<SyncResult> SyncGameFilesThatNeedSync()
+        {
+            var fileNamesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync()
+                .Select(gf => gf.FileName).ToArray();
+
+            if (fileNamesThatNeedSync.Count() > 0)
+            {
+                var pg = ProgressBarStart(ProgressBarType.Sync);
+                pg.Text = $"Resyncing images & data for {fileNamesThatNeedSync.Count()} files...";
+                SyncResult syncResult = await Task.Run(() => ExecuteSyncHandler(fileNamesThatNeedSync, GetUserSelectedFileManagement()));
+                ProgressBarEnd(ProgressBarType.Sync);
+                SyncLocalDatabaseComplete(syncResult, true);
+                return syncResult;
+            }
+
+            return SyncResult.EMPTY;
+        }
+
+
+
         private void DisplayInvalidFilesError(IEnumerable<InvalidFile> invalidFiles)
         {
             StringBuilder sb = new StringBuilder();
@@ -143,7 +164,6 @@ namespace DoomLauncher
             {
                 Util.DisplayUnexpectedException(this, ex);
             }
-
             return syncResult;
         }
 

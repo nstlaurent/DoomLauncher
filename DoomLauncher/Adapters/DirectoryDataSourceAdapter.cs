@@ -75,6 +75,8 @@ namespace DoomLauncher
             throw new NotSupportedException();
         }
 
+        public IEnumerable<IGameFile> GetGameFilesThatNeedSync() => Array.Empty<IGameFile>();
+
         public void DeleteGameFile(IGameFile gameFile)
         {
             HandleDelete(GameFileDirectory.GetFullPath(), gameFile.FileName);

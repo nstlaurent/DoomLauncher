@@ -94,6 +94,7 @@
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnDownloads = new DoomLauncher.FormButton();
             this.btnUpdate = new DoomLauncher.GlowButton();
+            this.btnSyncRecommended = new DoomLauncher.GlowButton();
             this.tblDataView = new DoomLauncher.TableLayoutPanelDB();
             this.splitLeftRight = new System.Windows.Forms.SplitContainer();
             this.splitTagSelect = new System.Windows.Forms.SplitContainer();
@@ -352,14 +353,16 @@
             // 
             // tblTop
             // 
-            this.tblTop.ColumnCount = 4;
+            this.tblTop.ColumnCount = 5;
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 98.03922F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 1.960784F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 160F));
             this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 179F));
+            this.tblTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
             this.tblTop.Controls.Add(this.flpSearch, 0, 0);
-            this.tblTop.Controls.Add(this.btnDownloads, 3, 0);
-            this.tblTop.Controls.Add(this.btnUpdate, 2, 0);
+            this.tblTop.Controls.Add(this.btnDownloads, 4, 0);
+            this.tblTop.Controls.Add(this.btnUpdate, 3, 0);
+            this.tblTop.Controls.Add(this.btnSyncRecommended, 2, 0);
             this.tblTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblTop.Location = new System.Drawing.Point(0, 29);
             this.tblTop.Margin = new System.Windows.Forms.Padding(0);
@@ -667,7 +670,7 @@
             this.btnDownloads.Location = new System.Drawing.Point(910, 2);
             this.btnDownloads.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
             this.btnDownloads.Name = "btnDownloads";
-            this.btnDownloads.Size = new System.Drawing.Size(96, 22);
+            this.btnDownloads.Size = new System.Drawing.Size(96, 24);
             this.btnDownloads.TabIndex = 1;
             this.btnDownloads.Text = "Downloads";
             this.btnDownloads.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
@@ -684,13 +687,31 @@
             this.btnUpdate.Location = new System.Drawing.Point(706, 2);
             this.btnUpdate.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
             this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(120, 22);
+            this.btnUpdate.Size = new System.Drawing.Size(120, 24);
             this.btnUpdate.TabIndex = 2;
             this.btnUpdate.Text = "Update Available";
             this.btnUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Visible = false;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
+            // 
+            // btnSyncRecommended
+            // 
+            this.btnSyncRecommended.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSyncRecommended.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnSyncRecommended.FlatAppearance.BorderSize = 0;
+            this.btnSyncRecommended.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSyncRecommended.Image = global::DoomLauncher.Properties.Resources.Sync;
+            this.btnSyncRecommended.Location = new System.Drawing.Point(706, 2);
+            this.btnSyncRecommended.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
+            this.btnSyncRecommended.Name = "btnSyncRecommended";
+            this.btnSyncRecommended.Size = new System.Drawing.Size(200, 24);
+            this.btnSyncRecommended.TabIndex = 1;
+            this.btnSyncRecommended.Text = "Resync Recommended";
+            this.btnSyncRecommended.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnSyncRecommended.UseVisualStyleBackColor = true;
+            this.btnSyncRecommended.Visible = false;
+            this.btnSyncRecommended.Click += new System.EventHandler(this.btnSyncRecommended_Click);
             // 
             // tblDataView
             // 
@@ -977,6 +998,7 @@
         private System.Windows.Forms.ToolStripMenuItem playRandomToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem createZipToolStripMenuItem;
         private DoomLauncher.GlowButton btnUpdate;
+        private DoomLauncher.GlowButton btnSyncRecommended;
         private System.Windows.Forms.ToolStripMenuItem addFIlesRecursivelyToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem loadWadsFromSteamMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
