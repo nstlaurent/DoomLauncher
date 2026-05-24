@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -38,7 +39,14 @@ namespace DoomLauncher.Controls
         public Image Image
         {
             get => m_image;
-            set { m_image = value; Invalidate(); }
+            set
+            {
+                if (m_image != null && m_image != value)
+                    m_image.Dispose();
+
+                m_image = value;
+                Invalidate();
+            }
         }
 
         public ImageScaleMode ScaleMode { get; set; } = ImageScaleMode.Zoom;
@@ -57,15 +65,23 @@ namespace DoomLauncher.Controls
                 return;
 
             FileLocation = path;
+
+            Image?.Dispose();
+            Image = null;
+
             Image img = null;
 
             await Task.Run(() =>
             {
-                img = Image.FromFile(path);
+                token.ThrowIfCancellationRequested();
+                img = LoadImage(path);
             }, token);
 
             if (token.IsCancellationRequested)
+            {
+                img?.Dispose();
                 return;
+            }
 
             var imageAspect = img.Width / (double)img.Height;
             var tileAspect = Width / (double)Height;
@@ -87,6 +103,19 @@ namespace DoomLauncher.Controls
             
             Image = img;
             LoadCompleted?.Invoke(this, EventArgs.Empty);
+        }
+
+        private static Image LoadImage(string path)
+        {
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (var ms = new MemoryStream())
+                {
+                    fs.CopyTo(ms);
+                    ms.Position = 0;
+                    return Image.FromStream(ms);
+                }
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
