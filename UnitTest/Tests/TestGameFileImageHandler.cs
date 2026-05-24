@@ -200,7 +200,7 @@ namespace UnitTest.Tests
             File.Copy(@"Resources\happy.png", defaultImagePath);
             Assert.IsTrue(File.Exists(defaultImagePath));
 
-            string mainImage = gameFileImageHandler.GetMainImageLarge(gameFile).FullFileName;
+            string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
 
             Assert.IsNotNull(mainImage);
             Assert.IsTrue(mainImage.Contains(defaultImagePath));
@@ -219,7 +219,7 @@ namespace UnitTest.Tests
             var thumbnail = fileHandler.InsertAndCopy(gameFile, FileType.Thumbnail, @"Resources\happy.png");
             var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, @"Resources\happy.png");
 
-            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile).FullFileName;
+            string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
 
             Assert.IsNotNull(mainImage);
             Assert.IsTrue(mainImage.Contains(thumbnail.FileName));
@@ -247,7 +247,7 @@ namespace UnitTest.Tests
             File.Copy(@"Resources\happy.png", tntTileImagePath);
             Assert.IsTrue(File.Exists(tntTileImagePath));
 
-            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile).FullFileName;
+            string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
 
             Assert.IsNotNull(mainImage);
             Assert.IsTrue(mainImage.Contains("tnt.png"));
@@ -270,10 +270,16 @@ namespace UnitTest.Tests
             File.Copy(@"Resources\happy.png", strifeTileImagePath);
             Assert.IsTrue(File.Exists(strifeTileImagePath));
 
-            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile).FullFileName;
+            string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
 
             Assert.IsNotNull(mainImage);
             Assert.IsTrue(mainImage.Contains("strife.png"));
+        }
+
+        private string GetMainImageSmall(GameFileImageHandler handler, IGameFile gameFile)
+        {
+            var files = handler.GetImageFiles(new IGameFile[] { gameFile });
+            return files.FirstOrDefault()?.FullFileName;
         }
 
         [TestMethod]
@@ -291,7 +297,7 @@ namespace UnitTest.Tests
             File.Copy(@"Resources\happy.png", defaultImagePath);
             Assert.IsTrue(File.Exists(defaultImagePath));
 
-            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile).FullFileName;
+            string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
 
             Assert.IsNotNull(mainImage);
             Assert.IsTrue(mainImage.Contains(defaultImagePath));
@@ -311,7 +317,7 @@ namespace UnitTest.Tests
             File.Copy(@"Resources\happy.png", defaultImagePath);
             Assert.IsTrue(File.Exists(defaultImagePath));
 
-            string mainImage = gameFileImageHandler.GetMainImageSmall(gameFile).FullFileName;
+            string mainImage = GetMainImageSmall(gameFileImageHandler, gameFile);
 
             Assert.IsNotNull(mainImage);
             Assert.IsTrue(mainImage.Contains(defaultImagePath));

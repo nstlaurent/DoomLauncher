@@ -131,6 +131,7 @@ namespace DoomLauncher.Handlers
             {
                 const int Width = 300;
 
+                // If the image is a titlepic then force to 1.2 stretching like the original game.
                 if (parent.FileTypeID == FileType.TitlePic)
                 {
                     var aspect = image.Width / (double)image.Height;
@@ -145,6 +146,8 @@ namespace DoomLauncher.Handlers
                     }
                 }
 
+
+                // Default: conform to 16:9 aspect ratio. 
                 using (Image thumb = image.FixedSize(Width, (int)(Width / (16.0 / 9.0)), Color.Black))
                 {
                     return m_fileHandler.InsertAndSave(gameFile, FileType.Thumbnail, thumb, "png", file =>
