@@ -38,9 +38,16 @@ namespace DoomLauncher.Handlers
             return files;
         }
 
+        public List<IFileData> GetFilesTrimmed(IEnumerable<IGameFile> gameFiles, params FileType[] fileTypes)
+        {
+            var files = m_database.GetFilesTrimmed(gameFiles, fileTypes).ToList();
+            foreach (var file in files)
+                file.FullFileName = GetFullFileName(file.FileTypeID, file.FileName);
+            return files;
+        }
+
         public string GetFullFileName(FileType fileType, string fileNameNoPath) => 
             m_config.GetFileDirectory(fileType).GetFullPath(fileNameNoPath);
-        
 
         public IFileData InsertAndSave(IGameFile gameFile, FileType fileType, Image image, string extension, Action<IFileData> editBeforeSave)
         {
@@ -187,13 +194,15 @@ namespace DoomLauncher.Handlers
             m_database.DeleteFile(file);
 
             var derivedFiles = m_database.GetDerivedFiles(file).ToList();
-            derivedFiles.ForEach(DeleteFile);
+            foreach (var derivedFile in derivedFiles)
+                DeleteFile(derivedFile);
         }
 
         public void DeleteFiles(IGameFile gameFile, FileType? fileType = null)
         {
             var filesToDelete = fileType.HasValue ? m_database.GetFiles(gameFile, fileType.Value) : m_database.GetFiles(gameFile);
-            filesToDelete.ToList().ForEach(DeleteFile);
+            foreach (var file in filesToDelete)
+                DeleteFile(file);
         }
 
         private string GetUniqueFileName(string extension)

@@ -1,5 +1,4 @@
-﻿using DoomLauncher.Handlers.Files;
-using DoomLauncher.Interfaces;
+﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,43 +10,58 @@ namespace DoomLauncher.Handlers
     public class GameFileImageHandler
     {
         public static readonly string DEFAULT_TILE_IMAGE = "DoomLauncherTile.png";
-        private static readonly int THUMBNAIL_SIZE = 300;
 
         private readonly IFileHandler m_fileHandler;
         private readonly GetIWad m_getIWad;
         private readonly bool m_deleteScreenshotsAfterImport;
+
+        private readonly Dictionary<IWadType, IFileData> m_IWadTileImages = new Dictionary<IWadType, IFileData>();
+        private readonly Dictionary<int, IWadInfo> m_IWadIdToIWadInfo = new Dictionary<int, IWadInfo>();
+
+        private readonly IFileData DefaultTile = new FileData()
+        {
+            FileName = DEFAULT_TILE_IMAGE,
+            FileTypeID = FileType.TileImage,
+            SourcePortID = 0
+        };
 
         public GameFileImageHandler(IFileHandler fileHandler, GetIWad getIwad, bool deleteScreenshotsAfterImport = false)
         {
             m_fileHandler = fileHandler;
             m_getIWad = getIwad;
             m_deleteScreenshotsAfterImport = deleteScreenshotsAfterImport;
+
+            DefaultTile.FullFileName = m_fileHandler.GetFullFileName(FileType.TileImage, DEFAULT_TILE_IMAGE);
         }
 
         public IFileData GetMainImageLarge(IGameFile gameFile)
         {
             if (gameFile.GameFileID.HasValue)
             {
-                IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot, FileType.TileImage).FirstOrDefault();
-                return bestImage ?? CreateAndInsertTileImage(gameFile);
+                IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot).FirstOrDefault();
+                return bestImage ?? CreateTileImage(gameFile);
             }
             else
             {
-                return GetInMemoryDefaultImage();
+                return DefaultTile;
             }
         }
 
-        public IFileData GetMainImageSmall(IGameFile gameFile)
+        public Dictionary<int, List<IFileData>> GetImageFiles(IEnumerable<IGameFile> gameFiles)
         {
-            if (gameFile.GameFileID.HasValue)
+            var lookup = m_fileHandler.GetFilesTrimmed(gameFiles, FileType.Thumbnail).GroupBy(x => x.GameFileID).ToDictionary(g => g.Key, g => g.ToList());
+            foreach (var gameFile in gameFiles)
             {
-                IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.Thumbnail, FileType.TileImage).FirstOrDefault();
-                return bestImage ?? CreateAndInsertTileImage(gameFile);
+                if (!gameFile.GameFileID.HasValue)
+                    continue;
+
+                if (lookup.ContainsKey(gameFile.GameFileID.Value))
+                    continue;
+
+                lookup[gameFile.GameFileID.Value] = new List<IFileData>() { CreateTileImage(gameFile) };
             }
-            else
-            {
-                return GetInMemoryDefaultImage();
-            }
+
+            return lookup;
         }
 
         public List<IFileData> GetMainImageAndScreenshots(IGameFile gameFile)
@@ -128,10 +142,6 @@ namespace DoomLauncher.Handlers
                 m_fileHandler.DeleteFiles(gameFile, FileType.Thumbnail);
                 CreateAndInsertThumbnail(gameFile, mainImage);
             }
-            else
-            {
-                CreateAndInsertTileImage(gameFile);
-            }
         }
 
         private IFileData CreateAndInsertThumbnail(IGameFile gameFile, IFileData parent)
@@ -139,7 +149,25 @@ namespace DoomLauncher.Handlers
             var parentFile = m_fileHandler.GetFullFileName(parent.FileTypeID, parent.FileName);
             using (Image image = Image.FromFile(parentFile))
             {
-                using (Image thumb = image.CreateStandardizedThumbnail(THUMBNAIL_SIZE, GameFileTile.GetImageHeight(THUMBNAIL_SIZE), gameFile))
+                const int Width = 300;
+
+                // If the image is a titlepic then force to 1.2 stretching like the original game.
+                if (parent.FileTypeID == FileType.TitlePic)
+                {
+                    var aspect = image.Width / (double)image.Height;
+                    var newAspect = aspect / 1.2;
+
+                    using (Image thumb = image.StretchTo(Width, (int)(Width / newAspect)))
+                    {
+                        return m_fileHandler.InsertAndSave(gameFile, FileType.Thumbnail, thumb, "png", file =>
+                        {
+                            file.DerivedFromFileID = parent.FileID;
+                        });
+                    }
+                }
+
+                // Default: conform to 16:9 aspect ratio. 
+                using (Image thumb = image.FixedSize(Width, (int)(Width / (16.0 / 9.0)), Color.Black))
                 {
                     return m_fileHandler.InsertAndSave(gameFile, FileType.Thumbnail, thumb, "png", file =>
                     {
@@ -149,30 +177,48 @@ namespace DoomLauncher.Handlers
             }
         }
 
-        private IFileData GetInMemoryDefaultImage() =>
-            new FileData()
-            {
-                FileName = DEFAULT_TILE_IMAGE,
-                FullFileName = m_fileHandler.GetFullFileName(FileType.TileImage, DEFAULT_TILE_IMAGE)
-            };
-
-        private IFileData CreateAndInsertTileImage(IGameFile gameFile)
+        private IFileData CreateTileImage(IGameFile gameFile)
         {
-            // Can only have one tile image
-            m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
-
             string fileNameNoPath = null;
-            if (gameFile.IWadID != null)
-            {
-                var iwad = m_getIWad(gameFile.IWadID.Value);
-                fileNameNoPath = iwad?.Info?.TileImage;
-            }
+            if (gameFile.IWadID == null && gameFile.IntendedGame == null)
+                return DefaultTile;
+
+            var info = GetIWadInfo(gameFile);
+
+            if (info == null)
+                return DefaultTile;
+
+            if (m_IWadTileImages.TryGetValue(info.IWadType, out var file))
+                return file;
 
             if (fileNameNoPath == null)
-                fileNameNoPath = gameFile.IntendedGame?.TileImage ?? DEFAULT_TILE_IMAGE;
+                fileNameNoPath = info.TileImage ?? DEFAULT_TILE_IMAGE;
 
-            string fileName = m_fileHandler.GetFullFileName(FileType.TileImage, fileNameNoPath);
-            return m_fileHandler.InsertAndRefer(gameFile, FileType.TileImage, fileName);
+            string fullFileName = m_fileHandler.GetFullFileName(FileType.TileImage, fileNameNoPath);
+            var fileData = new FileData()
+            {
+                FileID = (int)FileType.TileImage,
+                FileName = fileNameNoPath,
+                FullFileName = fullFileName,
+            };
+
+            m_IWadTileImages[info.IWadType] = fileData;
+            return fileData;
+        }
+
+        private IWadInfo GetIWadInfo(IGameFile gameFile)
+        {
+            if (gameFile.IWadID.HasValue)
+            {
+                if (m_IWadIdToIWadInfo.TryGetValue(gameFile.IWadID.Value, out var info))
+                    return info;
+
+                var iwad = m_getIWad(gameFile.IWadID.Value);
+                m_IWadIdToIWadInfo[gameFile.IWadID.Value] = iwad.Info;
+                return iwad.Info;
+            }
+
+            return gameFile.IntendedGame;
         }
     }
 }

@@ -19,6 +19,8 @@ namespace DoomLauncher.Interfaces
 
         
         IEnumerable<IFileData> GetFiles();
+        // Only returns GameFileID, FileID, FileName, FileTypeID
+        IEnumerable<IFileData> GetFilesTrimmed(IEnumerable<IGameFile> gameFiles, params FileType[] fileTypes);
         IEnumerable<IFileData> GetFiles(IGameFile gameFile);
         IEnumerable<IFileData> GetFiles(IGameFile gameFile, FileType fileTypeID);
         IEnumerable<IFileData> GetFiles(FileType fileTypeID);

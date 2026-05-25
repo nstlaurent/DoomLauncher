@@ -39,6 +39,7 @@ namespace DoomLauncher
         public static string ImportScreenshotsName => "ImportScreenshots";
         public static string ShowTooltipName => "ShowToolTip";
         public static string TileImageSizeName => "TileImageSize";
+        public static string TileImageAspectRatioName => "TileImageAspectRatio";
 
         public AppConfiguration(IDataSourceAdapter adapter)
         {
@@ -116,6 +117,7 @@ namespace DoomLauncher
                 IEnumerable<IConfigurationData> config = DataSourceAdapter.GetConfiguration();
 
                 int oldTileImageSize = TileImageSize;
+                var oldTileImageAspectRatio = TileImageAspectRatio;
 
                 IdGamesUrl = GetValue(config, "IdGamesUrl", string.Empty);
                 ApiPage = GetValue(config, "ApiPage", string.Empty);
@@ -146,6 +148,7 @@ namespace DoomLauncher
                 ImportScreenshots = Convert.ToBoolean(GetValue(config, ImportScreenshotsName, "false"));
                 ShowTooltip = Convert.ToBoolean(GetValue(config, ShowTooltipName, "true"));
                 TileImageSize = Convert.ToInt32(GetValue(config, TileImageSizeName, "300"));
+                TileImageAspectRatio = GetTileImageAspectRatio(GetValue(config, TileImageAspectRatioName, "0"));
 
                 List<EventHandler> events = new List<EventHandler>();
                 if (Enum.TryParse(GetValue(config, "ColorThemeType", "Default"), out ColorThemeType colorThemeType))
@@ -158,7 +161,7 @@ namespace DoomLauncher
                 }
 
                 var newType = (GameFileViewType)Enum.Parse(typeof(GameFileViewType), GetValue(config, "GameFileViewType", GameFileViewType.TileViewCondensed.ToString("g")));
-                if (newType != GameFileViewType || oldTileImageSize != TileImageSize)
+                if (newType != GameFileViewType || oldTileImageSize != TileImageSize || oldTileImageAspectRatio != TileImageAspectRatio)
                 {
                     GameFileViewType = newType;
                     AddEvent(events, GameFileViewTypeChanged);
@@ -184,6 +187,26 @@ namespace DoomLauncher
             }
 
             VerifyPaths(throwErrors);
+        }
+
+        enum AspectRatio
+        {
+            _16_9,
+            _4_3
+        }
+
+        private double GetTileImageAspectRatio(string value)
+        {
+            if (!int.TryParse(value, out var i))
+                i = 0;
+
+            switch ((AspectRatio)i)
+            {
+                case AspectRatio._4_3:
+                    return 4 / 3.0;
+                default:
+                    return 16 / 9.0;
+            }
         }
 
         private static double TryGetDouble(IEnumerable<IConfigurationData> config, string name, double defaultValue)
@@ -314,6 +337,7 @@ namespace DoomLauncher
         public string[] DateParseFormats { get; private set; }
         public string ColumnConfig { get; private set; }
         public int ScreenshotPreviewSize { get; private set; }
+        public double TileImageAspectRatio { get; private set; }
         public FileManagement FileManagement { get; private set; }
         public GameFileViewType GameFileViewType { get; private set; }
         public int ItemsPerPage { get; set; }

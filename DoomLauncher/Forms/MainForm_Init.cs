@@ -466,11 +466,12 @@ namespace DoomLauncher
 
         private async Task CheckForSyncNeeded()
         {
-            var gameFilesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync();
-            if (gameFilesThatNeedSync.Any())
-            {
-                SetSyncRecommended();
-            }
+            SetSyncRecommended();
+            //var gameFilesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync();
+            //if (gameFilesThatNeedSync.Any())
+            //{
+            //    SetSyncRecommended();
+            //}
         }
 
         private void SetSyncRecommended()

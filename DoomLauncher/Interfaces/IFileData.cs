@@ -21,5 +21,6 @@ namespace DoomLauncher.Interfaces
 
         int? DerivedFromFileID { get; set; }
         string Title { get; }
+        FileType DerivedFileType { get; set; }
     }
 }

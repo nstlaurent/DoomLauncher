@@ -17,7 +17,7 @@ namespace DoomLauncher
 
         public abstract void ClearData();
         public abstract void SetData(IGameFile gameFile, IEnumerable<ITagData> tags);
-        public abstract void SetImageLocation(string file);
+        public abstract void SetImageLocation(string file, bool titlepic = false);
         public abstract void SetImage(Image image);
         public abstract void SetSelected(bool set);
     }
