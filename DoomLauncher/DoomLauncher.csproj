@@ -276,8 +276,6 @@
     </Compile>
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
-    <Compile Include="GameStores\SteamAppState.cs" />
-    <Compile Include="GameStores\SteamLibraryFolder.cs" />
     <Compile Include="GameStores\Steam\SteamFileUtils.cs" />
     <Compile Include="GameStores\Steam\SteamLoader.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
