@@ -55,7 +55,7 @@ namespace DoomLauncher.GameStores.Steam
                 catch (Exception ex)
                     when (ex is VdfException || ex is InvalidCastException)
                 {
-                    // Invalid .vdf/.acf, or not expected structure
+                    // Invalid .vdf/.acf, or path has invalid value
                 }
             }
 
