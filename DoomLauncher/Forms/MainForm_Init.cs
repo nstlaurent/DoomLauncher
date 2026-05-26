@@ -464,14 +464,14 @@ namespace DoomLauncher
             return mnuLocal.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Sort By") as ToolStripMenuItem;
         }
 
-        private async Task CheckForSyncNeeded()
+        private void CheckForSyncNeeded()
         {
-            SetSyncRecommended();
-            //var gameFilesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync();
-            //if (gameFilesThatNeedSync.Any())
-            //{
-            //    SetSyncRecommended();
-            //}
+            // TODO this is pulling all the game file fields just to check if any exist
+            var gameFilesThatNeedSync = DataSourceAdapter.GetGameFilesThatNeedSync();
+            if (gameFilesThatNeedSync.Any())
+            {
+                SetSyncRecommended();
+            }
         }
 
         private void SetSyncRecommended()

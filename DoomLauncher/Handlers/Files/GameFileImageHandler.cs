@@ -214,6 +214,12 @@ namespace DoomLauncher.Handlers
                     return info;
 
                 var iwad = m_getIWad(gameFile.IWadID.Value);
+                if (iwad == null)
+                {
+                    m_IWadIdToIWadInfo[gameFile.IWadID.Value] = null;
+                    return null;
+                }
+
                 m_IWadIdToIWadInfo[gameFile.IWadID.Value] = iwad.Info;
                 return iwad.Info;
             }
