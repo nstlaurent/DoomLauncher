@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using DoomLauncher.Handlers;
+using System.Windows.Forms;
 
 namespace DoomLauncher
 {
@@ -11,11 +12,17 @@ namespace DoomLauncher
         private static readonly Padding TileMargin = new Padding(8, 8, 8, 8);
 
         private readonly ToolTipDisplayHandler m_toolTipDisplayHandler;
+        private readonly GameFileImageHandler m_gameFileImageHandler;
 
         public GameFileViewFactory(MainForm form, GameFileViewType defaultType)
         {
             DefaultType = defaultType;
             m_toolTipDisplayHandler = new ToolTipDisplayHandler(form);
+
+            var database = DataCache.Instance.DataSourceAdapter;
+            var config = DataCache.Instance.AppConfiguration;
+            var fileHandler = new FileHandler(database, config);
+            m_gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, config.DeleteScreenshotsAfterImport);
         }
 
         public static bool IsBaseViewTypeChange(GameFileViewType type, GameFileViewType other)
@@ -64,7 +71,7 @@ namespace DoomLauncher
                     break;
                 case GameFileViewType.TileView:
                 case GameFileViewType.TileViewCondensed:
-                    view = new GameFileTileViewControl();
+                    view = new GameFileTileViewControl(m_gameFileImageHandler);
                     break;
                 default:
                     view = new GameFileViewControl();

@@ -1,10 +1,12 @@
-﻿using DoomLauncher.Handlers.Files;
+﻿using DoomLauncher.Controls;
 using DoomLauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Navigation;
 
 namespace DoomLauncher
 {
@@ -28,8 +30,8 @@ namespace DoomLauncher
 
         private Color m_titleColor = ColorTheme.Current.Text;
         private bool m_new;
-        private bool m_loadingImage;
-        private Image m_setImage;
+        private CancellationTokenSource m_cancelToken;
+        private bool m_isTitlepic;
 
         public GameFileTile()
         {
@@ -45,11 +47,8 @@ namespace DoomLauncher
             Height = GetStandardHeight(dpiScale);
 
             pb.Width = Width;
-            pb.Height = Height - labelHeight;
+            pb.Height = ImageHeight;
             pb.BackColor = Color.Black;
-            pb.SizeMode = PictureBoxSizeMode.Zoom;
-            pb.WaitOnLoad = false;
-            pb.LoadCompleted += Pb_LoadCompleted;
 
             MouseClick += CtrlMouseClick;
             pb.MouseClick += CtrlMouseClick;
@@ -59,24 +58,48 @@ namespace DoomLauncher
 
             pb.Paint += Screenshot_Paint;
             Paint += GameFileTile_Paint;
+
+            pb.LoadCompleted += Pb_LoadCompleted;
         }
 
-        public static int GetImageHeight(int imageWidth) => (int)(imageWidth / (4.0 / 3.0));
+        private void Pb_LoadCompleted(object sender, EventArgs e)
+        {
+            var img = pb.Image;
+            if (img == null)
+                return;
+
+            pb.ScaleMode = CalcImageScaleMode(img);
+        }
+
+        private ImageScaleMode CalcImageScaleMode(Image img)
+        {
+            if (m_isTitlepic)
+                return ImageScaleMode.FitHeight;
+
+            var imageAspect = img.Width / (double)img.Height;
+            var tileAspect = pb.Width / (double)pb.Height;
+
+            var match = Math.Abs(imageAspect - tileAspect) < 0.01;
+
+            if (match)
+            {
+                return  ImageScaleMode.Stretch;
+            }
+            else
+            {
+                var testSquare = Math.Abs(imageAspect - 1);
+                if (testSquare < 0.1)
+                    return ImageScaleMode.Zoom;
+                else
+                    return  ImageScaleMode.CropToFill;
+            }
+        }
+
+        public static int GetImageHeight(int imageWidth) => (int)(imageWidth / DataCache.Instance.AppConfiguration.TileImageAspectRatio);
 
         public int GetStandardHeight(DpiScale dpiScale)
         {
             return ImageHeight + dpiScale.ScaleIntY(LabelHeight);
-        }
-
-        private void Pb_LoadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-        {
-            m_loadingImage = false;
-            if (m_setImage != null)
-            {
-                pb.Image = m_setImage;
-                m_setImage = null;
-            }
-            pb.Image = pb.Image.CreateStandardizedThumbnail(pb.Width, pb.Height, GameFile);
         }
 
         private void GameFileTile_Paint(object sender, PaintEventArgs e)
@@ -163,41 +186,36 @@ namespace DoomLauncher
 
         private void ClearImage()
         {
-            m_setImage = null;
-
-            pb.CancelAsync();
+            m_isTitlepic = false;
+            m_cancelToken?.Cancel();
 
             if (pb.Image != null)
                 pb.Image = null;
 
-            if (!string.IsNullOrEmpty(pb.ImageLocation))
-                pb.ImageLocation = string.Empty;
+            if (!string.IsNullOrEmpty(pb.FileLocation))
+                pb.FileLocation = string.Empty;
         }
 
-        public override void SetImageLocation(string file)
+        // TODO: setting the mode is an override for using FitHeight on titlepics. Maybe not the greatest way but it works for now.
+        public override void SetImageLocation(string file, bool titlepic = false)
         {
-            if (file.Equals(pb.ImageLocation))
+            if (file.Equals(pb.FileLocation))
                 return;
 
             ClearImage();
+            m_isTitlepic = titlepic;
 
             if (!string.IsNullOrEmpty(file))
             {
-                m_loadingImage = true;
-                pb.LoadAsync(file);
+                m_cancelToken = new CancellationTokenSource();
+                _ = pb.LoadAsync(file, m_cancelToken.Token);
             }
         }
 
         public override void SetImage(Image image)
         {
             ClearImage();
-
-            // CancelAsync doesn't really work, to get around this set m_setImage set to pb.Image when Pb_LoadCompleted fires 
-            if (m_loadingImage)
-                m_setImage = image;
-
-            m_loadingImage = true;
-            pb.Image = image.CreateStandardizedThumbnail(pb.Width, pb.Height, GameFile);
+            pb.Image = image;
         }
 
         private void CtrlDoubleClick(object sender, EventArgs e)

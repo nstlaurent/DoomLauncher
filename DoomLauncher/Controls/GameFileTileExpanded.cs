@@ -176,9 +176,9 @@ namespace DoomLauncher
             pnlData.Invalidate();
         }
 
-        public override void SetImageLocation(string file)
+        public override void SetImageLocation(string file, bool titlepic = false)
         {
-            gameTile.SetImageLocation(file);
+            gameTile.SetImageLocation(file, titlepic);
         }
 
         public override void SetImage(Image image)

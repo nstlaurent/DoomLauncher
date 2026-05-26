@@ -98,6 +98,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_7_7, AppVersion.Version_3_7_7);
                 ExecuteUpdate(Pre_Version_3_7_8, AppVersion.Version_3_7_8);
                 ExecuteUpdate(Pre_Version_3_7_9, AppVersion.Version_3_7_9);
+                ExecuteUpdate(Pre_Version_3_7_9_Update1, AppVersion.Version_3_7_9_Update1);
             }
 
             return new VersionUpdateResults(m_restartRequired);
@@ -969,6 +970,17 @@ namespace DoomLauncher
                 DataAccess.ExecuteNonQuery("update Files set DerivedFromFileID = SourcePortID where FileTypeID = 4");
                 DataAccess.ExecuteNonQuery("update Files set SourcePortID = NULL where FileTypeID = 4");
             }
+        }
+
+        private void Pre_Version_3_7_9_Update1()
+        {
+            m_adapter.InsertConfiguration(new ConfigurationData()
+            {
+                Name = "TileImageAspectRatio",
+                Value = "0",
+                UserCanModify = true,
+                AvailableValues = "16:9;0;4:3;1"
+            });
         }
 
         private void UpdateSourcePortsTable()

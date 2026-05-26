@@ -171,6 +171,9 @@
     <Compile Include="Controls\CheckBoxList.Designer.cs">
       <DependentUpon>CheckBoxList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\CProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -283,7 +286,6 @@
     <Compile Include="Handlers\Files\GameFileImageHandler.cs" />
     <Compile Include="Handlers\Files\IFileHandler.cs" />
     <Compile Include="Handlers\Files\LegacyTitlePicMigration.cs" />
-    <Compile Include="Handlers\Files\ThumbnailImages.cs" />
     <Compile Include="GameStores\Steam\SteamRegistry.cs" />
     <Compile Include="Handlers\Sync\StartupImageSyncAction.cs" />
     <Compile Include="Handlers\Sync\Doom64TitlePicSyncAction.cs" />
