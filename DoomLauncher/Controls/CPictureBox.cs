@@ -32,6 +32,7 @@ namespace DoomLauncher.Controls
 
     public class CPictureBox : Control
     {
+        public new event EventHandler<PaintEventArgs> Paint;
         public event EventHandler LoadCompleted;
         public string FileLocation = "";
 
@@ -105,6 +106,12 @@ namespace DoomLauncher.Controls
         {
             base.OnPaint(e);
 
+            DrawImage(e);
+            Paint?.Invoke(this, new PaintEventArgs(e.Graphics, e.ClipRectangle));
+        }
+
+        private void DrawImage(PaintEventArgs e)
+        {
             if (m_image == null)
                 return;
 
