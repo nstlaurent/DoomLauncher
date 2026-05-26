@@ -71,6 +71,9 @@
     <Reference Include="Gameloop.Vdf, Version=0.6.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gameloop.Vdf.0.6.2\lib\net45\Gameloop.Vdf.dll</HintPath>
     </Reference>
+    <Reference Include="Gameloop.Vdf.JsonConverter, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gameloop.Vdf.JsonConverter.0.2.1\lib\net45\Gameloop.Vdf.JsonConverter.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -276,11 +279,14 @@
     </Compile>
     <Compile Include="GameFileView\GameFileViewFactory.cs" />
     <Compile Include="GameFileView\GameFileViewType.cs" />
+    <Compile Include="GameStores\Steam\SteamFileUtils.cs" />
+    <Compile Include="GameStores\Steam\SteamLoader.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
     <Compile Include="Handlers\Files\FileHandler.cs" />
     <Compile Include="Handlers\Files\GameFileImageHandler.cs" />
     <Compile Include="Handlers\Files\IFileHandler.cs" />
     <Compile Include="Handlers\Files\LegacyTitlePicMigration.cs" />
+    <Compile Include="GameStores\Steam\SteamRegistry.cs" />
     <Compile Include="Handlers\Sync\StartupImageSyncAction.cs" />
     <Compile Include="Handlers\Sync\Doom64TitlePicSyncAction.cs" />
     <Compile Include="Handlers\Sync\GameConfSyncAction.cs" />

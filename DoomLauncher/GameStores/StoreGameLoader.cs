@@ -1,8 +1,8 @@
 ﻿using Microsoft.Win32;
-using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using DoomLauncher.GameStores.Steam;
 
 namespace DoomLauncher.GameStores
 {
@@ -18,8 +18,7 @@ namespace DoomLauncher.GameStores
 
         private static string GetSteamGameFolder(StoreGame game)
         {
-            var steamKey = $@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {game.SteamId}";
-            return Registry.GetValue(steamKey, "InstallLocation", null)?.ToString();
+            return SteamLoader.GetGameFolder(SteamRegistry.GetSteamPath(), game);
         }
 
         private static string GetGogGameFolder(StoreGame game)
