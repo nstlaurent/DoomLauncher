@@ -547,7 +547,7 @@ namespace DoomLauncher
 
         private static readonly SolidBrush RectangleBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
 
-        public static void DrawImageTitleBar(string title, Rectangle paintRect, PaintEventArgs e, Brush textBrush, Font font)
+        public static void DrawImageTitleBar(string title, Rectangle paintRect, PaintEventArgs e, Brush textBrush, Font font, bool top = false)
         {
             if (string.IsNullOrEmpty(title))
                 return;
@@ -558,10 +558,12 @@ namespace DoomLauncher
             title = GetClippedEllipsesText(e.Graphics, font, title, new SizeF(paintRect.Width, font.Height));
 
             SizeF size = e.Graphics.MeasureString(title, font);
-            RectangleF rect = new RectangleF(0, paintRect.Height - size.Height - padY,
-                e.ClipRectangle.Width, size.Height + padY);
+            var rectY = top ? 0 : paintRect.Height - size.Height - padY;
+            var textY = top ? padY : paintRect.Height - size.Height - padY;
+
+            RectangleF rect = new RectangleF(0, rectY, e.ClipRectangle.Width, size.Height + padY);
             e.Graphics.FillRectangle(RectangleBrush, rect);
-            e.Graphics.DrawString(title, font, textBrush, new PointF(padX, paintRect.Height - size.Height - padY));
+            e.Graphics.DrawString(title, font, textBrush, new PointF(padX, textY));
         }
     }
 }

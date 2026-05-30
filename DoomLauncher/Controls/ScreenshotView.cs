@@ -1,5 +1,4 @@
-﻿using DoomLauncher.DataSources;
-using DoomLauncher.Forms;
+﻿using DoomLauncher.Forms;
 using DoomLauncher.Handlers;
 using DoomLauncher.Interfaces;
 using System;
@@ -33,6 +32,11 @@ namespace DoomLauncher
 
     public partial class ScreenshotView : BasicFileView
     {
+        // For some reason, Names of ToolStripItems are disappearing at runtime, 
+        // so we need to use Text as the identifier.
+        private static readonly string SetAsMainImageButtonText = "Set as main image";
+        private static readonly string RemoveAsMainImageButtonText = "Remove as main image";
+
         private const double AspectWidth = 16;
         private const double AspectHeight = 9;
         private readonly Dictionary<PictureBox, IFileData> m_lookup = new Dictionary<PictureBox, IFileData>();
@@ -174,12 +178,25 @@ namespace DoomLauncher
 
         public override bool SetFileOrderFirst()
         {
-            if (base.SetFileOrderFirst())
+            IFileData selectedFile = GetSelectedFiles().FirstOrDefault();
+
+            if (selectedFile != null)
             {
+                selectedFile.IsMain = !selectedFile.IsMain;
+                DataSourceAdapter.UpdateFile(selectedFile);
+
+                foreach (var file in Files)
+                {
+                    if (file.FileID != selectedFile.FileID)
+                    {
+                        file.IsMain = false;
+                        DataSourceAdapter.UpdateFile(file);
+                    }
+                }
+
                 m_gameFileImageHandler.UpdateImages(GameFile);
                 return true;
             }
-
             return false;
         }
 
@@ -329,6 +346,7 @@ namespace DoomLauncher
             pbScreen.Margin = new Padding(7);
             pbScreen.MouseDown += pbScreen_MouseDown;
             pbScreen.DoubleClick += PbScreen_DoubleClick;
+
             pbScreen.Paint += PbScreen_Paint;
             return pbScreen;
         }
@@ -340,10 +358,15 @@ namespace DoomLauncher
                 return;
 
             string title = fileData.Title;
-            if (string.IsNullOrEmpty(title))
-                return;
+            if (!string.IsNullOrEmpty(title))
+            {
+                Util.DrawImageTitleBar(title, pb.ClientRectangle, e, Brushes.White, Font);
+            }
 
-            Util.DrawImageTitleBar(title, pb.ClientRectangle, e, Brushes.White, Font);
+            if (fileData.IsMain)
+            {
+                Util.DrawImageTitleBar("Main image", pb.ClientRectangle, e, Brushes.LightGray, Font, top: true);
+            }
         }
 
         private void PbScreen_DoubleClick(object sender, EventArgs e)
@@ -411,7 +434,26 @@ namespace DoomLauncher
             }
 
             if (e != null && e.Button == MouseButtons.Right)
+            {
+                ToolStripItem setAsMainItem = GetSetAsMainToolStripItem();
+
+                if (setAsMainItem != null)
+                {
+                    bool isMain = SelectedFile != null && SelectedFile.IsMain;
+                    setAsMainItem.Text = isMain ? RemoveAsMainImageButtonText : SetAsMainImageButtonText;
+                }
+
                 m_menu.Show(pb.PointToScreen(e.Location));
+            }
+        }
+
+        private ToolStripItem GetSetAsMainToolStripItem()
+        {
+            List<ToolStripItem> toolStripItems = m_menu.Items.Cast<ToolStripItem>().ToList();
+            return toolStripItems.FirstOrDefault(
+                item => item.Text == GameFileAssociationView.SetFirstButtonText
+                     || item.Text == SetAsMainImageButtonText
+                     || item.Text == RemoveAsMainImageButtonText);
         }
 
         private void SetSelectedStyle(PictureBox pb, bool selected)

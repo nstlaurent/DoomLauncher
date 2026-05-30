@@ -8,6 +8,11 @@ namespace DoomLauncher
 {
     public partial class GameFileAssociationView : UserControl
     {
+        // For some reason the Names of the toolstrip items (eg "btnSetFirst") 
+        // are disappearing at runtime, so the best we can do right now is use Text
+        // like a crap identifier.
+        public static readonly string SetFirstButtonText = "Set First";
+
         public event EventHandler FileAdded;
         public event EventHandler FileDeleted;
         public event EventHandler FileOrderChanged;

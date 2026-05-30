@@ -31,8 +31,8 @@ namespace UnitTest.Tests
 
             var gameFileId = 37;
 
-            var file1 = 
-                new FileData 
+            var file1 =
+                new FileData
                 {
                     FileName = "Rabbits.txt",
                     FileTypeID = FileType.SaveGame,
@@ -44,7 +44,8 @@ namespace UnitTest.Tests
                     OriginalFileName = "Bunnies.txt",
                     UserTitle = "All about rabbits",
                     UserDescription = "I didn't understand it",
-                    Map = "zzz"
+                    Map = "zzz",
+                    IsMain = true
                 };
 
             var file2 =
@@ -114,7 +115,8 @@ namespace UnitTest.Tests
                     OriginalFileName = "hongse.txt",
                     UserTitle = "It's another color",
                     UserDescription = "Primary color, a bit angry",
-                    Map = "yyy"
+                    Map = "yyy",
+                    IsMain = false
                 };
 
             var wrongGameIdFile =
@@ -176,7 +178,8 @@ namespace UnitTest.Tests
                     OriginalFileName = "hippopotamus.txt",
                     UserTitle = "I like hippos",
                     UserDescription = "They are very hungry",
-                    Map = "hjkl"
+                    Map = "hjkl",
+                    IsMain = true
                 };
 
             var file2 =
@@ -192,7 +195,8 @@ namespace UnitTest.Tests
                     OriginalFileName = "giraffe_pattern.txt",
                     UserTitle = "Long neck giraffe",
                     UserDescription = "Why are their necks so long",
-                    Map = "aaa"
+                    Map = "aaa",
+                    IsMain = false
                 };
 
             database.InsertFile(file1);
@@ -281,7 +285,8 @@ namespace UnitTest.Tests
                     OriginalFileName = "caco.txt",
                     UserTitle = "The fanciest demon",
                     UserDescription = "Three double shotty hits on a good day",
-                    Map = "yyy"
+                    Map = "yyy",
+                    IsMain = true
                 };
 
             var file2 =
@@ -297,7 +302,8 @@ namespace UnitTest.Tests
                     OriginalFileName = "impy.txt",
                     UserTitle = "One shotty blast",
                     UserDescription = "Two if you miss",
-                    Map = "yyy"
+                    Map = "yyy",
+                    IsMain = false
                 };
 
             var wrongFile =
@@ -347,7 +353,8 @@ namespace UnitTest.Tests
                     OriginalFileName = "paine.txt",
                     UserTitle = "What if a demon shot more demons out of its mouth",
                     UserDescription = "What if a pain elemental shot more pain elementals out of its mouth",
-                    Map = "s34"
+                    Map = "s34",
+                    IsMain = false
                 };
 
             var wrongFile =
@@ -381,6 +388,7 @@ namespace UnitTest.Tests
             savedFile1.UserTitle = "New UserTitle";
             savedFile1.UserDescription = "New UserDescription";
             savedFile1.Map = "New map";
+            savedFile1.IsMain = true;
             database.UpdateFile(savedFile1);
 
             var updatedFiles = database.GetFiles(new GameFile { GameFileID = 222 });
@@ -395,6 +403,7 @@ namespace UnitTest.Tests
             Assert.AreEqual("New UserTitle", retrieved1.UserTitle);
             Assert.AreEqual("New UserDescription", retrieved1.UserDescription);
             Assert.AreEqual("New map", retrieved1.Map);
+            Assert.IsTrue(retrieved1.IsMain);
 
             // The other record was unaffected
             var retrieved2 = updatedFiles.Where(x => x.FileName.Equals(wrongFile.FileName)).First();
