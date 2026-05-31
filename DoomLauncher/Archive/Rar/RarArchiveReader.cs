@@ -12,14 +12,10 @@ namespace DoomLauncher.Archive.Rar
         public RarArchiveReader(string file)
         {
             m_archive = RarArchive.OpenArchive(file);
-            m_entries = m_archive.Entries.Where(x =>
-            {
-                if (x is SharpCompress.Archives.Rar.RarArchiveEntry)
-                {
-                    return RarArchiveEntry.IsValid(x as SharpCompress.Archives.Rar.RarArchiveEntry);
-                }
-                return false;
-            }).Select(x => new RarArchiveEntry(x as SharpCompress.Archives.Rar.RarArchiveEntry)).ToArray();
+            m_entries = m_archive.Entries
+                .Where(RarArchiveEntry.IsValid)
+                .Select(x => new RarArchiveEntry(x as SharpCompress.Archives.Rar.RarArchiveEntry))
+                .ToArray();
         }
 
         public IEnumerable<IArchiveEntry> Entries => m_entries;

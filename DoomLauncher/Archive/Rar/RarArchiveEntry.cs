@@ -59,5 +59,8 @@ namespace DoomLauncher.Archive.Rar
             // Addresses vulnerability https://github.com/nstlaurent/DoomLauncher/issues/369
             return !entry.Key.Contains("../") && !entry.Key.Contains("..\\");
         }
+
+        public static bool IsValid(SharpCompress.Archives.IArchiveEntry entry) => 
+            entry is SharpCompress.Archives.Rar.RarArchiveEntry scEntry && IsValid(scEntry);
     }
 }
