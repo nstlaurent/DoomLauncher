@@ -521,7 +521,7 @@ namespace DoomLauncher
         {
             string query = @"update Files set 
             SourcePortID = @SourcePortID, Description = @Description, FileOrder = @FileOrder, DateCreated = @DateCreated,
-            UserTitle = @UserTitle, UserDescription = @UserDescription, Map = @Map
+            UserTitle = @UserTitle, UserDescription = @UserDescription, Map = @Map, IsMain = @IsMain
             where FileID = @FileID";
 
             List<DbParameter> parameters = new List<DbParameter>
@@ -534,6 +534,7 @@ namespace DoomLauncher
                 DataAccess.DbAdapter.CreateParameter("UserTitle", file.UserTitle),
                 DataAccess.DbAdapter.CreateParameter("Map", file.Map),
                 DataAccess.DbAdapter.CreateParameter("UserDescription", file.UserDescription),
+                DataAccess.DbAdapter.CreateParameter("IsMain", file.IsMain)
             };
 
             DataAccess.ExecuteNonQuery(query, parameters);

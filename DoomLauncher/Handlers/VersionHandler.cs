@@ -99,6 +99,7 @@ namespace DoomLauncher
                 ExecuteUpdate(Pre_Version_3_7_8, AppVersion.Version_3_7_8);
                 ExecuteUpdate(Pre_Version_3_7_9, AppVersion.Version_3_7_9);
                 ExecuteUpdate(Pre_Version_3_7_9_Update1, AppVersion.Version_3_7_9_Update1);
+                ExecuteUpdate(Pre_Version_3_7_9_Update2, AppVersion.Version_3_7_9_Update2);
             }
 
             return new VersionUpdateResults(m_restartRequired);
@@ -981,6 +982,15 @@ namespace DoomLauncher
                 UserCanModify = true,
                 AvailableValues = "16:9;0;4:3;1"
             });
+        }
+
+        private void Pre_Version_3_7_9_Update2()
+        {
+            var dt = DataAccess.ExecuteSelect("pragma table_info(Files);").Tables[0];
+            if (!dt.Select("name = 'IsMain'").Any())
+            {
+                DataAccess.ExecuteNonQuery("alter table Files add column 'IsMain' INTEGER NOT NULL DEFAULT 0;");
+            }
         }
 
         private void UpdateSourcePortsTable()
