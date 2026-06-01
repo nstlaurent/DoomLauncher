@@ -1,12 +1,9 @@
 ﻿using DoomLauncher.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.Handlers
 {
@@ -14,6 +11,8 @@ namespace DoomLauncher.Handlers
     {
         public static bool DeleteScreenshotThatIsReallyATitlePic(IFileHandler fileHandler, IGameFile gameFile, Image image)
         {
+            image = ScaleDoomImage(image);
+
             var screenshots = fileHandler.GetFiles(gameFile, FileType.Screenshot);
 
             if (!screenshots.Any())
@@ -37,7 +36,7 @@ namespace DoomLauncher.Handlers
             {
                 try
                 {
-                    FileInfo fi = new FileInfo(fileHandler.GetFullFileName(FileType.Screenshot, screenshot.FileName));
+                    FileInfo fi = new FileInfo(screenshot.FullFileName);
                     if (fi.Length == fileSize)
                     {
                         fileHandler.DeleteFile(screenshot);
@@ -48,6 +47,16 @@ namespace DoomLauncher.Handlers
             }
 
             return false;
+        }
+
+        private static Image ScaleDoomImage(Image image)
+        {
+            // Check for Doom's aspect ratio and force to 1.33 like the original so the image doesn't look distored.
+            if (image.Width / (float)image.Height != 1.6f)
+                return image;
+
+            int multiplier = image.Width / 320;
+            return image.Resize(640 * multiplier, 480 * multiplier, InterpolationMode.NearestNeighbor);
         }
     }
 }
