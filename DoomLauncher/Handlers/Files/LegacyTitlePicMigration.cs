@@ -49,6 +49,8 @@ namespace DoomLauncher.Handlers
             return false;
         }
 
+        // This used to be a standard part of title pic generation. We still need it here 
+        // to emulate the old titlepic screenshot images so we can find them by size.
         private static Image ScaleDoomImage(Image image)
         {
             // Check for Doom's aspect ratio and force to 1.33 like the original so the image doesn't look distored.

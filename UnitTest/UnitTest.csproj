@@ -107,7 +107,6 @@
     <Compile Include="Tests\TestIgnoreRarExploit.cs" />
     <Compile Include="Tests\TestIWadTitlesSyncAction.cs" />
     <Compile Include="Tests\TestKnownWadsSyncAction.cs" />
-    <Compile Include="Tests\TestLegacyTitlePicMigration.cs" />
     <Compile Include="Tests\TestMapStringSyncAction.cs" />
     <Compile Include="Tests\TestRecursiveArchiveReader.cs" />
     <Compile Include="Tests\TestGameStoreFiles.cs" />
@@ -322,9 +321,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\eviternity-titlepic.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\happy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
