@@ -322,9 +322,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\eviternity-titlepic.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\happy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
