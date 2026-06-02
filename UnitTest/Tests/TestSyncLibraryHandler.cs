@@ -459,10 +459,10 @@ namespace UnitTest.Tests
                 new TitlePicSyncAction(database, DataCache.Instance.DefaultPalette, DataCache.Instance.HexenPalette, DataCache.Instance.HereticPalette).OnlyIf(pullTitlepic)
             };
 
-            return new SyncLibraryHandler(database, CreateDirectoryAdapater(), directories, fileManagement, syncActions);
+            return new SyncLibraryHandler(database, CreateDirectoryAdapter(), directories, fileManagement, syncActions);
         }
 
-        private static DirectoryDataSourceAdapter CreateDirectoryAdapater()
+        private static DirectoryDataSourceAdapter CreateDirectoryAdapter()
         {
             return new DirectoryDataSourceAdapter(new LauncherPath("TestSyncDir"));
         }

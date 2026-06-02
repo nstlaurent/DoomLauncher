@@ -11,7 +11,7 @@ namespace DoomLauncher.Handlers
     {
         public static bool DeleteScreenshotThatIsReallyATitlePic(IFileHandler fileHandler, IGameFile gameFile, Image image)
         {
-            image = ScaleDoomImage(image);
+            image = LegacyScaleImage(image);
 
             var screenshots = fileHandler.GetFiles(gameFile, FileType.Screenshot);
 
@@ -51,7 +51,7 @@ namespace DoomLauncher.Handlers
 
         // This used to be a standard part of title pic generation. We still need it here 
         // to emulate the old titlepic screenshot images so we can find them by size.
-        private static Image ScaleDoomImage(Image image)
+        public static Image LegacyScaleImage(Image image)
         {
             // Check for Doom's aspect ratio and force to 1.33 like the original so the image doesn't look distored.
             if (image.Width / (float)image.Height != 1.6f)
