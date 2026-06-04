@@ -8,3 +8,4 @@
 
 ## Bug Fixes:
 - Upgraded SharpCompress utility to eliminate moderate vulnerability
+- PlayForm functions correctly for Doom64 maps
