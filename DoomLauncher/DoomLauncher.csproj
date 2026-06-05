@@ -285,6 +285,7 @@
     <Compile Include="GameStores\Steam\SteamFileUtils.cs" />
     <Compile Include="GameStores\Steam\SteamLoader.cs" />
     <Compile Include="Handlers\AutoCompleteCombo.cs" />
+    <Compile Include="Handlers\ExceptionExtensions.cs" />
     <Compile Include="Handlers\Files\FileHandler.cs" />
     <Compile Include="Handlers\Files\GameFileImageHandler.cs" />
     <Compile Include="Handlers\Files\IFileHandler.cs" />

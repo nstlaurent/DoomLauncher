@@ -68,7 +68,7 @@ namespace DoomLauncher.Adapters.Launch
                     { 
                         string extractFile = Path.Combine(directories.TempDirectory.GetFullPath(), firstMatchingEntry.Name);
                         if (_extractFiles)
-                            firstMatchingEntry.ExtractToFileForceOverwrite(extractFile);
+                            firstMatchingEntry.ExtractToFileForceOverwrite(extractFile, throwIfInUse: false);
                         return extractFile;
                     }
                     else

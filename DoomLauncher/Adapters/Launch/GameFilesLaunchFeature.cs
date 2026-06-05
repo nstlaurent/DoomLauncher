@@ -99,7 +99,7 @@ namespace DoomLauncher.Adapters.Launch
                         {
                             string extractFile = Path.Combine(directories.TempDirectory.GetFullPath(), entry.Name);
                             if (m_extractFiles)
-                                entry.ExtractToFileForceOverwrite(extractFile);
+                                entry.ExtractToFileForceOverwrite(extractFile, throwIfInUse: false);
                             launchFiles.Add(extractFile);
                         }
                         else
