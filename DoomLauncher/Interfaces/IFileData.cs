@@ -18,7 +18,7 @@ namespace DoomLauncher.Interfaces
         string Map { get; set; }
         int FileOrder { get; set; }
         bool IsUrl { get; }
-
+        bool IsMain { get; set; }
         int? DerivedFromFileID { get; set; }
         string Title { get; }
         FileType DerivedFileType { get; set; }

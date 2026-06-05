@@ -38,7 +38,7 @@ namespace DoomLauncher.Handlers
         {
             if (gameFile.GameFileID.HasValue)
             {
-                IFileData bestImage = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot).FirstOrDefault();
+                IFileData bestImage = GetBestMainImage(gameFile);
                 return bestImage ?? CreateTileImage(gameFile);
             }
             else
@@ -135,13 +135,30 @@ namespace DoomLauncher.Handlers
 
         public void UpdateImages(IGameFile gameFile)
         {
-            var mainImage = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot).FirstOrDefault();
+            var mainImage = GetBestMainImage(gameFile);
             if (mainImage != null)
             {
                 m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
                 m_fileHandler.DeleteFiles(gameFile, FileType.Thumbnail);
                 CreateAndInsertThumbnail(gameFile, mainImage);
             }
+        }
+
+        private IFileData GetBestMainImage(IGameFile gameFile)
+        {
+            var candidateImages = m_fileHandler.GetFiles(gameFile, FileType.TitlePic, FileType.Screenshot);
+            IFileData bestImage = candidateImages.FirstOrDefault();
+
+            // Override the title pic with a screenshot if one is marked as "IsMain"
+            foreach (var image in candidateImages)
+            {
+                if (image.FileTypeID == FileType.Screenshot && image.IsMain)
+                {
+                    bestImage = image;
+                    break;
+                }
+            }
+            return bestImage;
         }
 
         private IFileData CreateAndInsertThumbnail(IGameFile gameFile, IFileData parent)

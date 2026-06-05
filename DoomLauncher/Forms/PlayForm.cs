@@ -198,11 +198,7 @@ namespace DoomLauncher
                 if (gameProfile.SourcePortID.HasValue)
                     SelectedSourcePort = m_adapter.GetSourcePort(gameProfile.SourcePortID.Value);
 
-                var isDoom64 = GameFile.IsDoom64;
-                isDoom64 = false;
-
-                
-                if (isDoom64)
+                if (GameFile.IsDoom64)
                 {
                     SelectedSourcePort = m_adapter.GetDoom64().FirstOrDefault();
                     cmbSourcePorts.Enabled = false;

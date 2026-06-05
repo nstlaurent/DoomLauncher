@@ -118,7 +118,6 @@ namespace DoomLauncherRelease
                 "Octokit.xml",
                 "SevenZipSharp.dll",
                 "SharpCompress.dll",
-                "THIRD-PARTY-NOTICES.md",
                 "x64\\SQLite.Interop.dll",
                 "x86\\SQLite.Interop.dll",
                 "x64\\7z.dll",
