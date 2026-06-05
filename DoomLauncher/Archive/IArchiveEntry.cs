@@ -1,4 +1,5 @@
-﻿using SharpCompress.Common;
+﻿using DoomLauncher.Handlers;
+using SharpCompress.Common;
 using System;
 using System.IO;
 
@@ -12,7 +13,7 @@ namespace DoomLauncher
         string FullName { get; }
         void ExtractToFile(string file, bool overwrite = false);
 
-        void ExtractToFileForceOverwrite(string file);
+        void ExtractToFileForceOverwrite(string file, bool throwIfInUse = true);
 
         bool ExtractRequired { get; }
         bool IsDirectory { get; }
@@ -29,7 +30,7 @@ namespace DoomLauncher
 
         public abstract void ExtractToFile(string file, bool overwrite = false);
 
-        public void ExtractToFileForceOverwrite(string file)
+        public void ExtractToFileForceOverwrite(string file, bool throwIfInUse = true)
         {
             try
             {
@@ -37,6 +38,12 @@ namespace DoomLauncher
             }
             catch (Exception ex)
             {
+                if (ex is IOException io)
+                {
+                    if (!throwIfInUse && io.IsInUse())
+                        return;
+                }
+
                 try
                 {
                     if (File.Exists(file))
