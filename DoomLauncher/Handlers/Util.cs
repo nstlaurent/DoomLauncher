@@ -19,6 +19,12 @@ namespace DoomLauncher
 {
     public static class Util
     {
+        public static bool ApproxEquals(this double a, double b, double tolerance = 0.01) => 
+            Math.Abs(a - b) <= tolerance;
+
+        public static bool ApproxEquals(this float a, float b, float tolerance = 0.01f) => 
+            Math.Abs(a - b) <= tolerance;
+
         public static IEnumerable<object> TableToStructure(DataTable dt, Type type)
         {
             List<object> ret = new List<object>();

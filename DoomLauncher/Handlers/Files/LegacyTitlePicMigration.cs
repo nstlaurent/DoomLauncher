@@ -11,12 +11,12 @@ namespace DoomLauncher.Handlers
     {
         public static bool DeleteScreenshotThatIsReallyATitlePic(IFileHandler fileHandler, IGameFile gameFile, Image image)
         {
-            image = LegacyScaleImage(image);
-
             var screenshots = fileHandler.GetFiles(gameFile, FileType.Screenshot);
 
             if (!screenshots.Any())
                 return false;
+
+            image = LegacyScaleImage(image);
 
             // Create png image in memory and use the size to compare to existing screenshot file sizes.
             // This method should be accurate enough to determine if an existing screenshot is the titlepic.
@@ -54,7 +54,7 @@ namespace DoomLauncher.Handlers
         public static Image LegacyScaleImage(Image image)
         {
             // Check for Doom's aspect ratio and force to 1.33 like the original so the image doesn't look distored.
-            if (image.Width / (float)image.Height != 1.6f)
+            if (!(image.Width / (float)image.Height).ApproxEquals(1.6f))
                 return image;
 
             int multiplier = image.Width / 320;
