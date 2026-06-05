@@ -53,12 +53,10 @@ namespace DoomLauncher
 
         public IWadType IWadType { get; }
 
-        public string GameName => IWadType.ToString().ToUpper();
+        public string GameName { get; private set; }
 
         public string Title { get; }
         public string TileImage { get; }
-
-        public string FileName { get; }
 
         public IWadInfo BackupGame { get; }
 
@@ -67,8 +65,8 @@ namespace DoomLauncher
             IWadType = iWadType;
             Title = title;
             TileImage = Path.Combine(LauncherPath.GetDataDirectory(), "TileImages", tileImage);
-            FileName = $"{GameName.ToLower()}.zip";
             BackupGame = backupGame;
+            GameName = IWadType.ToString();
         }
 
         public static bool TryGetIWadInfo(string fileName, out IWadInfo iwadInfo)
@@ -78,10 +76,10 @@ namespace DoomLauncher
         }
 
         public static bool IsGameName(string gameName) =>
-            All.FirstOrDefault(iwadInfo => iwadInfo.GameName == gameName) != null;
+            All.FirstOrDefault(iwadInfo => iwadInfo.GameName.Equals(gameName, StringComparison.OrdinalIgnoreCase)) != null;
 
         public static IWadInfo FromGameName(string gameName) =>
-            All.FirstOrDefault(iwadInfo => iwadInfo.GameName.Equals(gameName));
+            All.FirstOrDefault(iwadInfo => iwadInfo.GameName.Equals(gameName, StringComparison.OrdinalIgnoreCase));
 
         public static IWadInfo FromFileName(string fileName) =>
             FromGameName(GetGameName(fileName));

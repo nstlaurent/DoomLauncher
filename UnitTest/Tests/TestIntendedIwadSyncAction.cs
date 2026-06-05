@@ -70,10 +70,10 @@ namespace UnitTest.Tests
 
         private IIWadData CreateIWad(IWadInfo iwadInfo)
         {
-            var fileName = iwadInfo.FileName;
+            var fileName = iwadInfo.GameName + ".wad";
             var gameFile0 = new GameFile()
             {
-                FileName = iwadInfo.FileName,
+                FileName = fileName,
                 Title = iwadInfo.Title
             };
             database.InsertGameFile(gameFile0);
