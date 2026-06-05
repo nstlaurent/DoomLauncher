@@ -1,5 +1,6 @@
 ﻿using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
+using System;
 using System.Linq;
 
 namespace DoomLauncher.Handlers.Sync
@@ -18,12 +19,12 @@ namespace DoomLauncher.Handlers.Sync
             if (gameFile.IntendedGame != null)
             {
                 var iwadsFromDb = m_database.GetIWads();
-                var matchingIWad = iwadsFromDb.FirstOrDefault(iwad => iwad.FileName == gameFile.IntendedGame?.FileName);
+                var matchingIWad = iwadsFromDb.FirstOrDefault(iwad => iwad.FileNameBase.Equals(gameFile.IntendedGame?.GameName, StringComparison.OrdinalIgnoreCase));
 
                 if (matchingIWad == null && gameFile.IntendedGame?.BackupGame != null)
                 {
                     // If the intended game is not found, try the backup game
-                    matchingIWad = iwadsFromDb.FirstOrDefault(iwad => iwad.FileName == gameFile.IntendedGame.BackupGame.FileName);
+                    matchingIWad = iwadsFromDb.FirstOrDefault(iwad => iwad.FileNameBase == gameFile.IntendedGame.BackupGame.GameName);
                 }
                 if (matchingIWad != null)
                 {
