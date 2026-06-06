@@ -1,12 +1,9 @@
 ﻿using DoomLauncher.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoomLauncher.Handlers
 {
@@ -18,6 +15,8 @@ namespace DoomLauncher.Handlers
 
             if (!screenshots.Any())
                 return false;
+
+            image = LegacyScaleImage(image);
 
             // Create png image in memory and use the size to compare to existing screenshot file sizes.
             // This method should be accurate enough to determine if an existing screenshot is the titlepic.
@@ -37,7 +36,7 @@ namespace DoomLauncher.Handlers
             {
                 try
                 {
-                    FileInfo fi = new FileInfo(fileHandler.GetFullFileName(FileType.Screenshot, screenshot.FileName));
+                    FileInfo fi = new FileInfo(screenshot.FullFileName);
                     if (fi.Length == fileSize)
                     {
                         fileHandler.DeleteFile(screenshot);
@@ -48,6 +47,18 @@ namespace DoomLauncher.Handlers
             }
 
             return false;
+        }
+
+        // This used to be a standard part of title pic generation. We still need it here 
+        // to emulate the old titlepic screenshot images so we can find them by size.
+        public static Image LegacyScaleImage(Image image)
+        {
+            // Check for Doom's aspect ratio and force to 1.33 like the original so the image doesn't look distored.
+            if (!(image.Width / (float)image.Height).ApproxEquals(1.6f))
+                return image;
+
+            int multiplier = image.Width / 320;
+            return image.Resize(640 * multiplier, 480 * multiplier, InterpolationMode.NearestNeighbor);
         }
     }
 }
