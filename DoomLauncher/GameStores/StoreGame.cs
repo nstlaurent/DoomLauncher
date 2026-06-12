@@ -12,8 +12,8 @@ namespace DoomLauncher.GameStores
             null);
 
         public readonly static StoreGame HERETIC_PLUS_HEXEN = new StoreGame(3286930, 1572667751, "Heretic + Hexen",
-            new List<string> { @"base\heretic\heretic.wad", @"base\hexen\hexen.wad" },
-            new List<string> { @"base\hexendk\hexdd.wad" }, 
+            new List<string> { @"heretic.wad", @"hexen.wad" },
+            new List<string> { @"hexdd.wad" }, 
             null);
 
         public readonly static StoreGame DOOM2 = new StoreGame(2300, null, "DOOM II", 

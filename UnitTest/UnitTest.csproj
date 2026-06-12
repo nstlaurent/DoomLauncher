@@ -244,7 +244,13 @@
     <None Include="Resources\TestSteamLibrary1\steamapps\appmanifest_2280.acf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\appmanifest_2360.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\TestSteamLibrary1\steamapps\appmanifest_2390.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\appmanifest_3286930.acf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\base\doom.wad">
@@ -271,7 +277,13 @@
     <None Include="Resources\TestSteamLibrary1\steamapps\common\TestDoom\rerelease\tnt.wad">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestHereticHexen\hexen.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\TestSteamLibrary1\steamapps\common\TestHeretic\base\heretic.wad">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\TestSteamLibrary1\steamapps\common\TestHexen\base\hexen.wad">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\TestSteamLibrary3\steamapps\appmanifest_2360.acf">
