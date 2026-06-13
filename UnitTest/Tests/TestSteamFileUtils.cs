@@ -20,7 +20,7 @@ namespace UnitTest.Tests
         [TestMethod]
         public void TryGetInstallDir_ReturnsFalseAndNullWhenAcfDoesNotExist()
         {
-            var path = Path.GetFullPath(@"Resources\TestSteamLibrary1\steamapps\appmanifest_2360.acf");
+            var path = Path.GetFullPath(@"Resources\TestSteamLibrary1\steamapps\appmanifest_317040.acf");
             var success = SteamFileUtils.TryGetInstallDir(path, out var installDir);
 
             Assert.IsFalse(success);

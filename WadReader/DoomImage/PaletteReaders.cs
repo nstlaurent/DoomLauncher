@@ -17,6 +17,8 @@ namespace WadReader
                     return true;
                 case 320 * 200: // TITLE images use this size
                     return true;
+                case 560 * 200: // Heretic + Hexen TITLE images use this size
+                    return true;
                 default:
                     return false;
             }
@@ -128,6 +130,11 @@ namespace WadReader
             else if (length == 320 * 200)
             {
                 width = 320;
+                height = 200;
+            }
+            else if (length == 560 * 200) // Wide Hexen + Heretic TITLE format
+            {
+                width = 560;
                 height = 200;
             }
             else
