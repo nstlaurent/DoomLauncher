@@ -21,7 +21,11 @@ namespace DoomLauncher.Handlers.Sync
                 var text = entry.ReadString(Encoding.UTF7);
                 var mapping = ParseGameInfo(text);
 
-                if (mapping.TryGetValue("STARTUPTITLE", out var title) && !string.IsNullOrWhiteSpace(title))
+                if (mapping.TryGetValue("STARTUPTITLE", out var title) 
+                    && !string.IsNullOrWhiteSpace(title)
+                    // Supercharge is a popular gameplay mod that is sometimes shipped inside another wad. 
+                    // In that case, we don't want to override the wad's actual title.
+                    && !title.Equals("Supercharge")) 
                 {
                     gameFile.Title = title;
                 }

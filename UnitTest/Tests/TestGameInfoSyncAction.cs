@@ -27,6 +27,24 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void ApplyToGameFile_IgnoresSuperchargeTitleInGAMEINFO()
+        {
+            var gameFile = new GameFile()
+            {
+                FileName = "blah.wad"
+            };
+
+            var syncAction = new GameInfoSyncAction();
+
+            Tree files = new Tree("root", new Tree("GAMEINFO", "IWAD = \"blah.wad\"\nSTARTUPTITLE  = \"Supercharge\"\nSOMETHING_ELSE = blah"));
+            var reader = new TreeReader(files);
+
+            var result = syncAction.ApplyToGameFile(gameFile, reader, new string[0]);
+
+            Assert.IsTrue(string.IsNullOrEmpty(gameFile.Title));
+        }
+
+        [TestMethod]
         public void ApplyToGameFile_FindsIntendedGameInGAMEINFO()
         {
             var gameFile = new GameFile()
