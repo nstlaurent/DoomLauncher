@@ -464,35 +464,6 @@ namespace UnitTest.Tests
 
 
         [TestMethod]
-        public void InsertTitlePic_DeletesTileImagesIfSuccessful()
-        {
-            var fileHandler = new FileHandler(database, config);
-            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
-
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "Grah.zip" };
-            database.InsertGameFile(gameFile);
-            gameFile = database.GetGameFile("Grah.zip");
-
-            // Successfully create a TileImage
-            var theRightLocation = config.TileImageDirectory.GetFullPath("happy.png");
-            File.Copy(@"Resources\happy.png", theRightLocation, true);
-            Assert.IsTrue(File.Exists(theRightLocation));
-            fileHandler.InsertAndRefer(gameFile, FileType.TileImage, theRightLocation);
-            var tileImage = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
-            Assert.IsNotNull(tileImage);
-
-            var image = Image.FromFile(@"Resources\happy.png");
-            var titlePic = gameFileImageHandler.InsertTitlePic(gameFile, image);
-            var titlePicFromDB = database.GetFiles(gameFile, FileType.TitlePic).FirstOrDefault();
-            Assert.IsNotNull(titlePicFromDB);
-
-            // TileImage no longer exists
-            tileImage = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
-            Assert.IsNull(tileImage);
-        }
-
-        [TestMethod]
         public void InsertScreenshot_CopiesFiletoDiskPreservingSource()
         {
             var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
@@ -635,32 +606,6 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
-        public void InsertScreenshot_DeletesTileImagesIfSuccessful()
-        {
-            var fileHandler = new FileHandler(database, config);
-            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID);
-            var sourcePort = new SourcePortData() { SourcePortID = 123 };
-
-            // Save a game file
-            IGameFile gameFile = new GameFile() { FileName = "Grah.zip" };
-            database.InsertGameFile(gameFile);
-
-            // Successfully create a TileImage
-            var theRightLocation = config.TileImageDirectory.GetFullPath("happy.png");
-            File.Copy(@"Resources\happy.png", theRightLocation, true);
-            Assert.IsTrue(File.Exists(theRightLocation));
-            var tileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, theRightLocation);
-            Assert.IsNotNull(tileImage);
-
-            var screenshot = gameFileImageHandler.InsertScreenshot(sourcePort, gameFile, @"Resources\happy.png");
-            Assert.IsNotNull(screenshot);
-
-            // TileImage no longer exists
-            tileImage = database.GetFiles(gameFile, FileType.TileImage).FirstOrDefault();
-            Assert.IsNull(tileImage);
-        }
-
-        [TestMethod]
         public void GetScreenshots_ReturnsTheScreenshots()
         {
             var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
@@ -699,6 +644,24 @@ namespace UnitTest.Tests
         }
 
         [TestMethod]
+        public void UpdateImages_DeletesExistingThumbnailWithNoMainImage()
+        {
+            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
+
+            IGameFile gameFile = new GameFile() { FileName = "Yellow.zip" };
+            database.InsertGameFile(gameFile);
+
+            var thumbnail = fileHandler.InsertAndSave(gameFile, FileType.Thumbnail, Image.FromFile(@"Resources\happy.png"), "png");
+            var existingThumbnails = fileHandler.GetFiles(gameFile, FileType.Thumbnail);
+            Assert.AreEqual(1, existingThumbnails.Count);
+
+            gameFileImageHandler.UpdateImages(gameFile);
+
+            var newThumbnails = fileHandler.GetFiles(gameFile, FileType.Thumbnail);
+            Assert.AreEqual(0, newThumbnails.Count);
+        }
+
+        [TestMethod]
         public void UpdateImages_RecreatesThumbnailForExistingScreenshot()
         {
             var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
@@ -714,30 +677,6 @@ namespace UnitTest.Tests
             var newThumbnails = fileHandler.GetFiles(gameFile, FileType.Thumbnail);
             Assert.AreEqual(1, newThumbnails.Count);
             Assert.AreNotEqual(existingThumbnail.FileID, newThumbnails[0].FileID);
-        }
-
-        [TestMethod]
-        public void UpdateImages_DeletesOldTileImage()
-        {
-            var gameFileImageHandler = new GameFileImageHandler(fileHandler, database.GetIWadByIWadID, false);
-
-            IGameFile gameFile = new GameFile() { FileName = "Blue.zip" };
-            database.InsertGameFile(gameFile);
-
-            // Successfully create a TileImage
-            var defaultImagePath = config.TileImageDirectory.GetFullPath(GameFileImageHandler.DEFAULT_TILE_IMAGE);
-            File.Copy(@"Resources\happy.png", defaultImagePath, true);
-            Assert.IsTrue(File.Exists(defaultImagePath));
-
-            var existingTileImage = fileHandler.InsertAndRefer(gameFile, FileType.TileImage, defaultImagePath);
-            Assert.IsNotNull(existingTileImage);
-
-            fileHandler.InsertAndCopy(gameFile, FileType.TitlePic, @"Resources\happy.png");
-
-            gameFileImageHandler.UpdateImages(gameFile);
-
-            var newTileImages = fileHandler.GetFiles(gameFile, FileType.TileImage);
-            Assert.AreEqual(0, newTileImages.Count);
         }
     }
 }

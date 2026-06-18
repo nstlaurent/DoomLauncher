@@ -89,9 +89,6 @@ namespace DoomLauncher.Handlers
             if (titlePic != null)
             {
                 CreateAndInsertThumbnail(gameFile, titlePic);
-
-                // We have a proper titlepic/thumbnail, no need for stock images
-                m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
             }
 
             return titlePic;
@@ -120,9 +117,6 @@ namespace DoomLauncher.Handlers
             
             if (screenshot != null )
             {
-                // We have a proper screenshot image, no need for stock images
-                m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
-
                 // Screenshots are lower priority than TitlePics and earlier screenshots, so only 
                 // create a thumbnail if it's missing.
                 var existingThumbnails = m_fileHandler.GetFiles(gameFile, FileType.Thumbnail);
@@ -135,11 +129,11 @@ namespace DoomLauncher.Handlers
 
         public void UpdateImages(IGameFile gameFile)
         {
+            m_fileHandler.DeleteFiles(gameFile, FileType.Thumbnail);
+
             var mainImage = GetBestMainImage(gameFile);
             if (mainImage != null)
             {
-                m_fileHandler.DeleteFiles(gameFile, FileType.TileImage);
-                m_fileHandler.DeleteFiles(gameFile, FileType.Thumbnail);
                 CreateAndInsertThumbnail(gameFile, mainImage);
             }
         }
