@@ -1188,6 +1188,7 @@ namespace DoomLauncher
 
         private async void btnSyncRecommended_Click(object sender, EventArgs e)
         {
+            btnSyncRecommended.Enabled = false;
             await SyncGameFilesThatNeedSync();
             btnSyncRecommended.Visible = false;
         }
