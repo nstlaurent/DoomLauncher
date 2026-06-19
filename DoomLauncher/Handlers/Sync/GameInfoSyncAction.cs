@@ -15,7 +15,7 @@ namespace DoomLauncher.Handlers.Sync
         public SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
         {
             // Normally it's GAMEINFO, but I've seen GAMEINFO.txt in the wild. 
-            var entry = reader.Entries.FirstOrDefault(x => x.Name.ToLower().StartsWith("gameinfo"));
+            var entry = reader.Entries.LastOrDefault(x => x.Name.ToLower().StartsWith("gameinfo"));
             if (entry != null)
             {
                 var text = entry.ReadString(Encoding.UTF7);
