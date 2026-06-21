@@ -1,9 +1,8 @@
 ﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
+
 
 namespace DoomLauncher.Handlers.Sync
 {
@@ -15,13 +14,17 @@ namespace DoomLauncher.Handlers.Sync
         public SyncResult ApplyToGameFile(IGameFile gameFile, IArchiveReader reader, string[] mapInfoData)
         {
             // Normally it's GAMEINFO, but I've seen GAMEINFO.txt in the wild. 
-            var entry = reader.Entries.FirstOrDefault(x => x.Name.ToLower().StartsWith("gameinfo"));
+            var entry = reader.Entries.LastOrDefault(x => x.Name.ToLower().StartsWith("gameinfo"));
             if (entry != null)
             {
-                var text = entry.ReadString(Encoding.UTF7);
+                var text = entry.ReadString(Encoding.UTF8);
                 var mapping = ParseGameInfo(text);
 
-                if (mapping.TryGetValue("STARTUPTITLE", out var title) && !string.IsNullOrWhiteSpace(title))
+                if (mapping.TryGetValue("STARTUPTITLE", out var title) 
+                    && !string.IsNullOrWhiteSpace(title)
+                    // Supercharge is a popular gameplay mod that is sometimes shipped inside another wad. 
+                    // In that case, we don't want to override the wad's actual title.
+                    && !title.Equals("Supercharge")) 
                 {
                     gameFile.Title = title;
                 }

@@ -6,6 +6,7 @@
 - "Resync recommended" button so that users can benefit from significant syncing improvements
 - TitlePics are no longer considered screenshots; right click on a screenshot to set as main image
 - Support for wide image title pic in Heretic + Hexen
+- Resyncing is better at deciding the right title
 
 ## Bug Fixes:
 - Upgraded SharpCompress utility to eliminate moderate vulnerability
