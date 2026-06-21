@@ -11,7 +11,7 @@ namespace UnitTest.Tests
         public byte[] Content { get; }
 
         public string ContentString =>
-            Encoding.UTF7.GetString(Content);
+            Encoding.UTF8.GetString(Content);
 
         public List<Tree> Children { get; }
 
@@ -32,7 +32,7 @@ namespace UnitTest.Tests
         public Tree(string name, string content, params Tree[] children)
         {
             Name = name;
-            Content = Encoding.UTF7.GetBytes(content);
+            Content = Encoding.UTF8.GetBytes(content);
             Children = children.ToList();
         }
     }

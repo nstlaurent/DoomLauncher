@@ -1,9 +1,8 @@
 ﻿using DoomLauncher.Interfaces;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
+
 
 namespace DoomLauncher.Handlers.Sync
 {
@@ -18,7 +17,7 @@ namespace DoomLauncher.Handlers.Sync
             var entry = reader.Entries.LastOrDefault(x => x.Name.ToLower().StartsWith("gameinfo"));
             if (entry != null)
             {
-                var text = entry.ReadString(Encoding.UTF7);
+                var text = entry.ReadString(Encoding.UTF8);
                 var mapping = ParseGameInfo(text);
 
                 if (mapping.TryGetValue("STARTUPTITLE", out var title) 
