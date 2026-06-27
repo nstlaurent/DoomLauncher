@@ -41,6 +41,8 @@ namespace DoomLauncher
         public static string TileImageSizeName => "TileImageSize";
         public static string TileImageAspectRatioName => "TileImageAspectRatio";
 
+        public static string DefaultSourcePort => "DefaultSourcePort";
+
         public AppConfiguration(IDataSourceAdapter adapter)
         {
             DataSourceAdapter = adapter;

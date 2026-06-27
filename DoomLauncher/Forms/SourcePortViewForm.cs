@@ -156,7 +156,15 @@ namespace DoomLauncher
                 SourcePortData sourcePort = new SourcePortData();
                 editForm.UpdateDataSource(sourcePort);
                 sourcePort.LaunchType = m_launchType;
+
+                int existingSourcePortCount = m_adapter.GetSourcePortCount();
                 m_adapter.InsertSourcePort(sourcePort);
+
+                if (existingSourcePortCount == 0)
+                {
+                    DataCache.Instance.UpdateConfig(m_adapter.GetConfiguration(), AppConfiguration.DefaultSourcePort, sourcePort.SourcePortID.ToString());
+                }
+
                 ResetData();
 
                 SelectSourcePort(sourcePort);
