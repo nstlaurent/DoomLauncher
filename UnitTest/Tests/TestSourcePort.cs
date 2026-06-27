@@ -1,4 +1,5 @@
 ﻿using DoomLauncher;
+using DoomLauncher.DataSources;
 using DoomLauncher.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
@@ -46,6 +47,7 @@ namespace UnitTest.Tests
         public void TestSourcePortData()
         {
             Clear();
+            TestGetSourcePortCount();
             TestInsert();
             TestGetSourcePorts();
             TestUpdate();
@@ -85,6 +87,19 @@ namespace UnitTest.Tests
                 var port = allSourcePorts.First(x => x.Name.Equals(testSourcePort.Name));
                 Assert.IsTrue(TestUtil.AllFieldsEqualIgnore(testSourcePort, port, nameof(ISourcePortData.SourcePortID)));
             }
+        }
+
+        public void TestGetSourcePortCount()
+        {
+            IDataSourceAdapter adapter = TestUtil.CreateAdapter();
+            Assert.AreEqual(0, adapter.GetSourcePortCount());
+
+            var sourcePort = new SourcePortData() { Name = "Some source port" };
+            adapter.InsertSourcePort(sourcePort);
+            Assert.AreEqual(1, adapter.GetSourcePortCount());
+
+            adapter.DeleteSourcePort(sourcePort);
+            Assert.AreEqual(0, adapter.GetSourcePortCount());
         }
 
         public void TestGetSourcePort()

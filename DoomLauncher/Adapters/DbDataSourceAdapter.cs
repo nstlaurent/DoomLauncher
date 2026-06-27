@@ -368,6 +368,12 @@ namespace DoomLauncher
                 return obj;
         }
 
+        public int GetSourcePortCount()
+        {
+            DataTable dt = DataAccess.ExecuteSelect("select count(*) from SourcePorts where Archived = 0").Tables[0];
+            return Convert.ToInt32(dt.Rows[0][0]);
+        }
+
         public ISourcePortData GetSourcePort(int sourcePortID)
         {
             DataTable dt = DataAccess.ExecuteSelect(string.Format("select * from SourcePorts where SourcePortID = {0}", sourcePortID)).Tables[0];

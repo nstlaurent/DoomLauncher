@@ -12,6 +12,7 @@ namespace DoomLauncher.Interfaces
 
         IEnumerable<ISourcePortData> GetDoom64(bool loadArchived = false);
 
+        int GetSourcePortCount(); // Excluding archived
         ISourcePortData GetSourcePort(int sourcePortID);
         void InsertSourcePort(ISourcePortData sourcePort);
         void UpdateSourcePort(ISourcePortData sourcePort);
